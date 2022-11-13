@@ -3,6 +3,8 @@
 
 #include "qwrenderer.h"
 #include "qwbackend.h"
+#include "qwtexture.h"
+#include "types/qwbuffer.h"
 
 #include <QColor>
 #include <QRect>
@@ -61,6 +63,12 @@ void QWRenderer::begin(uint32_t width, uint32_t height)
     wlr_renderer_begin(d->handle(), width, height);
 }
 
+void QWRenderer::begin(QWBuffer *buffer)
+{
+    Q_D(QWRenderer);
+    wlr_renderer_begin_with_buffer(d->handle(), buffer->handle<wlr_buffer>());
+}
+
 void QWRenderer::end()
 {
     Q_D(QWRenderer);
@@ -112,6 +120,24 @@ void QWRenderer::scissor(const QRect &box)
     };
 
     scissor(&b);
+}
+
+void QWRenderer::renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha)
+{
+    Q_D(QWRenderer);
+    wlr_render_texture(d->handle(), texture->handle<wlr_texture>(), projection, x, y, alpha);
+}
+
+void QWRenderer::renderTexture(QWTexture *texture, const float *matrix, float alpha)
+{
+    Q_D(QWRenderer);
+    wlr_render_texture_with_matrix(d->handle(), texture->handle<wlr_texture>(), matrix, alpha);
+}
+
+void QWRenderer::renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha)
+{
+    Q_D(QWRenderer);
+    wlr_render_subtexture_with_matrix(d->handle(), texture->handle<wlr_texture>(), fbox, matrix, alpha);
 }
 
 void QWRenderer::renderRect(const wlr_box *box, const float *color, const float *projection)

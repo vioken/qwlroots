@@ -8,12 +8,15 @@
 #include <QMatrix3x3>
 
 struct wlr_box;
+struct wlr_fbox;
 struct wlr_drm_format_set;
 struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
 class QWBackend;
+class QWBuffer;
+class QWTexture;
 class QWRendererPrivate;
 class QW_EXPORT QWRenderer : public QObject, public QWObject
 {
@@ -23,6 +26,7 @@ public:
     ~QWRenderer();
 
     void begin(uint32_t width, uint32_t height);
+    void begin(QWBuffer *buffer);
     void end();
 
     bool initWlDisplay(wl_display *display);
@@ -32,6 +36,9 @@ public:
     void clear(const QColor &color);
     void scissor(wlr_box *box);
     void scissor(const QRect &box);
+    void renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha);
+    void renderTexture(QWTexture *texture, const float *matrix, float alpha);
+    void renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha);
     void renderRect(const wlr_box *box, const float *color, const float *projection);
     void renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection);
     void renderQuad(const float *color, const float *matrix);
