@@ -24,12 +24,16 @@ set(SOURCES
     qwglobal.cpp
     qwbackend.cpp
     render/qwrenderer.cpp
+    render/qwtexture.cpp
+    types/qwbuffer.cpp
 )
 
 set(HEADERS
     qwglobal.h
     qwbackend.h
     render/qwrenderer.h
+    render/qwtexture.h
+    types/qwbuffer.h
 )
 
 add_library(${TARGET}
