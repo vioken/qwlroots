@@ -5,12 +5,6 @@
 
 QW_BEGIN_NAMESPACE
 
-QWObject::QWObject(QWObject *)
-    : QWObject(*new QWObjectPrivate(this))
-{
-
-}
-
 QWObject::QWObject(QWObjectPrivate &dd, QWObject *)
     : qw_d_ptr(&dd)
 {
@@ -27,8 +21,9 @@ QWObjectPrivate::~QWObjectPrivate()
 
 }
 
-QWObjectPrivate::QWObjectPrivate(QWObject *qq)
-    : q_ptr(qq)
+QWObjectPrivate::QWObjectPrivate(void *handle, QWObject *qq)
+    : m_handle(handle)
+    , q_ptr(qq)
 {
 
 }

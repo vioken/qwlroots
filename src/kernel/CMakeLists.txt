@@ -23,11 +23,13 @@ add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
 set(SOURCES
     qwglobal.cpp
     qwbackend.cpp
+    render/qwrenderer.cpp
 )
 
 set(HEADERS
     qwglobal.h
     qwbackend.h
+    render/qwrenderer.h
 )
 
 add_library(${TARGET}
