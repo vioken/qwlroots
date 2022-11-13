@@ -29,32 +29,37 @@
 
 QW_BEGIN_NAMESPACE
 
-class QWObjectPrivate;
-class QW_EXPORT QWObject
-{
-protected:
-    QWObject(QWObject *parent = nullptr);
-    QWObject(QWObjectPrivate &dd, QWObject *parent = nullptr);
-
-    virtual ~QWObject();
-
-    QScopedPointer<QWObjectPrivate> qw_d_ptr;
-
-    Q_DISABLE_COPY(QWObject)
-    QW_DECLARE_PRIVATE(QWObject)
-};
-
+class QWObject;
 class QWObjectPrivate
 {
 public:
     virtual ~QWObjectPrivate();
 
 protected:
-    QWObjectPrivate(QWObject *qq);
+    QWObjectPrivate(void *handle, QWObject *qq);
 
     QWObject *q_ptr;
+    void *m_handle = nullptr;
 
     Q_DECLARE_PUBLIC(QWObject)
+};
+
+class QW_EXPORT QWObject
+{
+public:
+    template<typename Handle>
+    inline Handle *handle() const {
+        return reinterpret_cast<Handle*>(qw_d_ptr->m_handle);
+    }
+
+    virtual ~QWObject();
+
+protected:
+    QWObject(QWObjectPrivate &dd, QWObject *parent = nullptr);
+    QScopedPointer<QWObjectPrivate> qw_d_ptr;
+
+    Q_DISABLE_COPY(QWObject)
+    QW_DECLARE_PRIVATE(QWObject)
 };
 
 QW_END_NAMESPACE
