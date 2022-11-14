@@ -27,6 +27,7 @@ set(SOURCES
     render/qwrenderer.cpp
     render/qwtexture.cpp
     types/qwbuffer.cpp
+    util/qwsignalconnector.cpp
 )
 
 set(HEADERS
@@ -35,6 +36,7 @@ set(HEADERS
     render/qwrenderer.h
     render/qwtexture.h
     types/qwbuffer.h
+    util/qwsignalconnector.h
 )
 
 add_library(${TARGET}

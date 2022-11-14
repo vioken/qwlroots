@@ -6,6 +6,8 @@
 #include <qwglobal.h>
 #include <QObject>
 
+struct wlr_input_device;
+struct wlr_output;
 struct wl_display;
 
 QW_BEGIN_NAMESPACE
@@ -23,6 +25,12 @@ public:
 
 public Q_SLOTS:
     bool start();
+
+Q_SIGNALS:
+    // TODO: make to QWInputDevice
+    void newInput(wlr_input_device *device);
+    // TODO: make to QWOutput
+    void newOutput(wlr_output *output);
 
 private:
     explicit QWBackend(void *handle, QObject *parent = nullptr);
