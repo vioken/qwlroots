@@ -6,6 +6,7 @@
 #include <qwglobal.h>
 #include <QObject>
 
+struct wlr_backend;
 struct wlr_input_device;
 struct wlr_output;
 struct wl_display;
@@ -17,8 +18,14 @@ class QW_EXPORT QWBackend : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWBackend)
 public:
-    static QWBackend *autoCreate(wl_display *display, QObject *parent = nullptr);
+    explicit QWBackend(wlr_backend *handle, QObject *parent = nullptr);
     ~QWBackend();
+
+    static QWBackend *autoCreate(wl_display *display, QObject *parent = nullptr);
+
+    inline wlr_backend *handle() const {
+        return QWObject::handle<wlr_backend>();
+    }
 
     clockid_t presentationClock() const;
     int drmFd() const;
@@ -31,9 +38,6 @@ Q_SIGNALS:
     void newInput(wlr_input_device *device);
     // TODO: make to QWOutput
     void newOutput(wlr_output *output);
-
-private:
-    explicit QWBackend(void *handle, QObject *parent = nullptr);
 };
 
 QW_END_NAMESPACE

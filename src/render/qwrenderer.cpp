@@ -30,22 +30,18 @@ public:
         // m_handle destory follow the wlr_backend
     }
 
-    inline wlr_renderer *handle() const {
-        return q_func()->handle<wlr_renderer>();
-    }
-
     QW_DECLARE_PUBLIC(QWRenderer)
 };
 
 QWRenderer *QWRenderer::autoCreate(QWBackend *backend)
 {
-    auto handle = wlr_renderer_autocreate(backend->handle<wlr_backend>());
+    auto handle = wlr_renderer_autocreate(backend->handle());
     if (!handle)
         return nullptr;
     return new QWRenderer(handle, backend);
 }
 
-QWRenderer::QWRenderer(void *handle, QObject *parent)
+QWRenderer::QWRenderer(wlr_renderer *handle, QObject *parent)
     : QObject(parent)
     , QWObject(*new QWRendererPrivate(handle, this))
 {
@@ -60,37 +56,37 @@ QWRenderer::~QWRenderer()
 void QWRenderer::begin(uint32_t width, uint32_t height)
 {
     Q_D(QWRenderer);
-    wlr_renderer_begin(d->handle(), width, height);
+    wlr_renderer_begin(handle(), width, height);
 }
 
 void QWRenderer::begin(QWBuffer *buffer)
 {
     Q_D(QWRenderer);
-    wlr_renderer_begin_with_buffer(d->handle(), buffer->handle<wlr_buffer>());
+    wlr_renderer_begin_with_buffer(handle(), buffer->handle());
 }
 
 void QWRenderer::end()
 {
     Q_D(QWRenderer);
-    wlr_renderer_end(d->handle());
+    wlr_renderer_end(handle());
 }
 
 bool QWRenderer::initWlDisplay(wl_display *display)
 {
     Q_D(QWRenderer);
-    return wlr_renderer_init_wl_display(d->handle(), display);
+    return wlr_renderer_init_wl_display(handle(), display);
 }
 
 bool QWRenderer::initWlShm(wl_display *display)
 {
     Q_D(QWRenderer);
-    return wlr_renderer_init_wl_shm(d->handle(), display);
+    return wlr_renderer_init_wl_shm(handle(), display);
 }
 
 void QWRenderer::clear(const float *color)
 {
     Q_D(QWRenderer);
-    wlr_renderer_clear(d->handle(), color);
+    wlr_renderer_clear(handle(), color);
 }
 
 void QWRenderer::clear(const QColor &color)
@@ -107,7 +103,7 @@ void QWRenderer::clear(const QColor &color)
 void QWRenderer::scissor(wlr_box *box)
 {
     Q_D(QWRenderer);
-    wlr_renderer_scissor(d->handle(), box);
+    wlr_renderer_scissor(handle(), box);
 }
 
 void QWRenderer::scissor(const QRect &box)
@@ -125,25 +121,25 @@ void QWRenderer::scissor(const QRect &box)
 void QWRenderer::renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha)
 {
     Q_D(QWRenderer);
-    wlr_render_texture(d->handle(), texture->handle<wlr_texture>(), projection, x, y, alpha);
+    wlr_render_texture(handle(), texture->handle(), projection, x, y, alpha);
 }
 
 void QWRenderer::renderTexture(QWTexture *texture, const float *matrix, float alpha)
 {
     Q_D(QWRenderer);
-    wlr_render_texture_with_matrix(d->handle(), texture->handle<wlr_texture>(), matrix, alpha);
+    wlr_render_texture_with_matrix(handle(), texture->handle(), matrix, alpha);
 }
 
 void QWRenderer::renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha)
 {
     Q_D(QWRenderer);
-    wlr_render_subtexture_with_matrix(d->handle(), texture->handle<wlr_texture>(), fbox, matrix, alpha);
+    wlr_render_subtexture_with_matrix(handle(), texture->handle(), fbox, matrix, alpha);
 }
 
 void QWRenderer::renderRect(const wlr_box *box, const float *color, const float *projection)
 {
     Q_D(QWRenderer);
-    wlr_render_rect(d->handle(), box, color, projection);
+    wlr_render_rect(handle(), box, color, projection);
 }
 
 void QWRenderer::renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection)
@@ -168,7 +164,7 @@ void QWRenderer::renderRect(const QRect &box, const QColor &color, const QMatrix
 void QWRenderer::renderQuad(const float *color, const float *matrix)
 {
     Q_D(QWRenderer);
-    wlr_render_quad_with_matrix(d->handle(), color, matrix);
+    wlr_render_quad_with_matrix(handle(), color, matrix);
 }
 
 void QWRenderer::renderQuad(const QColor &color, const QMatrix3x3 &matrix)
@@ -186,26 +182,26 @@ void QWRenderer::renderQuad(const QColor &color, const QMatrix3x3 &matrix)
 const uint32_t *QWRenderer::getShmTextureFormats(size_t *len) const
 {
     Q_D(const QWRenderer);
-    return wlr_renderer_get_shm_texture_formats(d->handle(), len);
+    return wlr_renderer_get_shm_texture_formats(handle(), len);
 }
 
 const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats() const
 {
     Q_D(const QWRenderer);
-    return wlr_renderer_get_dmabuf_texture_formats(d->handle());
+    return wlr_renderer_get_dmabuf_texture_formats(handle());
 }
 
 bool QWRenderer::readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                             uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const
 {
     Q_D(const QWRenderer);
-    return wlr_renderer_read_pixels(d->handle(), fmt, stride, width, height, src_x, src_y, dst_x, dst_y, data);
+    return wlr_renderer_read_pixels(handle(), fmt, stride, width, height, src_x, src_y, dst_x, dst_y, data);
 }
 
 int QWRenderer::getDrmFd() const
 {
     Q_D(const QWRenderer);
-    return wlr_renderer_get_drm_fd(d->handle());
+    return wlr_renderer_get_drm_fd(handle());
 }
 
 QW_END_NAMESPACE
