@@ -6,6 +6,7 @@
 #include <qwglobal.h>
 
 struct pixman_region32;
+struct wlr_texture;
 struct wlr_dmabuf_attributes;
 
 QW_BEGIN_NAMESPACE
@@ -18,16 +19,19 @@ class QW_EXPORT QWTexture : public QWObject
 {
     QW_DECLARE_PRIVATE(QWTexture)
 public:
+    explicit QWTexture(wlr_texture *handle);
+    ~QWTexture();
+
+    inline wlr_texture *handle() const {
+        return QWObject::handle<wlr_texture>();
+    }
+
     static QWTexture *fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t stride,
                                  uint32_t width, uint32_t height, const void *data);
     static QWTexture *fromDmabuf(QWRenderer *renderer, wlr_dmabuf_attributes *attribs);
     static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
 
-    ~QWTexture();
     bool update(QWBuffer *buffer, pixman_region32 *damage);
-
-private:
-    QWTexture(void *handle);
 };
 
 QW_END_NAMESPACE

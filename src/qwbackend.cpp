@@ -16,21 +16,17 @@ public:
     QWBackendPrivate(void *handle, QWBackend *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&this->handle()->events.new_input, this, &QWBackendPrivate::on_new_input);
-        sc.connect(&this->handle()->events.new_input, this, &QWBackendPrivate::on_new_output);
-        sc.connect(&this->handle()->events.destroy, &sc, &QWSignalConnector::invalidate);
+        sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_input);
+        sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_output);
+        sc.connect(&qq->handle()->events.destroy, &sc, &QWSignalConnector::invalidate);
     }
     ~QWBackendPrivate() {
-        Q_ASSERT(handle());
-        wlr_backend_destroy(handle());
+        Q_ASSERT(q_func()->handle());
+        wlr_backend_destroy(q_func()->handle());
     }
 
     void on_new_input(void *data);
     void on_new_output(void *data);
-
-    inline wlr_backend *handle() const {
-        return q_func()->handle<wlr_backend>();
-    }
 
     QW_DECLARE_PUBLIC(QWBackend)
     QWSignalConnector sc;
@@ -61,7 +57,7 @@ QWBackend *QWBackend::autoCreate(wl_display *display, QObject *parent)
     return new QWBackend(handle, parent);
 }
 
-QWBackend::QWBackend(void *handle, QObject *parent)
+QWBackend::QWBackend(wlr_backend *handle, QObject *parent)
     : QObject(parent)
     , QWObject(*new QWBackendPrivate(handle, this))
 {
@@ -76,19 +72,19 @@ QWBackend::~QWBackend()
 clockid_t QWBackend::presentationClock() const
 {
     Q_D(const QWBackend);
-    return wlr_backend_get_presentation_clock(d->handle());
+    return wlr_backend_get_presentation_clock(handle());
 }
 
 int QWBackend::drmFd() const
 {
     Q_D(const QWBackend);
-    return wlr_backend_get_drm_fd(d->handle());
+    return wlr_backend_get_drm_fd(handle());
 }
 
 bool QWBackend::start()
 {
     Q_D(QWBackend);
-    return wlr_backend_start(d->handle());
+    return wlr_backend_start(handle());
 }
 
 QW_END_NAMESPACE

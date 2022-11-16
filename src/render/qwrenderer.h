@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QMatrix3x3>
 
+struct wlr_renderer;
 struct wlr_box;
 struct wlr_fbox;
 struct wlr_drm_format_set;
@@ -22,8 +23,14 @@ class QW_EXPORT QWRenderer : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWRenderer)
 public:
-    static QWRenderer *autoCreate(QWBackend *backend);
+    explicit QWRenderer(wlr_renderer *handle, QObject *parent = nullptr);
     ~QWRenderer();
+
+    static QWRenderer *autoCreate(QWBackend *backend);
+
+    inline wlr_renderer *handle() const {
+        return QWObject::handle<wlr_renderer>();
+    }
 
     void begin(uint32_t width, uint32_t height);
     void begin(QWBuffer *buffer);
@@ -49,9 +56,6 @@ public:
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
     int getDrmFd() const;
-
-private:
-    explicit QWRenderer(void *handle, QObject *parent = nullptr);
 };
 
 QW_END_NAMESPACE

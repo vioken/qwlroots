@@ -6,6 +6,7 @@
 #include <qwglobal.h>
 #include <QObject>
 
+struct wlr_buffer;
 struct wlr_dmabuf_attributes;
 struct wlr_shm_attributes;
 struct wlr_client_buffer;
@@ -17,14 +18,18 @@ QW_BEGIN_NAMESPACE
 
 class QWRenderer;
 class QWBufferPrivate;
-class QW_EXPORT QWBuffer : public QWObject, public QObject
+class QW_EXPORT QWBuffer : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWBuffer)
 public:
+    explicit QWBuffer(wlr_buffer *handle, QObject *parent = nullptr);
+
     static QWBuffer *fromResource(wl_resource *resource, QObject *parent = nullptr);
     static bool isBuffer(wl_resource *resource);
 
-    explicit QWBuffer(void *handle, QObject *parent = nullptr);
+    inline wlr_buffer *handle() const {
+        return QWObject::handle<wlr_buffer>();
+    }
 
     void drop();
     void lock();
