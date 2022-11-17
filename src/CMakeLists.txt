@@ -26,6 +26,7 @@ set(SOURCES
     qwbackend.cpp
     render/qwrenderer.cpp
     render/qwtexture.cpp
+    render/qwallocator.cpp
     types/qwbuffer.cpp
     util/qwsignalconnector.cpp
 )
@@ -35,6 +36,7 @@ set(HEADERS
     qwbackend.h
     render/qwrenderer.h
     render/qwtexture.h
+    render/qwallocator.h
     types/qwbuffer.h
     util/qwsignalconnector.h
 )
