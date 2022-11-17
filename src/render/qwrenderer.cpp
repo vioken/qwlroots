@@ -5,6 +5,7 @@
 #include "qwbackend.h"
 #include "qwtexture.h"
 #include "types/qwbuffer.h"
+#include "util/qwsignalconnector.h"
 
 #include <QColor>
 #include <QRect>
@@ -24,25 +25,36 @@ public:
     QWRendererPrivate(void *handle, QWRenderer *qq)
         : QWObjectPrivate(handle, qq)
     {
-
+        sc.connect(&q_func()->handle()->events.destroy, this, &QWRendererPrivate::on_destroy);
     }
     ~QWRendererPrivate() {
-        // m_handle destory follow the wlr_backend
+        sc.invalidate();
+        if (m_handle)
+            wlr_renderer_destroy(q_func()->handle());
     }
 
+    void on_destroy(void *);
+
     QW_DECLARE_PUBLIC(QWRenderer)
+    QWSignalConnector sc;
 };
+
+void QWRendererPrivate::on_destroy(void *)
+{
+    m_handle = nullptr;
+    q_func()->deleteLater();
+}
 
 QWRenderer *QWRenderer::autoCreate(QWBackend *backend)
 {
     auto handle = wlr_renderer_autocreate(backend->handle());
     if (!handle)
         return nullptr;
-    return new QWRenderer(handle, backend);
+    return new QWRenderer(handle);
 }
 
-QWRenderer::QWRenderer(wlr_renderer *handle, QObject *parent)
-    : QObject(parent)
+QWRenderer::QWRenderer(wlr_renderer *handle)
+    : QObject(nullptr)
     , QWObject(*new QWRendererPrivate(handle, this))
 {
 

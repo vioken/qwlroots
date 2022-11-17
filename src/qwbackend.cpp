@@ -18,20 +18,20 @@ public:
     {
         sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_input);
         sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_output);
-        sc.connect(&qq->handle()->events.destroy, &sc, &QWSignalConnector::invalidate);
     }
     ~QWBackendPrivate() {
-        Q_ASSERT(q_func()->handle());
-        wlr_backend_destroy(q_func()->handle());
+        sc.invalidate();
+        if (m_handle)
+            wlr_backend_destroy(q_func()->handle());
     }
 
     void on_new_input(void *data);
     void on_new_output(void *data);
+    void on_destroy(void *);
 
     QW_DECLARE_PUBLIC(QWBackend)
     QWSignalConnector sc;
 };
-
 
 void QWBackendPrivate::on_new_input(void *data)
 {
@@ -47,6 +47,12 @@ void QWBackendPrivate::on_new_output(void *data)
     auto output = reinterpret_cast<wlr_output*>(data);
     Q_ASSERT(output);
     Q_EMIT q->newOutput(output);
+}
+
+void QWBackendPrivate::on_destroy(void *)
+{
+    m_handle = nullptr;
+    q_func()->deleteLater();
 }
 
 QWBackend *QWBackend::autoCreate(wl_display *display, QObject *parent)

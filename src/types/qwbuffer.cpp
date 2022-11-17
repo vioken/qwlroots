@@ -3,6 +3,7 @@
 
 #include "qwbuffer.h"
 #include "render/qwrenderer.h"
+#include "util/qwsignalconnector.h"
 
 extern "C" {
 #include <wlr/types/wlr_buffer.h>
@@ -16,21 +17,39 @@ public:
     QWBufferPrivate(void *handle, QWBuffer *qq)
         : QWObjectPrivate(handle, qq)
     {
-
+        sc.connect(&q_func()->handle()->events.destroy, this, &QWBufferPrivate::on_destroy);
+        sc.connect(&q_func()->handle()->events.release, this, &QWBufferPrivate::on_release);
     }
     ~QWBufferPrivate() {
-        wlr_buffer_drop(q_func()->handle());
+        sc.invalidate();
+        if (m_handle)
+            wlr_buffer_drop(q_func()->handle());
     }
 
+    void on_destroy(void *);
+    void on_release(void *);
+
     QW_DECLARE_PUBLIC(QWBuffer)
+    QWSignalConnector sc;
 };
 
-QWBuffer *QWBuffer::fromResource(wl_resource *resource, QObject *parent)
+void QWBufferPrivate::on_destroy(void *)
+{
+    m_handle = nullptr;
+    q_func()->deleteLater();
+}
+
+void QWBufferPrivate::on_release(void *)
+{
+    Q_EMIT q_func()->release();
+}
+
+QWBuffer *QWBuffer::fromResource(wl_resource *resource)
 {
     auto buffer = wlr_buffer_from_resource(resource);
     if (!buffer)
         return nullptr;
-    return new QWBuffer(buffer, parent);
+    return new QWBuffer(buffer);
 }
 
 bool QWBuffer::isBuffer(wl_resource *resource)
@@ -38,9 +57,9 @@ bool QWBuffer::isBuffer(wl_resource *resource)
     return wlr_resource_is_buffer(resource);
 }
 
-QWBuffer::QWBuffer(wlr_buffer *handle, QObject *parent)
+QWBuffer::QWBuffer(wlr_buffer *handle)
     : QWObject(*new QWBufferPrivate(handle, this))
-    , QObject(parent)
+    , QObject(nullptr)
 {
 
 }

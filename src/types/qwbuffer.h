@@ -10,7 +10,6 @@ struct wlr_buffer;
 struct wlr_dmabuf_attributes;
 struct wlr_shm_attributes;
 struct wlr_client_buffer;
-struct wlr_buffer;
 struct wl_resource;
 struct pixman_region32;
 
@@ -22,9 +21,9 @@ class QW_EXPORT QWBuffer : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWBuffer)
 public:
-    explicit QWBuffer(wlr_buffer *handle, QObject *parent = nullptr);
+    explicit QWBuffer(wlr_buffer *handle);
 
-    static QWBuffer *fromResource(wl_resource *resource, QObject *parent = nullptr);
+    static QWBuffer *fromResource(wl_resource *resource);
     static bool isBuffer(wl_resource *resource);
 
     inline wlr_buffer *handle() const {
@@ -46,6 +45,9 @@ public:
 
     bool clientBufferApplyDamage(wlr_client_buffer *buffer, wlr_buffer *next,
                                  pixman_region32 *damage);
+
+Q_SIGNALS:
+    void release();
 };
 
 QW_END_NAMESPACE

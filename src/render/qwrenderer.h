@@ -23,7 +23,7 @@ class QW_EXPORT QWRenderer : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWRenderer)
 public:
-    explicit QWRenderer(wlr_renderer *handle, QObject *parent = nullptr);
+    explicit QWRenderer(wlr_renderer *handle);
     ~QWRenderer();
 
     static QWRenderer *autoCreate(QWBackend *backend);
