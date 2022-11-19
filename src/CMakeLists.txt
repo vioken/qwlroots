@@ -28,6 +28,7 @@ set(SOURCES
     render/qwtexture.cpp
     render/qwallocator.cpp
     types/qwbuffer.cpp
+    types/qwcompositor.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -38,6 +39,7 @@ set(HEADERS
     render/qwtexture.h
     render/qwallocator.h
     types/qwbuffer.h
+    types/qwcompositor.h
     util/qwsignalconnector.h
 )
 
