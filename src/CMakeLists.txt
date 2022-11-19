@@ -29,6 +29,7 @@ set(SOURCES
     render/qwallocator.cpp
     types/qwbuffer.cpp
     types/qwcompositor.cpp
+    types/qwsubcompositor.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -40,6 +41,7 @@ set(HEADERS
     render/qwallocator.h
     types/qwbuffer.h
     types/qwcompositor.h
+    types/qwsubcompositor.h
     util/qwsignalconnector.h
 )
 
