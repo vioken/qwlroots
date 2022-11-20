@@ -68,3 +68,5 @@ QWABC::QWABC(wlr_ABC *handle)
 {
 
 }
+
+QW_END_NAMESPACE

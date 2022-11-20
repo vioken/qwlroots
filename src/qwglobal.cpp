@@ -5,7 +5,7 @@
 
 QW_BEGIN_NAMESPACE
 
-QWObject::QWObject(QWObjectPrivate &dd, QWObject *)
+QWObject::QWObject(QWObjectPrivate &dd)
     : qw_d_ptr(&dd)
 {
 
