@@ -30,6 +30,7 @@ set(SOURCES
     types/qwbuffer.cpp
     types/qwcompositor.cpp
     types/qwsubcompositor.cpp
+    types/qwdatadevice.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -42,6 +43,7 @@ set(HEADERS
     types/qwbuffer.h
     types/qwcompositor.h
     types/qwsubcompositor.h
+    types/qwdatadevice.h
     util/qwsignalconnector.h
 )
 
