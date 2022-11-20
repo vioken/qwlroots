@@ -55,7 +55,7 @@ public:
     virtual ~QWObject();
 
 protected:
-    QWObject(QWObjectPrivate &dd, QWObject *parent = nullptr);
+    QWObject(QWObjectPrivate &dd);
     QScopedPointer<QWObjectPrivate> qw_d_ptr;
 
     Q_DISABLE_COPY(QWObject)

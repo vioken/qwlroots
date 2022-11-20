@@ -32,6 +32,7 @@ set(SOURCES
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
     types/qwoutputlayout.cpp
+    types/qwscene.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -46,6 +47,7 @@ set(HEADERS
     types/qwsubcompositor.h
     types/qwdatadevice.h
     types/qwoutputlayout.h
+    types/qwscene.h
     util/qwsignalconnector.h
 )
 
