@@ -21,6 +21,9 @@ add_definitions(-DWLR_VERSION_STRING="${WLROOTS_VERSION}"
 
 add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
 
+include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
+ws_generate(server stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
+
 set(SOURCES
     qwglobal.cpp
     qwbackend.cpp
@@ -33,6 +36,7 @@ set(SOURCES
     types/qwdatadevice.cpp
     types/qwoutputlayout.cpp
     types/qwscene.cpp
+    types/qwxdgshell.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -48,6 +52,7 @@ set(HEADERS
     types/qwdatadevice.h
     types/qwoutputlayout.h
     types/qwscene.h
+    types/qwxdgshell.h
     util/qwsignalconnector.h
 )
 

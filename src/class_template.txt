@@ -42,7 +42,7 @@ public:
     QWABCPrivate(void *handle, QWABC *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWABCPrivate::on_destroy);
+        sc.connect(&qq->handle()->events.destroy, this, &QWABCPrivate::on_destroy);
     }
     ~QWABCPrivate() {
         sc.invalidate();
