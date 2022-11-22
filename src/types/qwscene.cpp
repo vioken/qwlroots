@@ -52,8 +52,8 @@ QWSceneNode::QWSceneNode(wlr_scene_node *handle)
 }
 
 QWSceneNode::QWSceneNode(QWSceneNodePrivate &dd)
-    : QWObject(dd)
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(dd)
 {
 
 }
@@ -103,9 +103,10 @@ void QWSceneNode::forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void 
     wlr_scene_node_for_each_buffer(handle(), iterator, userData);
 }
 
-wlr_scene_node *QWSceneNode::at(const QPointF &lpos, QPointF &npos) const
+wlr_scene_node *QWSceneNode::at(const QPointF &lpos, QPointF *npos) const
 {
-    return wlr_scene_node_at(handle(), lpos.x(), lpos.y(), &npos.rx(), &npos.ry());
+    return wlr_scene_node_at(handle(), lpos.x(), lpos.y(),
+                             npos ? &npos->rx() : nullptr, npos ? &npos->ry() : nullptr);
 }
 
 QWSceneTree::QWSceneTree(wlr_scene_tree *handle)

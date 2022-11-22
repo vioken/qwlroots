@@ -58,7 +58,7 @@ public:
 
     bool coords(QPoint &pos) const;
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *userData) const;
-    wlr_scene_node *at(const QPointF &lpos, QPointF &npos) const;
+    wlr_scene_node *at(const QPointF &lpos, QPointF *npos = nullptr) const;
 
 protected:
     QWSceneNode(QWSceneNodePrivate &dd);

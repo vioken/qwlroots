@@ -45,8 +45,8 @@ void QWXdgShellPrivate::on_new_surface(void *data)
 }
 
 QWXdgShell::QWXdgShell(wlr_xdg_shell *handle)
-    : QWObject(*new QWXdgShellPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWXdgShellPrivate(handle, this))
 {
 
 }
