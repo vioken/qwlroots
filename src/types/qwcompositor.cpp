@@ -43,8 +43,8 @@ void QWCompositorPrivate::on_new_surface(void *data)
 }
 
 QWCompositor::QWCompositor(wlr_compositor *handle)
-    : QWObject(*new QWCompositorPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWCompositorPrivate(handle, this))
 {
 
 }

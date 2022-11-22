@@ -58,8 +58,8 @@ bool QWBuffer::isBuffer(wl_resource *resource)
 }
 
 QWBuffer::QWBuffer(wlr_buffer *handle)
-    : QWObject(*new QWBufferPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWBufferPrivate(handle, this))
 {
 
 }

@@ -55,8 +55,8 @@ void QWOutputLayoutPrivate::on_change(void *data)
 }
 
 QWOutputLayout::QWOutputLayout(wlr_output_layout *handle)
-    : QWObject(*new QWOutputLayoutPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWOutputLayoutPrivate(handle, this))
 {
 
 }

@@ -35,8 +35,8 @@ void QWDataDeviceManagerPrivate::on_destroy(void *)
 }
 
 QWDataDeviceManager::QWDataDeviceManager(wlr_data_device_manager *handle)
-    : QWObject(*new QWDataDeviceManagerPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWDataDeviceManagerPrivate(handle, this))
 {
 
 }
