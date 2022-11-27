@@ -63,8 +63,8 @@ void QWABCPrivate::on_destroy(void *)
 }
 
 QWABC::QWABC(wlr_ABC *handle)
-    : QWObject(*new QWABCPrivate(handle, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWABCPrivate(handle, this))
 {
 
 }
