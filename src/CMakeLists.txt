@@ -39,6 +39,7 @@ set(SOURCES
     types/qwxdgshell.cpp
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
+    types/qwoutput.cpp
     util/qwsignalconnector.cpp
 )
 
@@ -57,6 +58,7 @@ set(HEADERS
     types/qwxdgshell.h
     types/qwcursor.h
     types/qwxcursormanager.h
+    types/qwoutput.h
     util/qwsignalconnector.h
 )
 
