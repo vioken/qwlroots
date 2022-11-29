@@ -30,6 +30,7 @@ class QWBuffer;
 class QWOutputPrivate;
 class QW_EXPORT QWOutput : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutput)
 public:
     explicit QWOutput(wlr_output *handle);

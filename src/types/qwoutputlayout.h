@@ -16,6 +16,7 @@ class QWRenderer;
 class QWOutputLayoutPrivate;
 class QW_EXPORT QWOutputLayout : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutputLayout)
 public:
     explicit QWOutputLayout(wlr_output_layout *handle);

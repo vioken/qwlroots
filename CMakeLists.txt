@@ -46,3 +46,4 @@ macro (setup_package_version_variables _packageName)
 endmacro()
 
 add_subdirectory(src)
+add_subdirectory(examples)

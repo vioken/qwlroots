@@ -14,11 +14,11 @@ QW_BEGIN_NAMESPACE
 class QWCompositorPrivate : public QWObjectPrivate
 {
 public:
-    QWCompositorPrivate(void *handle, QWCompositor *qq)
+    QWCompositorPrivate(wlr_compositor *handle, QWCompositor *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWCompositorPrivate::on_destroy);
-        sc.connect(&q_func()->handle()->events.new_surface, this, &QWCompositorPrivate::on_new_surface);
+        sc.connect(&handle->events.destroy, this, &QWCompositorPrivate::on_destroy);
+        sc.connect(&handle->events.new_surface, this, &QWCompositorPrivate::on_new_surface);
     }
     ~QWCompositorPrivate() {
         sc.invalidate();

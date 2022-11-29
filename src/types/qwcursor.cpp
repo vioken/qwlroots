@@ -18,31 +18,31 @@ QW_BEGIN_NAMESPACE
 class QWCursorPrivate : public QWObjectPrivate
 {
 public:
-    QWCursorPrivate(void *handle, QWCursor *qq)
+    QWCursorPrivate(wlr_cursor *handle, QWCursor *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.motion, this, &QWCursorPrivate::on_motion);
-        sc.connect(&qq->handle()->events.motion_absolute, this, &QWCursorPrivate::on_motion_absolute);
-        sc.connect(&qq->handle()->events.button, this, &QWCursorPrivate::on_button);
-        sc.connect(&qq->handle()->events.axis, this, &QWCursorPrivate::on_axis);
-        sc.connect(&qq->handle()->events.frame, this, &QWCursorPrivate::on_frame);
-        sc.connect(&qq->handle()->events.swipe_begin, this, &QWCursorPrivate::on_swipe_begin);
-        sc.connect(&qq->handle()->events.swipe_update, this, &QWCursorPrivate::on_swipe_update);
-        sc.connect(&qq->handle()->events.swipe_end, this, &QWCursorPrivate::on_swipe_end);
-        sc.connect(&qq->handle()->events.pinch_begin, this, &QWCursorPrivate::on_pinch_begin);
-        sc.connect(&qq->handle()->events.pinch_update, this, &QWCursorPrivate::on_pinch_update);
-        sc.connect(&qq->handle()->events.pinch_end, this, &QWCursorPrivate::on_pinch_end);
-        sc.connect(&qq->handle()->events.hold_begin, this, &QWCursorPrivate::on_hold_begin);
-        sc.connect(&qq->handle()->events.hold_end, this, &QWCursorPrivate::on_hold_end);
-        sc.connect(&qq->handle()->events.touch_up, this, &QWCursorPrivate::on_touch_up);
-        sc.connect(&qq->handle()->events.touch_down, this, &QWCursorPrivate::on_touch_down);
-        sc.connect(&qq->handle()->events.touch_motion, this, &QWCursorPrivate::on_touch_motion);
-        sc.connect(&qq->handle()->events.touch_cancel, this, &QWCursorPrivate::on_touch_cancel);
-        sc.connect(&qq->handle()->events.touch_frame, this, &QWCursorPrivate::on_touch_frame);
-        sc.connect(&qq->handle()->events.tablet_tool_axis, this, &QWCursorPrivate::on_tablet_tool_axis);
-        sc.connect(&qq->handle()->events.tablet_tool_proximity, this, &QWCursorPrivate::on_tablet_tool_proximity);
-        sc.connect(&qq->handle()->events.tablet_tool_tip, this, &QWCursorPrivate::on_tablet_tool_tip);
-        sc.connect(&qq->handle()->events.tablet_tool_button, this, &QWCursorPrivate::on_tablet_tool_button);
+        sc.connect(&handle->events.motion, this, &QWCursorPrivate::on_motion);
+        sc.connect(&handle->events.motion_absolute, this, &QWCursorPrivate::on_motion_absolute);
+        sc.connect(&handle->events.button, this, &QWCursorPrivate::on_button);
+        sc.connect(&handle->events.axis, this, &QWCursorPrivate::on_axis);
+        sc.connect(&handle->events.frame, this, &QWCursorPrivate::on_frame);
+        sc.connect(&handle->events.swipe_begin, this, &QWCursorPrivate::on_swipe_begin);
+        sc.connect(&handle->events.swipe_update, this, &QWCursorPrivate::on_swipe_update);
+        sc.connect(&handle->events.swipe_end, this, &QWCursorPrivate::on_swipe_end);
+        sc.connect(&handle->events.pinch_begin, this, &QWCursorPrivate::on_pinch_begin);
+        sc.connect(&handle->events.pinch_update, this, &QWCursorPrivate::on_pinch_update);
+        sc.connect(&handle->events.pinch_end, this, &QWCursorPrivate::on_pinch_end);
+        sc.connect(&handle->events.hold_begin, this, &QWCursorPrivate::on_hold_begin);
+        sc.connect(&handle->events.hold_end, this, &QWCursorPrivate::on_hold_end);
+        sc.connect(&handle->events.touch_up, this, &QWCursorPrivate::on_touch_up);
+        sc.connect(&handle->events.touch_down, this, &QWCursorPrivate::on_touch_down);
+        sc.connect(&handle->events.touch_motion, this, &QWCursorPrivate::on_touch_motion);
+        sc.connect(&handle->events.touch_cancel, this, &QWCursorPrivate::on_touch_cancel);
+        sc.connect(&handle->events.touch_frame, this, &QWCursorPrivate::on_touch_frame);
+        sc.connect(&handle->events.tablet_tool_axis, this, &QWCursorPrivate::on_tablet_tool_axis);
+        sc.connect(&handle->events.tablet_tool_proximity, this, &QWCursorPrivate::on_tablet_tool_proximity);
+        sc.connect(&handle->events.tablet_tool_tip, this, &QWCursorPrivate::on_tablet_tool_tip);
+        sc.connect(&handle->events.tablet_tool_button, this, &QWCursorPrivate::on_tablet_tool_button);
     }
     ~QWCursorPrivate() {
         sc.invalidate();
@@ -282,6 +282,11 @@ void QWCursor::mapInputToRegion(wlr_input_device *dev, const QRect &box)
     };
 
     wlr_cursor_map_input_to_region(handle(), dev, &b);
+}
+
+QPointF QWCursor::position() const
+{
+    return QPointF(handle()->x, handle()->y);
 }
 
 QW_END_NAMESPACE

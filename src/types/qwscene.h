@@ -37,6 +37,7 @@ QT_END_NAMESPACE
 
 QW_BEGIN_NAMESPACE
 
+class QWXdgSurface;
 class QWSceneNodePrivate;
 class QW_EXPORT QWSceneNode : public QObject, public QWObject
 {
@@ -76,7 +77,7 @@ public:
     static wlr_scene_tree *fromNode(wlr_scene_node *node);
     static QWSceneTree *create(QWSceneTree *parent);
     static QWSceneTree *subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface *surface);
-    static QWSceneTree *xdgSurfaceCreate(QWSceneTree *parent, wlr_xdg_surface *xdgSurface);
+    static QWSceneTree *xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface);
 
 protected:
     QWSceneTree(QWSceneNodePrivate &dd);
@@ -100,6 +101,7 @@ class QWBuffer;
 class QWSceneBufferPrivate;
 class QW_EXPORT QWSceneBuffer : public QWSceneNode
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneBuffer)
 public:
     explicit QWSceneBuffer(wlr_scene_buffer *handle);
@@ -142,6 +144,7 @@ public:
     void setColor(const QColor &color);
 };
 
+class QWOutput;
 class QWSceneOutputPrivate;
 class QW_EXPORT QWSceneOutput : public QObject, public QWObject
 {
@@ -153,9 +156,8 @@ public:
         return QWObject::handle<wlr_scene_output>();
     }
 
-    // TODO: make wlr_output to QWOutput
-    static QWSceneOutput *create(QWScene *scene, wlr_output *output);
-    static wlr_scene_output *get(QWScene *scene, wlr_output *output);
+    static QWSceneOutput *create(QWScene *scene, QWOutput *output);
+    static wlr_scene_output *get(QWScene *scene, QWOutput *output);
 
     void commit();
     void sendFrameDone(timespec *now);

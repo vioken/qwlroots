@@ -14,11 +14,11 @@ QW_BEGIN_NAMESPACE
 class QWBufferPrivate : public QWObjectPrivate
 {
 public:
-    QWBufferPrivate(void *handle, QWBuffer *qq)
+    QWBufferPrivate(wlr_buffer *handle, QWBuffer *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWBufferPrivate::on_destroy);
-        sc.connect(&q_func()->handle()->events.release, this, &QWBufferPrivate::on_release);
+        sc.connect(&handle->events.destroy, this, &QWBufferPrivate::on_destroy);
+        sc.connect(&handle->events.release, this, &QWBufferPrivate::on_release);
     }
     ~QWBufferPrivate() {
         sc.invalidate();

@@ -39,10 +39,10 @@ QW_BEGIN_NAMESPACE
 class QWABCPrivate : public QWObjectPrivate
 {
 public:
-    QWABCPrivate(void *handle, QWABC *qq)
+    QWABCPrivate(wlr_ABC *handle, QWABC *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.destroy, this, &QWABCPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWABCPrivate::on_destroy);
     }
     ~QWABCPrivate() {
         sc.invalidate();

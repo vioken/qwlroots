@@ -22,10 +22,10 @@ QW_BEGIN_NAMESPACE
 class QWRendererPrivate : public QWObjectPrivate
 {
 public:
-    QWRendererPrivate(void *handle, QWRenderer *qq)
+    QWRendererPrivate(wlr_renderer *handle, QWRenderer *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWRendererPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWRendererPrivate::on_destroy);
     }
     ~QWRendererPrivate() {
         sc.invalidate();

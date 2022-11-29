@@ -19,20 +19,20 @@ QW_BEGIN_NAMESPACE
 class QWOutputPrivate : public QWObjectPrivate
 {
 public:
-    QWOutputPrivate(void *handle, QWOutput *qq)
+    QWOutputPrivate(wlr_output *handle, QWOutput *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.frame, this, &QWOutputPrivate::on_frame);
-        sc.connect(&qq->handle()->events.damage, this, &QWOutputPrivate::on_damage);
-        sc.connect(&qq->handle()->events.needs_frame, this, &QWOutputPrivate::on_needs_frame);
-        sc.connect(&qq->handle()->events.precommit, this, &QWOutputPrivate::on_precommit);
-        sc.connect(&qq->handle()->events.commit, this, &QWOutputPrivate::on_commit);
-        sc.connect(&qq->handle()->events.present, this, &QWOutputPrivate::on_present);
-        sc.connect(&qq->handle()->events.bind, this, &QWOutputPrivate::on_bind);
-        sc.connect(&qq->handle()->events.enable, this, &QWOutputPrivate::on_enable);
-        sc.connect(&qq->handle()->events.mode, this, &QWOutputPrivate::on_mode);
-        sc.connect(&qq->handle()->events.description, this, &QWOutputPrivate::on_description);
-        sc.connect(&qq->handle()->events.destroy, this, &QWOutputPrivate::on_destroy);
+        sc.connect(&handle->events.frame, this, &QWOutputPrivate::on_frame);
+        sc.connect(&handle->events.damage, this, &QWOutputPrivate::on_damage);
+        sc.connect(&handle->events.needs_frame, this, &QWOutputPrivate::on_needs_frame);
+        sc.connect(&handle->events.precommit, this, &QWOutputPrivate::on_precommit);
+        sc.connect(&handle->events.commit, this, &QWOutputPrivate::on_commit);
+        sc.connect(&handle->events.present, this, &QWOutputPrivate::on_present);
+        sc.connect(&handle->events.bind, this, &QWOutputPrivate::on_bind);
+        sc.connect(&handle->events.enable, this, &QWOutputPrivate::on_enable);
+        sc.connect(&handle->events.mode, this, &QWOutputPrivate::on_mode);
+        sc.connect(&handle->events.description, this, &QWOutputPrivate::on_description);
+        sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
     }
     ~QWOutputPrivate() {
         sc.invalidate();

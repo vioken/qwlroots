@@ -16,6 +16,7 @@ QW_BEGIN_NAMESPACE
 class QWBackendPrivate;
 class QW_EXPORT QWBackend : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWBackend)
 public:
     explicit QWBackend(wlr_backend *handle, QObject *parent = nullptr);

@@ -26,6 +26,7 @@ QW_BEGIN_NAMESPACE
 class QWXdgShellPrivate;
 class QW_EXPORT QWXdgShell : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgShell)
 public:
     explicit QWXdgShell(wlr_xdg_shell *handle);
@@ -43,6 +44,7 @@ Q_SIGNALS:
 class QWXdgSurfacePrivate;
 class QW_EXPORT QWXdgSurface : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgSurface)
 public:
     explicit QWXdgSurface(wlr_xdg_surface *handle);
@@ -78,6 +80,7 @@ protected:
 class QWXdgPopupPrivate;
 class QW_EXPORT QWXdgPopup : public QWXdgSurface
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgPopup)
 public:
     explicit QWXdgPopup(wlr_xdg_popup *handle);
@@ -98,6 +101,7 @@ Q_SIGNALS:
 class QWXdgToplevelPrivate;
 class QW_EXPORT QWXdgToplevel : public QWXdgSurface
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgToplevel)
 public:
     explicit QWXdgToplevel(wlr_xdg_toplevel *handle);

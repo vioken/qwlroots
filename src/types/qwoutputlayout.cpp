@@ -17,12 +17,12 @@ QW_BEGIN_NAMESPACE
 class QWOutputLayoutPrivate : public QWObjectPrivate
 {
 public:
-    QWOutputLayoutPrivate(void *handle, QWOutputLayout *qq)
+    QWOutputLayoutPrivate(wlr_output_layout *handle, QWOutputLayout *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWOutputLayoutPrivate::on_destroy);
-        sc.connect(&q_func()->handle()->events.add, this, &QWOutputLayoutPrivate::on_add);
-        sc.connect(&q_func()->handle()->events.change, this, &QWOutputLayoutPrivate::on_change);
+        sc.connect(&handle->events.destroy, this, &QWOutputLayoutPrivate::on_destroy);
+        sc.connect(&handle->events.add, this, &QWOutputLayoutPrivate::on_add);
+        sc.connect(&handle->events.change, this, &QWOutputLayoutPrivate::on_change);
     }
     ~QWOutputLayoutPrivate() {
         sc.invalidate();
