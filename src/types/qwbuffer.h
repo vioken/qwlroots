@@ -19,6 +19,7 @@ class QWRenderer;
 class QWBufferPrivate;
 class QW_EXPORT QWBuffer : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWBuffer)
 public:
     explicit QWBuffer(wlr_buffer *handle);

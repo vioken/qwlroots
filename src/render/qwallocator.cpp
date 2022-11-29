@@ -15,10 +15,10 @@ QW_BEGIN_NAMESPACE
 class QWAllocatorPrivate : public QWObjectPrivate
 {
 public:
-    QWAllocatorPrivate(void *handle, QWAllocator *qq)
+    QWAllocatorPrivate(wlr_allocator *handle, QWAllocator *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWAllocatorPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWAllocatorPrivate::on_destroy);
     }
     ~QWAllocatorPrivate() {
         sc.invalidate();

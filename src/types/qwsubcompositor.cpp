@@ -13,10 +13,10 @@ QW_BEGIN_NAMESPACE
 class QWSubcompositorPrivate : public QWObjectPrivate
 {
 public:
-    QWSubcompositorPrivate(void *handle, QWSubcompositor *qq)
+    QWSubcompositorPrivate(wlr_subcompositor *handle, QWSubcompositor *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWSubcompositorPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWSubcompositorPrivate::on_destroy);
     }
     ~QWSubcompositorPrivate() {
         sc.invalidate();

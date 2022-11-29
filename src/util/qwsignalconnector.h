@@ -26,12 +26,12 @@ public:
     inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)()) {
         return connect(signal, object, reinterpret_cast<SlotFun0>(*(void**)(&slot)));
     }
-    template <typename T>
-    inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)(void*)) {
+    template <typename T, typename T1>
+    inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)(T1*)) {
         return connect(signal, object, reinterpret_cast<SlotFun1>(*(void**)(&slot)));
     }
-    template <typename T>
-    inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)(void*, void*), void *data) {
+    template <typename T, typename T1, typename T2, typename T3>
+    inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)(T1*, T2*), T3 *data) {
         return connect(signal, object, reinterpret_cast<SlotFun2>(*(void**)(&slot)), data);
     }
     void disconnect(Listener *l);

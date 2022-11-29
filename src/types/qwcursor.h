@@ -38,6 +38,7 @@ class QWOutputLayout;
 class QWCursorPrivate;
 class QW_EXPORT QWCursor : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWCursor)
 public:
     explicit QWCursor(wlr_cursor *handle);
@@ -64,6 +65,7 @@ public:
     void mapInputToRegion(wlr_input_device *dev, const QRect &box);
 
     QPointF absoluteToLayoutCoords(wlr_input_device *dev, const QPointF &pos) const;
+    QPointF position() const;
 
 Q_SIGNALS:
     void motion(wlr_pointer_motion_event *event);

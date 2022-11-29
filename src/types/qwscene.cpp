@@ -4,6 +4,8 @@
 #include "qwscene.h"
 #include "qwoutputlayout.h"
 #include "qwbuffer.h"
+#include "qwxdgshell.h"
+#include "qwoutput.h"
 #include "util/qwsignalconnector.h"
 
 #include <QColor>
@@ -22,10 +24,10 @@ QW_BEGIN_NAMESPACE
 class QWSceneNodePrivate : public QWObjectPrivate
 {
 public:
-    QWSceneNodePrivate(void *handle, QWSceneNode *qq)
+    QWSceneNodePrivate(wlr_scene_node *handle, QWSceneNode *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.destroy, this, &QWSceneNodePrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWSceneNodePrivate::on_destroy);
     }
     ~QWSceneNodePrivate() {
         sc.invalidate();
@@ -144,9 +146,9 @@ QWSceneTree *QWSceneTree::subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface 
     return new QWSceneTree(handle);
 }
 
-QWSceneTree *QWSceneTree::xdgSurfaceCreate(QWSceneTree *parent, wlr_xdg_surface *xdgSurface)
+QWSceneTree *QWSceneTree::xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface)
 {
-    auto handle = wlr_scene_xdg_surface_create(parent->handle(), xdgSurface);
+    auto handle = wlr_scene_xdg_surface_create(parent->handle(), xdgSurface->handle());
     if (!handle)
         return nullptr;
     return new QWSceneTree(handle);
@@ -188,13 +190,13 @@ bool QWScene::attachOutputLayout(QWOutputLayout *outputLayout)
 class QWSceneBufferPrivate : public QWSceneNodePrivate
 {
 public:
-    QWSceneBufferPrivate(void *handle, QWSceneBuffer *qq)
-        : QWSceneNodePrivate(handle, qq)
+    QWSceneBufferPrivate(wlr_scene_buffer *handle, QWSceneBuffer *qq)
+        : QWSceneNodePrivate(&handle->node, qq)
     {
-        sc.connect(&qq->handle()->events.output_enter, this, &QWSceneBufferPrivate::on_output_enter);
-        sc.connect(&qq->handle()->events.output_leave, this, &QWSceneBufferPrivate::on_output_leave);
-        sc.connect(&qq->handle()->events.output_present, this, &QWSceneBufferPrivate::on_output_present);
-        sc.connect(&qq->handle()->events.frame_done, this, &QWSceneBufferPrivate::on_frame_done);
+        sc.connect(&handle->events.output_enter, this, &QWSceneBufferPrivate::on_output_enter);
+        sc.connect(&handle->events.output_leave, this, &QWSceneBufferPrivate::on_output_leave);
+        sc.connect(&handle->events.output_present, this, &QWSceneBufferPrivate::on_output_present);
+        sc.connect(&handle->events.frame_done, this, &QWSceneBufferPrivate::on_frame_done);
     }
 
     void on_output_enter(void *data);
@@ -226,7 +228,7 @@ void QWSceneBufferPrivate::on_frame_done(void *data)
 }
 
 QWSceneBuffer::QWSceneBuffer(wlr_scene_buffer *handle)
-    : QWSceneNode(*new QWSceneBufferPrivate(&handle->node, this))
+    : QWSceneNode(*new QWSceneBufferPrivate(handle, this))
 {
 
 }
@@ -285,6 +287,12 @@ void QWSceneBuffer::sendFrameDone(timespec *now)
     wlr_scene_buffer_send_frame_done(handle(), now);
 }
 
+QWSceneRect::QWSceneRect(wlr_scene_rect *handle)
+    : QWSceneNode(*new QWSceneNodePrivate(&handle->node, this))
+{
+
+}
+
 wlr_scene_rect *QWSceneRect::fromeNode(wlr_scene_node *node)
 {
     Q_ASSERT(node->type == WLR_SCENE_NODE_RECT);
@@ -325,10 +333,10 @@ void QWSceneRect::setColor(const QColor &color)
 class QWSceneOutputPrivate : public QWObjectPrivate
 {
 public:
-    QWSceneOutputPrivate(void *handle, QWSceneOutput *qq)
+    QWSceneOutputPrivate(wlr_scene_output *handle, QWSceneOutput *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.destroy, this, &QWSceneOutputPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWSceneOutputPrivate::on_destroy);
     }
     ~QWSceneOutputPrivate() {
         sc.invalidate();
@@ -355,17 +363,17 @@ QWSceneOutput::QWSceneOutput(wlr_scene_output *handle)
 
 }
 
-QWSceneOutput *QWSceneOutput::create(QWScene *scene, wlr_output *output)
+QWSceneOutput *QWSceneOutput::create(QWScene *scene, QWOutput *output)
 {
-    auto handle = wlr_scene_output_create(scene->handle(), output);
+    auto handle = wlr_scene_output_create(scene->handle(), output->handle());
     if (!handle)
         return nullptr;
     return new QWSceneOutput(handle);
 }
 
-wlr_scene_output *QWSceneOutput::get(QWScene *scene, wlr_output *output)
+wlr_scene_output *QWSceneOutput::get(QWScene *scene, QWOutput *output)
 {
-    return wlr_scene_get_scene_output(scene->handle(), output);
+    return wlr_scene_get_scene_output(scene->handle(), output->handle());
 }
 
 void QWSceneOutput::commit()

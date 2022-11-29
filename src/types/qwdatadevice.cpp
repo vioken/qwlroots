@@ -13,10 +13,10 @@ QW_BEGIN_NAMESPACE
 class QWDataDeviceManagerPrivate : public QWObjectPrivate
 {
 public:
-    QWDataDeviceManagerPrivate(void *handle, QWDataDeviceManager *qq)
+    QWDataDeviceManagerPrivate(wlr_data_device_manager *handle, QWDataDeviceManager *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&q_func()->handle()->events.destroy, this, &QWDataDeviceManagerPrivate::on_destroy);
+        sc.connect(&handle->events.destroy, this, &QWDataDeviceManagerPrivate::on_destroy);
     }
     ~QWDataDeviceManagerPrivate() {
         sc.invalidate();

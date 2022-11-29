@@ -16,11 +16,11 @@ QW_BEGIN_NAMESPACE
 class QWXdgShellPrivate : public QWObjectPrivate
 {
 public:
-    QWXdgShellPrivate(void *handle, QWXdgShell *qq)
+    QWXdgShellPrivate(wlr_xdg_shell *handle, QWXdgShell *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.destroy, this, &QWXdgShellPrivate::on_destroy);
-        sc.connect(&qq->handle()->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
+        sc.connect(&handle->events.destroy, this, &QWXdgShellPrivate::on_destroy);
+        sc.connect(&handle->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
     }
     ~QWXdgShellPrivate() {
         sc.invalidate();
@@ -62,16 +62,16 @@ QWXdgShell *QWXdgShell::create(wl_display *display, uint32_t version)
 class QWXdgSurfacePrivate : public QWObjectPrivate
 {
 public:
-    QWXdgSurfacePrivate(void *handle, QWXdgSurface *qq)
+    QWXdgSurfacePrivate(wlr_xdg_surface *handle, QWXdgSurface *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
-        sc.connect(&qq->handle()->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
-        sc.connect(&qq->handle()->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
-        sc.connect(&qq->handle()->events.map, this, &QWXdgSurfacePrivate::on_map);
-        sc.connect(&qq->handle()->events.unmap, this, &QWXdgSurfacePrivate::on_unmap);
-        sc.connect(&qq->handle()->events.configure, this, &QWXdgSurfacePrivate::on_configure);
-        sc.connect(&qq->handle()->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
+        sc.connect(&handle->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
+        sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
+        sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
+        sc.connect(&handle->events.map, this, &QWXdgSurfacePrivate::on_map);
+        sc.connect(&handle->events.unmap, this, &QWXdgSurfacePrivate::on_unmap);
+        sc.connect(&handle->events.configure, this, &QWXdgSurfacePrivate::on_configure);
+        sc.connect(&handle->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
     }
     ~QWXdgSurfacePrivate() {
         sc.invalidate();
@@ -192,10 +192,10 @@ void QWXdgSurface::forEachPopupSurface(wlr_surface_iterator_func_t iterator, voi
 class QWXdgPopupPrivate : public QWXdgSurfacePrivate
 {
 public:
-    QWXdgPopupPrivate(void *handle, QWXdgPopup *qq)
-        : QWXdgSurfacePrivate(handle, qq)
+    QWXdgPopupPrivate(wlr_xdg_popup *handle, QWXdgPopup *qq)
+        : QWXdgSurfacePrivate(handle->base, qq)
     {
-        sc.connect(&qq->handle()->events.reposition, this, &QWXdgPopupPrivate::on_reposition);
+        sc.connect(&handle->events.reposition, this, &QWXdgPopupPrivate::on_reposition);
     }
     ~QWXdgPopupPrivate () {
         sc.invalidate();
@@ -213,7 +213,7 @@ void QWXdgPopupPrivate::on_reposition(void *)
 }
 
 QWXdgPopup::QWXdgPopup(wlr_xdg_popup *handle)
-    : QWXdgSurface(*new QWXdgPopupPrivate(handle->base, this))
+    : QWXdgSurface(*new QWXdgPopupPrivate(handle, this))
 {
 
 }
@@ -257,18 +257,18 @@ void QWXdgPopup::unconstrainFromBox(const QRect &toplevelSpaceBox)
 class QWXdgToplevelPrivate : public QWXdgSurfacePrivate
 {
 public:
-    QWXdgToplevelPrivate(void *handle, QWXdgToplevel *qq)
-        : QWXdgSurfacePrivate(handle, qq)
+    QWXdgToplevelPrivate(wlr_xdg_toplevel *handle, QWXdgToplevel *qq)
+        : QWXdgSurfacePrivate(handle->base, qq)
     {
-        sc.connect(&qq->handle()->events.request_maximize, this, &QWXdgToplevelPrivate::on_request_maximize);
-        sc.connect(&qq->handle()->events.request_fullscreen, this, &QWXdgToplevelPrivate::on_request_fullscreen);
-        sc.connect(&qq->handle()->events.request_minimize, this, &QWXdgToplevelPrivate::on_request_minimize);
-        sc.connect(&qq->handle()->events.request_move, this, &QWXdgToplevelPrivate::on_request_move);
-        sc.connect(&qq->handle()->events.request_resize, this, &QWXdgToplevelPrivate::on_request_resize);
-        sc.connect(&qq->handle()->events.request_show_window_menu, this, &QWXdgToplevelPrivate::on_request_show_window_menu);
-        sc.connect(&qq->handle()->events.set_parent, this, &QWXdgToplevelPrivate::on_set_parent);
-        sc.connect(&qq->handle()->events.set_title, this, &QWXdgToplevelPrivate::on_set_title);
-        sc.connect(&qq->handle()->events.set_app_id, this, &QWXdgToplevelPrivate::on_set_app_id);
+        sc.connect(&handle->events.request_maximize, this, &QWXdgToplevelPrivate::on_request_maximize);
+        sc.connect(&handle->events.request_fullscreen, this, &QWXdgToplevelPrivate::on_request_fullscreen);
+        sc.connect(&handle->events.request_minimize, this, &QWXdgToplevelPrivate::on_request_minimize);
+        sc.connect(&handle->events.request_move, this, &QWXdgToplevelPrivate::on_request_move);
+        sc.connect(&handle->events.request_resize, this, &QWXdgToplevelPrivate::on_request_resize);
+        sc.connect(&handle->events.request_show_window_menu, this, &QWXdgToplevelPrivate::on_request_show_window_menu);
+        sc.connect(&handle->events.set_parent, this, &QWXdgToplevelPrivate::on_set_parent);
+        sc.connect(&handle->events.set_title, this, &QWXdgToplevelPrivate::on_set_title);
+        sc.connect(&handle->events.set_app_id, this, &QWXdgToplevelPrivate::on_set_app_id);
     }
 
     void on_request_maximize(void *);
@@ -331,7 +331,7 @@ void QWXdgToplevelPrivate::on_set_app_id(void *)
 }
 
 QWXdgToplevel::QWXdgToplevel(wlr_xdg_toplevel *handle)
-    : QWXdgSurface(*new QWXdgToplevelPrivate(handle->base, this))
+    : QWXdgSurface(*new QWXdgToplevelPrivate(handle, this))
 {
 
 }

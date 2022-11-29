@@ -13,11 +13,11 @@ QW_BEGIN_NAMESPACE
 class QWBackendPrivate : public QWObjectPrivate
 {
 public:
-    QWBackendPrivate(void *handle, QWBackend *qq)
+    QWBackendPrivate(wlr_backend *handle, QWBackend *qq)
         : QWObjectPrivate(handle, qq)
     {
-        sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_input);
-        sc.connect(&qq->handle()->events.new_input, this, &QWBackendPrivate::on_new_output);
+        sc.connect(&handle->events.new_input, this, &QWBackendPrivate::on_new_input);
+        sc.connect(&handle->events.new_output, this, &QWBackendPrivate::on_new_output);
     }
     ~QWBackendPrivate() {
         sc.invalidate();
@@ -57,7 +57,11 @@ void QWBackendPrivate::on_destroy(void *)
 
 QWBackend *QWBackend::autoCreate(wl_display *display, QObject *parent)
 {
+#if WLR_VERSION_MINOR > 16
+    auto handle = wlr_backend_autocreate(display, nullptr);
+#else
     auto handle = wlr_backend_autocreate(display);
+#endif
     if (!handle)
         return nullptr;
     return new QWBackend(handle, parent);

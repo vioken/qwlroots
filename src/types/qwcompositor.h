@@ -16,6 +16,7 @@ class QWRenderer;
 class QWCompositorPrivate;
 class QW_EXPORT QWCompositor : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWCompositor)
 public:
     explicit QWCompositor(wlr_compositor *handle);
