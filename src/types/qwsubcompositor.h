@@ -11,6 +11,7 @@ struct wlr_subsurface;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWSubcompositorPrivate;
 class QW_EXPORT QWSubcompositor : public QWObject
 {
@@ -18,7 +19,7 @@ class QW_EXPORT QWSubcompositor : public QWObject
 public:
     explicit QWSubcompositor(wlr_subcompositor *handle);
 
-    static QWSubcompositor *create(wl_display *display);
+    static QWSubcompositor *create(QWDisplay *display);
 
     inline wlr_subcompositor *handle() const {
         return QWObject::handle<wlr_subcompositor>();

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwsubcompositor.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 
 extern "C" {
@@ -40,9 +41,9 @@ QWSubcompositor::QWSubcompositor(wlr_subcompositor *handle)
 
 }
 
-QWSubcompositor *QWSubcompositor::create(wl_display *display)
+QWSubcompositor *QWSubcompositor::create(QWDisplay *display)
 {
-    auto subcompositor = wlr_subcompositor_create(display);
+    auto subcompositor = wlr_subcompositor_create(display->handle());
     if (!subcompositor)
         return nullptr;
     return new QWSubcompositor(subcompositor);

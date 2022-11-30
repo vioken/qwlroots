@@ -11,6 +11,7 @@ struct wlr_data_device_manager;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWDataDeviceManagerPrivate;
 class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
 {
@@ -18,7 +19,7 @@ class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
 public:
     explicit QWDataDeviceManager(wlr_data_device_manager *handle);
 
-    static QWDataDeviceManager *create(wl_display *display);
+    static QWDataDeviceManager *create(QWDisplay *display);
 
     inline wlr_data_device_manager *handle() const {
         return QWObject::handle<wlr_data_device_manager>();

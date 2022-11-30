@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwbackend.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 
 extern "C" {
@@ -55,12 +56,12 @@ void QWBackendPrivate::on_destroy(void *)
     q_func()->deleteLater();
 }
 
-QWBackend *QWBackend::autoCreate(wl_display *display, QObject *parent)
+QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
 {
 #if WLR_VERSION_MINOR > 16
-    auto handle = wlr_backend_autocreate(display, nullptr);
+    auto handle = wlr_backend_autocreate(display->handle(), nullptr);
 #else
-    auto handle = wlr_backend_autocreate(display);
+    auto handle = wlr_backend_autocreate(display->handle());
 #endif
     if (!handle)
         return nullptr;

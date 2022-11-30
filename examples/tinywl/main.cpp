@@ -4,13 +4,11 @@
 #include <QGuiApplication>
 #include <QCommandLineParser>
 #include <QProcess>
-#include <QSocketNotifier>
-#include <QThread>
-#include <QAbstractEventDispatcher>
 #include <QRect>
 #include <QLoggingCategory>
 
 #include <qwbackend.h>
+#include <qwdisplay.h>
 #include <util/qwsignalconnector.h>
 #include <render/qwrenderer.h>
 #include <render/qwallocator.h>
@@ -76,8 +74,6 @@ private Q_SLOTS:
 
     void onOutputFrame();
 
-    void processWaylandEvents();
-
 private:
     struct View
     {
@@ -100,9 +96,7 @@ private:
     void beginInteractive(View *view, CursorState state, uint32_t edges);
     bool handleKeybinding(xkb_keysym_t sym);
 
-    wl_display *display;
-    wl_event_loop *loop;
-
+    QWDisplay *display;
     QWBackend *backend;
     QWRenderer *renderer;
     QWAllocator *allocator;
@@ -134,7 +128,7 @@ private:
 
 TinywlServer::TinywlServer()
 {
-    display = wl_display_create();
+    display = new QWDisplay(this);
     backend = QWBackend::autoCreate(display, this);
     if (!backend)
         qFatal("failed to create wlr_backend");
@@ -171,7 +165,7 @@ TinywlServer::TinywlServer()
     connect(cursor, &QWCursor::frame, this, &TinywlServer::onCursorFrame);
 
     connect(backend, &QWBackend::newInput, this, &TinywlServer::onNewInput);
-    seat = wlr_seat_create(display, "seat0");
+    seat = wlr_seat_create(display->handle(), "seat0");
     sc.connect(&seat->events.request_set_cursor, this, &TinywlServer::onRequestSetCursor);
     sc.connect(&seat->events.request_set_selection, this, &TinywlServer::onRequestSetSelection);
 }
@@ -179,13 +173,11 @@ TinywlServer::TinywlServer()
 TinywlServer::~TinywlServer()
 {
     delete backend;
-    wl_display_destroy_clients(display);
-    wl_display_destroy(display);
 }
 
 bool TinywlServer::start()
 {
-    const char *socket = wl_display_add_socket_auto(display);
+    const char *socket = display->addSocketAuto();
     if (!socket) {
         return false;
     }
@@ -196,15 +188,7 @@ bool TinywlServer::start()
     qputenv("WAYLAND_DISPLAY", QByteArray(socket));
     qInfo("Running Wayland compositor on WAYLAND_DISPLAY=%s", socket);
 
-    loop = wl_display_get_event_loop(display);
-    int fd = wl_event_loop_get_fd(loop);
-
-    auto sockNot = new QSocketNotifier(fd, QSocketNotifier::Read, this);
-    connect(sockNot, &QSocketNotifier::activated, this, &TinywlServer::processWaylandEvents);
-
-    QAbstractEventDispatcher *dispatcher = thread()->eventDispatcher();
-    connect(dispatcher, &QAbstractEventDispatcher::aboutToBlock, this, &TinywlServer::processWaylandEvents);
-
+    display->start(qApp->thread());
     return true;
 }
 
@@ -432,14 +416,6 @@ void TinywlServer::onOutputFrame()
     wlr_scene_output_send_frame_done(sceneOutput, &now);
 }
 
-void TinywlServer::processWaylandEvents()
-{
-    int ret = wl_event_loop_dispatch(loop, 0);
-    if (ret)
-        fprintf(stderr, "wl_event_loop_dispatch error: %d\n", ret);
-    wl_display_flush_clients(display);
-}
-
 TinywlServer::View *TinywlServer::getView(const QWXdgSurface *surface)
 {
     auto sceneTree = reinterpret_cast<QWSceneTree*>(surface->handle()->data);
@@ -574,7 +550,7 @@ bool TinywlServer::handleKeybinding(xkb_keysym_t sym)
 {
     switch (sym) {
     case XKB_KEY_Escape:
-        wl_display_terminate(display);
+        display->terminate();
         qApp->exit();
         break;
     case XKB_KEY_F1:

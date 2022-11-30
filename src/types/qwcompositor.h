@@ -12,6 +12,7 @@ struct wlr_surface;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWRenderer;
 class QWCompositorPrivate;
 class QW_EXPORT QWCompositor : public QObject, public QWObject
@@ -21,7 +22,7 @@ class QW_EXPORT QWCompositor : public QObject, public QWObject
 public:
     explicit QWCompositor(wlr_compositor *handle);
 
-    static QWCompositor *create(wl_display *display, QWRenderer *renderer);
+    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer);
 
     inline wlr_compositor *handle() const {
         return QWObject::handle<wlr_compositor>();

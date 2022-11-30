@@ -23,6 +23,7 @@ typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWXdgShellPrivate;
 class QW_EXPORT QWXdgShell : public QObject, public QWObject
 {
@@ -31,7 +32,7 @@ class QW_EXPORT QWXdgShell : public QObject, public QWObject
 public:
     explicit QWXdgShell(wlr_xdg_shell *handle);
 
-    static QWXdgShell *create(wl_display *display, uint32_t version);
+    static QWXdgShell *create(QWDisplay *display, uint32_t version);
 
     inline wlr_xdg_shell *handle() const {
         return QWObject::handle<wlr_xdg_shell>();

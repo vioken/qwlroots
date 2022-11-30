@@ -29,6 +29,7 @@ ws_generate(server stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 set(SOURCES
     qwglobal.cpp
     qwbackend.cpp
+    qwdisplay.cpp
     render/qwrenderer.cpp
     render/qwtexture.cpp
     render/qwallocator.cpp
@@ -48,6 +49,7 @@ set(SOURCES
 set(HEADERS
     qwglobal.h
     qwbackend.h
+    qwdisplay.h
     render/qwrenderer.h
     render/qwtexture.h
     render/qwallocator.h

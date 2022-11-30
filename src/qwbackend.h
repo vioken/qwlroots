@@ -13,6 +13,7 @@ struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWBackendPrivate;
 class QW_EXPORT QWBackend : public QObject, public QWObject
 {
@@ -22,7 +23,7 @@ public:
     explicit QWBackend(wlr_backend *handle, QObject *parent = nullptr);
     ~QWBackend();
 
-    static QWBackend *autoCreate(wl_display *display, QObject *parent = nullptr);
+    static QWBackend *autoCreate(QWDisplay *display, QObject *parent = nullptr);
 
     inline wlr_backend *handle() const {
         return QWObject::handle<wlr_backend>();

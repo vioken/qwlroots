@@ -15,6 +15,7 @@ struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWBackend;
 class QWBuffer;
 class QWTexture;
@@ -36,8 +37,8 @@ public:
     void begin(QWBuffer *buffer);
     void end();
 
-    bool initWlDisplay(wl_display *display);
-    bool initWlShm(wl_display *display);
+    bool initWlDisplay(QWDisplay *display);
+    bool initWlShm(QWDisplay *display);
 
     void clear(const float *color);
     void clear(const QColor &color);
