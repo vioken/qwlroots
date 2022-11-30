@@ -3,6 +3,7 @@
 
 #include "qwrenderer.h"
 #include "qwbackend.h"
+#include "qwdisplay.h"
 #include "qwtexture.h"
 #include "types/qwbuffer.h"
 #include "util/qwsignalconnector.h"
@@ -83,16 +84,16 @@ void QWRenderer::end()
     wlr_renderer_end(handle());
 }
 
-bool QWRenderer::initWlDisplay(wl_display *display)
+bool QWRenderer::initWlDisplay(QWDisplay *display)
 {
     Q_D(QWRenderer);
-    return wlr_renderer_init_wl_display(handle(), display);
+    return wlr_renderer_init_wl_display(handle(), display->handle());
 }
 
-bool QWRenderer::initWlShm(wl_display *display)
+bool QWRenderer::initWlShm(QWDisplay *display)
 {
     Q_D(QWRenderer);
-    return wlr_renderer_init_wl_shm(handle(), display);
+    return wlr_renderer_init_wl_shm(handle(), display->handle());
 }
 
 void QWRenderer::clear(const float *color)

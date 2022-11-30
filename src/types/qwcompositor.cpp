@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwcompositor.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 #include "render/qwrenderer.h"
 
@@ -49,9 +50,9 @@ QWCompositor::QWCompositor(wlr_compositor *handle)
 
 }
 
-QWCompositor *QWCompositor::create(wl_display *display, QWRenderer *renderer)
+QWCompositor *QWCompositor::create(QWDisplay *display, QWRenderer *renderer)
 {
-    auto compositor = wlr_compositor_create(display, renderer->handle());
+    auto compositor = wlr_compositor_create(display->handle(), renderer->handle());
     if (!compositor)
         return nullptr;
     return new QWCompositor(compositor);

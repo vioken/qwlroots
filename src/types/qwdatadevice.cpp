@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwdatadevice.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 
 extern "C" {
@@ -41,9 +42,9 @@ QWDataDeviceManager::QWDataDeviceManager(wlr_data_device_manager *handle)
 
 }
 
-QWDataDeviceManager *QWDataDeviceManager::create(wl_display *display)
+QWDataDeviceManager *QWDataDeviceManager::create(QWDisplay *display)
 {
-    auto handle = wlr_data_device_manager_create(display);
+    auto handle = wlr_data_device_manager_create(display->handle());
     if (!handle)
         return nullptr;
     return new QWDataDeviceManager(handle);

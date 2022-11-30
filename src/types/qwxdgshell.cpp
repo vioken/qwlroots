@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwxdgshell.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 
 #include <QPointF>
@@ -51,9 +52,9 @@ QWXdgShell::QWXdgShell(wlr_xdg_shell *handle)
 
 }
 
-QWXdgShell *QWXdgShell::create(wl_display *display, uint32_t version)
+QWXdgShell *QWXdgShell::create(QWDisplay *display, uint32_t version)
 {
-    auto handle = wlr_xdg_shell_create(display, version);
+    auto handle = wlr_xdg_shell_create(display->handle(), version);
     if (!handle)
         return nullptr;
     return new QWXdgShell(handle);
