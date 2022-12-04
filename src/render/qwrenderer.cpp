@@ -10,6 +10,7 @@
 
 #include <QColor>
 #include <QRect>
+#include <QHash>
 
 extern "C" {
 #define static
@@ -23,27 +24,53 @@ QW_BEGIN_NAMESPACE
 class QWRendererPrivate : public QWObjectPrivate
 {
 public:
-    QWRendererPrivate(wlr_renderer *handle, QWRenderer *qq)
-        : QWObjectPrivate(handle, qq)
+    QWRendererPrivate(wlr_renderer *handle, bool isOwner, QWRenderer *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWRendererPrivate::on_destroy);
     }
     ~QWRendererPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_renderer_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
 
+    static QHash<void*, QWRenderer*> map;
     QW_DECLARE_PUBLIC(QWRenderer)
     QWSignalConnector sc;
 };
+QHash<void*, QWRenderer*> QWRendererPrivate::map;
 
 void QWRendererPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
+}
+
+QWRenderer *QWRenderer::get(wlr_renderer *handle)
+{
+    return QWRendererPrivate::map.value(handle);
+}
+
+QWRenderer *QWRenderer::from(wlr_renderer *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWRenderer(handle, false);
 }
 
 QWRenderer *QWRenderer::autoCreate(QWBackend *backend)
@@ -51,17 +78,12 @@ QWRenderer *QWRenderer::autoCreate(QWBackend *backend)
     auto handle = wlr_renderer_autocreate(backend->handle());
     if (!handle)
         return nullptr;
-    return new QWRenderer(handle);
+    return new QWRenderer(handle, true);
 }
 
-QWRenderer::QWRenderer(wlr_renderer *handle)
+QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
     : QObject(nullptr)
-    , QWObject(*new QWRendererPrivate(handle, this))
-{
-
-}
-
-QWRenderer::~QWRenderer()
+    , QWObject(*new QWRendererPrivate(handle, isOwner, this))
 {
 
 }

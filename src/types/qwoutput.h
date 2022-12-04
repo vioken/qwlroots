@@ -33,13 +33,13 @@ class QW_EXPORT QWOutput : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutput)
 public:
-    explicit QWOutput(wlr_output *handle);
-
     inline wlr_output *handle() const {
         return QWObject::handle<wlr_output>();
     }
 
-    static wlr_output *fromResource(wl_resource *resource);
+    static QWOutput *get(wlr_output *handle);
+    static QWOutput *from(wlr_output *handle);
+    static QWOutput *from(wl_resource *resource);
 
     void enable(bool enable);
     void createGlobal();
@@ -91,25 +91,28 @@ Q_SIGNALS:
     void enableChanged();
     void modeChanged();
     void descriptionChanged();
+
+private:
+    QWOutput(wlr_output *handle, bool isOwner);
+    ~QWOutput() = default;
 };
 
-class QWOutputCursorPrivate;
-class QW_EXPORT QWOutputCursor : public QWObject
+class QW_EXPORT QWOutputCursor
 {
-    QW_DECLARE_PRIVATE(QWOutputCursor)
 public:
-    explicit QWOutputCursor(wlr_output_cursor *handle);
+    ~QWOutputCursor();
+    wlr_output_cursor *handle() const;
 
-    inline wlr_output_cursor *handle() const {
-        return QWObject::handle<wlr_output_cursor>();
-    }
-
+    static QWOutputCursor *from(wlr_output_cursor *handle);
     static QWOutputCursor *create(QWOutput *output);
 
     bool setImage(const QImage &image, const QPoint &hotspot);
     void setSurface(wlr_surface *surface, const QPoint &hotspot);
     bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
     bool move(const QPointF &pos);
+
+private:
+    QWOutputCursor() = default;
 };
 
 QW_END_NAMESPACE

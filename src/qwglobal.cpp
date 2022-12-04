@@ -21,9 +21,10 @@ QWObjectPrivate::~QWObjectPrivate()
 
 }
 
-QWObjectPrivate::QWObjectPrivate(void *handle, QWObject *qq)
-    : m_handle(handle)
-    , q_ptr(qq)
+QWObjectPrivate::QWObjectPrivate(void *handle, bool isOwner, QWObject *qq)
+    : q_ptr(qq)
+    , m_handle(handle)
+    , isHandleOwner(isOwner)
 {
 
 }

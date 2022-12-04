@@ -19,15 +19,19 @@ class QW_EXPORT QWAllocator : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWAllocator)
 public:
-    explicit QWAllocator(wlr_allocator *handle);
-
     inline wlr_allocator *handle() {
         return QWObject::handle<wlr_allocator>();
     }
 
     static QWAllocator *autoCreate(QWBackend *backend, QWRenderer *renderer);
+    static QWAllocator *get(wlr_allocator *handle);
+    static QWAllocator *from(wlr_allocator *handle);
 
     wlr_buffer *createBuffer(int width, int height, const wlr_drm_format *format);
+
+private:
+    QWAllocator(wlr_allocator *handle, bool isOwner);
+    ~QWAllocator() = default;
 };
 
 QW_END_NAMESPACE

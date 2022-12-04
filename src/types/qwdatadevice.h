@@ -17,17 +17,17 @@ class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWDataDeviceManager)
 public:
-    explicit QWDataDeviceManager(wlr_data_device_manager *handle);
-
-    static QWDataDeviceManager *create(QWDisplay *display);
-
     inline wlr_data_device_manager *handle() const {
         return QWObject::handle<wlr_data_device_manager>();
     }
 
+    static QWDataDeviceManager *get(wlr_data_device_manager *handle);
+    static QWDataDeviceManager *from(wlr_data_device_manager *handle);
+    static QWDataDeviceManager *create(QWDisplay *display);
+
 private:
+    QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner);
     ~QWDataDeviceManager() = default;
-    using QObject::deleteLater;
 };
 
 QW_END_NAMESPACE

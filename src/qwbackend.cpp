@@ -4,6 +4,9 @@
 #include "qwbackend.h"
 #include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
+#include "types/qwoutput.h"
+
+#include <QHash>
 
 extern "C" {
 #include <wlr/backend.h>
@@ -14,46 +17,71 @@ QW_BEGIN_NAMESPACE
 class QWBackendPrivate : public QWObjectPrivate
 {
 public:
-    QWBackendPrivate(wlr_backend *handle, QWBackend *qq)
-        : QWObjectPrivate(handle, qq)
+    QWBackendPrivate(wlr_backend *handle, bool isOwner, QWBackend *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.new_input, this, &QWBackendPrivate::on_new_input);
         sc.connect(&handle->events.new_output, this, &QWBackendPrivate::on_new_output);
+        sc.connect(&handle->events.destroy, this, &QWBackendPrivate::on_destroy);
     }
     ~QWBackendPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_backend_destroy(q_func()->handle());
     }
 
-    void on_new_input(void *data);
-    void on_new_output(void *data);
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
+    }
+
+    void on_new_input(wlr_input_device *device);
+    void on_new_output(wlr_output *output);
     void on_destroy(void *);
 
+    static QHash<void*, QWBackend*> map;
     QW_DECLARE_PUBLIC(QWBackend)
     QWSignalConnector sc;
 };
+QHash<void*, QWBackend*> QWBackendPrivate::map;
 
-void QWBackendPrivate::on_new_input(void *data)
+void QWBackendPrivate::on_new_input(wlr_input_device *device)
 {
     Q_Q(QWBackend);
-    auto device = reinterpret_cast<wlr_input_device*>(data);
     Q_ASSERT(device);
     Q_EMIT q->newInput(device);
 }
 
-void QWBackendPrivate::on_new_output(void *data)
+void QWBackendPrivate::on_new_output(wlr_output *output)
 {
     Q_Q(QWBackend);
-    auto output = reinterpret_cast<wlr_output*>(data);
     Q_ASSERT(output);
-    Q_EMIT q->newOutput(output);
+    Q_EMIT q->newOutput(QWOutput::from(output));
 }
 
 void QWBackendPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
+}
+
+QWBackend *QWBackend::get(wlr_backend *handle)
+{
+    return QWBackendPrivate::map.value(handle);
+}
+
+QWBackend *QWBackend::from(wlr_backend *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWBackend(handle, false);
 }
 
 QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
@@ -65,12 +93,12 @@ QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
 #endif
     if (!handle)
         return nullptr;
-    return new QWBackend(handle, parent);
+    return new QWBackend(handle, true, parent);
 }
 
-QWBackend::QWBackend(wlr_backend *handle, QObject *parent)
+QWBackend::QWBackend(wlr_backend *handle, bool isOwner, QObject *parent)
     : QObject(parent)
-    , QWObject(*new QWBackendPrivate(handle, this))
+    , QWObject(*new QWBackendPrivate(handle, isOwner, this))
 {
 
 }

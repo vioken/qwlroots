@@ -49,7 +49,7 @@ public:
     bool start();
 
 private Q_SLOTS:
-    void onNewOutput(wlr_output *output);
+    void onNewOutput(QWOutput *output);
     void onNewXdgSurface(wlr_xdg_surface *surface);
     void onXdgToplevelMap();
     void onXdgToplevelUnmap();
@@ -146,15 +146,15 @@ TinywlServer::TinywlServer()
     subcompositor = QWSubcompositor::create(display);
     dataDeviceManager = QWDataDeviceManager::create(display);
 
-    outputLayout = QWOutputLayout::create();
+    outputLayout = new QWOutputLayout(this);
     connect(backend, &QWBackend::newOutput, this, &TinywlServer::onNewOutput);
 
-    scene = QWScene::create();
+    scene = new QWScene(this);
     scene->attachOutputLayout(outputLayout);
     xdgShell = QWXdgShell::create(display, 3);
     connect(xdgShell, &QWXdgShell::newSurface, this, &TinywlServer::onNewXdgSurface);
 
-    cursor = QWCursor::create();
+    cursor = new QWCursor(this);
     cursor->attachOutputLayout(outputLayout);
     cursorManager = QWXCursorManager::create(nullptr, 24);
     cursorManager->load(1);
@@ -192,31 +192,30 @@ bool TinywlServer::start()
     return true;
 }
 
-void TinywlServer::onNewOutput(wlr_output *output)
+void TinywlServer::onNewOutput(QWOutput *output)
 {
     Q_ASSERT(output);
-    auto o = new QWOutput(output);
-    outputs.append(o);
+    outputs.append(output);
 
-    o->initRender(allocator, renderer);
-    if (!wl_list_empty(&output->modes)) {
-        auto *mode = o->preferredMode();
-        o->setMode(mode);
-        o->enable(true);
-        if (!o->commit())
+    output->initRender(allocator, renderer);
+    if (!wl_list_empty(&output->handle()->modes)) {
+        auto *mode = output->preferredMode();
+        output->setMode(mode);
+        output->enable(true);
+        if (!output->commit())
             return;
     }
 
-    connect(o, &QWOutput::frame, this, &TinywlServer::onOutputFrame);
-    outputLayout->addAuto(o->handle());
+    connect(output, &QWOutput::frame, this, &TinywlServer::onOutputFrame);
+    outputLayout->addAuto(output->handle());
 }
 
 void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 {
     if (surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-        auto *s = new QWXdgPopup(surface->popup);
-        wlr_xdg_surface *parent = QWXdgSurface::from(surface->popup->parent);
-        QWSceneTree *parentTree = reinterpret_cast<QWSceneTree*>(parent->data);
+        auto *s = QWXdgPopup::from(surface->popup);
+        auto parent = QWXdgSurface::from(surface->popup->parent);
+        QWSceneTree *parentTree = reinterpret_cast<QWSceneTree*>(parent->handle()->data);
         surface->data = QWScene::xdgSurfaceCreate(parentTree, s);
         return;
     }
@@ -224,7 +223,7 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 
     auto view = new View();
     view->server = this;
-    auto s = new QWXdgToplevel(surface->toplevel);
+    auto s = QWXdgToplevel::from(surface->toplevel);
     view->xdgToplevel = s;
     view->sceneTree = QWScene::xdgSurfaceCreate(scene, s);
     view->sceneTree->handle()->node.data = view;
@@ -399,21 +398,21 @@ void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *ke
 void TinywlServer::onKeyboardDestroy(void *, wlr_keyboard *keyboard)
 {
     keyboards.removeOne(keyboard);
-    sc.invalidate(&keyboard->events.modifiers);
-    sc.invalidate(&keyboard->events.key);
-    sc.invalidate(&keyboard->base.events.destroy);
+    sc.disconnect(&keyboard->events.modifiers);
+    sc.disconnect(&keyboard->events.key);
+    sc.disconnect(&keyboard->base.events.destroy);
 }
 
 void TinywlServer::onOutputFrame()
 {
     auto output = qobject_cast<QWOutput*>(sender());
     Q_ASSERT(output);
-    auto sceneOutput = QWSceneOutput::get(scene, output);
-    wlr_scene_output_commit(sceneOutput);
+    auto sceneOutput = QWSceneOutput::from(scene, output);
+    sceneOutput->commit();
 
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
-    wlr_scene_output_send_frame_done(sceneOutput, &now);
+    sceneOutput->sendFrameDone(&now);
 }
 
 TinywlServer::View *TinywlServer::getView(const QWXdgSurface *surface)
@@ -428,8 +427,8 @@ TinywlServer::View *TinywlServer::viewAt(const QPointF &pos, wlr_surface **surfa
     if (!node || node->type != WLR_SCENE_NODE_BUFFER) {
         return nullptr;
     }
-    auto *sceneBuffer = QWSceneBuffer::fromNode(node);
-    auto *sceneSurface = wlr_scene_surface_from_buffer(sceneBuffer);
+    auto *sceneBuffer = QWSceneBuffer::from(node);
+    auto *sceneSurface = wlr_scene_surface_from_buffer(sceneBuffer->handle());
     if (!sceneSurface)
         return nullptr;
 
@@ -516,9 +515,10 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
         return;
     }
     if (prevSurface) {
-        wlr_xdg_surface *previous = QWXdgSurface::from(prevSurface);
-        Q_ASSERT(previous->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
-        wlr_xdg_toplevel_set_activated(previous->toplevel, false);
+        auto previous = QWXdgSurface::from(prevSurface);
+        auto toplevel = qobject_cast<QWXdgToplevel*>(previous);
+        Q_ASSERT(toplevel);
+        toplevel->setActivated(false);
     }
 
     view->sceneTree->raiseToTop();

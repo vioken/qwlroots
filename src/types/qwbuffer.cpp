@@ -5,6 +5,8 @@
 #include "render/qwrenderer.h"
 #include "util/qwsignalconnector.h"
 
+#include <QHash>
+
 extern "C" {
 #include <wlr/types/wlr_buffer.h>
 }
@@ -14,29 +16,43 @@ QW_BEGIN_NAMESPACE
 class QWBufferPrivate : public QWObjectPrivate
 {
 public:
-    QWBufferPrivate(wlr_buffer *handle, QWBuffer *qq)
-        : QWObjectPrivate(handle, qq)
+    QWBufferPrivate(wlr_buffer *handle, bool isOwner, QWBuffer *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWBufferPrivate::on_destroy);
         sc.connect(&handle->events.release, this, &QWBufferPrivate::on_release);
     }
     ~QWBufferPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_buffer_drop(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
     void on_release(void *);
 
+    static QHash<void*, QWBuffer*> map;
     QW_DECLARE_PUBLIC(QWBuffer)
     QWSignalConnector sc;
 };
+QHash<void*, QWBuffer*> QWBufferPrivate::map;
 
 void QWBufferPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
 void QWBufferPrivate::on_release(void *)
@@ -44,12 +60,24 @@ void QWBufferPrivate::on_release(void *)
     Q_EMIT q_func()->release();
 }
 
-QWBuffer *QWBuffer::fromResource(wl_resource *resource)
+QWBuffer *QWBuffer::get(wlr_buffer *handle)
 {
-    auto buffer = wlr_buffer_from_resource(resource);
-    if (!buffer)
+    return QWBufferPrivate::map.value(handle);
+}
+
+QWBuffer *QWBuffer::from(wlr_buffer *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWBuffer(handle, false);
+}
+
+QWBuffer *QWBuffer::from(wl_resource *resource)
+{
+    auto handle = wlr_buffer_from_resource(resource);
+    if (!handle)
         return nullptr;
-    return new QWBuffer(buffer);
+    return from(handle);
 }
 
 bool QWBuffer::isBuffer(wl_resource *resource)
@@ -57,9 +85,9 @@ bool QWBuffer::isBuffer(wl_resource *resource)
     return wlr_resource_is_buffer(resource);
 }
 
-QWBuffer::QWBuffer(wlr_buffer *handle)
+QWBuffer::QWBuffer(wlr_buffer *handle, bool isOwner)
     : QObject(nullptr)
-    , QWObject(*new QWBufferPrivate(handle, this))
+    , QWObject(*new QWBufferPrivate(handle, isOwner, this))
 {
 
 }

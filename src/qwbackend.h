@@ -14,20 +14,22 @@ struct wl_display;
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
+class QWOutput;
 class QWBackendPrivate;
 class QW_EXPORT QWBackend : public QObject, public QWObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWBackend)
 public:
-    explicit QWBackend(wlr_backend *handle, QObject *parent = nullptr);
     ~QWBackend();
-
-    static QWBackend *autoCreate(QWDisplay *display, QObject *parent = nullptr);
 
     inline wlr_backend *handle() const {
         return QWObject::handle<wlr_backend>();
     }
+
+    static QWBackend *get(wlr_backend *handle);
+    static QWBackend *from(wlr_backend *handle);
+    static QWBackend *autoCreate(QWDisplay *display, QObject *parent = nullptr);
 
     clockid_t presentationClock() const;
     int drmFd() const;
@@ -38,8 +40,10 @@ public Q_SLOTS:
 Q_SIGNALS:
     // TODO: make to QWInputDevice
     void newInput(wlr_input_device *device);
-    // TODO: make to QWOutput
-    void newOutput(wlr_output *output);
+    void newOutput(QWOutput *output);
+
+private:
+    QWBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
 QW_END_NAMESPACE

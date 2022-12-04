@@ -11,22 +11,21 @@ struct wlr_xcursor;
 QW_BEGIN_NAMESPACE
 
 class QWCursor;
-class QWXCursorManagerPrivate;
-class QW_EXPORT QWXCursorManager : public QWObject
+class QW_EXPORT QWXCursorManager
 {
-    QW_DECLARE_PRIVATE(QWXCursorManager)
 public:
-    explicit QWXCursorManager(wlr_xcursor_manager *handle);
+    ~QWXCursorManager();
+    wlr_xcursor_manager *handle() const;
 
-    inline wlr_xcursor_manager *handle() const {
-        return QWObject::handle<wlr_xcursor_manager>();
-    }
-
+    static QWXCursorManager *from(wlr_xcursor_manager *handle);
     static QWXCursorManager *create(const char *name, uint32_t size);
 
     bool load(float scale);
     wlr_xcursor *getXCursor(const char *name, float scale) const;
     void setCursor(const char *name, QWCursor *cursor);
+
+private:
+    QWXCursorManager() = default;
 };
 
 QW_END_NAMESPACE

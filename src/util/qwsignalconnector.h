@@ -37,7 +37,6 @@ public:
     void disconnect(Listener *l);
     void disconnect(wl_signal *signal);
     void invalidate();
-    void invalidate(wl_signal *signal);
 
 private:
     QVector<Listener*> listenerList;

@@ -11,35 +11,24 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXCursorManagerPrivate : public QWObjectPrivate
+QWXCursorManager::~QWXCursorManager()
 {
-public:
-    QWXCursorManagerPrivate(void *handle, QWXCursorManager *qq)
-        : QWObjectPrivate(handle, qq)
-    {
+    wlr_xcursor_manager_destroy(handle());
+}
 
-    }
-    ~QWXCursorManagerPrivate() {
-        sc.invalidate();
-        wlr_xcursor_manager_destroy(q_func()->handle());
-    }
-
-    QW_DECLARE_PUBLIC(QWXCursorManager)
-    QWSignalConnector sc;
-};
-
-QWXCursorManager::QWXCursorManager(wlr_xcursor_manager *handle)
-    : QWObject(*new QWXCursorManagerPrivate(handle, this))
+wlr_xcursor_manager *QWXCursorManager::handle() const
 {
+    return reinterpret_cast<wlr_xcursor_manager*>(const_cast<QWXCursorManager*>(this));
+}
 
+QWXCursorManager *QWXCursorManager::from(wlr_xcursor_manager *handle)
+{
+    return reinterpret_cast<QWXCursorManager*>(handle);
 }
 
 QWXCursorManager *QWXCursorManager::create(const char *name, uint32_t size)
 {
-    auto handle = wlr_xcursor_manager_create(name, size);
-    if (!handle)
-        return nullptr;
-    return new QWXCursorManager(handle);
+    return from(wlr_xcursor_manager_create(name, size));
 }
 
 bool QWXCursorManager::load(float scale)

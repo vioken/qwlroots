@@ -14,17 +14,14 @@ QW_BEGIN_NAMESPACE
 class QWRenderer;
 class QWDmabufAttributes;
 class QWBuffer;
-class QWTexturePrivate;
-class QW_EXPORT QWTexture : public QWObject
+class QW_EXPORT QWTexture
 {
-    QW_DECLARE_PRIVATE(QWTexture)
 public:
-    explicit QWTexture(wlr_texture *handle);
     ~QWTexture();
 
-    inline wlr_texture *handle() const {
-        return QWObject::handle<wlr_texture>();
-    }
+    wlr_texture *handle() const;
+
+    static QWTexture *from(wlr_texture *handle);
 
     static QWTexture *fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t stride,
                                  uint32_t width, uint32_t height, const void *data);
@@ -32,6 +29,9 @@ public:
     static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
 
     bool update(QWBuffer *buffer, pixman_region32 *damage);
+
+private:
+    QWTexture() = default;
 };
 
 QW_END_NAMESPACE
