@@ -11,6 +11,7 @@
 #include <QColor>
 #include <QPoint>
 #include <QRect>
+#include <QHash>
 
 extern "C" {
 #define static
@@ -24,31 +25,45 @@ QW_BEGIN_NAMESPACE
 class QWSceneNodePrivate : public QWObjectPrivate
 {
 public:
-    QWSceneNodePrivate(wlr_scene_node *handle, QWSceneNode *qq)
-        : QWObjectPrivate(handle, qq)
+    QWSceneNodePrivate(wlr_scene_node *handle, bool isOwner, QWSceneNode *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWSceneNodePrivate::on_destroy);
     }
     ~QWSceneNodePrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_scene_node_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
 
+    static QHash<void*, QWSceneNode*> map;
     QW_DECLARE_PUBLIC(QWSceneNode)
     QWSignalConnector sc;
 };
+QHash<void*, QWSceneNode*> QWSceneNodePrivate::map;
 
 void QWSceneNodePrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
-QWSceneNode::QWSceneNode(wlr_scene_node *handle)
-    : QWSceneNode(*new QWSceneNodePrivate(handle, this))
+QWSceneNode::QWSceneNode(wlr_scene_node *handle, bool isOwner)
+    : QWSceneNode(*new QWSceneNodePrivate(handle, isOwner, this))
 {
 
 }
@@ -58,6 +73,11 @@ QWSceneNode::QWSceneNode(QWSceneNodePrivate &dd)
     , QWObject(dd)
 {
 
+}
+
+QWSceneNode *QWSceneNode::get(wlr_scene_node *handle)
+{
+    return QWSceneNodePrivate::map.value(handle);
 }
 
 void QWSceneNode::setEnabled(bool enabled)
@@ -111,8 +131,8 @@ wlr_scene_node *QWSceneNode::at(const QPointF &lpos, QPointF *npos) const
                              npos ? &npos->rx() : nullptr, npos ? &npos->ry() : nullptr);
 }
 
-QWSceneTree::QWSceneTree(wlr_scene_tree *handle)
-    : QWSceneTree(*new QWSceneNodePrivate(&handle->node, this))
+QWSceneTree::QWSceneTree(wlr_scene_tree *handle, bool isOwner)
+    : QWSceneTree(*new QWSceneNodePrivate(&handle->node, isOwner, this))
 {
 
 }
@@ -123,19 +143,42 @@ QWSceneTree::QWSceneTree(QWSceneNodePrivate &dd)
 
 }
 
-wlr_scene_tree *QWSceneTree::fromNode(wlr_scene_node *node)
+QWSceneTree::QWSceneTree(QWSceneTree *parent)
+    : QWSceneTree(wlr_scene_tree_create(parent->handle()), true)
 {
+
+}
+
+wlr_scene_tree *QWSceneTree::handle() const
+{
+    auto node = QWSceneNode::handle();
     Q_ASSERT(node->type == WLR_SCENE_NODE_TREE);
     wlr_scene_tree *tree = wl_container_of(node, tree, node);
     return tree;
 }
 
-QWSceneTree *QWSceneTree::create(QWSceneTree *parent)
+QWSceneTree *QWSceneTree::get(wlr_scene_tree *handle)
 {
-    auto handle = wlr_scene_tree_create(parent->handle());
-    if (!handle)
+    auto node = QWSceneNode::get(&handle->node);
+    if (!node)
         return nullptr;
-    return new QWSceneTree(handle);
+    auto o = qobject_cast<QWSceneTree*>(node);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWSceneTree *QWSceneTree::from(wlr_scene_tree *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWSceneTree(handle, false);
+}
+
+QWSceneTree *QWSceneTree::from(wlr_scene_node *node)
+{
+    Q_ASSERT(node->type == WLR_SCENE_NODE_TREE);
+    wlr_scene_tree *tree = wl_container_of(node, tree, node);
+    return from(tree);
 }
 
 QWSceneTree *QWSceneTree::subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface *surface)
@@ -143,7 +186,7 @@ QWSceneTree *QWSceneTree::subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface 
     auto handle = wlr_scene_subsurface_tree_create(parent->handle(), surface);
     if (!handle)
         return nullptr;
-    return new QWSceneTree(handle);
+    return new QWSceneTree(handle, true);
 }
 
 QWSceneTree *QWSceneTree::xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface)
@@ -151,30 +194,43 @@ QWSceneTree *QWSceneTree::xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xd
     auto handle = wlr_scene_xdg_surface_create(parent->handle(), xdgSurface->handle());
     if (!handle)
         return nullptr;
-    return new QWSceneTree(handle);
+    return new QWSceneTree(handle, true);
 }
 
-QWScene::QWScene(wlr_scene *handle)
-    : QWSceneTree(*new QWSceneNodePrivate(&handle->tree.node, this))
+QWScene::QWScene(wlr_scene *handle, bool isOwner, QObject *parent)
+    : QWSceneTree(*new QWSceneNodePrivate(&handle->tree.node, isOwner, this))
+{
+
+}
+
+QWScene::QWScene(QObject *parent)
+    : QWScene(wlr_scene_create(), true, parent)
 {
 
 }
 
 wlr_scene *QWScene::handle() const
 {
-    auto node = QWSceneNode::handle();
-    Q_ASSERT(node->type == WLR_SCENE_NODE_TREE);
-    wlr_scene_tree *treeHandle = wl_container_of(node, treeHandle, node);
+    wlr_scene_tree *treeHandle = QWSceneTree::handle();
     wlr_scene *handle = wl_container_of(treeHandle, handle, tree);
     return handle;
 }
 
-QWScene *QWScene::create()
+QWScene *QWScene::get(wlr_scene *handle)
 {
-    auto handle = wlr_scene_create();
-    if (!handle)
+    auto tree = QWSceneTree::get(&handle->tree);
+    if (!tree)
         return nullptr;
-    return new QWScene(handle);
+    auto o = qobject_cast<QWScene*>(tree);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWScene *QWScene::from(wlr_scene *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWScene(handle, true, nullptr);
 }
 
 void QWScene::setPresentation(wlr_presentation *presentation)
@@ -190,8 +246,8 @@ bool QWScene::attachOutputLayout(QWOutputLayout *outputLayout)
 class QWSceneBufferPrivate : public QWSceneNodePrivate
 {
 public:
-    QWSceneBufferPrivate(wlr_scene_buffer *handle, QWSceneBuffer *qq)
-        : QWSceneNodePrivate(&handle->node, qq)
+    QWSceneBufferPrivate(wlr_scene_buffer *handle, bool isOwner, QWSceneBuffer *qq)
+        : QWSceneNodePrivate(&handle->node, isOwner, qq)
     {
         sc.connect(&handle->events.output_enter, this, &QWSceneBufferPrivate::on_output_enter);
         sc.connect(&handle->events.output_leave, this, &QWSceneBufferPrivate::on_output_leave);
@@ -227,23 +283,43 @@ void QWSceneBufferPrivate::on_frame_done(void *data)
     Q_EMIT q_func()->frameDone(reinterpret_cast<timespec*>(data));
 }
 
-QWSceneBuffer::QWSceneBuffer(wlr_scene_buffer *handle)
-    : QWSceneNode(*new QWSceneBufferPrivate(handle, this))
+QWSceneBuffer::QWSceneBuffer(wlr_scene_buffer *handle, bool isOwner)
+    : QWSceneNode(*new QWSceneBufferPrivate(handle, isOwner, this))
 {
 
 }
 
-wlr_scene_buffer *QWSceneBuffer::fromNode(wlr_scene_node *node)
+QWSceneBuffer::QWSceneBuffer(QWBuffer *buffer, QWSceneTree *parent)
+    : QWSceneBuffer(wlr_scene_buffer_create(parent->handle(), buffer->handle()), true)
 {
-    return wlr_scene_buffer_from_node(node);
+
 }
 
-QWSceneBuffer *QWSceneBuffer::create(QWSceneTree *parent, wlr_buffer *buffer)
+wlr_scene_buffer *QWSceneBuffer::handle() const
 {
-    auto handle = wlr_scene_buffer_create(parent->handle(), buffer);
-    if (!handle)
+    return wlr_scene_buffer_from_node(QWSceneNode::handle());
+}
+
+QWSceneBuffer *QWSceneBuffer::get(wlr_scene_buffer *handle)
+{
+    auto node = QWSceneNode::get(&handle->node);
+    if (!node)
         return nullptr;
-    return new QWSceneBuffer(handle);
+    auto o = qobject_cast<QWSceneBuffer*>(node);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWSceneBuffer *QWSceneBuffer::from(wlr_scene_buffer *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWSceneBuffer(handle, false);
+}
+
+QWSceneBuffer *QWSceneBuffer::from(wlr_scene_node *node)
+{
+    return from(wlr_scene_buffer_from_node(node));
 }
 
 void QWSceneBuffer::setBuffer(QWBuffer *buffer)
@@ -287,20 +363,13 @@ void QWSceneBuffer::sendFrameDone(timespec *now)
     wlr_scene_buffer_send_frame_done(handle(), now);
 }
 
-QWSceneRect::QWSceneRect(wlr_scene_rect *handle)
-    : QWSceneNode(*new QWSceneNodePrivate(&handle->node, this))
+QWSceneRect::QWSceneRect(wlr_scene_rect *handle, bool isOwner)
+    : QWSceneNode(*new QWSceneNodePrivate(&handle->node, isOwner, this))
 {
 
 }
 
-wlr_scene_rect *QWSceneRect::fromeNode(wlr_scene_node *node)
-{
-    Q_ASSERT(node->type == WLR_SCENE_NODE_RECT);
-    wlr_scene_rect *rect = wl_container_of(node, rect, node);
-    return rect;
-}
-
-QWSceneRect *QWSceneRect::create(QWSceneTree *parent, const QSize &size, const QColor &color)
+static inline wlr_scene_rect *createWlrSceneRect(QWSceneTree *parent, const QSize &size, const QColor &color)
 {
     float c[4] {
         static_cast<float>(color.redF()),
@@ -308,10 +377,37 @@ QWSceneRect *QWSceneRect::create(QWSceneTree *parent, const QSize &size, const Q
         static_cast<float>(color.blueF()),
         static_cast<float>(color.alphaF())
     };
-    auto handle = wlr_scene_rect_create(parent->handle(), size.width(), size.height(), c);
-    if (!handle)
+    return wlr_scene_rect_create(parent->handle(), size.width(), size.height(), c);
+}
+
+QWSceneRect::QWSceneRect(const QSize &size, const QColor &color, QWSceneTree *parent)
+    : QWSceneRect(createWlrSceneRect(parent, size, color), true)
+{
+
+}
+
+QWSceneRect *QWSceneRect::get(wlr_scene_rect *handle)
+{
+    auto node = QWSceneNode::get(&handle->node);
+    if (!node)
         return nullptr;
-    return new QWSceneRect(handle);
+    auto o = qobject_cast<QWSceneRect*>(node);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWSceneRect *QWSceneRect::from(wlr_scene_rect *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWSceneRect(handle, false);
+}
+
+QWSceneRect *QWSceneRect::frome(wlr_scene_node *node)
+{
+    Q_ASSERT(node->type == WLR_SCENE_NODE_RECT);
+    wlr_scene_rect *rect = wl_container_of(node, rect, node);
+    return from(rect);
 }
 
 void QWSceneRect::setSize(const QSize &size)
@@ -333,47 +429,74 @@ void QWSceneRect::setColor(const QColor &color)
 class QWSceneOutputPrivate : public QWObjectPrivate
 {
 public:
-    QWSceneOutputPrivate(wlr_scene_output *handle, QWSceneOutput *qq)
-        : QWObjectPrivate(handle, qq)
+    QWSceneOutputPrivate(wlr_scene_output *handle, bool isOwner, QWSceneOutput *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWSceneOutputPrivate::on_destroy);
     }
     ~QWSceneOutputPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_scene_output_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
 
+    static QHash<void*, QWSceneOutput*> map;
     QW_DECLARE_PUBLIC(QWSceneOutput)
     QWSignalConnector sc;
 };
+QHash<void*, QWSceneOutput*> QWSceneOutputPrivate::map;
 
 void QWSceneOutputPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
-QWSceneOutput::QWSceneOutput(wlr_scene_output *handle)
-    : QWObject(*new QWSceneOutputPrivate(handle, this))
+QWSceneOutput::QWSceneOutput(wlr_scene_output *handle, bool isOwner)
+    : QWObject(*new QWSceneOutputPrivate(handle, isOwner, this))
     , QObject(nullptr)
 {
 
 }
 
-QWSceneOutput *QWSceneOutput::create(QWScene *scene, QWOutput *output)
+QWSceneOutput::QWSceneOutput(QWScene *scene, QWOutput *output)
+    : QWSceneOutput(wlr_scene_output_create(scene->handle(), output->handle()), true)
 {
-    auto handle = wlr_scene_output_create(scene->handle(), output->handle());
-    if (!handle)
-        return nullptr;
-    return new QWSceneOutput(handle);
+
 }
 
-wlr_scene_output *QWSceneOutput::get(QWScene *scene, QWOutput *output)
+QWSceneOutput *QWSceneOutput::get(wlr_scene_output *handle)
 {
-    return wlr_scene_get_scene_output(scene->handle(), output->handle());
+    return QWSceneOutputPrivate::map.value(handle);
+}
+
+QWSceneOutput *QWSceneOutput::from(wlr_scene_output *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWSceneOutput(handle, false);
+}
+
+QWSceneOutput *QWSceneOutput::from(QWScene *scene, QWOutput *output)
+{
+    auto handle = wlr_scene_get_scene_output(scene->handle(), output->handle());
+    if (!handle)
+        return nullptr;
+    return from(handle);
 }
 
 void QWSceneOutput::commit()

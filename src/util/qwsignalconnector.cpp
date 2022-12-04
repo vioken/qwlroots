@@ -41,13 +41,7 @@ QWSignalConnector::QWSignalConnector()
 
 QWSignalConnector::~QWSignalConnector()
 {
-    auto begin = listenerList.begin();
-    while (begin != listenerList.end()) {
-        Listener *l = *begin;
-        wl_list_remove(&l->l.link);
-        delete l;
-        ++begin;
-    }
+    invalidate();
 }
 
 Listener *QWSignalConnector::connect(wl_signal *signal, void *object, SlotFun0 slot)
@@ -112,8 +106,6 @@ void QWSignalConnector::disconnect(wl_signal *signal)
     }
 }
 
-// In this function will not remove the wl_list, use in the destroy
-// the corresponding wlr object before.
 void QWSignalConnector::invalidate()
 {
     auto tmpList = listenerList;
@@ -121,23 +113,9 @@ void QWSignalConnector::invalidate()
     auto begin = tmpList.begin();
     while (begin != tmpList.end()) {
         Listener *l = *begin;
+        wl_list_remove(&l->l.link);
         ++begin;
         delete l;
-    }
-}
-
-void QWSignalConnector::invalidate(wl_signal *signal)
-{
-    auto tmpList = listenerList;
-    auto begin = tmpList.begin();
-    while (begin != tmpList.end()) {
-        Listener *l = *begin;
-        ++begin;
-
-        if (signal == l->signal) {
-            delete l;
-            listenerList.removeOne(l);
-        }
     }
 }
 

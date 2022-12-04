@@ -5,32 +5,27 @@ extern "C" {
 #include <wlr/render/wlr_texture.h>
 }
 
+#include <QHash>
+
 #include "qwtexture.h"
 #include "qwrenderer.h"
 #include "types/qwbuffer.h"
 
 QW_BEGIN_NAMESPACE
 
-class QWTexturePrivate : public QWObjectPrivate
+QWTexture::~QWTexture()
 {
-public:
-    QWTexturePrivate(void *handle, QWTexture *qq)
-        : QWObjectPrivate(handle, qq)
-    {
+    wlr_texture_destroy(handle());
+}
 
-    }
-    ~QWTexturePrivate() {
-        Q_ASSERT(q_func()->handle());
-        wlr_texture_destroy(q_func()->handle());
-    }
-
-    QW_DECLARE_PUBLIC(QWTexture)
-};
-
-QWTexture::QWTexture(wlr_texture *handle)
-    : QWObject(*new QWTexturePrivate(handle, this))
+wlr_texture *QWTexture::handle() const
 {
+    return reinterpret_cast<wlr_texture*>(const_cast<QWTexture*>(this));
+}
 
+QWTexture *QWTexture::from(wlr_texture *handle)
+{
+    return reinterpret_cast<QWTexture*>(handle);
 }
 
 QWTexture *QWTexture::fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t stride,
@@ -38,35 +33,23 @@ QWTexture *QWTexture::fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t st
 {
     auto texture = wlr_texture_from_pixels(renderer->handle(),
                                            fmt, stride, width, height, data);
-    if (!texture)
-        return nullptr;
-    return new QWTexture(texture);
+    return from(texture);
 }
 
 QWTexture *QWTexture::fromDmabuf(QWRenderer *renderer, wlr_dmabuf_attributes *attribs)
 {
     auto texture = wlr_texture_from_dmabuf(renderer->handle(), attribs);
-    if (!texture)
-        return nullptr;
-    return new QWTexture(texture);
+    return from(texture);
 }
 
 QWTexture *QWTexture::fromBuffer(QWRenderer *renderer, QWBuffer *buffer)
 {
     auto texture = wlr_texture_from_buffer(renderer->handle(), buffer->handle());
-    if (!texture)
-        return nullptr;
-    return new QWTexture(texture);
-}
-
-QWTexture::~QWTexture()
-{
-
+    return from(texture);
 }
 
 bool QWTexture::update(QWBuffer *buffer, pixman_region32 *damage)
 {
-    Q_D(QWTexture);
     return wlr_texture_update_from_buffer(handle(), buffer->handle(), damage);
 }
 

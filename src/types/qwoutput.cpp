@@ -19,9 +19,11 @@ QW_BEGIN_NAMESPACE
 class QWOutputPrivate : public QWObjectPrivate
 {
 public:
-    QWOutputPrivate(wlr_output *handle, QWOutput *qq)
-        : QWObjectPrivate(handle, qq)
+    QWOutputPrivate(wlr_output *handle, bool isOwner, QWOutput *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.frame, this, &QWOutputPrivate::on_frame);
         sc.connect(&handle->events.damage, this, &QWOutputPrivate::on_damage);
         sc.connect(&handle->events.needs_frame, this, &QWOutputPrivate::on_needs_frame);
@@ -35,9 +37,18 @@ public:
         sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
     }
     ~QWOutputPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_output_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_frame(void *data);
@@ -52,9 +63,11 @@ public:
     void on_description(void *data);
     void on_destroy(void *data);
 
+    static QHash<void*, QWOutput*> map;
     QW_DECLARE_PUBLIC(QWOutput)
     QWSignalConnector sc;
 };
+QHash<void*, QWOutput*> QWOutputPrivate::map;
 
 void QWOutputPrivate::on_frame(void *data)
 {
@@ -113,20 +126,36 @@ void QWOutputPrivate::on_description(void *data)
 
 void QWOutputPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
-QWOutput::QWOutput(wlr_output *handle)
+QWOutput::QWOutput(wlr_output *handle, bool isOwner)
     : QObject(nullptr)
-    , QWObject(*new QWOutputPrivate(handle, this))
+    , QWObject(*new QWOutputPrivate(handle, isOwner, this))
 {
 
 }
 
-wlr_output *QWOutput::fromResource(wl_resource *resource)
+QWOutput *QWOutput::get(wlr_output *handle)
 {
-    return wlr_output_from_resource(resource);
+    return QWOutputPrivate::map.value(handle);
+}
+
+QWOutput *QWOutput::from(wlr_output *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWOutput(handle, false);
+}
+
+QWOutput *QWOutput::from(wl_resource *resource)
+{
+    auto handle = wlr_output_from_resource(resource);
+    if (!handle)
+        return nullptr;
+    return from(handle);
 }
 
 void QWOutput::enable(bool enable)
@@ -298,33 +327,25 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
     return wlr_output_get_primary_formats(handle(), bufferCaps);
 }
 
-class QWOutputCursorPrivate : public QWObjectPrivate
+QWOutputCursor::~QWOutputCursor()
 {
-public:
-    QWOutputCursorPrivate(void *handle, QWOutputCursor *qq)
-        : QWObjectPrivate(handle, qq)
-    {
+    wlr_output_cursor_destroy(handle());
+}
 
-    }
-    ~QWOutputCursorPrivate() {
-        wlr_output_cursor_destroy(q_func()->handle());
-    }
-
-    QW_DECLARE_PUBLIC(QWOutputCursor)
-};
-
-QWOutputCursor::QWOutputCursor(wlr_output_cursor *handle)
-    : QWObject(*new QWOutputCursorPrivate(handle, this))
+wlr_output_cursor *QWOutputCursor::handle() const
 {
+    return reinterpret_cast<wlr_output_cursor*>(const_cast<QWOutputCursor*>(this));
+}
 
+QWOutputCursor *QWOutputCursor::from(wlr_output_cursor *handle)
+{
+    return reinterpret_cast<QWOutputCursor*>(handle);
 }
 
 QWOutputCursor *QWOutputCursor::create(QWOutput *output)
 {
     auto handle = wlr_output_cursor_create(output->handle());
-    if (!handle)
-        return nullptr;
-    return new QWOutputCursor(handle);
+    return from(handle);
 }
 
 bool QWOutputCursor::setImage(const QImage &image, const QPoint &hotspot)

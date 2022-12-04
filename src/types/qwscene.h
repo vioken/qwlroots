@@ -41,13 +41,14 @@ class QWXdgSurface;
 class QWSceneNodePrivate;
 class QW_EXPORT QWSceneNode : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneNode)
 public:
-    explicit QWSceneNode(wlr_scene_node *handle);
-
     inline wlr_scene_node *handle() const {
         return QWObject::handle<wlr_scene_node>();
     }
+
+    static QWSceneNode *get(wlr_scene_node *handle);
 
     void setEnabled(bool enabled);
     void setPosition(const QPoint &pos);
@@ -63,38 +64,46 @@ public:
 
 protected:
     QWSceneNode(QWSceneNodePrivate &dd);
+    QWSceneNode(wlr_scene_node *handle, bool isOwner);
 };
 
 class QW_EXPORT QWSceneTree : public QWSceneNode
 {
+    Q_OBJECT
 public:
-    explicit QWSceneTree(wlr_scene_tree *handle);
+    explicit QWSceneTree(QWSceneTree *parent);
 
-    inline wlr_scene_tree *handle() const {
-        return fromNode(QWSceneNode::handle());
-    }
+    wlr_scene_tree *handle() const;
 
-    static wlr_scene_tree *fromNode(wlr_scene_node *node);
-    static QWSceneTree *create(QWSceneTree *parent);
+    static QWSceneTree *get(wlr_scene_tree *handle);
+    static QWSceneTree *from(wlr_scene_tree *handle);
+    static QWSceneTree *from(wlr_scene_node *node);
+
     static QWSceneTree *subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface *surface);
     static QWSceneTree *xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface);
 
 protected:
     QWSceneTree(QWSceneNodePrivate &dd);
+    QWSceneTree(wlr_scene_tree *handle, bool isOwner);
 };
 
 class QWOutputLayout;
 class QW_EXPORT QWScene : public QWSceneTree
 {
+    Q_OBJECT
 public:
-    explicit QWScene(wlr_scene *handle);
+    explicit QWScene(QObject *parent = nullptr);
 
     wlr_scene *handle() const;
 
-    static QWScene *create();
+    static QWScene *get(wlr_scene *handle);
+    static QWScene *from(wlr_scene *handle);
 
     void setPresentation(wlr_presentation *presentation);
     bool attachOutputLayout(QWOutputLayout *outputLayout);
+
+private:
+    QWScene(wlr_scene *handle, bool isOwner, QObject *parent);
 };
 
 class QWBuffer;
@@ -104,14 +113,13 @@ class QW_EXPORT QWSceneBuffer : public QWSceneNode
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneBuffer)
 public:
-    explicit QWSceneBuffer(wlr_scene_buffer *handle);
+    explicit QWSceneBuffer(QWBuffer *buffer, QWSceneTree *parent);
 
-    inline wlr_scene_buffer *handle() const {
-        return fromNode(QWSceneNode::handle());
-    }
+    wlr_scene_buffer *handle() const;
 
-    static wlr_scene_buffer *fromNode(wlr_scene_node *node);
-    static QWSceneBuffer *create(QWSceneTree *parent, wlr_buffer *buffer);
+    static QWSceneBuffer *get(wlr_scene_buffer *handle);
+    static QWSceneBuffer *from(wlr_scene_buffer *handle);
+    static QWSceneBuffer *from(wlr_scene_node *node);
 
     void setBuffer(QWBuffer *buffer);
     void setBuffer(QWBuffer *buffer, pixman_region32 *region);
@@ -126,22 +134,30 @@ Q_SIGNALS:
     void outputLeave(wlr_scene_output *output);
     void outputPresent(wlr_scene_output *output);
     void frameDone(timespec *now);
+
+private:
+    QWSceneBuffer(wlr_scene_buffer *handle, bool isOwner);
 };
 
 class QW_EXPORT QWSceneRect : public QWSceneNode
 {
+    Q_OBJECT
 public:
-    explicit QWSceneRect(wlr_scene_rect *handle);
+    explicit QWSceneRect(const QSize &size, const QColor &color, QWSceneTree *parent);
 
     inline wlr_scene_rect *handle() const {
         return QWObject::handle<wlr_scene_rect>();
     }
 
-    static wlr_scene_rect *fromeNode(wlr_scene_node *node);
-    static QWSceneRect *create(QWSceneTree *parent, const QSize &size, const QColor &color);
+    static QWSceneRect *get(wlr_scene_rect *handle);
+    static QWSceneRect *from(wlr_scene_rect *handle);
+    static QWSceneRect *frome(wlr_scene_node *node);
 
     void setSize(const QSize &size);
     void setColor(const QColor &color);
+
+private:
+    QWSceneRect(wlr_scene_rect *handle, bool isOwner);
 };
 
 class QWOutput;
@@ -150,19 +166,24 @@ class QW_EXPORT QWSceneOutput : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWSceneOutput)
 public:
-    explicit QWSceneOutput(wlr_scene_output *handle);
+    explicit QWSceneOutput(QWScene *scene, QWOutput *output);
 
     inline wlr_scene_output *handle() const {
         return QWObject::handle<wlr_scene_output>();
     }
 
-    static QWSceneOutput *create(QWScene *scene, QWOutput *output);
-    static wlr_scene_output *get(QWScene *scene, QWOutput *output);
+    static QWSceneOutput *get(wlr_scene_output *handle);
+    static QWSceneOutput *from(wlr_scene_output *handle);
+    static QWSceneOutput *from(QWScene *scene, QWOutput *output);
 
     void commit();
     void sendFrameDone(timespec *now);
 
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *user_data) const;
+
+private:
+    QWSceneOutput(wlr_scene_output *handle, bool isOwner);
+    ~QWSceneOutput() = default;
 };
 
 QW_END_NAMESPACE

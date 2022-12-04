@@ -24,14 +24,13 @@ class QW_EXPORT QWRenderer : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWRenderer)
 public:
-    explicit QWRenderer(wlr_renderer *handle);
-    ~QWRenderer();
-
-    static QWRenderer *autoCreate(QWBackend *backend);
-
     inline wlr_renderer *handle() const {
         return QWObject::handle<wlr_renderer>();
     }
+
+    static QWRenderer *get(wlr_renderer *handle);
+    static QWRenderer *from(wlr_renderer *handle);
+    static QWRenderer *autoCreate(QWBackend *backend);
 
     void begin(uint32_t width, uint32_t height);
     void begin(QWBuffer *buffer);
@@ -57,6 +56,10 @@ public:
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
     int getDrmFd() const;
+
+private:
+    QWRenderer(wlr_renderer *handle, bool isOwner);
+    ~QWRenderer() = default;
 };
 
 QW_END_NAMESPACE

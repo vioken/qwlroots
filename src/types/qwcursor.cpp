@@ -7,6 +7,7 @@
 
 #include <QImage>
 #include <QPointF>
+#include <QHash>
 
 extern "C" {
 #include <wlr/types/wlr_cursor.h>
@@ -18,9 +19,11 @@ QW_BEGIN_NAMESPACE
 class QWCursorPrivate : public QWObjectPrivate
 {
 public:
-    QWCursorPrivate(wlr_cursor *handle, QWCursor *qq)
-        : QWObjectPrivate(handle, qq)
+    QWCursorPrivate(wlr_cursor *handle, bool isOwner, QWCursor *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.motion, this, &QWCursorPrivate::on_motion);
         sc.connect(&handle->events.motion_absolute, this, &QWCursorPrivate::on_motion_absolute);
         sc.connect(&handle->events.button, this, &QWCursorPrivate::on_button);
@@ -45,9 +48,18 @@ public:
         sc.connect(&handle->events.tablet_tool_button, this, &QWCursorPrivate::on_tablet_tool_button);
     }
     ~QWCursorPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_cursor_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_motion(void *data);
@@ -73,9 +85,11 @@ public:
     void on_tablet_tool_tip(void *data);
     void on_tablet_tool_button(void *data);
 
+    static QHash<void*, QWCursor*> map;
     QW_DECLARE_PUBLIC(QWCursor)
     QWSignalConnector sc;
 };
+QHash<void*, QWCursor*> QWCursorPrivate::map;
 
 void QWCursorPrivate::on_motion(void *data)
 {
@@ -188,19 +202,29 @@ void QWCursorPrivate::on_tablet_tool_button(void *data)
     Q_EMIT q_func()->tabletToolButton(reinterpret_cast<wlr_tablet_tool_button*>(data));
 }
 
-QWCursor::QWCursor(wlr_cursor *handle)
-    : QObject(nullptr)
-    , QWObject(*new QWCursorPrivate(handle, this))
+QWCursor::QWCursor(wlr_cursor *handle, bool isOwner, QObject *parent)
+    : QObject(parent)
+    , QWObject(*new QWCursorPrivate(handle, isOwner, this))
 {
 
 }
 
-QWCursor *QWCursor::create()
+QWCursor::QWCursor(QObject *parent)
+    : QWCursor(wlr_cursor_create(), true, parent)
 {
-    auto handle = wlr_cursor_create();
-    if (!handle)
-        return nullptr;
-    return new QWCursor(handle);
+
+}
+
+QWCursor *QWCursor::get(wlr_cursor *handle)
+{
+    return QWCursorPrivate::map.value(handle);
+}
+
+QWCursor *QWCursor::from(wlr_cursor *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWCursor(handle, false, nullptr);
 }
 
 bool QWCursor::warp(wlr_input_device *dev, const QPointF &pos)

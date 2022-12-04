@@ -14,13 +14,14 @@ QW_BEGIN_NAMESPACE
 class QWDisplayPrivate : public QWObjectPrivate
 {
 public:
-    QWDisplayPrivate(wl_display *handle, QWDisplay *qq)
-        : QWObjectPrivate(handle, qq)
+    QWDisplayPrivate(wl_display *handle, bool isOwner, QWDisplay *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
 
     }
     ~QWDisplayPrivate() {
         sc.invalidate();
+        Q_ASSERT(isHandleOwner);
         if (m_handle) {
             auto display = q_func()->handle();
             wl_display_destroy_clients(display);
@@ -37,7 +38,7 @@ public:
 
 QWDisplay::QWDisplay(QObject *parent)
     : QObject(parent)
-    , QWObject(*new QWDisplayPrivate(wl_display_create(), this))
+    , QWObject(*new QWDisplayPrivate(wl_display_create(), true, this))
 {
 
 }

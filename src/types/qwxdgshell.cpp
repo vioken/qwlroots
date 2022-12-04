@@ -7,6 +7,7 @@
 
 #include <QPointF>
 #include <QRect>
+#include <QHash>
 
 extern "C" {
 #include <wlr/types/wlr_xdg_shell.h>
@@ -17,27 +18,43 @@ QW_BEGIN_NAMESPACE
 class QWXdgShellPrivate : public QWObjectPrivate
 {
 public:
-    QWXdgShellPrivate(wlr_xdg_shell *handle, QWXdgShell *qq)
-        : QWObjectPrivate(handle, qq)
+    QWXdgShellPrivate(wlr_xdg_shell *handle, bool isOwner, QWXdgShell *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWXdgShellPrivate::on_destroy);
         sc.connect(&handle->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
     }
     ~QWXdgShellPrivate() {
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
+            qFatal("QWXdgShell(%p) can't to destroy, its ownership is wl_display", q_func());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
         sc.invalidate();
     }
 
     void on_destroy(void *);
     void on_new_surface(void *data);
 
+    static QHash<void*, QWXdgShell*> map;
     QW_DECLARE_PUBLIC(QWXdgShell)
     QWSignalConnector sc;
 };
+QHash<void*, QWXdgShell*> QWXdgShellPrivate::map;
 
 void QWXdgShellPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
 void QWXdgShellPrivate::on_new_surface(void *data)
@@ -45,9 +62,9 @@ void QWXdgShellPrivate::on_new_surface(void *data)
     Q_EMIT q_func()->newSurface(reinterpret_cast<wlr_xdg_surface*>(data));
 }
 
-QWXdgShell::QWXdgShell(wlr_xdg_shell *handle)
+QWXdgShell::QWXdgShell(wlr_xdg_shell *handle, bool isOwner)
     : QObject(nullptr)
-    , QWObject(*new QWXdgShellPrivate(handle, this))
+    , QWObject(*new QWXdgShellPrivate(handle, isOwner, this))
 {
 
 }
@@ -57,15 +74,29 @@ QWXdgShell *QWXdgShell::create(QWDisplay *display, uint32_t version)
     auto handle = wlr_xdg_shell_create(display->handle(), version);
     if (!handle)
         return nullptr;
-    return new QWXdgShell(handle);
+    return new QWXdgShell(handle, true);
+}
+
+QWXdgShell *QWXdgShell::get(wlr_xdg_shell *handle)
+{
+    return QWXdgShellPrivate::map.value(handle);
+}
+
+QWXdgShell *QWXdgShell::from(wlr_xdg_shell *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWXdgShell(handle, false);
 }
 
 class QWXdgSurfacePrivate : public QWObjectPrivate
 {
 public:
-    QWXdgSurfacePrivate(wlr_xdg_surface *handle, QWXdgSurface *qq)
-        : QWObjectPrivate(handle, qq)
+    QWXdgSurfacePrivate(wlr_xdg_surface *handle, bool isOwner, QWXdgSurface *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
@@ -75,25 +106,39 @@ public:
         sc.connect(&handle->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
     }
     ~QWXdgSurfacePrivate() {
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
+            qFatal("QWXdgSurface(%p) can't to destroy, its ownership is wl_display", q_func());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
         sc.invalidate();
     }
 
     void on_destroy(void *);
     void on_ping_timeout(void *);
-    void on_new_popup(void *data);
+    void on_new_popup(wlr_xdg_popup *data);
     void on_map(void *);
     void on_unmap(void *);
     void on_configure(void *data);
     void on_ack_configure(void *data);
 
+    static QHash<void*, QWXdgSurface*> map;
     QW_DECLARE_PUBLIC(QWXdgSurface)
     QWSignalConnector sc;
 };
+QHash<void*, QWXdgSurface*> QWXdgSurfacePrivate::map;
 
 void QWXdgSurfacePrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
 void QWXdgSurfacePrivate::on_ping_timeout(void *)
@@ -101,9 +146,9 @@ void QWXdgSurfacePrivate::on_ping_timeout(void *)
     Q_EMIT q_func()->pingTimeout();
 }
 
-void QWXdgSurfacePrivate::on_new_popup(void *data)
+void QWXdgSurfacePrivate::on_new_popup(wlr_xdg_popup *data)
 {
-    Q_EMIT q_func()->newPopup(reinterpret_cast<wlr_xdg_popup*>(data));
+    Q_EMIT q_func()->newPopup(QWXdgPopup::from(data));
 }
 
 void QWXdgSurfacePrivate::on_map(void *)
@@ -126,8 +171,8 @@ void QWXdgSurfacePrivate::on_ack_configure(void *data)
     Q_EMIT q_func()->ackConfigure(reinterpret_cast<wlr_xdg_surface_configure*>(data));
 }
 
-QWXdgSurface::QWXdgSurface(wlr_xdg_surface *handle)
-    : QWXdgSurface(*new QWXdgSurfacePrivate(handle, this))
+QWXdgSurface::QWXdgSurface(wlr_xdg_surface *handle, bool isOwner)
+    : QWXdgSurface(*new QWXdgSurfacePrivate(handle, isOwner, this))
 {
 
 }
@@ -139,14 +184,43 @@ QWXdgSurface::QWXdgSurface(QWXdgSurfacePrivate &dd)
 
 }
 
-wlr_xdg_surface *QWXdgSurface::from(wl_resource *resource)
+QWXdgSurface *QWXdgSurface::get(wlr_xdg_surface *handle)
 {
-    return wlr_xdg_surface_from_resource(resource);
+    return QWXdgSurfacePrivate::map.value(handle);
 }
 
-wlr_xdg_surface *QWXdgSurface::from(wlr_surface *surface)
+QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
 {
-    return wlr_xdg_surface_from_wlr_surface(surface);
+    auto handle = wlr_xdg_surface_from_resource(resource);
+    if (handle->role == WLR_XDG_SURFACE_ROLE_POPUP)
+        return QWXdgPopup::from(handle->popup);
+    return QWXdgToplevel::from(handle->toplevel);
+}
+
+QWXdgSurface *QWXdgSurface::from(wlr_surface *surface)
+{
+    auto handle = wlr_xdg_surface_from_wlr_surface(surface);
+    if (handle->role == WLR_XDG_SURFACE_ROLE_POPUP)
+        return QWXdgPopup::from(handle->popup);
+    return QWXdgToplevel::from(handle->toplevel);
+}
+
+QWXdgPopup *QWXdgSurface::toPopup() const
+{
+    if (handle()->role != WLR_XDG_SURFACE_ROLE_POPUP)
+        return nullptr;
+    auto popup = qobject_cast<QWXdgPopup*>(const_cast<QWXdgSurface*>(this));
+    Q_ASSERT(popup);
+    return popup;
+}
+
+QWXdgToplevel *QWXdgSurface::topToplevel() const
+{
+    if (handle()->role != WLR_XDG_SURFACE_ROLE_TOPLEVEL)
+        return nullptr;
+    auto toplevel = qobject_cast<QWXdgToplevel*>(const_cast<QWXdgSurface*>(this));
+    Q_ASSERT(toplevel);
+    return toplevel;
 }
 
 void QWXdgSurface::ping()
@@ -193,15 +267,19 @@ void QWXdgSurface::forEachPopupSurface(wlr_surface_iterator_func_t iterator, voi
 class QWXdgPopupPrivate : public QWXdgSurfacePrivate
 {
 public:
-    QWXdgPopupPrivate(wlr_xdg_popup *handle, QWXdgPopup *qq)
-        : QWXdgSurfacePrivate(handle->base, qq)
+    QWXdgPopupPrivate(wlr_xdg_popup *handle, bool isOwner, QWXdgPopup *qq)
+        : QWXdgSurfacePrivate(handle->base, isOwner, qq)
     {
         sc.connect(&handle->events.reposition, this, &QWXdgPopupPrivate::on_reposition);
     }
     ~QWXdgPopupPrivate () {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner) {
             wlr_xdg_popup_destroy(q_func()->handle());
+            m_handle = nullptr;
+        }
     }
 
     void on_reposition(void *);
@@ -213,21 +291,38 @@ void QWXdgPopupPrivate::on_reposition(void *)
     Q_EMIT q_func()->reposition();
 }
 
-QWXdgPopup::QWXdgPopup(wlr_xdg_popup *handle)
-    : QWXdgSurface(*new QWXdgPopupPrivate(handle, this))
+QWXdgPopup::QWXdgPopup(wlr_xdg_popup *handle, bool isOwner)
+    : QWXdgSurface(*new QWXdgPopupPrivate(handle, isOwner, this))
 {
 
-}
-
-wlr_xdg_popup *QWXdgPopup::from(wl_resource *resource)
-{
-    return wlr_xdg_popup_from_resource(resource);
 }
 
 wlr_xdg_popup *QWXdgPopup::handle() const
 {
     Q_ASSERT(QWXdgSurface::handle()->role == WLR_XDG_SURFACE_ROLE_POPUP);
     return QWXdgSurface::handle()->popup;
+}
+
+QWXdgPopup *QWXdgPopup::get(wlr_xdg_popup *handle)
+{
+    auto surface = QWXdgSurface::get(handle->base);
+    if (!surface)
+        return nullptr;
+    auto o = qobject_cast<QWXdgPopup*>(surface);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWXdgPopup *QWXdgPopup::from(wlr_xdg_popup *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWXdgPopup(handle, false);
+}
+
+QWXdgPopup *QWXdgPopup::from(wl_resource *resource)
+{
+    return from(wlr_xdg_popup_from_resource(resource));
 }
 
 QPointF QWXdgPopup::getPosition() const
@@ -258,8 +353,8 @@ void QWXdgPopup::unconstrainFromBox(const QRect &toplevelSpaceBox)
 class QWXdgToplevelPrivate : public QWXdgSurfacePrivate
 {
 public:
-    QWXdgToplevelPrivate(wlr_xdg_toplevel *handle, QWXdgToplevel *qq)
-        : QWXdgSurfacePrivate(handle->base, qq)
+    QWXdgToplevelPrivate(wlr_xdg_toplevel *handle, bool isOwner, QWXdgToplevel *qq)
+        : QWXdgSurfacePrivate(handle->base, isOwner, qq)
     {
         sc.connect(&handle->events.request_maximize, this, &QWXdgToplevelPrivate::on_request_maximize);
         sc.connect(&handle->events.request_fullscreen, this, &QWXdgToplevelPrivate::on_request_fullscreen);
@@ -318,7 +413,7 @@ void QWXdgToplevelPrivate::on_request_show_window_menu(void *data)
 
 void QWXdgToplevelPrivate::on_set_parent(void *)
 {
-    Q_EMIT q_func()->parentChanged(q_func()->handle()->parent);
+    Q_EMIT q_func()->parentChanged(QWXdgToplevel::from(q_func()->handle()->parent));
 }
 
 void QWXdgToplevelPrivate::on_set_title(void *)
@@ -331,21 +426,38 @@ void QWXdgToplevelPrivate::on_set_app_id(void *)
     Q_EMIT q_func()->appidChanged(q_func()->handle()->app_id);
 }
 
-QWXdgToplevel::QWXdgToplevel(wlr_xdg_toplevel *handle)
-    : QWXdgSurface(*new QWXdgToplevelPrivate(handle, this))
+QWXdgToplevel::QWXdgToplevel(wlr_xdg_toplevel *handle, bool isOwner)
+    : QWXdgSurface(*new QWXdgToplevelPrivate(handle, isOwner, this))
 {
 
-}
-
-wlr_xdg_toplevel *QWXdgToplevel::from(wl_resource *resource)
-{
-    return wlr_xdg_toplevel_from_resource(resource);
 }
 
 wlr_xdg_toplevel *QWXdgToplevel::handle() const
 {
     Q_ASSERT(QWXdgSurface::handle()->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
     return QWXdgSurface::handle()->toplevel;
+}
+
+QWXdgToplevel *QWXdgToplevel::get(wlr_xdg_toplevel *handle)
+{
+    auto surface = QWXdgSurface::get(handle->base);
+    if (!surface)
+        return nullptr;
+    auto o = qobject_cast<QWXdgToplevel*>(surface);
+    Q_ASSERT(o);
+    return o;
+}
+
+QWXdgToplevel *QWXdgToplevel::from(wlr_xdg_toplevel *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWXdgToplevel(handle, false);
+}
+
+QWXdgToplevel *QWXdgToplevel::from(wl_resource *resource)
+{
+    return from(wlr_xdg_toplevel_from_resource(resource));
 }
 
 uint32_t QWXdgToplevel::setSize(const QSize &size)
@@ -393,9 +505,9 @@ void QWXdgToplevel::sendClose()
     wlr_xdg_toplevel_send_close(handle());
 }
 
-bool QWXdgToplevel::setParsent(wlr_xdg_toplevel *parent)
+bool QWXdgToplevel::setParsent(QWXdgToplevel *parent)
 {
-    return wlr_xdg_toplevel_set_parent(handle(), parent);
+    return wlr_xdg_toplevel_set_parent(handle(), parent->handle());
 }
 
 QW_END_NAMESPACE

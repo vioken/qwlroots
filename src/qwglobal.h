@@ -36,10 +36,11 @@ public:
     virtual ~QWObjectPrivate();
 
 protected:
-    QWObjectPrivate(void *handle, QWObject *qq);
+    QWObjectPrivate(void *handle, bool isOwner, QWObject *qq);
 
     QWObject *q_ptr;
-    void *m_handle = nullptr;
+    void *m_handle;
+    bool isHandleOwner;
 
     Q_DECLARE_PUBLIC(QWObject)
 };

@@ -15,11 +15,15 @@ class QW_EXPORT QWABC : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWABC)
 public:
-    explicit QWABC(wlr_ABC *handle);
-
     inline wlr_ABC *handle() const {
         return QWObject::handle<wlr_ABC>();
     }
+
+    static QWABC *get(wlr_ABC *handle);
+    static QWABC *from(wlr_ABC *handle);
+
+private:
+    QWABC(wlr_ABC *handle, bool isOwner);
 };
 
 QW_END_NAMESPACE
@@ -30,6 +34,8 @@ QW_END_NAMESPACE
 #include "qwabc.h"
 #include "util/qwsignalconnector.h"
 
+#include <QHash>
+
 extern "C" {
 #include <wlr/types/wlr_abc.h>
 }
@@ -39,34 +45,60 @@ QW_BEGIN_NAMESPACE
 class QWABCPrivate : public QWObjectPrivate
 {
 public:
-    QWABCPrivate(wlr_ABC *handle, QWABC *qq)
-        : QWObjectPrivate(handle, qq)
+    QWABCPrivate(wlr_ABC *handle, bool isOwner, QWABC *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWABCPrivate::on_destroy);
     }
     ~QWABCPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_ABC_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
 
+    static QHash<wlr_ABC*, QWABC*> map;
     QW_DECLARE_PUBLIC(QWABC)
     QWSignalConnector sc;
 };
+static QHash<wlr_ABC*, QWABC*> QWABCPrivate::map;
 
 void QWABCPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
-QWABC::QWABC(wlr_ABC *handle)
+QWABC::QWABC(wlr_ABC *handle, bool isOwner)
     : QObject(nullptr)
-    , QWObject(*new QWABCPrivate(handle, this))
+    , QWObject(*new QWABCPrivate(handle, isOwner, this))
 {
 
+}
+
+QWABC *QWABC::get(wlr_ABC *handle)
+{
+    return QWABCPrivate::map.value(handle);
+}
+
+QWABC *QWABC::from(wlr_ABC *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWABC(handle, false);
 }
 
 QW_END_NAMESPACE

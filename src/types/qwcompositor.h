@@ -20,21 +20,21 @@ class QW_EXPORT QWCompositor : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWCompositor)
 public:
-    explicit QWCompositor(wlr_compositor *handle);
-
-    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer);
-
     inline wlr_compositor *handle() const {
         return QWObject::handle<wlr_compositor>();
     }
+
+    static QWCompositor *get(wlr_compositor *handle);
+    static QWCompositor *from(wlr_compositor *handle);
+    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer);
 
 Q_SIGNALS:
     // TODO: make to QWSurface
     void newSurface(wlr_surface *surface);
 
 private:
+    QWCompositor(wlr_compositor *handle, bool isOwner);
     ~QWCompositor() = default;
-    using QObject::deleteLater;
 };
 
 QW_END_NAMESPACE

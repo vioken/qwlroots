@@ -41,13 +41,14 @@ class QW_EXPORT QWCursor : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWCursor)
 public:
-    explicit QWCursor(wlr_cursor *handle);
+    explicit QWCursor(QObject *parent = nullptr);
 
     inline wlr_cursor *handle() const {
         return QWObject::handle<wlr_cursor>();
     }
 
-    static QWCursor *create();
+    static QWCursor *get(wlr_cursor *handle);
+    static QWCursor *from(wlr_cursor *handle);
 
     bool warp(wlr_input_device *dev, const QPointF &pos);
     void warpClosest(wlr_input_device *dev, const QPointF &pos);
@@ -90,6 +91,9 @@ Q_SIGNALS:
     void tabletToolProximity(wlr_tablet_tool_proximity_event *event);
     void tabletToolTip(wlr_tablet_tool_tip_event *event);
     void tabletToolButton(wlr_tablet_tool_button *event);
+
+private:
+    QWCursor(wlr_cursor *handle, bool isOwner, QObject *parent);
 };
 
 QW_END_NAMESPACE

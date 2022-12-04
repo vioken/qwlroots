@@ -4,6 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
+#include <QObject>
 
 struct wl_display;
 struct wlr_subcompositor;
@@ -13,19 +14,20 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWSubcompositorPrivate;
-class QW_EXPORT QWSubcompositor : public QWObject
+class QW_EXPORT QWSubcompositor : public QObject, public QWObject
 {
     QW_DECLARE_PRIVATE(QWSubcompositor)
 public:
-    explicit QWSubcompositor(wlr_subcompositor *handle);
-
-    static QWSubcompositor *create(QWDisplay *display);
-
     inline wlr_subcompositor *handle() const {
         return QWObject::handle<wlr_subcompositor>();
     }
 
+    static QWSubcompositor *get(wlr_subcompositor *handle);
+    static QWSubcompositor *from(wlr_subcompositor *handle);
+    static QWSubcompositor *create(QWDisplay *display);
+
 private:
+    QWSubcompositor(wlr_subcompositor *handle, bool isOwner);
     ~QWSubcompositor() = default;
 };
 

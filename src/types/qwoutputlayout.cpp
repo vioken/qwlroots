@@ -6,6 +6,7 @@
 
 #include <QPointF>
 #include <QRect>
+#include <QHash>
 
 extern "C" {
 #include <wlr/types/wlr_output_layout.h>
@@ -17,31 +18,45 @@ QW_BEGIN_NAMESPACE
 class QWOutputLayoutPrivate : public QWObjectPrivate
 {
 public:
-    QWOutputLayoutPrivate(wlr_output_layout *handle, QWOutputLayout *qq)
-        : QWObjectPrivate(handle, qq)
+    QWOutputLayoutPrivate(wlr_output_layout *handle, bool isOwner, QWOutputLayout *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
     {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWOutputLayoutPrivate::on_destroy);
         sc.connect(&handle->events.add, this, &QWOutputLayoutPrivate::on_add);
         sc.connect(&handle->events.change, this, &QWOutputLayoutPrivate::on_change);
     }
     ~QWOutputLayoutPrivate() {
-        sc.invalidate();
-        if (m_handle)
+        if (!m_handle)
+            return;
+        destroy();
+        if (isHandleOwner)
             wlr_output_layout_destroy(q_func()->handle());
+    }
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        map.remove(m_handle);
+        sc.invalidate();
     }
 
     void on_destroy(void *);
     void on_add(void *data);
     void on_change(void *data);
 
+    static QHash<void*, QWOutputLayout*> map;
     QW_DECLARE_PUBLIC(QWOutputLayout)
     QWSignalConnector sc;
 };
+QHash<void*, QWOutputLayout*> QWOutputLayoutPrivate::map;
 
 void QWOutputLayoutPrivate::on_destroy(void *)
 {
+    destroy();
     m_handle = nullptr;
-    q_func()->deleteLater();
+    delete q_func();
 }
 
 void QWOutputLayoutPrivate::on_add(void *data)
@@ -54,19 +69,29 @@ void QWOutputLayoutPrivate::on_change(void *data)
     Q_EMIT q_func()->change(reinterpret_cast<wlr_output_layout_output*>(data));
 }
 
-QWOutputLayout::QWOutputLayout(wlr_output_layout *handle)
+QWOutputLayout::QWOutputLayout(wlr_output_layout *handle, bool isOwner, QObject *parent)
     : QObject(nullptr)
-    , QWObject(*new QWOutputLayoutPrivate(handle, this))
+    , QWObject(*new QWOutputLayoutPrivate(handle, isOwner, this))
 {
 
 }
 
-QWOutputLayout *QWOutputLayout::create()
+QWOutputLayout::QWOutputLayout(QObject *parent)
+    : QWOutputLayout(wlr_output_layout_create(), true, parent)
 {
-    auto handle = wlr_output_layout_create();
-    if (!handle)
-        return nullptr;
-    return new QWOutputLayout(handle);
+
+}
+
+QWOutputLayout *QWOutputLayout::get(wlr_output_layout *handle)
+{
+    return QWOutputLayoutPrivate::map.value(handle);
+}
+
+QWOutputLayout *QWOutputLayout::from(wlr_output_layout *handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWOutputLayout(handle, false, nullptr);
 }
 
 wlr_output_layout_output *QWOutputLayout::get(wlr_output *reference) const

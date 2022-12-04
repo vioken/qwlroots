@@ -22,14 +22,15 @@ class QW_EXPORT QWBuffer : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWBuffer)
 public:
-    explicit QWBuffer(wlr_buffer *handle);
-
-    static QWBuffer *fromResource(wl_resource *resource);
-    static bool isBuffer(wl_resource *resource);
-
     inline wlr_buffer *handle() const {
         return QWObject::handle<wlr_buffer>();
     }
+
+    static QWBuffer *get(wlr_buffer *handle);
+    static QWBuffer *from(wlr_buffer *handle);
+
+    static QWBuffer *from(wl_resource *resource);
+    static bool isBuffer(wl_resource *resource);
 
     void drop();
     void lock();
@@ -49,6 +50,10 @@ public:
 
 Q_SIGNALS:
     void release();
+
+private:
+    QWBuffer(wlr_buffer *handle, bool isOwner);
+    ~QWBuffer() = default;
 };
 
 QW_END_NAMESPACE
