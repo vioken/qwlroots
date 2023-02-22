@@ -199,7 +199,14 @@ QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
 
 QWXdgSurface *QWXdgSurface::from(wlr_surface *surface)
 {
+#if WLR_VERSION_MINOR > 16
+    auto handle = wlr_xdg_surface_try_from_wlr_surface(surface);
+#else
     auto handle = wlr_xdg_surface_from_wlr_surface(surface);
+#endif
+    if (!handle)
+        return nullptr;
+
     if (handle->role == WLR_XDG_SURFACE_ROLE_POPUP)
         return QWXdgPopup::from(handle->popup);
     return QWXdgToplevel::from(handle->toplevel);

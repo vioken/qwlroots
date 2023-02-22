@@ -88,8 +88,6 @@ Q_SIGNALS:
     void commit(wlr_output_event_commit *event);
     void present(wlr_output_event_present *event);
     void bind(wlr_output_event_bind *event);
-    void enableChanged();
-    void modeChanged();
     void descriptionChanged();
 
 private:
