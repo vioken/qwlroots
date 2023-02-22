@@ -133,7 +133,11 @@ void QWOutputLayout::addAuto(wlr_output *output)
 
 void QWOutputLayout::move(wlr_output *output, const QPoint &pos)
 {
+#if WLR_VERSION_MINOR > 16
+    wlr_output_layout_add(handle(), output, pos.x(), pos.y());
+#else
     wlr_output_layout_move(handle(), output, pos.x(), pos.y());
+#endif
 }
 
 void QWOutputLayout::remove(wlr_output *output)

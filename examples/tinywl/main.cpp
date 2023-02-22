@@ -428,7 +428,11 @@ TinywlServer::View *TinywlServer::viewAt(const QPointF &pos, wlr_surface **surfa
         return nullptr;
     }
     auto *sceneBuffer = QWSceneBuffer::from(node);
+#if WLR_VERSION_MINOR > 16
+    auto *sceneSurface = wlr_scene_surface_try_from_buffer(sceneBuffer->handle());
+#else
     auto *sceneSurface = wlr_scene_surface_from_buffer(sceneBuffer->handle());
+#endif
     if (!sceneSurface)
         return nullptr;
 

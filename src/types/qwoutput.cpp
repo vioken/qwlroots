@@ -31,8 +31,6 @@ public:
         sc.connect(&handle->events.commit, this, &QWOutputPrivate::on_commit);
         sc.connect(&handle->events.present, this, &QWOutputPrivate::on_present);
         sc.connect(&handle->events.bind, this, &QWOutputPrivate::on_bind);
-        sc.connect(&handle->events.enable, this, &QWOutputPrivate::on_enable);
-        sc.connect(&handle->events.mode, this, &QWOutputPrivate::on_mode);
         sc.connect(&handle->events.description, this, &QWOutputPrivate::on_description);
         sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
     }
@@ -58,8 +56,6 @@ public:
     void on_commit(void *data);
     void on_present(void *data);
     void on_bind(void *data);
-    void on_enable(void *data);
-    void on_mode(void *data);
     void on_description(void *data);
     void on_destroy(void *data);
 
@@ -104,18 +100,6 @@ void QWOutputPrivate::on_present(void *data)
 void QWOutputPrivate::on_bind(void *data)
 {
     Q_EMIT q_func()->bind(reinterpret_cast<wlr_output_event_bind*>(data));
-}
-
-void QWOutputPrivate::on_enable(void *data)
-{
-    Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->enableChanged();
-}
-
-void QWOutputPrivate::on_mode(void *data)
-{
-    Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->modeChanged();
 }
 
 void QWOutputPrivate::on_description(void *data)
