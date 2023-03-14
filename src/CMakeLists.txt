@@ -39,6 +39,7 @@ set(SOURCES
     types/qwdatadevice.cpp
     types/qwoutputlayout.cpp
     types/qwscene.cpp
+    types/qwseat.cpp
     types/qwxdgshell.cpp
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
@@ -59,6 +60,7 @@ set(HEADERS
     types/qwdatadevice.h
     types/qwoutputlayout.h
     types/qwscene.h
+    types/qwseat.h
     types/qwxdgshell.h
     types/qwcursor.h
     types/qwxcursormanager.h
@@ -105,7 +107,7 @@ install(TARGETS ${TARGET}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER
         COMPONENT Development
-        DESTINATION include/${TARGET}
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
