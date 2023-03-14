@@ -13,6 +13,7 @@ QW_BEGIN_NAMESPACE
 class QWABCPrivate;
 class QW_EXPORT QWABC : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWABC)
 public:
     inline wlr_ABC *handle() const {
@@ -69,11 +70,11 @@ public:
 
     void on_destroy(void *);
 
-    static QHash<wlr_ABC*, QWABC*> map;
+    static QHash<void*, QWABC*> map;
     QW_DECLARE_PUBLIC(QWABC)
     QWSignalConnector sc;
 };
-static QHash<wlr_ABC*, QWABC*> QWABCPrivate::map;
+QHash<void*, QWABC*> QWABCPrivate::map;
 
 void QWABCPrivate::on_destroy(void *)
 {
