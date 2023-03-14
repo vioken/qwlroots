@@ -18,6 +18,7 @@
 #include <types/qwoutputlayout.h>
 #include <types/qwoutput.h>
 #include <types/qwscene.h>
+#include <types/qwseat.h>
 #include <types/qwxdgshell.h>
 #include <types/qwcursor.h>
 #include <types/qwxcursormanager.h>
@@ -121,8 +122,7 @@ private:
     uint32_t resizingEdges = 0;
 
     QList<wlr_keyboard*> keyboards;
-    // TODO: QWSeat
-    wlr_seat *seat;
+    QWSeat *seat;
     QWSignalConnector sc;
 };
 
@@ -165,9 +165,10 @@ TinywlServer::TinywlServer()
     connect(cursor, &QWCursor::frame, this, &TinywlServer::onCursorFrame);
 
     connect(backend, &QWBackend::newInput, this, &TinywlServer::onNewInput);
-    seat = wlr_seat_create(display->handle(), "seat0");
-    sc.connect(&seat->events.request_set_cursor, this, &TinywlServer::onRequestSetCursor);
-    sc.connect(&seat->events.request_set_selection, this, &TinywlServer::onRequestSetSelection);
+
+    seat = QWSeat::create(display, "seat0");
+    connect(seat, &QWSeat::request_set_cursor, this, &TinywlServer::onRequestSetCursor);
+    connect(seat, &QWSeat::request_set_selection, this, &TinywlServer::onRequestSetSelection);
 }
 
 TinywlServer::~TinywlServer()
@@ -303,7 +304,7 @@ void TinywlServer::onCursorMotionAbsolute(wlr_pointer_motion_absolute_event *eve
 
 void TinywlServer::onCursorButton(wlr_pointer_button_event *event)
 {
-    wlr_seat_pointer_notify_button(seat, event->time_msec, event->button, event->state);
+    seat->pointerNotifyButton(event->time_msec, event->button, event->state);
     QPointF spos;
     wlr_surface *surface = nullptr;
     auto view = viewAt(cursor->position(), &surface, &spos);
@@ -316,13 +317,13 @@ void TinywlServer::onCursorButton(wlr_pointer_button_event *event)
 
 void TinywlServer::onCursorAxis(wlr_pointer_axis_event *event)
 {
-    wlr_seat_pointer_notify_axis(seat, event->time_msec, event->orientation,
+    seat->pointerNotifyAxis(event->time_msec, event->orientation,
                                  event->delta, event->delta_discrete, event->source);
 }
 
 void TinywlServer::onCursorFrame()
 {
-    wlr_seat_pointer_notify_frame(seat);
+    seat->pointerNotifyFrame();
 }
 
 void TinywlServer::onNewInput(wlr_input_device *device)
@@ -342,7 +343,7 @@ void TinywlServer::onNewInput(wlr_input_device *device)
         sc.connect(&wlr_keyboard->events.key, this, &TinywlServer::onKeyboardKey, wlr_keyboard);
         sc.connect(&device->events.destroy, this, &TinywlServer::onKeyboardDestroy, wlr_keyboard);
 
-        wlr_seat_set_keyboard(seat, wlr_keyboard);
+        seat->setKeyboard(wlr_keyboard);
 
         Q_ASSERT(!keyboards.contains(wlr_keyboard));
         keyboards.append(wlr_keyboard);
@@ -354,24 +355,24 @@ void TinywlServer::onNewInput(wlr_input_device *device)
     if (!keyboards.isEmpty()) {
         caps |= WL_SEAT_CAPABILITY_KEYBOARD;
     }
-    wlr_seat_set_capabilities(seat, caps);
+    seat->setCapabilities(caps);
 }
 
 void TinywlServer::onRequestSetCursor(wlr_seat_pointer_request_set_cursor_event *event)
 {
-    if (seat->pointer_state.focused_client == event->seat_client)
+    if (seat->handle()->pointer_state.focused_client == event->seat_client)
         cursor->setSurface(event->surface, QPoint(event->hotspot_x, event->hotspot_y));
 }
 
 void TinywlServer::onRequestSetSelection(wlr_seat_request_set_selection_event *event)
 {
-    wlr_seat_set_selection(seat, event->source, event->serial);
+    seat->setSelection(event->source, event->serial);
 }
 
 void TinywlServer::onKeyboardModifiers(void *, wlr_keyboard *keyboard)
 {
-    wlr_seat_set_keyboard(seat, keyboard);
-    wlr_seat_keyboard_notify_modifiers(seat, &keyboard->modifiers);
+    seat->setKeyboard(keyboard);
+    seat->keyboardNotifyModifiers(&keyboard->modifiers);
 }
 
 void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *keyboard)
@@ -390,8 +391,8 @@ void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *ke
     }
 
     if (!handled) {
-        wlr_seat_set_keyboard(seat, keyboard);
-        wlr_seat_keyboard_notify_key(seat, event->time_msec, event->keycode, event->state);
+        seat->setKeyboard(keyboard);
+        seat->keyboardNotifyKey(event->time_msec, event->keycode, event->state);
     }
 }
 
@@ -502,10 +503,10 @@ void TinywlServer::processCursorMotion(uint32_t time)
         cursorManager->setCursor("left_ptr", cursor);
 
     if (surface) {
-        wlr_seat_pointer_notify_enter(seat, surface, spos.x(), spos.y());
-        wlr_seat_pointer_notify_motion(seat, time, spos.x(), spos.y());
+        seat->pointerNotifyEnter(surface, spos.x(), spos.y());
+        seat->pointerNotifyMotion(time, spos.x(), spos.y());
     } else {
-        wlr_seat_pointer_clear_focus(seat);
+        seat->pointerClearFocus();
     }
 }
 
@@ -514,7 +515,7 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
     if (!view)
         return;
 
-    wlr_surface *prevSurface = seat->keyboard_state.focused_surface;
+    wlr_surface *prevSurface = seat->handle()->keyboard_state.focused_surface;
     if (prevSurface == surface) {
         return;
     }
@@ -529,15 +530,15 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
     views.move(views.indexOf(view), 0);
     view->xdgToplevel->setActivated(true);
 
-    if (wlr_keyboard *keyboard = wlr_seat_get_keyboard(seat)) {
-        wlr_seat_keyboard_notify_enter(seat, view->xdgToplevel->handle()->base->surface,
+    if (wlr_keyboard *keyboard = seat->getKeyboard()) {
+        seat->keyboardNotifyEnter(view->xdgToplevel->handle()->base->surface,
                                        keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
     }
 }
 
 void TinywlServer::beginInteractive(View *view, CursorState state, uint32_t edges)
 {
-    wlr_surface *focusedSurface = seat->pointer_state.focused_surface;
+    wlr_surface *focusedSurface = seat->handle()->pointer_state.focused_surface;
     if (view->xdgToplevel->handle()->base->surface !=
             wlr_surface_get_root_surface(focusedSurface)) {
         return;
