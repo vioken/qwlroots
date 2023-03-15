@@ -90,5 +90,7 @@ cmake --build build
   * from：一个静态函数，根据传入的 wlroots 的结构体对象指针，返回一个 class 对象，除系统错误外，返回值一定不为`nullptr`
   * get: 一个静态函数，根据传入的 wlroots 的结构体对象指针，返回一个 class 对象，如果找不到此结构体对应的 class 对象（一般在此之前明确创建过相关对象），则返回`nullptr`，使用此函数的返回值之前一定需要判断指针是否为空
 * 对于没有提供信号，且在封装的 class 中无需任何成员变量时，可直接将 wlroots 的结构体指针强转为对应的 class 指针使用。可参考 [QWTexture 的实现](https://github.com/vioken/qwlroots/blob/master/src/render/qwtexture.cpp#L28)
+* 对于 wlroots 中命名为`setxxxx`的信号，一般是用于通知`xxxx`被设置了，在 qwlroots 中封装时需将其改为`xxxxChanged`，以符合 Qt 信号的命名习惯
+* 对于 wlr_xxxx struct 中的成员变量，当前阶段不进行封装，因为 wlroots 的成员变量在开发过程中可能会有比较大的变化，如果将其封装为类的成员函数，将导致相应的 API 也需要跟随变化，等以后 wlroots 相对稳定后再进行封装。相应的，如果一个 wlr_xxxx struct 没有对应的函数，仅被当作数据结构访问其成员变量，因此此类 struct 也暂不封装
 
 > 以上部分内容可参考 [class 模板](https://github.com/vioken/qwlroots/blob/master/src/class_template.txt)。
