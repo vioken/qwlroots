@@ -10,8 +10,9 @@ find_package(Qt${QT_VERSION_MAJOR}
 
 set(WLROOTS_MINIMUM_REQUIRED 0.16.0)
 find_package(PkgConfig)
-pkg_search_module(WLROOTS REQUIRED wlroots>=${WLROOTS_MINIMUM_REQUIRED})
-pkg_search_module(PIXMAN REQUIRED pixman-1)
+pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots>=${WLROOTS_MINIMUM_REQUIRED})
+pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
+pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
 pkg_get_variable(WLR_HAVE_VULKAN wlroots have_vulkan_renderer)
 
 setup_package_version_variables(WLROOTS)
@@ -87,7 +88,9 @@ set(QT_LIBRAIES
 target_link_libraries(${TARGET}
     PRIVATE
     ${QT_LIBRAIES}
-    ${WLROOTS_LIBRARIES}
+    PkgConfig::WLROOTS
+    PkgConfig::WAYLAND_SERVER
+    PkgConfig::PIXMAN
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -95,7 +98,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 target_include_directories(${TARGET}
     PRIVATE
     ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
-    ${WLROOTS_INCLUDE_DIRS}
 )
 
 target_include_directories(${TARGET}
