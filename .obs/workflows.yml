@@ -1,0 +1,35 @@
+test_build:
+  steps:
+    - link_package:
+        source_project: home:rewine:vioken
+        source_package: %{SCM_REPOSITORY_NAME} 
+        target_project: home:rewine:vioken:CI
+
+    - configure_repositories:
+        project: home:rewine:vioken:CI
+        repositories:
+          - name: Arch
+            paths:
+              - target_project: home:rewine:vioken
+                target_repository: Arch
+            architectures:
+              - x86_64
+  filters:
+    event: pull_request
+
+tag_build:
+  steps:
+    - branch_package:
+        source_project: home:rewine:vioken
+        source_package: %{SCM_REPOSITORY_NAME} 
+        target_project: home:rewine:vioken:TAG
+  filters:
+    event: tag_push
+
+commit_build:
+  steps:
+    - trigger_services:
+        project: home:rewine:vioken
+        package: %{SCM_REPOSITORY_NAME}
+  filters:
+    event: push
