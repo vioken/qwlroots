@@ -2,6 +2,7 @@
 
 [简体中文](./README.zh_CN.md)
 
+
 ## Introduction
 
 qwlroots is a binding of [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots), which provides a Qt style development interface. It aims to simplify wlroots API calling methods with Qt, and serve the needs of calling wlroots within Qt projects. In qwlroots, each wlroots struct is wrapped as a C++ class with its corresponding functions. At the same time, wl_singals in Wayland are wrapped as Qt signals.
