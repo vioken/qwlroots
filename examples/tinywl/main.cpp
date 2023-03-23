@@ -22,6 +22,8 @@
 #include <types/qwxdgshell.h>
 #include <types/qwcursor.h>
 #include <types/qwxcursormanager.h>
+#include <types/qwinputdevice.h>
+#include <types/qwkeyboard.h>
 
 #define WLR_USE_UNSTABLE
 extern "C" {
@@ -67,13 +69,13 @@ private Q_SLOTS:
     void onCursorAxis(wlr_pointer_axis_event *event);
     void onCursorFrame();
 
-    void onNewInput(wlr_input_device *device);
+    void onNewInput(QWInputDevice *device);
     void onRequestSetCursor(wlr_seat_pointer_request_set_cursor_event *event);
     void onRequestSetSelection(wlr_seat_request_set_selection_event *event);
 
-    void onKeyboardModifiers(void*, wlr_keyboard *keyboard);
-    void onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *keyboard);
-    void onKeyboardDestroy(void*, wlr_keyboard *keyboard);
+    void onKeyboardModifiers();
+    void onKeyboardKey(wlr_keyboard_key_event *event);
+    void onKeyboardDestroy();
 
     void onOutputFrame();
 
@@ -123,7 +125,7 @@ private:
     CursorState cursorState = CursorState::Normal;
     uint32_t resizingEdges = 0;
 
-    QList<wlr_keyboard*> keyboards;
+    QList<QWKeyboard*> keyboards;
     QWSeat *seat;
     QWSignalConnector sc;
 };
@@ -294,13 +296,15 @@ void TinywlServer::onXdgToplevelRequestRequestFullscreen(bool fullscreen)
 
 void TinywlServer::onCursorMotion(wlr_pointer_motion_event *event)
 {
-    cursor->move(&event->pointer->base, QPointF(event->delta_x, event->delta_y));
+    // TODO: USE QWPointer
+    cursor->move(QWInputDevice::from(&event->pointer->base), QPointF(event->delta_x, event->delta_y));
     processCursorMotion(event->time_msec);
 }
 
 void TinywlServer::onCursorMotionAbsolute(wlr_pointer_motion_absolute_event *event)
 {
-    cursor->warpAbsolute(&event->pointer->base, QPointF(event->x, event->y));
+    // TODO: USE QWPointer
+    cursor->warpAbsolute(QWInputDevice::from(&event->pointer->base), QPointF(event->x, event->y));
     processCursorMotion(event->time_msec);
 }
 
@@ -328,28 +332,27 @@ void TinywlServer::onCursorFrame()
     seat->pointerNotifyFrame();
 }
 
-void TinywlServer::onNewInput(wlr_input_device *device)
+void TinywlServer::onNewInput(QWInputDevice *device)
 {
-    if (device->type == WLR_INPUT_DEVICE_KEYBOARD) {
-        auto *wlr_keyboard = wlr_keyboard_from_input_device(device);
+    if (QWKeyboard *keyboard = qobject_cast<QWKeyboard*>(device)) {
 
         xkb_context *context = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
         xkb_keymap *keymap = xkb_keymap_new_from_names(context, nullptr, XKB_KEYMAP_COMPILE_NO_FLAGS);
 
-        wlr_keyboard_set_keymap(wlr_keyboard, keymap);
+        keyboard->setKeymap(keymap);
         xkb_keymap_unref(keymap);
         xkb_context_unref(context);
-        wlr_keyboard_set_repeat_info(wlr_keyboard, 25, 600);
+        keyboard->setRepeatInfo(25, 600);
 
-        sc.connect(&wlr_keyboard->events.modifiers, this, &TinywlServer::onKeyboardModifiers, wlr_keyboard);
-        sc.connect(&wlr_keyboard->events.key, this, &TinywlServer::onKeyboardKey, wlr_keyboard);
-        sc.connect(&device->events.destroy, this, &TinywlServer::onKeyboardDestroy, wlr_keyboard);
+        connect(keyboard, &QWKeyboard::modifiers, this, &TinywlServer::onKeyboardModifiers);
+        connect(keyboard, &QWKeyboard::key, this, &TinywlServer::onKeyboardKey);
+        connect(keyboard, &QWKeyboard::destroyed, this, &TinywlServer::onKeyboardDestroy);
 
-        seat->setKeyboard(wlr_keyboard);
+        seat->setKeyboard(keyboard);
 
-        Q_ASSERT(!keyboards.contains(wlr_keyboard));
-        keyboards.append(wlr_keyboard);
-    } else if (device->type == WLR_INPUT_DEVICE_POINTER) {
+        Q_ASSERT(!keyboards.contains(keyboard));
+        keyboards.append(keyboard);
+    } else if (device->handle()->type == WLR_INPUT_DEVICE_POINTER) {
         cursor->attachInputDevice(device);
     }
 
@@ -371,21 +374,23 @@ void TinywlServer::onRequestSetSelection(wlr_seat_request_set_selection_event *e
     seat->setSelection(event->source, event->serial);
 }
 
-void TinywlServer::onKeyboardModifiers(void *, wlr_keyboard *keyboard)
+void TinywlServer::onKeyboardModifiers()
 {
+    QWKeyboard *keyboard = qobject_cast<QWKeyboard*>(QObject::sender());
     seat->setKeyboard(keyboard);
-    seat->keyboardNotifyModifiers(&keyboard->modifiers);
+    seat->keyboardNotifyModifiers(&keyboard->handle()->modifiers);
 }
 
-void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *keyboard)
+void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event)
 {
+    QWKeyboard *keyboard = qobject_cast<QWKeyboard*>(QObject::sender());
     /* Translate libinput keycode -> xkbcommon */
     uint32_t keycode = event->keycode + 8;
     const xkb_keysym_t *syms;
-    int nsyms = xkb_state_key_get_syms(keyboard->xkb_state, keycode, &syms);
+    int nsyms = xkb_state_key_get_syms(keyboard->handle()->xkb_state, keycode, &syms);
 
     bool handled = false;
-    uint32_t modifiers = wlr_keyboard_get_modifiers(keyboard);
+    uint32_t modifiers = keyboard->getModifiers();
     if ((modifiers & (WLR_MODIFIER_ALT | WLR_MODIFIER_CTRL))
             && event->state == WL_KEYBOARD_KEY_STATE_PRESSED) {
         for (int i = 0; i < nsyms; i++)
@@ -398,12 +403,10 @@ void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event, wlr_keyboard *ke
     }
 }
 
-void TinywlServer::onKeyboardDestroy(void *, wlr_keyboard *keyboard)
+void TinywlServer::onKeyboardDestroy()
 {
+    QWKeyboard *keyboard = qobject_cast<QWKeyboard*>(QObject::sender());
     keyboards.removeOne(keyboard);
-    sc.disconnect(&keyboard->events.modifiers);
-    sc.disconnect(&keyboard->events.key);
-    sc.disconnect(&keyboard->base.events.destroy);
 }
 
 void TinywlServer::onOutputFrame()
@@ -532,9 +535,9 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
     views.move(views.indexOf(view), 0);
     view->xdgToplevel->setActivated(true);
 
-    if (wlr_keyboard *keyboard = seat->getKeyboard()) {
+    if (QWKeyboard *keyboard = seat->getKeyboard()) {
         seat->keyboardNotifyEnter(view->xdgToplevel->handle()->base->surface,
-                                       keyboard->keycodes, keyboard->num_keycodes, &keyboard->modifiers);
+                                       keyboard->handle()->keycodes, keyboard->handle()->num_keycodes, &keyboard->handle()->modifiers);
     }
 }
 

@@ -12,7 +12,6 @@ struct wlr_seat_request_set_selection_event;
 struct wlr_seat_request_set_primary_selection_event;
 struct wlr_seat_request_start_drag_event;
 struct wlr_drag;
-struct wlr_keyboard;
 struct wlr_data_source;
 struct wlr_keyboard_modifiers;
 struct wlr_surface;
@@ -24,6 +23,7 @@ typedef int wlr_button_state_t;
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
+class QWKeyboard;
 class QWSeatPrivate;
 class QW_EXPORT QWSeat : public QObject, public QWObject
 {
@@ -39,8 +39,8 @@ public:
     static QWSeat *get(wlr_seat *handle);
     static QWSeat *from(wlr_seat *handle);
 
-    void setKeyboard(wlr_keyboard *keyboard);
-    wlr_keyboard *getKeyboard() const;
+    void setKeyboard(QWKeyboard *keyboard);
+    QWKeyboard *getKeyboard() const;
     void setCapabilities(uint32_t capabilities);
     void setSelection(wlr_data_source *source, uint32_t serial);
     void keyboardNotifyEnter(wlr_surface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers);

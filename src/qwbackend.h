@@ -10,7 +10,6 @@
 #include <type_traits>
 
 struct wlr_backend;
-struct wlr_input_device;
 struct wlr_output;
 struct wlr_session;
 struct wlr_device;
@@ -27,6 +26,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWOutput;
+class QWInputDevice;
 class QWBackendPrivate;
 class QW_EXPORT QWBackend : public QObject, public QWObject
 {
@@ -57,8 +57,7 @@ public Q_SLOTS:
     bool start();
 
 Q_SIGNALS:
-    // TODO: make to QWInputDevice
-    void newInput(wlr_input_device *device);
+    void newInput(QWInputDevice *device);
     void newOutput(QWOutput *output);
 
 protected:
@@ -119,7 +118,7 @@ public:
     wl_display *getRemoteDisplay() const;
     QWOutput *createOutput();
 
-    static bool isWaylandInputDevice(wlr_input_device *device);
+    static bool isWaylandInputDevice(QWInputDevice *device);
 
     static bool isWaylandOutput(QWOutput *output);
     static void waylandOutputSetTitle(QWOutput *output, const char *title);
@@ -141,7 +140,7 @@ public:
 
     static bool isX11Output(QWOutput *output);
     static void x11OutputSetTitle(QWOutput *output, const char *title);
-    static bool isX11InputDevice(wlr_input_device *device);
+    static bool isX11InputDevice(QWInputDevice *device);
 
 private:
     QWX11Backend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
@@ -155,8 +154,8 @@ public:
     static QWLibinputBackend *from(wlr_backend *handle);
     static QWLibinputBackend *create(QWDisplay *display, wlr_session *session, QObject *parent = nullptr);
 
-    static bool isLibinputDevice(wlr_input_device *device);
-    static libinput_device *getDeviceHandle(wlr_input_device *dev);
+    static bool isLibinputDevice(QWInputDevice *device);
+    static libinput_device *getDeviceHandle(QWInputDevice *dev);
 
 private:
     QWLibinputBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);

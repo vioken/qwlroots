@@ -5,6 +5,7 @@
 #include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 #include "types/qwoutput.h"
+#include "types/qwkeyboard.h"
 
 #include <QHash>
 
@@ -61,7 +62,7 @@ void QWBackendPrivate::on_new_input(wlr_input_device *device)
 {
     Q_Q(QWBackend);
     Q_ASSERT(device);
-    Q_EMIT q->newInput(device);
+    Q_EMIT q->newInput(QWInputDevice::from(device));
 }
 
 void QWBackendPrivate::on_new_output(wlr_output *output)
@@ -300,9 +301,9 @@ QWOutput *QWWaylandBackend::createOutput()
     return QWOutput::from(output);
 }
 
-bool QWWaylandBackend::isWaylandInputDevice(wlr_input_device *device)
+bool QWWaylandBackend::isWaylandInputDevice(QWInputDevice *device)
 {
-    return wlr_input_device_is_wl(device);
+    return wlr_input_device_is_wl(device->handle());
 }
 
 bool QWWaylandBackend::isWaylandOutput(QWOutput *output)
@@ -371,9 +372,9 @@ void QWX11Backend::x11OutputSetTitle(QWOutput *output, const char *title)
     wlr_x11_output_set_title(output->handle(), title);
 }
 
-bool QWX11Backend::isX11InputDevice(wlr_input_device *device)
+bool QWX11Backend::isX11InputDevice(QWInputDevice *device)
 {
-    return wlr_input_device_is_x11(device);
+    return wlr_input_device_is_x11(device->handle());
 }
 
 QWX11Backend::QWX11Backend(wlr_backend *handle, bool isOwner, QObject *parent)
@@ -409,14 +410,14 @@ QWLibinputBackend *QWLibinputBackend::create(QWDisplay *display, wlr_session *se
     return new QWLibinputBackend(handle, true, parent);
 }
 
-bool QWLibinputBackend::isLibinputDevice(wlr_input_device *device)
+bool QWLibinputBackend::isLibinputDevice(QWInputDevice *device)
 {
-    return wlr_input_device_is_libinput(device);
+    return wlr_input_device_is_libinput(device->handle());
 }
 
-libinput_device *QWLibinputBackend::getDeviceHandle(wlr_input_device *dev)
+libinput_device *QWLibinputBackend::getDeviceHandle(QWInputDevice *dev)
 {
-    return wlr_libinput_get_device_handle(dev);
+    return wlr_libinput_get_device_handle(dev->handle());
 }
 
 QWLibinputBackend::QWLibinputBackend(wlr_backend *handle, bool isOwner, QObject *parent)

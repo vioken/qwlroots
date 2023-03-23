@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwcursor.h"
+#include "qwinputdevice.h"
 #include "util/qwsignalconnector.h"
 #include "types/qwoutputlayout.h"
 
@@ -227,24 +228,24 @@ QWCursor *QWCursor::from(wlr_cursor *handle)
     return new QWCursor(handle, false, nullptr);
 }
 
-bool QWCursor::warp(wlr_input_device *dev, const QPointF &pos)
+bool QWCursor::warp(QWInputDevice *dev, const QPointF &pos)
 {
-    return wlr_cursor_warp(handle(), dev, pos.x(), pos.y());
+    return wlr_cursor_warp(handle(), dev->handle(), pos.x(), pos.y());
 }
 
-void QWCursor::warpClosest(wlr_input_device *dev, const QPointF &pos)
+void QWCursor::warpClosest(QWInputDevice *dev, const QPointF &pos)
 {
-    wlr_cursor_warp_closest(handle(), dev, pos.x(), pos.y());
+    wlr_cursor_warp_closest(handle(), dev->handle(), pos.x(), pos.y());
 }
 
-void QWCursor::warpAbsolute(wlr_input_device *dev, const QPointF &pos)
+void QWCursor::warpAbsolute(QWInputDevice *dev, const QPointF &pos)
 {
-    wlr_cursor_warp_absolute(handle(), dev, pos.x(), pos.y());
+    wlr_cursor_warp_absolute(handle(), dev->handle(), pos.x(), pos.y());
 }
 
-void QWCursor::move(wlr_input_device *dev, const QPointF &deltaPos)
+void QWCursor::move(QWInputDevice *dev, const QPointF &deltaPos)
 {
-    wlr_cursor_move(handle(), dev, deltaPos.x(), deltaPos.y());
+    wlr_cursor_move(handle(), dev->handle(), deltaPos.x(), deltaPos.y());
 }
 
 void QWCursor::setImage(const QImage &image, const QPoint &hotspot)
@@ -259,14 +260,14 @@ void QWCursor::setSurface(wlr_surface *surface, const QPoint &hotspot)
     wlr_cursor_set_surface(handle(), surface, hotspot.x(), hotspot.y());
 }
 
-void QWCursor::attachInputDevice(wlr_input_device *dev)
+void QWCursor::attachInputDevice(QWInputDevice *dev)
 {
-    wlr_cursor_attach_input_device(handle(), dev);
+    wlr_cursor_attach_input_device(handle(), dev->handle());
 }
 
-void QWCursor::detachInputDevice(wlr_input_device *dev)
+void QWCursor::detachInputDevice(QWInputDevice *dev)
 {
-    wlr_cursor_detach_input_device(handle(), dev);
+    wlr_cursor_detach_input_device(handle(), dev->handle());
 }
 
 void QWCursor::attachOutputLayout(QWOutputLayout *layout)
@@ -279,9 +280,9 @@ void QWCursor::mapToOutput(wlr_output *output)
     wlr_cursor_map_to_output(handle(), output);
 }
 
-void QWCursor::mapInputToOutput(wlr_input_device *dev, wlr_output *output)
+void QWCursor::mapInputToOutput(QWInputDevice *dev, wlr_output *output)
 {
-    wlr_cursor_map_input_to_output(handle(), dev, output);
+    wlr_cursor_map_input_to_output(handle(), dev->handle(), output);
 }
 
 void QWCursor::mapToRegion(const QRect &box)
@@ -296,7 +297,7 @@ void QWCursor::mapToRegion(const QRect &box)
     wlr_cursor_map_to_region(handle(), &b);
 }
 
-void QWCursor::mapInputToRegion(wlr_input_device *dev, const QRect &box)
+void QWCursor::mapInputToRegion(QWInputDevice *dev, const QRect &box)
 {
     wlr_box b {
         .x = box.x(),
@@ -305,7 +306,7 @@ void QWCursor::mapInputToRegion(wlr_input_device *dev, const QRect &box)
         .height = box.height()
     };
 
-    wlr_cursor_map_input_to_region(handle(), dev, &b);
+    wlr_cursor_map_input_to_region(handle(), dev->handle(), &b);
 }
 
 QPointF QWCursor::position() const
