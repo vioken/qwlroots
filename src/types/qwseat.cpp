@@ -3,6 +3,7 @@
 
 #include "qwseat.h"
 #include "qwdisplay.h"
+#include "qwkeyboard.h"
 #include "util/qwsignalconnector.h"
 
 #include <QHash>
@@ -183,14 +184,14 @@ QWSeat *QWSeat::from(wlr_seat *handle)
     return new QWSeat(handle, false);
 }
 
-void QWSeat::setKeyboard(wlr_keyboard *keyboard)
+void QWSeat::setKeyboard(QWKeyboard *keyboard)
 {
-    wlr_seat_set_keyboard(handle(), keyboard);
+    wlr_seat_set_keyboard(handle(), keyboard->handle());
 }
 
-wlr_keyboard *QWSeat::getKeyboard() const
+QWKeyboard *QWSeat::getKeyboard() const
 {
-    return wlr_seat_get_keyboard(handle());
+    return QWKeyboard::from(wlr_seat_get_keyboard(handle()));
 }
 
 void QWSeat::setCapabilities(uint32_t capabilities)

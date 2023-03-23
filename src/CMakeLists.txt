@@ -44,6 +44,8 @@ set(SOURCES
     types/qwxdgshell.cpp
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
+    types/qwinputdevice.cpp
+    types/qwkeyboard.cpp
     types/qwoutput.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
@@ -67,6 +69,8 @@ set(HEADERS
     types/qwxdgshell.h
     types/qwcursor.h
     types/qwxcursormanager.h
+    types/qwinputdevice.h
+    types/qwkeyboard.h
     types/qwoutput.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
@@ -74,9 +78,15 @@ set(HEADERS
     interfaces/qwoutputinterface.h
 )
 
+set(PRIVATE_HEADERS
+    types/qwinputdevice_p.h
+)
+
 add_library(${TARGET}
     SHARED
     ${SOURCES}
+    ${HEADERS}
+    ${PRIVATE_HEADERS}
 )
 
 set_target_properties(${TARGET}
@@ -114,7 +124,7 @@ install(TARGETS ${TARGET}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER
         COMPONENT Development
-	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
