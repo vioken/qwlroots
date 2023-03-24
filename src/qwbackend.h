@@ -4,7 +4,10 @@
 #pragma once
 
 #include <qwglobal.h>
+#include <interfaces/qwbackendinterface.h>
+
 #include <QObject>
+#include <type_traits>
 
 struct wlr_backend;
 struct wlr_input_device;
@@ -39,6 +42,13 @@ public:
     static QWBackend *get(wlr_backend *handle);
     static QWBackend *from(wlr_backend *handle);
     static QWBackend *autoCreate(QWDisplay *display, QObject *parent = nullptr);
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWBackendInterface, Interface>::value, QWBackend*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWBackendInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWBackend(i->handle(), true, nullptr);
+    }
 
     clockid_t presentationClock() const;
     int drmFd() const;
