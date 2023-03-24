@@ -4,7 +4,10 @@
 #pragma once
 
 #include <qwglobal.h>
+#include <interfaces/qwoutputinterface.h>
+
 #include <QObject>
+#include <type_traits>
 
 struct wlr_output;
 struct wlr_output_mode;
@@ -27,6 +30,7 @@ QW_BEGIN_NAMESPACE
 class QWAllocator;
 class QWRenderer;
 class QWBuffer;
+class QWOutputInterface;
 class QWOutputPrivate;
 class QW_EXPORT QWOutput : public QObject, public QWObject
 {
@@ -40,6 +44,13 @@ public:
     static QWOutput *get(wlr_output *handle);
     static QWOutput *from(wlr_output *handle);
     static QWOutput *from(wl_resource *resource);
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWOutputInterface, Interface>::value, QWOutput*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWOutputInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWOutput(i->handle(), true);
+    }
 
     void enable(bool enable);
     void createGlobal();

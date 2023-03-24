@@ -46,6 +46,8 @@ set(SOURCES
     types/qwxcursormanager.cpp
     types/qwoutput.cpp
     util/qwsignalconnector.cpp
+    interfaces/qwbackendinterface.cpp
+    interfaces/qwoutputinterface.cpp
 )
 
 set(HEADERS
@@ -67,6 +69,9 @@ set(HEADERS
     types/qwxcursormanager.h
     types/qwoutput.h
     util/qwsignalconnector.h
+    interfaces/qwinterface.h
+    interfaces/qwbackendinterface.h
+    interfaces/qwoutputinterface.h
 )
 
 add_library(${TARGET}
