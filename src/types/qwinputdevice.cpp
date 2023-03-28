@@ -4,6 +4,7 @@
 #include "qwinputdevice.h"
 #include "qwinputdevice_p.h"
 #include "qwkeyboard.h"
+#include "qwpointer.h"
 
 extern "C" {
 #include <wlr/types/wlr_input_device.h>
@@ -67,6 +68,8 @@ QWInputDevice *QWInputDevice::from(wlr_input_device *handle)
         return o;
     if (handle->type == WLR_INPUT_DEVICE_KEYBOARD)
         return QWKeyboard::fromInputDevice(handle);
+    if (handle->type == WLR_INPUT_DEVICE_POINTER)
+        return QWPointer::fromInputDevice(handle);
 
     // TODO: After implementing other device types
     // Here should not create QWInputDevice

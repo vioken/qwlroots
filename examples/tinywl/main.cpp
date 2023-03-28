@@ -24,6 +24,7 @@
 #include <types/qwxcursormanager.h>
 #include <types/qwinputdevice.h>
 #include <types/qwkeyboard.h>
+#include <types/qwpointer.h>
 
 #define WLR_USE_UNSTABLE
 extern "C" {
@@ -296,15 +297,13 @@ void TinywlServer::onXdgToplevelRequestRequestFullscreen(bool fullscreen)
 
 void TinywlServer::onCursorMotion(wlr_pointer_motion_event *event)
 {
-    // TODO: USE QWPointer
-    cursor->move(QWInputDevice::from(&event->pointer->base), QPointF(event->delta_x, event->delta_y));
+    cursor->move(QWPointer::from(event->pointer), QPointF(event->delta_x, event->delta_y));
     processCursorMotion(event->time_msec);
 }
 
 void TinywlServer::onCursorMotionAbsolute(wlr_pointer_motion_absolute_event *event)
 {
-    // TODO: USE QWPointer
-    cursor->warpAbsolute(QWInputDevice::from(&event->pointer->base), QPointF(event->x, event->y));
+    cursor->warpAbsolute(QWPointer::from(event->pointer), QPointF(event->x, event->y));
     processCursorMotion(event->time_msec);
 }
 
