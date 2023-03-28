@@ -46,6 +46,7 @@ set(SOURCES
     types/qwxcursormanager.cpp
     types/qwinputdevice.cpp
     types/qwkeyboard.cpp
+    types/qwpointer.cpp
     types/qwoutput.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
@@ -71,6 +72,7 @@ set(HEADERS
     types/qwxcursormanager.h
     types/qwinputdevice.h
     types/qwkeyboard.h
+    types/qwpointer.h
     types/qwoutput.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
