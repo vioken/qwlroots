@@ -25,6 +25,8 @@
 
 #define WLR_USE_UNSTABLE
 extern "C" {
+// avoid replace static
+#include <wayland-server-core.h>
 #define static
 #include <wlr/util/log.h>
 #include <wlr/util/edges.h>
