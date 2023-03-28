@@ -13,6 +13,8 @@
 #include <QHash>
 
 extern "C" {
+// avoid replace static
+#include <wayland-server-core.h>
 #define static
 #include <wlr/render/wlr_renderer.h>
 #undef static
