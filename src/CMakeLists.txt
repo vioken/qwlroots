@@ -1,4 +1,5 @@
 set(TARGET qwlroots)
+set(CMAKE_NAME ${CMAKE_PROJECT_NAME})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt${QT_VERSION_MAJOR}
@@ -103,6 +104,7 @@ set_target_properties(${TARGET}
         VERSION ${CMAKE_PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR}
         PUBLIC_HEADER "${HEADERS}"
+        EXPORT_NAME ${CMAKE_NAME}
 )
 
 set(QT_LIBRAIES
@@ -126,9 +128,22 @@ target_include_directories(${TARGET}
 
 target_include_directories(${TARGET}
     PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+
+target_include_directories(${TARGET}
+    INTERFACE
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}>
+)
+
+target_link_directories(${TARGET}
+    INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_LIBDIR}>
 )
 
 install(TARGETS ${TARGET}
+    EXPORT ${CMAKE_NAME}Targets
     LIBRARY
         DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER
@@ -137,12 +152,18 @@ install(TARGETS ${TARGET}
 )
 
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
-add_cmake_module(QWlroots ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
+add_cmake_module(${CMAKE_NAME} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
 add_pkgconfig_module(${TARGET} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET}
     "wlroots >= ${WLROOTS_MINIMUM_REQUIRED}, Qt${QT_VERSION_MAJOR}Gui"
 )
 
 install(FILES
-    cmake/QWlrootsConfig.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/QWlroots
+    ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_NAME}Config.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_NAME}
+)
+
+install(EXPORT ${CMAKE_NAME}Targets
+    FILE ${CMAKE_NAME}Targets.cmake
+    NAMESPACE ${CMAKE_NAME}::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_NAME}
 )
