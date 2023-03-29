@@ -56,3 +56,5 @@ build*/
 # nix
 .direnv/
 result
+
+qwconfig.h
