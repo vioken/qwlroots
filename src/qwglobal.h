@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <qwconfig.h>
 #include <QtCore/qglobal.h>
 
 #define QW_NAMESPACE QWLRoots

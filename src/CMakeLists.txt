@@ -13,13 +13,19 @@ find_package(PkgConfig)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
-pkg_get_variable(WLR_HAVE_VULKAN wlroots have_vulkan_renderer)
 
+pkg_get_variable(WLR_HAVE_DRM_BACKEND wlroots have_drm_backend)
+pkg_get_variable(WLR_HAVE_X11_BACKEND wlroots have_x11_backend)
+pkg_get_variable(WLR_HAVE_LIBINPUT_BACKEND wlroots have_libinput_backend)
+pkg_get_variable(WLR_HAVE_XWAYLAND wlroots have_xwayland)
+pkg_get_variable(WLR_HAVE_GLES2_RENDERER wlroots have_gles2_renderer)
+pkg_get_variable(WLR_HAVE_VULKAN_RENDERER wlroots have_vulkan_renderer)
+pkg_get_variable(WLR_HAVE_GBM_ALLOCATOR wlroots have_gbm_allocator)
+pkg_get_variable(WLR_HAVE_SESSION wlroots have_session)
 setup_package_version_variables(WLROOTS)
-add_definitions(-DWLR_VERSION_STRING="${WLROOTS_VERSION}"
-                -DWLR_VERSION_MAJOR=${WLROOTS_VERSION_MAJOR}
-                -DWLR_VERSION_MINOR=${WLROOTS_VERSION_MINOR}
-                -DWLR_VERSION_PATCH=${WLROOTS_VERSION_PATCH})
+include(CMakePackageConfigHelpers)
+configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/qwconfig.h)
+
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
 add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
@@ -78,6 +84,7 @@ set(HEADERS
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
     interfaces/qwoutputinterface.h
+    qwconfig.h
 )
 
 set(PRIVATE_HEADERS
