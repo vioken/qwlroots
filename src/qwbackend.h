@@ -4,7 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <interfaces/qwbackendinterface.h>
+#include <qwbackendinterface.h>
 
 #include <QObject>
 #include <type_traits>

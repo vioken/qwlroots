@@ -6,7 +6,7 @@
 #include "qwkeyboard.h"
 #include "qwpointer.h"
 #include "qwtablet.h"
-#include "qwtabletpad.h""
+#include "qwtabletpad.h"
 
 extern "C" {
 #include <wlr/types/wlr_input_device.h>
