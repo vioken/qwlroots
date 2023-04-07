@@ -9,22 +9,22 @@
 
 #include <qwbackend.h>
 #include <qwdisplay.h>
-#include <util/qwsignalconnector.h>
-#include <render/qwrenderer.h>
-#include <render/qwallocator.h>
-#include <types/qwcompositor.h>
-#include <types/qwsubcompositor.h>
-#include <types/qwdatadevice.h>
-#include <types/qwoutputlayout.h>
-#include <types/qwoutput.h>
-#include <types/qwscene.h>
-#include <types/qwseat.h>
-#include <types/qwxdgshell.h>
-#include <types/qwcursor.h>
-#include <types/qwxcursormanager.h>
-#include <types/qwinputdevice.h>
-#include <types/qwkeyboard.h>
-#include <types/qwpointer.h>
+#include <qwsignalconnector.h>
+#include <qwrenderer.h>
+#include <qwallocator.h>
+#include <qwcompositor.h>
+#include <qwsubcompositor.h>
+#include <qwdatadevice.h>
+#include <qwoutputlayout.h>
+#include <qwoutput.h>
+#include <qwscene.h>
+#include <qwseat.h>
+#include <qwxdgshell.h>
+#include <qwcursor.h>
+#include <qwxcursormanager.h>
+#include <qwinputdevice.h>
+#include <qwkeyboard.h>
+#include <qwpointer.h>
 
 #define WLR_USE_UNSTABLE
 extern "C" {

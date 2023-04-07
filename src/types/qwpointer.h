@@ -4,7 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <types/qwinputdevice.h>
+#include <qwinputdevice.h>
 #include <QObject>
 
 struct wlr_pointer;

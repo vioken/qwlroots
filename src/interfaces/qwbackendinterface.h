@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <interfaces/qwinterface.h>
+#include <qwinterface.h>
 
 struct wlr_backend;
 struct wlr_backend_impl;
