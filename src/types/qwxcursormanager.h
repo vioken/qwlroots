@@ -14,7 +14,7 @@ class QWCursor;
 class QW_EXPORT QWXCursorManager
 {
 public:
-    ~QWXCursorManager();
+    void destroy();
     wlr_xcursor_manager *handle() const;
 
     static QWXCursorManager *from(wlr_xcursor_manager *handle);
@@ -26,6 +26,7 @@ public:
 
 private:
     QWXCursorManager() = default;
+    ~QWXCursorManager() = default;
 };
 
 QW_END_NAMESPACE

@@ -17,8 +17,7 @@ class QWBuffer;
 class QW_EXPORT QWTexture
 {
 public:
-    ~QWTexture();
-
+    void destroy();
     wlr_texture *handle() const;
 
     static QWTexture *from(wlr_texture *handle);
@@ -32,6 +31,7 @@ public:
 
 private:
     QWTexture() = default;
+    ~QWTexture() = default;
 };
 
 QW_END_NAMESPACE

@@ -109,7 +109,7 @@ private:
 class QW_EXPORT QWOutputCursor
 {
 public:
-    ~QWOutputCursor();
+    void destroy();
     wlr_output_cursor *handle() const;
 
     static QWOutputCursor *from(wlr_output_cursor *handle);
@@ -122,6 +122,7 @@ public:
 
 private:
     QWOutputCursor() = default;
+    ~QWOutputCursor() = default;
 };
 
 QW_END_NAMESPACE
