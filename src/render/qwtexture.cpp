@@ -13,7 +13,7 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-QWTexture::~QWTexture()
+void QWTexture::destroy()
 {
     wlr_texture_destroy(handle());
 }

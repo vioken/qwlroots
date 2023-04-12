@@ -311,7 +311,7 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
     return wlr_output_get_primary_formats(handle(), bufferCaps);
 }
 
-QWOutputCursor::~QWOutputCursor()
+void QWOutputCursor::destroy()
 {
     wlr_output_cursor_destroy(handle());
 }

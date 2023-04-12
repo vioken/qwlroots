@@ -11,7 +11,7 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-QWXCursorManager::~QWXCursorManager()
+void QWXCursorManager::destroy()
 {
     wlr_xcursor_manager_destroy(handle());
 }

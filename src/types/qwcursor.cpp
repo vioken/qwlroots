@@ -245,7 +245,7 @@ void QWCursor::warpAbsolute(QWInputDevice *dev, const QPointF &pos)
 
 void QWCursor::move(QWInputDevice *dev, const QPointF &deltaPos)
 {
-    wlr_cursor_move(handle(), dev->handle(), deltaPos.x(), deltaPos.y());
+    wlr_cursor_move(handle(), dev ? dev->handle() : nullptr, deltaPos.x(), deltaPos.y());
 }
 
 void QWCursor::setImage(const QImage &image, const QPoint &hotspot)
