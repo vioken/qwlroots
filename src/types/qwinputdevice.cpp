@@ -32,6 +32,7 @@ QWInputDevicePrivate::~QWInputDevicePrivate()
 void QWInputDevicePrivate::destroy() {
     Q_ASSERT(m_handle);
     Q_ASSERT(map.contains(m_handle));
+    Q_EMIT q_func()->beforeDestroy(q_func());
     map.remove(m_handle);
     sc.invalidate();
 }

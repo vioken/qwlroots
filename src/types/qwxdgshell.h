@@ -40,6 +40,7 @@ public:
     static QWXdgShell *from(wlr_xdg_shell *handle);
 
 Q_SIGNALS:
+    void beforeDestroy(QWXdgShell *self);
     void newSurface(wlr_xdg_surface *surface);
 
 private:
@@ -76,6 +77,7 @@ public:
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
 
 Q_SIGNALS:
+    void beforeDestroy(QWXdgSurface *self);
     void pingTimeout();
     void newPopup(QWXdgPopup *popup);
     void map();

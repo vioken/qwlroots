@@ -17,6 +17,7 @@ class QWRenderer;
 class QWAllocatorPrivate;
 class QW_EXPORT QWAllocator : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWAllocator)
 public:
     inline wlr_allocator *handle() {
@@ -28,6 +29,9 @@ public:
     static QWAllocator *from(wlr_allocator *handle);
 
     wlr_buffer *createBuffer(int width, int height, const wlr_drm_format *format);
+
+Q_SIGNALS:
+    void beforeDestroy(QWAllocator *self);
 
 private:
     QWAllocator(wlr_allocator *handle, bool isOwner);

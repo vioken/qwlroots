@@ -49,6 +49,7 @@ public:
                                  pixman_region32 *damage);
 
 Q_SIGNALS:
+    void beforeDestroy(QWBuffer *self);
     void release();
 
 private:

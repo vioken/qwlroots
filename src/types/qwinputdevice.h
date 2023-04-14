@@ -23,6 +23,9 @@ public:
     static QWInputDevice *get(wlr_input_device *handle);
     static QWInputDevice *from(wlr_input_device *handle);
 
+Q_SIGNALS:
+    void beforeDestroy(QWInputDevice *self);
+
 protected:
     QWInputDevice(QWObjectPrivate &dd);
     virtual ~QWInputDevice() override = default;

@@ -20,6 +20,8 @@ public:
 
     }
     ~QWDisplayPrivate() {
+        Q_EMIT q_func()->beforeDestroy(q_func());
+
         sc.invalidate();
         Q_ASSERT(isHandleOwner);
         if (m_handle) {
@@ -28,8 +30,6 @@ public:
             wl_display_destroy(display);
         }
     }
-
-    void on_destroy(void *);
 
     QW_DECLARE_PUBLIC(QWDisplay)
     QWSignalConnector sc;

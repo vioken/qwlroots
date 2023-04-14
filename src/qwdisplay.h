@@ -33,6 +33,9 @@ public:
     void exec();
     void start(QThread *thread);
 
+Q_SIGNALS:
+    void beforeDestroy(QWDisplay *self);
+
 public Q_SLOTS:
     void terminate();
 };

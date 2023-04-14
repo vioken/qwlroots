@@ -29,6 +29,7 @@ public:
     static QWCompositor *create(QWDisplay *display, QWRenderer *renderer);
 
 Q_SIGNALS:
+    void beforeDestroy(QWCompositor *self);
     // TODO: make to QWSurface
     void newSurface(wlr_surface *surface);
 
