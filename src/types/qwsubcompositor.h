@@ -16,6 +16,7 @@ class QWDisplay;
 class QWSubcompositorPrivate;
 class QW_EXPORT QWSubcompositor : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWSubcompositor)
 public:
     inline wlr_subcompositor *handle() const {
@@ -25,6 +26,9 @@ public:
     static QWSubcompositor *get(wlr_subcompositor *handle);
     static QWSubcompositor *from(wlr_subcompositor *handle);
     static QWSubcompositor *create(QWDisplay *display);
+
+Q_SIGNALS:
+    void beforeDestroy(QWSubcompositor *self);
 
 private:
     QWSubcompositor(wlr_subcompositor *handle, bool isOwner);

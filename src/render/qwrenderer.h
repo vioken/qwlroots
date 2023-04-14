@@ -22,6 +22,7 @@ class QWTexture;
 class QWRendererPrivate;
 class QW_EXPORT QWRenderer : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWRenderer)
 public:
     inline wlr_renderer *handle() const {
@@ -56,6 +57,9 @@ public:
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
     int getDrmFd() const;
+
+Q_SIGNALS:
+    void beforeDestroy(QWRenderer *self);
 
 private:
     QWRenderer(wlr_renderer *handle, bool isOwner);

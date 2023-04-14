@@ -55,6 +55,9 @@ public:
     }
 
     virtual ~QWObject();
+    inline bool isValid() const {
+        return qw_d_ptr->m_handle;
+    }
 
 protected:
     QWObject(QWObjectPrivate &dd);

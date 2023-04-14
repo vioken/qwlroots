@@ -92,6 +92,7 @@ public:
     const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps);
 
 Q_SIGNALS:
+    void beforeDestroy(QWOutput *self);
     void frame();
     void damage(wlr_output_event_damage *event);
     void needsFrame();

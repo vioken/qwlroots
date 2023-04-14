@@ -62,6 +62,9 @@ public:
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *userData) const;
     wlr_scene_node *at(const QPointF &lpos, QPointF *npos = nullptr) const;
 
+Q_SIGNALS:
+    void beforeDestroy(QWSceneNode *self);
+
 protected:
     QWSceneNode(QWSceneNodePrivate &dd);
     QWSceneNode(wlr_scene_node *handle, bool isOwner);
@@ -164,6 +167,7 @@ class QWOutput;
 class QWSceneOutputPrivate;
 class QW_EXPORT QWSceneOutput : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneOutput)
 public:
     explicit QWSceneOutput(QWScene *scene, QWOutput *output);
@@ -180,6 +184,9 @@ public:
     void sendFrameDone(timespec *now);
 
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *user_data) const;
+
+Q_SIGNALS:
+    void beforeDestroy(QWSceneOutput *self);
 
 private:
     QWSceneOutput(wlr_scene_output *handle, bool isOwner);

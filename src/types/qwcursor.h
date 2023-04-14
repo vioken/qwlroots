@@ -70,6 +70,7 @@ public:
     QPointF position() const;
 
 Q_SIGNALS:
+    void beforeDestroy(QWCursor *self);
     void motion(wlr_pointer_motion_event *event);
     void motionAbsolute(wlr_pointer_motion_absolute_event *event);
     void button(wlr_pointer_button_event *event);

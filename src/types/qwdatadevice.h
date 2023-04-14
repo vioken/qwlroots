@@ -15,6 +15,7 @@ class QWDisplay;
 class QWDataDeviceManagerPrivate;
 class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
 {
+    Q_OBJECT
     QW_DECLARE_PRIVATE(QWDataDeviceManager)
 public:
     inline wlr_data_device_manager *handle() const {
@@ -24,6 +25,9 @@ public:
     static QWDataDeviceManager *get(wlr_data_device_manager *handle);
     static QWDataDeviceManager *from(wlr_data_device_manager *handle);
     static QWDataDeviceManager *create(QWDisplay *display);
+
+Q_SIGNALS:
+    void beforeDestroy(QWDataDeviceManager *self);
 
 private:
     QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner);

@@ -57,6 +57,7 @@ public Q_SLOTS:
     bool start();
 
 Q_SIGNALS:
+    void beforeDestroy(QWBackend *self);
     void newInput(QWInputDevice *device);
     void newOutput(QWOutput *output);
 

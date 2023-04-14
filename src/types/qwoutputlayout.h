@@ -46,6 +46,7 @@ public:
     QRect getBox(wlr_output *reference) const;
 
 Q_SIGNALS:
+    void beforeDestroy(QWOutputLayout *self);
     // TODO: make to QWOutputLayoutOutput
     void add(wlr_output_layout_output *output);
     void change(wlr_output_layout_output *output);

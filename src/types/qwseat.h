@@ -54,6 +54,7 @@ public:
     void pointerClearFocus();
 
 Q_SIGNALS:
+    void beforeDestroy(QWSeat *self);
     void pointerGrabBegin();
     void pointerGrabEnd();
     void keyboardGrabBegin();
