@@ -60,6 +60,7 @@ set(SOURCES
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
+    interfaces/qwkeyboardinterface.cpp
 )
 
 set(HEADERS
@@ -89,6 +90,7 @@ set(HEADERS
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
     interfaces/qwoutputinterface.h
+    interfaces/qwkeyboardinterface.h
     qwconfig.h
 )
 

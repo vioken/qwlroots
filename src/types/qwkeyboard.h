@@ -5,7 +5,9 @@
 
 #include <qwglobal.h>
 #include <qwinputdevice.h>
+#include <qwkeyboardinterface.h>
 #include <QObject>
+#include <type_traits>
 
 struct wlr_keyboard;
 struct wlr_keyboard_key_event;
@@ -27,6 +29,14 @@ public:
     static QWKeyboard *get(wlr_keyboard *handle);
     static QWKeyboard *from(wlr_keyboard *handle);
     static QWKeyboard *fromInputDevice(wlr_input_device *input_device);
+
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWKeyboardInterface, Interface>::value, QWKeyboard*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWKeyboardInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWKeyboard(i->handle(), true);
+    }
 
     uint32_t getModifiers() const;
     void setKeymap(xkb_keymap *keymap);
