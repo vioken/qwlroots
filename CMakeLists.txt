@@ -11,12 +11,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-option(USE_QT5 "Use the Qt5 library" ON)
+option(PREFER_QT_5 "Prefer to use Qt 5 even if we have Qt 6" OFF)
 
-if (${USE_QT5} STREQUAL "ON")
-    set(QT_VERSION_MAJOR 5)
+if(PREFER_QT_5)
+    find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core)
 else()
-    set(QT_VERSION_MAJOR 6)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 endif()
 
 # For Unix/Linux

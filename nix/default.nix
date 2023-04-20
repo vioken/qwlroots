@@ -43,10 +43,6 @@ stdenv.mkDerivation rec {
     seatd
   ];
 
-  cmakeFlags = [
-    "-DUSE_QT5=${if lib.versionOlder qtbase.version "6.0.0" then "ON" else "OFF"}"
-  ];
-
   meta = with lib; {
     description = "Qt and QML bindings for wlroots";
     homepage = "https://github.com/vioken/qwlroots";
