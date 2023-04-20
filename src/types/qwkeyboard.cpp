@@ -63,7 +63,7 @@ QWKeyboard::QWKeyboard(wlr_keyboard *handle, bool isOwner)
 
 QWKeyboard *QWKeyboard::get(wlr_keyboard *handle)
 {
-    return dynamic_cast<QWKeyboard*>(QWInputDevice::get(&handle->base));
+    return qobject_cast<QWKeyboard*>(QWInputDevice::get(&handle->base));
 }
 
 QWKeyboard *QWKeyboard::from(wlr_keyboard *handle)
