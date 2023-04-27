@@ -1,4 +1,4 @@
-{ pkgs ? import <inxpkgs> { }, wlroots_0_17_src ? null }:
+{ pkgs ? import <inxpkgs> { }, wlroots_0_17_src ? null , nix-filter }:
 let
   mkDate = longDate: (pkgs.lib.concatStringsSep "-" [
     (builtins.substring 0 4 longDate)
@@ -7,7 +7,15 @@ let
   ]);
 in
 rec {
-  wlroots-git = pkgs.wlroots_0_16.overrideAttrs (
+  wlroots-git = (pkgs.wlroots_0_16.override {
+    wayland = pkgs.wayland.overrideAttrs ( old : {
+      version = "1.22.0";
+      src = pkgs.fetchurl {
+        url = "https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz";
+        hash = "sha256-FUCvHqaYpHHC2OnSiDMsfg/TYMjx0Sk267fny8JCWEI=";
+      };
+    });
+  }).overrideAttrs (
     old: {
       version =  mkDate (wlroots_0_17_src.lastModifiedDate or "19700101") + "_" + (wlroots_0_17_src.shortRev or "dirty");
       src = wlroots_0_17_src;
@@ -20,10 +28,12 @@ rec {
   );
 
   qwlroots-qt6 = pkgs.qt6.callPackage ./nix {
+    inherit nix-filter;
     wlroots = pkgs.wlroots_0_16;
   };
   
   qwlroots-qt5 = pkgs.libsForQt5.callPackage ./nix {
+    inherit nix-filter;
     wlroots = pkgs.wlroots_0_16;
   };
 
