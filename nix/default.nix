@@ -1,5 +1,6 @@
 { stdenv
 , lib
+, nix-filter
 , fetchFromGitHub
 , cmake
 , pkg-config
@@ -20,7 +21,17 @@ stdenv.mkDerivation rec {
   pname = "qwlroots";
   version = "0.0.1";
 
-  src = ./..;
+  src = nix-filter.lib.filter {
+    root = ./..;
+
+    exclude = [
+      ".git"
+      "LICENSE"
+      "README.md"
+      "README.zh_CN.md"
+      (nix-filter.lib.matchExt "nix")
+    ];
+  };
 
   nativeBuildInputs = [
     cmake

@@ -3,6 +3,7 @@
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
+    nix-filter.url = "github:numtide/nix-filter";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     wlroots-unstable = {
@@ -11,7 +12,7 @@
     };
   };
 
-  outputs = { self, flake-utils, nixpkgs, wlroots-unstable }@input:
+  outputs = { self, flake-utils, nix-filter, nixpkgs, wlroots-unstable }@input:
     flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "riscv64-linux" ]
       (system:
         let
@@ -19,13 +20,12 @@
         in
         rec {
           packages = import ./default.nix {
-            inherit pkgs;
+            inherit pkgs nix-filter;
             wlroots_0_17_src = wlroots-unstable;
           };
 
           devShell = pkgs.mkShell { 
             nativeBuildInputs = packages.default.nativeBuildInputs ++ (with pkgs; [
-              # (weston.override { buildDemo = true; })
               wayland-utils
             ]);
             inherit (packages.default) buildInputs;
