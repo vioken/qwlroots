@@ -22,6 +22,8 @@ struct wlr_xdg_surface;
 
 struct pixman_region32;
 
+typedef int wl_output_transform_t;
+
 typedef bool (*wlr_scene_buffer_point_accepts_input_func_t)(
     struct wlr_scene_buffer *buffer, int sx, int sy);
 
@@ -129,7 +131,7 @@ public:
     void setOpaqueRegion(pixman_region32 *region);
     void setSourceBox(const QRectF &box);
     void setDestSize(const QSize &size);
-    void setTransform(int wl_output_transform);
+    void setTransform(wl_output_transform_t wl_output_transform);
     void sendFrameDone(timespec *now);
 
 Q_SIGNALS:
