@@ -73,7 +73,7 @@ static const wlr_drm_format_set *get_primary_formats(
 
 QWOutputInterface::~QWOutputInterface()
 {
-    delete handle();
+    free(handle());
     delete static_cast<wlr_output_impl*>(m_handleImpl);
 }
 
@@ -138,7 +138,8 @@ void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, wl_di
     };
 
     m_handleImpl = impl;
-    m_handle = new _wlr_output(this);
+    m_handle = calloc(1, sizeof(_wlr_output));
+    static_cast<_wlr_output *>(m_handle)->interface = this;
     wlr_output_init(handle(), backend->handle(), impl, display);
 }
 
