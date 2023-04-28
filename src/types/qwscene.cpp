@@ -356,7 +356,7 @@ void QWSceneBuffer::setDestSize(const QSize &size)
     wlr_scene_buffer_set_dest_size(handle(), size.width(), size.height());
 }
 
-void QWSceneBuffer::setTransform(int transform)
+void QWSceneBuffer::setTransform(wl_output_transform_t transform)
 {
     wlr_scene_buffer_set_transform(handle(), static_cast<wl_output_transform>(transform));
 }

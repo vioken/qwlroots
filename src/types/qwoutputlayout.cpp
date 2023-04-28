@@ -110,13 +110,13 @@ wlr_output *QWOutputLayout::getCenterOutput() const
     return wlr_output_layout_get_center_output(handle());
 }
 
-wlr_output *QWOutputLayout::adjacentOutput(int direction, wlr_output *reference, const QPoint &pos) const
+wlr_output *QWOutputLayout::adjacentOutput(wlr_direction_t direction, wlr_output *reference, const QPoint &pos) const
 {
     return wlr_output_layout_adjacent_output(handle(), static_cast<wlr_direction>(direction),
                                              reference, pos.x(), pos.y());
 }
 
-wlr_output *QWOutputLayout::farthestOutput(int direction, wlr_output *reference, const QPoint &pos) const
+wlr_output *QWOutputLayout::farthestOutput(wlr_direction_t direction, wlr_output *reference, const QPoint &pos) const
 {
     return wlr_output_layout_farthest_output(handle(), static_cast<wlr_direction>(direction),
                                              reference, pos.x(), pos.y());

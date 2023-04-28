@@ -25,6 +25,9 @@ struct wlr_output_event_commit;
 
 struct pixman_region32;
 
+typedef int wl_output_transform_t;
+typedef int wl_output_subpixel_t;
+
 QW_BEGIN_NAMESPACE
 
 class QWAllocator;
@@ -60,11 +63,11 @@ public:
 
     void setMode(wlr_output_mode *mode);
     void setCustomMode(const QSize &size, int32_t refresh);
-    void setTransform(int wl_output_transform);
+    void setTransform(wl_output_transform_t wl_output_transform);
     void enableAdaptiveSync(bool enabled);
     void setRenderFormat(uint32_t format);
     void setScale(float scale);
-    void setSubpixel(int wl_output_subpixel);
+    void setSubpixel(wl_output_subpixel_t wl_output_subpixel);
     void setName(const QByteArray &name);
     void setDescription(const QByteArray &desc);
     void scheduleDone();

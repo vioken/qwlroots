@@ -178,7 +178,7 @@ void QWOutput::setCustomMode(const QSize &size, int32_t refresh)
     wlr_output_set_custom_mode(handle(), size.width(), size.height(), refresh);
 }
 
-void QWOutput::setTransform(int transform)
+void QWOutput::setTransform(wl_output_transform_t transform)
 {
     wlr_output_set_transform(handle(), static_cast<wl_output_transform>(transform));
 }
@@ -198,7 +198,7 @@ void QWOutput::setScale(float scale)
     wlr_output_set_scale(handle(), scale);
 }
 
-void QWOutput::setSubpixel(int subpixel)
+void QWOutput::setSubpixel(wl_output_subpixel_t subpixel)
 {
     wlr_output_set_subpixel(handle(), static_cast<wl_output_subpixel>(subpixel));
 }

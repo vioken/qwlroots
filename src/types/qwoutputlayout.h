@@ -10,6 +10,8 @@ struct wlr_output_layout;
 struct wlr_output_layout_output;
 struct wlr_output;
 
+typedef int wlr_direction_t;
+
 QW_BEGIN_NAMESPACE
 
 class QWRenderer;
@@ -31,8 +33,8 @@ public:
     wlr_output_layout_output *get(wlr_output *reference) const;
     wlr_output *outputAt(const QPointF &pos) const;
     wlr_output *getCenterOutput() const;
-    wlr_output *adjacentOutput(int wlr_direction, wlr_output *reference, const QPoint &pos) const;
-    wlr_output *farthestOutput(int wlr_direction, wlr_output *reference, const QPoint &pos) const;
+    wlr_output *adjacentOutput(wlr_direction_t wlr_direction, wlr_output *reference, const QPoint &pos) const;
+    wlr_output *farthestOutput(wlr_direction_t wlr_direction, wlr_output *reference, const QPoint &pos) const;
 
     void add(wlr_output *output, const QPoint &pos);
     void addAuto(wlr_output *output);
