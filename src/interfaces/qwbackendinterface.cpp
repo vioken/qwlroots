@@ -48,7 +48,7 @@ static uint32_t get_buffer_caps(wlr_backend *handle) {
 QWBackendInterface::~QWBackendInterface()
 {
     wlr_backend_finish(handle());
-    delete handle();
+    free(handle());
     delete impl();
 }
 
@@ -82,7 +82,8 @@ void QWBackendInterface::init(FuncMagicKey funMagicKey)
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_buffer_caps, &QWBackendInterface::getBufferCaps),
     };
     m_handleImpl = impl;
-    m_handle = new _wlr_backend(this);
+    m_handle = calloc(1, sizeof(_wlr_backend));
+    static_cast<_wlr_backend *>(m_handle)->interface = this;
     wlr_backend_init(handle(), impl);
 }
 
