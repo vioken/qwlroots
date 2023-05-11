@@ -340,11 +340,6 @@ bool QWOutputCursor::setImage(const QImage &image, const QPoint &hotspot)
                                        hotspot.x(), hotspot.y());
 }
 
-void QWOutputCursor::setSurface(wlr_surface *surface, const QPoint &hotspot)
-{
-    wlr_output_cursor_set_surface(handle(), surface, hotspot.x(), hotspot.y());
-}
-
 bool QWOutputCursor::setBuffer(QWBuffer *buffer, const QPoint &hotspot)
 {
     return wlr_output_cursor_set_buffer(handle(), buffer->handle(), hotspot.x(), hotspot.y());

@@ -120,7 +120,6 @@ public:
     static QWOutputCursor *create(QWOutput *output);
 
     bool setImage(const QImage &image, const QPoint &hotspot);
-    void setSurface(wlr_surface *surface, const QPoint &hotspot);
     bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
     bool move(const QPointF &pos);
 
