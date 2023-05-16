@@ -1,0 +1,30 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: qwlroots
+Upstream-Contact: JiDe Zhang <zccrs@live.com>
+Source: https://github.com/vioken/qwlroots
+
+# ci
+Files: .github/* .obs/workflows.yml garnix.yaml
+Copyright: None
+License: CC0-1.0
+
+# gitignore
+Files: .gitignore 
+Copyright: None
+License: CC0-1.0
+
+# Project file
+Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in
+Copyright: None
+License: CC0-1.0
+
+# README
+Files: README.md README.zh_CN.md
+Copyright: JiDe Zhang
+License: CC-BY-4.0
+
+# Nix Develop files
+Files: *.nix .envrc flake.lock
+Copyright: None
+License: CC0-1.0
+
