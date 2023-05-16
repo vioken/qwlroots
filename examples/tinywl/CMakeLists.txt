@@ -9,6 +9,7 @@ pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
 pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
+pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 
 include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
 ws_generate(server stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
