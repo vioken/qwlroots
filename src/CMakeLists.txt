@@ -58,6 +58,7 @@ set(SOURCES
     types/qwtablet.cpp
     types/qwtabletpad.cpp
     types/qwoutput.cpp
+    types/qwxdgdecorationmanagerv1.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -87,6 +88,7 @@ set(HEADERS
     types/qwtablet.h
     types/qwtabletpad.h
     types/qwoutput.h
+    types/qwxdgdecorationmanagerv1.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
