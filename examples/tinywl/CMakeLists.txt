@@ -12,7 +12,7 @@ pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 
 include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
-ws_generate(server stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
+ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 
 add_executable(${TARGET}
     ${SOURCES}

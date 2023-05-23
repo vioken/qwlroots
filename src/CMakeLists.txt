@@ -14,7 +14,6 @@ find_package(PkgConfig)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
-pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 
 pkg_get_variable(WLR_HAVE_DRM_BACKEND wlroots have_drm_backend)
 pkg_get_variable(WLR_HAVE_X11_BACKEND wlroots have_x11_backend)
@@ -33,7 +32,8 @@ message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, min
 add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
 
 include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
-ws_generate(server stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
+pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
+ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 
 set(SOURCES
     qwglobal.cpp
@@ -100,6 +100,19 @@ set(HEADERS
 set(PRIVATE_HEADERS
     types/qwinputdevice_p.h
 )
+
+pkg_search_module(WLR_PROTOCOLS wlr-protocols)
+if (WLR_PROTOCOLS_FOUND)
+    ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
+    set(PROTOCOL_HEADERS
+        types/qwlayershellv1.h
+    )
+    set(PROTOCOL_SOURCES
+        types/qwlayershellv1.cpp
+    )
+    list(APPEND HEADERS ${PROTOCOL_HEADERS})
+    list(APPEND SOURCES ${PROTOCOL_SOURCES})
+endif ()
 
 add_library(${TARGET}
     SHARED

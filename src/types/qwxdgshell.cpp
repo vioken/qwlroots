@@ -331,7 +331,10 @@ QWXdgPopup *QWXdgPopup::from(wlr_xdg_popup *handle)
 
 QWXdgPopup *QWXdgPopup::from(wl_resource *resource)
 {
-    return from(wlr_xdg_popup_from_resource(resource));
+    auto *handle = wlr_xdg_popup_from_resource(resource);
+    if (!handle)
+        return nullptr;
+    return from(handle);
 }
 
 QPointF QWXdgPopup::getPosition() const
