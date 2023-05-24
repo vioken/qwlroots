@@ -9,7 +9,6 @@
 
 #include <qwbackend.h>
 #include <qwdisplay.h>
-#include <qwsignalconnector.h>
 #include <qwrenderer.h>
 #include <qwallocator.h>
 #include <qwcompositor.h>
@@ -128,7 +127,6 @@ private:
 
     QList<QWKeyboard*> keyboards;
     QWSeat *seat;
-    QWSignalConnector sc;
 };
 
 TinywlServer::TinywlServer()
