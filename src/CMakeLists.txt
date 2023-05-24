@@ -10,7 +10,7 @@ find_package(Qt${QT_VERSION_MAJOR}
 )
 
 set(WLROOTS_MINIMUM_REQUIRED 0.16.0)
-find_package(PkgConfig)
+find_package(PkgConfig REQUIRED)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
@@ -31,7 +31,6 @@ message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, min
 
 add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
 
-include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
 pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 

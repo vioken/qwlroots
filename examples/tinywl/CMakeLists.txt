@@ -11,7 +11,6 @@ pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
 pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 
-include(${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 
 add_executable(${TARGET}
@@ -26,9 +25,4 @@ target_link_libraries(${TARGET}
     PkgConfig::WLROOTS
     PkgConfig::PIXMAN
     PkgConfig::XKBCOMMON
-)
-
-target_include_directories(${TARGET}
-    PRIVATE
-    ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
 )
