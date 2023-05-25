@@ -4,6 +4,7 @@
 #include "qwseat.h"
 #include "qwdisplay.h"
 #include "qwkeyboard.h"
+#include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 
 #include <QHash>
@@ -205,9 +206,9 @@ void QWSeat::setSelection(wlr_data_source *source, uint32_t serial)
     wlr_seat_set_selection(handle(), source, serial);
 }
 
-void QWSeat::keyboardNotifyEnter(wlr_surface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers)
+void QWSeat::keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers)
 {
-    wlr_seat_keyboard_notify_enter(handle(), surface, keycodes, num_keycodes, modifiers);
+    wlr_seat_keyboard_notify_enter(handle(), surface->handle(), keycodes, num_keycodes, modifiers);
 }
 
 void QWSeat::keyboardNotifyKey(uint32_t time_msec, uint32_t key, uint32_t state)
@@ -230,9 +231,9 @@ void QWSeat::pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button
     wlr_seat_pointer_notify_button(handle(), time_msec, button, static_cast<wlr_button_state>(state));
 }
 
-void QWSeat::pointerNotifyEnter(wlr_surface *surface, double sx, double sy)
+void QWSeat::pointerNotifyEnter(QWSurface *surface, double sx, double sy)
 {
-    wlr_seat_pointer_notify_enter(handle(), surface, sx, sy);
+    wlr_seat_pointer_notify_enter(handle(), surface->handle(), sx, sy);
 }
 
 void QWSeat::pointerNotifyFrame()

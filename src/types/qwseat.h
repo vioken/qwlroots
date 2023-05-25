@@ -14,7 +14,6 @@ struct wlr_seat_request_start_drag_event;
 struct wlr_drag;
 struct wlr_data_source;
 struct wlr_keyboard_modifiers;
-struct wlr_surface;
 
 typedef int wlr_axis_orientation_t;
 typedef int wlr_axis_source_t;
@@ -22,6 +21,7 @@ typedef int wlr_button_state_t;
 
 QW_BEGIN_NAMESPACE
 
+class QWSurface;
 class QWDisplay;
 class QWKeyboard;
 class QWSeatPrivate;
@@ -43,12 +43,12 @@ public:
     QWKeyboard *getKeyboard() const;
     void setCapabilities(uint32_t capabilities);
     void setSelection(wlr_data_source *source, uint32_t serial);
-    void keyboardNotifyEnter(wlr_surface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers);
+    void keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers);
     void keyboardNotifyKey(uint32_t time_msec, uint32_t key, uint32_t state);
     void keyboardNotifyModifiers(wlr_keyboard_modifiers *modifiers);
     void pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orientation, double value, int32_t value_discrete, wlr_axis_source_t source);
     void pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button_state_t state);
-    void pointerNotifyEnter(wlr_surface *surface, double sx, double sy);
+    void pointerNotifyEnter(QWSurface *surface, double sx, double sy);
     void pointerNotifyFrame();
     void pointerNotifyMotion(uint32_t time_msec, double sx, double sy);
     void pointerClearFocus();

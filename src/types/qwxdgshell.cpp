@@ -3,6 +3,7 @@
 
 #include "qwxdgshell.h"
 #include "qwdisplay.h"
+#include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 
 #include <QPointF>
@@ -199,12 +200,12 @@ QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
     return QWXdgToplevel::from(handle->toplevel);
 }
 
-QWXdgSurface *QWXdgSurface::from(wlr_surface *surface)
+QWXdgSurface *QWXdgSurface::from(QWSurface *surface)
 {
 #if WLR_VERSION_MINOR > 16
-    auto handle = wlr_xdg_surface_try_from_wlr_surface(surface);
+    auto handle = wlr_xdg_surface_try_from_wlr_surface(surface->handle());
 #else
-    auto handle = wlr_xdg_surface_from_wlr_surface(surface);
+    auto handle = wlr_xdg_surface_from_wlr_surface(surface->handle());
 #endif
     if (!handle)
         return nullptr;
@@ -242,18 +243,24 @@ uint32_t QWXdgSurface::scheduleConfigure()
     return wlr_xdg_surface_schedule_configure(handle());
 }
 
-wlr_surface *QWXdgSurface::surfaceAt(const QPointF &xpos, QPointF *subPos) const
+QWSurface *QWXdgSurface::surfaceAt(const QPointF &xpos, QPointF *subPos) const
 {
-    return wlr_xdg_surface_surface_at(handle(), xpos.x(), xpos.y(),
+    auto* surface = wlr_xdg_surface_surface_at(handle(), xpos.x(), xpos.y(),
                                       subPos ? &subPos->rx() : nullptr,
                                       subPos ? &subPos->ry() : nullptr);
+    if (!surface)
+        return nullptr;
+    return QWSurface::from(surface);
 }
 
-wlr_surface *QWXdgSurface::popupSurfaceAt(const QPointF &xpos, QPointF *subPos) const
+QWSurface *QWXdgSurface::popupSurfaceAt(const QPointF &xpos, QPointF *subPos) const
 {
-    return wlr_xdg_surface_popup_surface_at(handle(), xpos.x(), xpos.y(),
+    auto* surface = wlr_xdg_surface_popup_surface_at(handle(), xpos.x(), xpos.y(),
                                             subPos ? &subPos->rx() : nullptr,
                                             subPos ? &subPos->ry() : nullptr);
+    if (!surface)
+        return nullptr;
+    return QWSurface::from(surface);
 }
 
 QRect QWXdgSurface::getGeometry() const

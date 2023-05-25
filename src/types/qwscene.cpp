@@ -6,6 +6,7 @@
 #include "qwbuffer.h"
 #include "qwxdgshell.h"
 #include "qwoutput.h"
+#include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 
 #include <QColor>
@@ -184,9 +185,9 @@ QWSceneTree *QWSceneTree::from(wlr_scene_node *node)
     return from(tree);
 }
 
-QWSceneTree *QWSceneTree::subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface *surface)
+QWSceneTree *QWSceneTree::subsurfaceTreeCreate(QWSceneTree *parent, QWSurface *surface)
 {
-    auto handle = wlr_scene_subsurface_tree_create(parent->handle(), surface);
+    auto handle = wlr_scene_subsurface_tree_create(parent->handle(), surface->handle());
     if (!handle)
         return nullptr;
     return new QWSceneTree(handle, true);

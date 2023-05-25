@@ -218,7 +218,7 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 {
     if (surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
         auto *s = QWXdgPopup::from(surface->popup);
-        auto parent = QWXdgSurface::from(surface->popup->parent);
+        auto parent = QWXdgSurface::from(QWSurface::from(surface->popup->parent));
         QWSceneTree *parentTree = reinterpret_cast<QWSceneTree*>(parent->handle()->data);
         surface->data = QWScene::xdgSurfaceCreate(parentTree, s);
         return;
@@ -363,7 +363,7 @@ void TinywlServer::onNewInput(QWInputDevice *device)
 void TinywlServer::onRequestSetCursor(wlr_seat_pointer_request_set_cursor_event *event)
 {
     if (seat->handle()->pointer_state.focused_client == event->seat_client)
-        cursor->setSurface(event->surface, QPoint(event->hotspot_x, event->hotspot_y));
+        cursor->setSurface(QWSurface::from(event->surface), QPoint(event->hotspot_x, event->hotspot_y));
 }
 
 void TinywlServer::onRequestSetSelection(wlr_seat_request_set_selection_event *event)
@@ -505,7 +505,7 @@ void TinywlServer::processCursorMotion(uint32_t time)
         cursorManager->setCursor("left_ptr", cursor);
 
     if (surface) {
-        seat->pointerNotifyEnter(surface, spos.x(), spos.y());
+        seat->pointerNotifyEnter(QWSurface::from(surface), spos.x(), spos.y());
         seat->pointerNotifyMotion(time, spos.x(), spos.y());
     } else {
         seat->pointerClearFocus();
@@ -522,7 +522,7 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
         return;
     }
     if (prevSurface) {
-        auto previous = QWXdgSurface::from(prevSurface);
+        auto previous = QWXdgSurface::from(QWSurface::from(prevSurface));
         auto toplevel = qobject_cast<QWXdgToplevel*>(previous);
         Q_ASSERT(toplevel);
         toplevel->setActivated(false);
@@ -533,7 +533,7 @@ void TinywlServer::focusView(View *view, wlr_surface *surface)
     view->xdgToplevel->setActivated(true);
 
     if (QWKeyboard *keyboard = seat->getKeyboard()) {
-        seat->keyboardNotifyEnter(view->xdgToplevel->handle()->base->surface,
+        seat->keyboardNotifyEnter(QWSurface::from(view->xdgToplevel->handle()->base->surface),
                                        keyboard->handle()->keycodes, keyboard->handle()->num_keycodes, &keyboard->handle()->modifiers);
     }
 }
