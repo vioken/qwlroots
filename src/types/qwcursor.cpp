@@ -3,6 +3,7 @@
 
 #include "qwcursor.h"
 #include "qwinputdevice.h"
+#include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 #include "types/qwoutputlayout.h"
 
@@ -256,9 +257,9 @@ void QWCursor::setImage(const QImage &image, const QPoint &hotspot)
                          hotspot.x(), hotspot.y(), image.devicePixelRatioF());
 }
 
-void QWCursor::setSurface(wlr_surface *surface, const QPoint &hotspot)
+void QWCursor::setSurface(QWSurface *surface, const QPoint &hotspot)
 {
-    wlr_cursor_set_surface(handle(), surface, hotspot.x(), hotspot.y());
+    wlr_cursor_set_surface(handle(), surface->handle(), hotspot.x(), hotspot.y());
 }
 
 void QWCursor::attachInputDevice(QWInputDevice *dev)

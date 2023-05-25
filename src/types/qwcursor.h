@@ -7,7 +7,6 @@
 #include <QObject>
 
 struct wlr_cursor;
-struct wlr_surface;
 struct wlr_output_layout;
 struct wlr_output;
 struct wlr_pointer_motion_event;
@@ -33,6 +32,7 @@ struct wlr_tablet_tool_button;
 
 QW_BEGIN_NAMESPACE
 
+class QWSurface;
 class QWOutputLayout;
 class QWCursorPrivate;
 class QWInputDevice;
@@ -56,7 +56,7 @@ public:
     void warpAbsolute(QWInputDevice *dev, const QPointF &pos);
     void move(QWInputDevice *dev, const QPointF &deltaPos);
     void setImage(const QImage &image, const QPoint &hotspot);
-    void setSurface(wlr_surface *surface, const QPoint &hotspot);
+    void setSurface(QWSurface *surface, const QPoint &hotspot);
 
     void attachInputDevice(QWInputDevice *dev);
     void detachInputDevice(QWInputDevice *dev);

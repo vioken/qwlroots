@@ -3,6 +3,7 @@
 
 #include "qwlayershellv1.h"
 #include "qwdisplay.h"
+#include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 
 #include <QHash>
@@ -198,12 +199,12 @@ QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wl_resource *resource)
     return from(handle);
 }
 
-QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wlr_surface *surface)
+QWLayerSurfaceV1 *QWLayerSurfaceV1::from(QWSurface *surface)
 {
 #if WLR_VERSION_MINOR > 16
-    auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface);
+    auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface->handle());
 #else
-    auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface);
+    auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface->handle());
 #endif
     if (!handle)
         return nullptr;
@@ -225,18 +226,24 @@ void QWLayerSurfaceV1::forEachPopupSurface(wlr_surface_iterator_func_t iterator,
     wlr_layer_surface_v1_for_each_popup_surface(handle(), iterator, userData);
 }
 
-wlr_surface *QWLayerSurfaceV1::surfaceAt(const QPointF &xpos, QPointF *subPos) const
+QWSurface *QWLayerSurfaceV1::surfaceAt(const QPointF &xpos, QPointF *subPos) const
 {
-    return wlr_layer_surface_v1_surface_at(handle(), xpos.x(), xpos.y(),
+    auto* surface = wlr_layer_surface_v1_surface_at(handle(), xpos.x(), xpos.y(),
                                            subPos ? &subPos->rx() : nullptr,
                                            subPos ? &subPos->ry() : nullptr);
+    if (!surface)
+        return nullptr;
+    return QWSurface::from(surface);
 }
 
-wlr_surface *QWLayerSurfaceV1::popupSurfaceAt(const QPointF &xpos, QPointF *subPos) const
+QWSurface *QWLayerSurfaceV1::popupSurfaceAt(const QPointF &xpos, QPointF *subPos) const
 {
-    return wlr_layer_surface_v1_popup_surface_at(handle(), xpos.x(), xpos.y(),
+    auto* surface = wlr_layer_surface_v1_popup_surface_at(handle(), xpos.x(), xpos.y(),
                                            subPos ? &subPos->rx() : nullptr,
                                            subPos ? &subPos->ry() : nullptr);
+    if (!surface)
+        return nullptr;
+    return QWSurface::from(surface);
 }
 
 QW_END_NAMESPACE

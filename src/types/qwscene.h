@@ -12,7 +12,6 @@ struct wlr_scene_tree;
 struct wlr_presentation;
 struct wlr_scene_surface;
 struct wlr_scene_buffer;
-struct wlr_surface;
 struct wlr_scene_rect;
 struct wlr_scene_output;
 struct wlr_buffer;
@@ -39,6 +38,7 @@ QT_END_NAMESPACE
 
 QW_BEGIN_NAMESPACE
 
+class QWSurface;
 class QWXdgSurface;
 class QWSceneNodePrivate;
 class QW_EXPORT QWSceneNode : public QObject, public QWObject
@@ -84,7 +84,7 @@ public:
     static QWSceneTree *from(wlr_scene_tree *handle);
     static QWSceneTree *from(wlr_scene_node *node);
 
-    static QWSceneTree *subsurfaceTreeCreate(QWSceneTree *parent, wlr_surface *surface);
+    static QWSceneTree *subsurfaceTreeCreate(QWSceneTree *parent, QWSurface *surface);
     static QWSceneTree *xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface);
 
 protected:

@@ -9,7 +9,6 @@
 
 struct wlr_layer_surface_v1;
 struct wlr_layer_shell_v1;
-struct wlr_surface;
 struct wl_resource;
 
 typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
@@ -18,6 +17,7 @@ typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
+class QWSurface;
 class QWLayerShellV1Private;
 class QW_EXPORT QWLayerShellV1 : public QObject, public QWObject
 {
@@ -59,17 +59,14 @@ public:
     static QWLayerSurfaceV1 *get(wlr_layer_surface_v1 *handle);
     static QWLayerSurfaceV1 *from(wlr_layer_surface_v1 *handle);
     static QWLayerSurfaceV1 *from(wl_resource *resource);
-    static QWLayerSurfaceV1 *from(wlr_surface *surface);
+    static QWLayerSurfaceV1 *from(QWSurface *surface);
 
     uint32_t configure(uint32_t width, uint32_t height);
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-    // TODO: return QWSurface    
-    wlr_surface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    wlr_surface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
+    QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
+    QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
     QRect getGeometry() const;
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-
-    //QWLayerSurfaceV1 *wlr_layer_surface_v1_try_from_wlr_surface(​struct wlr_surface *surface);
 
 Q_SIGNALS:
     void beforeDestroy(QWLayerSurfaceV1 *self);

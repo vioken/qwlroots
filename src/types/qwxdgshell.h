@@ -23,6 +23,7 @@ typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
 
 QW_BEGIN_NAMESPACE
 
+class QWSurface;
 class QWDisplay;
 class QWXdgShellPrivate;
 class QW_EXPORT QWXdgShell : public QObject, public QWObject
@@ -62,7 +63,7 @@ public:
 
     static QWXdgSurface *get(wlr_xdg_surface *handle);
     static QWXdgSurface *from(wl_resource *resource);
-    static QWXdgSurface *from(wlr_surface *surface);
+    static QWXdgSurface *from(QWSurface *surface);
 
     QWXdgPopup *toPopup() const;
     QWXdgToplevel *topToplevel() const;
@@ -70,8 +71,8 @@ public:
     void ping();
     uint32_t scheduleConfigure();
 
-    wlr_surface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    wlr_surface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
+    QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
+    QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
     QRect getGeometry() const;
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;

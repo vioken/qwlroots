@@ -14,7 +14,6 @@ struct wlr_output_mode;
 struct wlr_output_state;
 struct wlr_drm_format_set;
 struct wlr_output_cursor;
-struct wlr_surface;
 struct wlr_buffer;
 struct wl_resource;
 struct wlr_output_event_present;
