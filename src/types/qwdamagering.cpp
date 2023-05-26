@@ -58,11 +58,9 @@ void QWDamageRing::ringRotate()
     wlr_damage_ring_rotate(handle());
 }
 
-pixman_region32_t *QWDamageRing::getBufferDamage(int bufferAge) const
+void QWDamageRing::getBufferDamage(int bufferAge, pixman_region32_t *damage) const
 {
-    pixman_region32_t *damage = nullptr;
     wlr_damage_ring_get_buffer_damage(handle(), bufferAge, damage);
-    return damage;
 }
 
 QW_END_NAMESPACE

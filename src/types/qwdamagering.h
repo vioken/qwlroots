@@ -28,7 +28,7 @@ public:
     bool addBox(const QRect &box);
     void addWhole();
     void ringRotate();
-    pixman_region32_t *getBufferDamage(int bufferAge) const;
+    void getBufferDamage(int bufferAge, pixman_region32_t *damage) const;
 
 private:
     QWDamageRing() = default;

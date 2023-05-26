@@ -68,7 +68,7 @@ public:
 
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     QRectF getBufferSourceBox() const;
-    pixman_region32_t *getEffectiveDamage() const;
+    void getEffectiveDamage(pixman_region32_t *damage) const;
     QRect getExtends() const;
     QWSurface *getRootSurface() const;
     QWTexture *getTexture() const;
