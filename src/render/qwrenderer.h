@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QMatrix3x3>
 
+#include <qwrendererinterface.h>
+
 struct wlr_renderer;
 struct wlr_box;
 struct wlr_fbox;
@@ -57,6 +59,15 @@ public:
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
     int getDrmFd() const;
+
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWRendererInterface, Interface>::value, QWInterface*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWRendererInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWRenderer(i->handle(), true);
+    }
+
 
 Q_SIGNALS:
     void beforeDestroy(QWRenderer *self);
