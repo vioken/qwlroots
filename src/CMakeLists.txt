@@ -45,6 +45,7 @@ set(SOURCES
     types/qwcompositor.cpp
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
+    types/qwdamagering.cpp
     types/qwoutputlayout.cpp
     types/qwscene.cpp
     types/qwseat.cpp
@@ -77,6 +78,7 @@ set(HEADERS
     types/qwcompositor.h
     types/qwsubcompositor.h
     types/qwdatadevice.h
+    types/qwdamagering.h
     types/qwoutputlayout.h
     types/qwscene.h
     types/qwseat.h
