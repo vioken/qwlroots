@@ -220,11 +220,9 @@ QRectF QWSurface::getBufferSourceBox() const
     return QRectF { wfbox.x, wfbox.y, wfbox.width, wfbox.height };
 }
 
-pixman_region32_t *QWSurface::getEffectiveDamage() const
+void QWSurface::getEffectiveDamage(pixman_region32_t *damage) const
 {
-    pixman_region32_t *damage = nullptr;
     wlr_surface_get_effective_damage(handle(), damage);
-    return damage;
 }
 
 QRect QWSurface::getExtends() const
