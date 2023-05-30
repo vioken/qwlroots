@@ -204,6 +204,8 @@ QWLayerSurfaceV1 *QWLayerSurfaceV1::from(QWSurface *surface)
 #if WLR_VERSION_MINOR > 16
     auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface->handle());
 #else
+    if (!wlr_surface_is_layer_surface(surface->handle()))
+        return nullptr;
     auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface->handle());
 #endif
     if (!handle)
