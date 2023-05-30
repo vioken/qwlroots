@@ -24,11 +24,14 @@
             wlroots_0_17_src = wlroots-unstable;
           };
 
-          devShell = pkgs.mkShell { 
-            nativeBuildInputs = packages.default.nativeBuildInputs ++ (with pkgs; [
+          devShells.default = pkgs.mkShell { 
+            packages = with pkgs; [
               wayland-utils
-            ]);
-            inherit (packages.default) buildInputs;
+            ];
+
+            inputsFrom = [
+              packages.default
+            ];
 
             shellHook = ''
               echo "welcome to qwlroots"
