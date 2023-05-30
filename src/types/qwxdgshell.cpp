@@ -205,6 +205,8 @@ QWXdgSurface *QWXdgSurface::from(QWSurface *surface)
 #if WLR_VERSION_MINOR > 16
     auto handle = wlr_xdg_surface_try_from_wlr_surface(surface->handle());
 #else
+    if (!wlr_surface_is_xdg_surface(surface->handle()))
+        return nullptr;
     auto handle = wlr_xdg_surface_from_wlr_surface(surface->handle());
 #endif
     if (!handle)
