@@ -66,6 +66,7 @@ set(SOURCES
     interfaces/qwbufferinterface.cpp
     interfaces/qwrendererinterface.cpp
     interfaces/qwswitchinterface.cpp
+    interfaces/qwpointerinterface.cpp
 )
 
 set(HEADERS
@@ -104,6 +105,7 @@ set(HEADERS
     interfaces/qwkeyboardinterface.h
     ${CMAKE_CURRENT_BINARY_DIR}/generate/qwconfig.h
     interfaces/qwswitchinterface.h
+    interfaces/qwpointerinterface.h
 )
 
 set(PRIVATE_HEADERS

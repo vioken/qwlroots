@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <qwpointerinterface.h>
 #include <qwglobal.h>
 #include <qwinputdevice.h>
 #include <QObject>
@@ -36,6 +37,13 @@ public:
     static QWPointer *get(wlr_pointer *handle);
     static QWPointer *from(wlr_pointer *handle);
     static QWPointer *fromInputDevice(wlr_input_device *input_device);
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWPointerInterface, Interface>::value, QWPointer*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWPointerInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWPointer(i->handle(), true);
+    }
 
 Q_SIGNALS:
     void motion(wlr_pointer_motion_event *event);
