@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <qwtabletpadinterface.h>
 #include <qwglobal.h>
 #include <qwinputdevice.h>
 #include <QObject>
@@ -26,6 +27,14 @@ public:
     static QWTabletPad *get(wlr_tablet_pad *handle);
     static QWTabletPad *from(wlr_tablet_pad *handle);
     static QWTabletPad *fromInputDevice(wlr_input_device *input_device);
+
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<QWTabletPadInterface, Interface>::value, QWTabletPad*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWTabletPadInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWTabletPad(i->handle(), true);
+    }
 
 Q_SIGNALS:
     void button();
