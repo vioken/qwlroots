@@ -39,6 +39,7 @@ set(SOURCES
     render/qwrenderer.cpp
     render/qwtexture.cpp
     render/qwallocator.cpp
+    render/qwegl.cpp
     types/qwbuffer.cpp
     types/qwcompositor.cpp
     types/qwsubcompositor.cpp
@@ -76,6 +77,7 @@ set(HEADERS
     render/qwrenderer.h
     render/qwtexture.h
     render/qwallocator.h
+    render/qwegl.h
     types/qwbuffer.h
     types/qwcompositor.h
     types/qwsubcompositor.h
