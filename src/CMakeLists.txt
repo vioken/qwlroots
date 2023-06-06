@@ -58,6 +58,7 @@ set(SOURCES
     types/qwoutput.cpp
     types/qwxdgdecorationmanagerv1.cpp
     types/qwidle.cpp
+    types/qwkeyboardgroup.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -93,6 +94,7 @@ set(HEADERS
     types/qwoutput.h
     types/qwxdgdecorationmanagerv1.h
     types/qwidle.h
+    types/qwkeyboardgroup.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
