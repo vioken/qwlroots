@@ -25,7 +25,7 @@ pkg_get_variable(WLR_HAVE_GBM_ALLOCATOR wlroots have_gbm_allocator)
 pkg_get_variable(WLR_HAVE_SESSION wlroots have_session)
 setup_package_version_variables(WLROOTS)
 include(CMakePackageConfigHelpers)
-configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in ${CMAKE_CURRENT_SOURCE_DIR}/qwconfig.h)
+configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in generate/qwconfig.h @ONLY)
 
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
@@ -99,7 +99,7 @@ set(HEADERS
     interfaces/qwrendererinterface.h
     interfaces/qwoutputinterface.h
     interfaces/qwkeyboardinterface.h
-    qwconfig.h
+    ${CMAKE_CURRENT_BINARY_DIR}/generate/qwconfig.h
 )
 
 set(PRIVATE_HEADERS
@@ -162,6 +162,7 @@ target_include_directories(${TARGET}
 
 target_include_directories(${TARGET}
     PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generate>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/render>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/types>
