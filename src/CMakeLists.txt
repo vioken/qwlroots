@@ -29,8 +29,6 @@ configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in ${CMAKE_CURRENT_SOU
 
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
-add_definitions(-DWLR_USE_UNSTABLE -DQW_LIBRARY)
-
 pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 
@@ -126,6 +124,13 @@ add_library(${TARGET}
     ${SOURCES}
     ${HEADERS}
     ${PRIVATE_HEADERS}
+)
+
+target_compile_definitions(${TARGET}
+PRIVATE
+    QW_LIBRARY
+    WLR_USE_UNSTABLE
+    QT_NO_SIGNALS_SLOTS_KEYWORDS
 )
 
 set_target_properties(${TARGET}
