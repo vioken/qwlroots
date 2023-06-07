@@ -112,6 +112,15 @@ set(PRIVATE_HEADERS
     types/qwinputdevice_p.h
 )
 
+if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16))
+list(APPEND SOURCES
+    render/qwswapchain.cpp
+)
+list(APPEND HEADERS
+    render/qwswapchain.h
+)
+endif()
+
 pkg_search_module(WLR_PROTOCOLS wlr-protocols)
 if (WLR_PROTOCOLS_FOUND)
     ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
