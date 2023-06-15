@@ -20,6 +20,7 @@ class QWBuffer;
 class QWRenderer;
 class QWRendererInterface : public QWInterface
 {
+    friend class QWRenderer;
 public:
     virtual ~QWRendererInterface();
 
