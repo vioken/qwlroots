@@ -60,6 +60,7 @@ set(SOURCES
     types/qwxdgdecorationmanagerv1.cpp
     types/qwidle.cpp
     types/qwkeyboardgroup.cpp
+    types/qwxwayland.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -99,6 +100,7 @@ set(HEADERS
     types/qwxdgdecorationmanagerv1.h
     types/qwidle.h
     types/qwkeyboardgroup.h
+    types/qwxwayland.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
