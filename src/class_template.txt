@@ -23,6 +23,9 @@ public:
     static QWABC *get(wlr_ABC *handle);
     static QWABC *from(wlr_ABC *handle);
 
+Q_SIGNALS:
+    void beforeDestroy(QWABC *self);
+
 private:
     QWABC(wlr_ABC *handle, bool isOwner);
 };
@@ -64,6 +67,7 @@ public:
     inline void destroy() {
         Q_ASSERT(m_handle);
         Q_ASSERT(map.contains(m_handle));
+        Q_EMIT q_func()->beforeDestroy(q_func());
         map.remove(m_handle);
         sc.invalidate();
     }
