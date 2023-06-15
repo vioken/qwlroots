@@ -4,6 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
+#include <QObject>
 
 class QImage;
 class QPoint;
@@ -14,19 +15,27 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWCompositor;
 class QWSeat;
-class QWXWayland
+class QWXWaylandPrivate;
+class QW_EXPORT QWXWayland : public QObject, public QWObject
 {
+    Q_OBJECT
+    QW_DECLARE_PRIVATE(QWXWayland)
 public:
-    QWXWayland() = delete;
-    ~QWXWayland() = delete;
+    explicit QWXWayland(wlr_xwayland *handle, bool isOwner = false, QObject *parent = nullptr);
+    ~QWXWayland() = default;
 
-    static QWXWayland *create(QWDisplay *wl_display, QWCompositor *compositor, bool lazy);
-    static QWXWayland* from(wlr_xwayland* xwayland);
-    wlr_xwayland* handle() const;
+    static QWXWayland *create(QWDisplay *display, QWCompositor *compositor, bool lazy, QObject *parent = nullptr);
+    static QWXWayland *get(wlr_xwayland *handle);
+    wlr_xwayland *handle() const;
 
-    void destroy();
-    void setCursor(const QImage& image, const QPoint& hotspot);
+    void setCursor(const QImage &image, const QPoint &hotspot);
     void setSeat(QWSeat *seat);
+
+Q_SIGNALS:
+    void beforeDestroy(QWXWayland *self);
+    void ready();
+    void newSurface();
+    void removeStartupInfo();
 };
 
 QW_END_NAMESPACE
