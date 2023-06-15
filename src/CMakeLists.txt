@@ -61,6 +61,7 @@ set(SOURCES
     types/qwidle.cpp
     types/qwkeyboardgroup.cpp
     types/qwxwayland.cpp
+    types/qwxwaylandsurface.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -101,6 +102,7 @@ set(HEADERS
     types/qwidle.h
     types/qwkeyboardgroup.h
     types/qwxwayland.h
+    types/qwxwaylandsurface.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
