@@ -135,10 +135,12 @@ set(PRIVATE_HEADERS
 if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16))
 list(APPEND SOURCES
     render/qwswapchain.cpp
+    types/qwshm.cpp
     types/qwxwaylandshellv1.cpp
 )
 list(APPEND HEADERS
     render/qwswapchain.h
+    types/qwshm.h
     types/qwxwaylandshellv1.h
 )
 endif()
