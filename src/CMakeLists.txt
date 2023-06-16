@@ -91,6 +91,7 @@ set(SOURCES
     types/qwidlenotifyv1.cpp
     types/qwforeigntoplevelhandlev1.cpp
     types/qwxdgforeignv1.cpp
+    types/qwxdgforeignv2.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -140,6 +141,7 @@ set(HEADERS
     types/qwxdgforeignregistry.h
     types/qwxdgforeignregistry_p.h
     types/qwxdgforeignv1.h
+    types/qwxdgforeignv2.h
     types/qwviewporter.h
     types/qwxdgoutputv1.h
     types/qwxdgactivationv1.h
