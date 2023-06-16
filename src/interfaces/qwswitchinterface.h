@@ -11,6 +11,7 @@ struct wlr_switch_impl;
 QW_BEGIN_NAMESPACE
 
 class QWSwitchInterface : public QWInterface {
+    friend class QWSwitch;
 public:
     virtual const char* name() = 0;
 
@@ -21,7 +22,6 @@ public:
 protected:
     void notifyToggle() const;
 
-    // TODO: Add create function in QWSwitch
     template<class T>
     inline void init(const char* name)
     {

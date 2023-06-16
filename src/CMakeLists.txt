@@ -49,6 +49,7 @@ set(SOURCES
     types/qwoutputlayout.cpp
     types/qwscene.cpp
     types/qwseat.cpp
+    types/qwswitch.cpp
     types/qwxdgshell.cpp
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
@@ -94,6 +95,7 @@ set(HEADERS
     types/qwoutputlayout.h
     types/qwscene.h
     types/qwseat.h
+    types/qwswitch.h
     types/qwxdgshell.h
     types/qwcursor.h
     types/qwxcursormanager.h

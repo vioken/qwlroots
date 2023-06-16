@@ -7,6 +7,7 @@
 #include "qwpointer.h"
 #include "qwtablet.h"
 #include "qwtabletpad.h"
+#include "qwswitch.h"
 
 extern "C" {
 #include <wlr/types/wlr_input_device.h>
@@ -79,6 +80,8 @@ QWInputDevice *QWInputDevice::from(wlr_input_device *handle)
         return QWTablet::fromInputDevice(handle);
     case WLR_INPUT_DEVICE_TABLET_PAD:
         return QWTabletPad::fromInputDevice(handle);
+    case WLR_INPUT_DEVICE_SWITCH:
+        return QWSwitch::fromInputDevice(handle);
     default:
         // TODO: After implementing other device types
         // Here should not create QWInputDevice
