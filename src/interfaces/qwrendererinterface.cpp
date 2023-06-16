@@ -17,6 +17,7 @@
 #include <QRect>
 
 extern "C" {
+#include <math.h>
 // FIXME: float i[static 3] not working c++
 #define static
 #include <wlr/render/interface.h>
