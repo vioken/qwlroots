@@ -1,14 +1,14 @@
 // Copyright (C) 2023 rewine <luhongxu@deepin.org>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-extern "C" {
-#include <wlr/types/wlr_shm.h>
-}
+#include "qwshm.h"
+#include "qwrenderer.h"
 
 #include <QHash>
 
-#include "qwshm.h"
-#include "qwrenderer.h"
+extern "C" {
+#include <wlr/types/wlr_shm.h>
+}
 
 QW_BEGIN_NAMESPACE
 
