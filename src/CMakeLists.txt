@@ -96,6 +96,7 @@ set(SOURCES
     types/qwxdgforeignv2.cpp
     types/qwvirtualkeyboardv1.cpp
     types/qwvirtualpointerv1.cpp
+    types/qwgammacontorlv1.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -167,6 +168,7 @@ set(HEADERS
     types/qwforeigntoplevelhandlev1.h
     types/qwvirtualkeyboardv1.h
     types/qwvirtualpointerv1.h
+    types/qwgammacontorlv1.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
