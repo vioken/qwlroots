@@ -17,7 +17,11 @@ class QWBuffer;
 class QW_EXPORT QWTexture
 {
 public:
-    void destroy();
+    QWTexture() = delete;
+    ~QWTexture() = delete;
+
+    void operator delete(QWTexture *p, std::destroying_delete_t);
+
     wlr_texture *handle() const;
 
     static QWTexture *from(wlr_texture *handle);
@@ -28,10 +32,6 @@ public:
     static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
 
     bool update(QWBuffer *buffer, pixman_region32 *damage);
-
-private:
-    QWTexture() = default;
-    ~QWTexture() = default;
 };
 
 QW_END_NAMESPACE

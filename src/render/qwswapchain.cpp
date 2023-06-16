@@ -15,6 +15,11 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
+void QWSwapchain::operator delete(QWSwapchain *p, std::destroying_delete_t)
+{
+    wlr_swapchain_destroy(p->handle());
+}
+
 QWSwapchain *QWSwapchain::create(QWAllocator *alloc, QSize size, const wlr_drm_format *format)
 {
     auto* pointer = wlr_swapchain_create(alloc->handle(), size.width(), size.height(), format);
@@ -29,11 +34,6 @@ QWSwapchain *QWSwapchain::from(wlr_swapchain* swapchain)
 wlr_swapchain* QWSwapchain::handle() const
 {
     return reinterpret_cast<wlr_swapchain*>(const_cast<QWSwapchain*>(this));
-}
-
-void QWSwapchain::destroy()
-{
-    wlr_swapchain_destroy(handle());
 }
 
 QWBuffer *QWSwapchain::acquire(int *age)

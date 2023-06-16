@@ -59,7 +59,8 @@ public:
     QWPresentationFeedback() = delete;
     ~QWPresentationFeedback() = delete;
 
-    void destory();
+    void operator delete(QWPresentationFeedback *p, std::destroying_delete_t);
+
     wlr_presentation_feedback *handle() const;
 
     static QWPresentationFeedback* from(wlr_presentation_feedback *handle);

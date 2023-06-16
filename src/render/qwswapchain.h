@@ -18,12 +18,13 @@ public:
     QWSwapchain() = delete;
     ~QWSwapchain() = delete;
 
+    void operator delete(QWSwapchain *p, std::destroying_delete_t);
+
     static QWSwapchain *create(QWAllocator *alloc, QSize size, const wlr_drm_format *format);
     static QWSwapchain *from(wlr_swapchain* swapchain);
 
     wlr_swapchain* handle() const;
 
-    void destroy();
     QWBuffer *acquire(int *age);
     void setBufferSubmitted(QWBuffer *buffer);
 };

@@ -107,9 +107,9 @@ void QWPresentationEvent::fromOutput(wlr_presentation_event *handle, const wlr_o
     wlr_presentation_event_from_output(handle, outputEvent);
 }
 
-void QWPresentationFeedback::destory()
+void QWPresentationFeedback::operator delete(QWPresentationFeedback *p, std::destroying_delete_t)
 {
-    wlr_presentation_feedback_destroy(handle());
+    wlr_presentation_feedback_destroy(p->handle());
 }
 
 wlr_presentation_feedback *QWPresentationFeedback::handle() const
