@@ -68,6 +68,7 @@ set(SOURCES
     types/qwpresentation.cpp
     types/qwxwaylandserver.cpp
     types/qwviewporter.cpp
+    types/qwxdgforeignregistry.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -114,6 +115,8 @@ set(HEADERS
     types/qwxwaylandsurface.h
     types/qwpresentation.h
     types/qwxwaylandserver.h
+    types/qwxdgforeignregistry.h
+    types/qwxdgforeignregistry_p.h
     types/qwviewporter.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
