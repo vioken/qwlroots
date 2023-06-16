@@ -90,6 +90,7 @@ set(SOURCES
     types/qwinputmethodv2.cpp
     types/qwidlenotifyv1.cpp
     types/qwforeigntoplevelhandlev1.cpp
+    types/qwxdgforeignv1.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -138,6 +139,7 @@ set(HEADERS
     types/qwxwaylandserver.h
     types/qwxdgforeignregistry.h
     types/qwxdgforeignregistry_p.h
+    types/qwxdgforeignv1.h
     types/qwviewporter.h
     types/qwxdgoutputv1.h
     types/qwxdgactivationv1.h
