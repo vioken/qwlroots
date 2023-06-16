@@ -14,16 +14,14 @@ class QWRenderer;
 class QW_EXPORT QWShm
 {
 public:
-    void destroy();
+    QWShm() = delete;
+    ~QWShm() = delete;
+
     wlr_shm *handle() const;
 
     static QWShm *from(wlr_shm *handle);
     static QWShm *create(wl_display *display, uint32_t version, const uint32_t *formats, size_t formatsLen);
     static QWShm *create(wl_display *display, uint32_t version, QWRenderer *renderer);
-
-private:
-    QWShm() = default;
-    ~QWShm() = default;
 };
 
 QW_END_NAMESPACE

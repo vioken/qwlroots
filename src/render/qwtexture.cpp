@@ -13,9 +13,9 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-void QWTexture::destroy()
+void QWTexture::operator delete(QWTexture *p, std::destroying_delete_t)
 {
-    wlr_texture_destroy(handle());
+    wlr_texture_destroy(p->handle());
 }
 
 wlr_texture *QWTexture::handle() const
