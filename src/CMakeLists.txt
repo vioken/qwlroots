@@ -61,6 +61,7 @@ set(SOURCES
     types/qwoutput.cpp
     types/qwxdgdecorationmanagerv1.cpp
     types/qwidle.cpp
+    types/qwidleinhibitv1.cpp
     types/qwinputinhibitmanager.cpp
     types/qwkeyboardgroup.cpp
     types/qwxwayland.cpp
@@ -131,6 +132,7 @@ set(HEADERS
     types/qwoutput.h
     types/qwxdgdecorationmanagerv1.h
     types/qwidle.h
+    types/qwidleinhibitv1.h
     types/qwinputinhibitmanager.h
     types/qwkeyboardgroup.h
     types/qwxwayland.h
