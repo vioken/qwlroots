@@ -74,6 +74,7 @@ set(SOURCES
     types/qwxdgactivationv1.cpp
     types/qwxdgactivationtokenv1.cpp
     types/qwtextinputv3.cpp
+    types/qwtextinputmanagerv3.cpp
     types/qwtabletmanagerv2.cpp
     types/qwtabletpadv2.cpp
     types/qwsinglepixelbufferv1.cpp
