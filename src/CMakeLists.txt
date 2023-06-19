@@ -184,11 +184,13 @@ list(APPEND SOURCES
     render/qwswapchain.cpp
     types/qwshm.cpp
     types/qwxwaylandshellv1.cpp
+    types/qwfractionalscalev1.cpp
 )
 list(APPEND HEADERS
     render/qwswapchain.h
     types/qwshm.h
     types/qwxwaylandshellv1.h
+    types/qwfractionalscalev1.cpp
 )
 endif()
 
