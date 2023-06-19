@@ -72,6 +72,24 @@ set(SOURCES
     types/qwxdgoutputv1.cpp
     types/qwxdgactivationv1.cpp
     types/qwxdgactivationtokenv1.cpp
+    types/qwtextinputv3.cpp
+    types/qwtabletmanagerv2.cpp
+    types/qwtabletpadv2.cpp
+    types/qwsinglepixelbufferv1.cpp
+    types/qwsessionlockv1.cpp
+    types/qwsessionlockmanagerv1.cpp
+    types/qwsessionlocksurfacev1.cpp
+    types/qwscreencopyv1.cpp
+    types/qwrelativepointerv1.cpp
+    types/qwprimaryselectionv1.cpp
+    types/qwpointergesturesv1.cpp
+    types/qwpointerconstraintsv1.cpp
+    types/qwoutputpowermanagementv1.cpp
+    types/qwoutputmanagementv1.cpp
+    types/qwlinuxdmabufv1.cpp
+    types/qwinputmethodv2.cpp
+    types/qwidlenotifyv1.cpp
+    types/qwforeigntoplevelhandlev1.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -123,6 +141,21 @@ set(HEADERS
     types/qwviewporter.h
     types/qwxdgoutputv1.h
     types/qwxdgactivationv1.h
+    types/qwpointerconstraintsv1.h
+    types/qwoutputpowermanagementv1.h
+    types/qwtextinputv3.h
+    types/qwtabletv2.h
+    types/qwsinglepixelbufferv1.h
+    types/qwsessionlockv1.h
+    types/qwscreencopyv1.h
+    types/qwrelativepointerv1.h
+    types/qwprimaryselectionv1.h
+    types/qwpointergesturesv1.h
+    types/qwoutputmanagementv1.h
+    types/qwlinuxdmabufv1.h
+    types/qwinputmethodv2.h
+    types/qwidlenotifyv1.h
+    types/qwforeigntoplevelhandlev1.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
