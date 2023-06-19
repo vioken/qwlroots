@@ -3,7 +3,6 @@
 
 #include "qwxcursormanager.h"
 #include "qwcursor.h"
-#include "util/qwsignalconnector.h"
 
 extern "C" {
 #include <wlr/types/wlr_xcursor_manager.h>
@@ -11,9 +10,9 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-void QWXCursorManager::destroy()
+void QWXCursorManager::operator delete(QWXCursorManager *p, std::destroying_delete_t)
 {
-    wlr_xcursor_manager_destroy(handle());
+    wlr_xcursor_manager_destroy(p->handle());
 }
 
 wlr_xcursor_manager *QWXCursorManager::handle() const

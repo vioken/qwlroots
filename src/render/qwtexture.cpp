@@ -1,21 +1,21 @@
 // Copyright (C) 2022 JiDe Zhang <zccrs@live.com>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-extern "C" {
-#include <wlr/render/wlr_texture.h>
-}
-
-#include <QHash>
-
 #include "qwtexture.h"
 #include "qwrenderer.h"
 #include "types/qwbuffer.h"
 
+#include <QHash>
+
+extern "C" {
+#include <wlr/render/wlr_texture.h>
+}
+
 QW_BEGIN_NAMESPACE
 
-void QWTexture::destroy()
+void QWTexture::operator delete(QWTexture *p, std::destroying_delete_t)
 {
-    wlr_texture_destroy(handle());
+    wlr_texture_destroy(p->handle());
 }
 
 wlr_texture *QWTexture::handle() const
