@@ -32,6 +32,7 @@ message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, min
 pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 ws_generate(server wayland-protocols unstable/fullscreen-shell/fullscreen-shell-unstable-v1.xml fullscreen-shell-unstable-v1-protocol)
+ws_generate(server wayland-protocols unstable/tablet/tablet-unstable-v2.xml tablet-unstable-v2-protocol)
 
 set(SOURCES
     qwglobal.cpp
@@ -77,7 +78,6 @@ set(SOURCES
     types/qwtextinputv3.cpp
     types/qwtextinputmanagerv3.cpp
     types/qwtabletmanagerv2.cpp
-    types/qwtabletpadv2.cpp
     types/qwsinglepixelbufferv1.cpp
     types/qwsessionlockv1.cpp
     types/qwsessionlockmanagerv1.cpp
@@ -99,6 +99,11 @@ set(SOURCES
     types/qwvirtualpointerv1.cpp
     types/qwgammacontorlv1.cpp
     types/qwfullscreenshellv1.cpp
+    types/qwtabletv2.cpp
+    types/qwtabletv2tablet.cpp
+    types/qwtabletv2tabletool.cpp
+    types/qwtabletv2tablepad.cpp
+    types/qwtabletmanagerv2.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
