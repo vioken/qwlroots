@@ -53,6 +53,8 @@ public:
     void on_new_output(wlr_output *output);
     void on_destroy(void *);
 
+    static QWBackend *createBackend(wlr_backend *handle, bool isOwner, QObject *parent);
+
     static QHash<void*, QWBackend*> map;
     QW_DECLARE_PUBLIC(QWBackend)
     QWSignalConnector sc;
@@ -85,11 +87,29 @@ QWBackend *QWBackend::get(wlr_backend *handle)
     return QWBackendPrivate::map.value(handle);
 }
 
+QWBackend *QWBackendPrivate::createBackend(wlr_backend *handle, bool isOwner, QObject *parent)
+{
+    if (wlr_backend_is_multi(handle))
+        return new QWMultiBackend(handle, isOwner, parent);
+    if (wlr_backend_is_x11(handle))
+        return new QWX11Backend(handle, isOwner, parent);
+    if (wlr_backend_is_drm(handle))
+        return new QWDrmBackend(handle, isOwner, parent);
+    if (wlr_backend_is_headless(handle))
+        return new QWHeadlessBackend(handle, isOwner, parent);
+    if (wlr_backend_is_libinput(handle))
+        return new QWLibinputBackend(handle, isOwner, parent);
+    if (wlr_backend_is_wl(handle))
+        return new QWWaylandBackend(handle, isOwner, parent);
+
+    return new QWBackend(handle, isOwner, parent);
+}
+
 QWBackend *QWBackend::from(wlr_backend *handle)
 {
     if (auto o = get(handle))
         return o;
-    return new QWBackend(handle, false);
+    return QWBackendPrivate::createBackend(handle, false, nullptr);
 }
 
 QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
@@ -101,7 +121,7 @@ QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
 #endif
     if (!handle)
         return nullptr;
-    return new QWBackend(handle, true, parent);
+    return QWBackendPrivate::createBackend(handle, true, parent);
 }
 
 QWBackend::QWBackend(QWBackendPrivate &dd, QObject *parent)

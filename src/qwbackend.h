@@ -82,6 +82,7 @@ public:
     void forEachBackend(wlr_multi_backend_iterator_func_t iterator, void *userData);
 
 private:
+    friend class QWBackendPrivate;
     QWMultiBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
@@ -105,6 +106,7 @@ public:
     int getNonMasterFd() const;
 
 private:
+    friend class QWBackendPrivate;
     QWDrmBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
@@ -126,6 +128,7 @@ public:
     static wl_surface *waylandOutputGetSurface(QWOutput *output);
 
 private:
+    friend class QWBackendPrivate;
     QWWaylandBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
@@ -144,6 +147,7 @@ public:
     static bool isX11InputDevice(QWInputDevice *device);
 
 private:
+    friend class QWBackendPrivate;
     QWX11Backend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
@@ -159,6 +163,7 @@ public:
     static libinput_device *getDeviceHandle(QWInputDevice *dev);
 
 private:
+    friend class QWBackendPrivate;
     QWLibinputBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
@@ -174,6 +179,7 @@ public:
     static bool isHeadlessOutput(QWOutput *output);
 
 private:
+    friend class QWBackendPrivate;
     QWHeadlessBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
