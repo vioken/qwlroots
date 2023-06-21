@@ -33,6 +33,7 @@ pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 ws_generate(server wayland-protocols unstable/fullscreen-shell/fullscreen-shell-unstable-v1.xml fullscreen-shell-unstable-v1-protocol)
 ws_generate(server wayland-protocols unstable/tablet/tablet-unstable-v2.xml tablet-unstable-v2-protocol)
+ws_generate(server wayland-protocols unstable/pointer-constraints/pointer-constraints-unstable-v1.xml pointer-constraints-unstable-v1-protocol)
 
 set(SOURCES
     qwglobal.cpp
@@ -87,6 +88,7 @@ set(SOURCES
     types/qwrelativepointermanagerv1.cpp
     types/qwprimaryselectionv1.cpp
     types/qwpointergesturesv1.cpp
+    types/qwpointerconstraintv1.cpp
     types/qwpointerconstraintsv1.cpp
     types/qwoutputpowermanagementv1.cpp
     types/qwoutputmanagementv1.cpp
