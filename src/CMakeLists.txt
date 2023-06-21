@@ -84,6 +84,7 @@ set(SOURCES
     types/qwsessionlocksurfacev1.cpp
     types/qwscreencopyv1.cpp
     types/qwrelativepointerv1.cpp
+    types/qwrelativepointermanagerv1.cpp
     types/qwprimaryselectionv1.cpp
     types/qwpointergesturesv1.cpp
     types/qwpointerconstraintsv1.cpp
