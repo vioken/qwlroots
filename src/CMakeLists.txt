@@ -108,6 +108,8 @@ set(SOURCES
     types/qwtabletv2tabletool.cpp
     types/qwtabletv2tablepad.cpp
     types/qwtabletmanagerv2.cpp
+    types/qwkeyboardshortcutsinhibitv1.cpp
+    types/qwkeyboardshortcutsinhibitmanagerv1.cpp
     util/qwsignalconnector.cpp
     interfaces/qwbackendinterface.cpp
     interfaces/qwoutputinterface.cpp
@@ -182,6 +184,7 @@ set(HEADERS
     types/qwvirtualpointerv1.h
     types/qwgammacontorlv1.h
     types/qwfullscreenshellv1.h
+    types/qwkeyboardshortcutsinhibitv1.h
     util/qwsignalconnector.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
