@@ -20,7 +20,7 @@ else()
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 include(PackageVersionHelper)
 include(WaylandScannerHelpers)
 
