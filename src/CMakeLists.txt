@@ -47,6 +47,8 @@ set(SOURCES
     types/qwcompositor.cpp
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
+    types/qwdatadevicev1.cpp
+    types/qwdatacontrolmanagerv1.cpp
     types/qwdamagering.cpp
     types/qwdrm.cpp
     types/qwoutputlayout.cpp
@@ -131,6 +133,7 @@ set(HEADERS
     types/qwcompositor.h
     types/qwsubcompositor.h
     types/qwdatadevice.h
+    types/qwdatacontrolv1.h
     types/qwdamagering.h
     types/qwdrm.h
     types/qwoutputlayout.h
