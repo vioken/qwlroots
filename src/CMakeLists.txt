@@ -96,6 +96,8 @@ set(SOURCES
     types/qwoutputmanagementv1.cpp
     types/qwlinuxdmabufv1.cpp
     types/qwinputmethodv2.cpp
+    types/qwinputmethodkeyboardgrabv2.cpp
+    types/qwinputpopupsurfacev2.cpp
     types/qwidlenotifyv1.cpp
     types/qwforeigntoplevelhandlev1.cpp
     types/qwxdgforeignv1.cpp
