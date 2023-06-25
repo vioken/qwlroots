@@ -93,7 +93,6 @@ set(SOURCES
     types/qwpointergesturesv1.cpp
     types/qwpointerconstraintv1.cpp
     types/qwpointerconstraintsv1.cpp
-    types/qwoutputpowermanagementv1.cpp
     types/qwoutputmanagementv1.cpp
     types/qwlinuxdmabufv1.cpp
     types/qwinputmethodv2.cpp
@@ -169,7 +168,6 @@ set(HEADERS
     types/qwxdgoutputv1.h
     types/qwxdgactivationv1.h
     types/qwpointerconstraintsv1.h
-    types/qwoutputpowermanagementv1.h
     types/qwtextinputv3.h
     types/qwtabletv2.h
     types/qwsinglepixelbufferv1.h
@@ -226,11 +224,14 @@ endif()
 pkg_search_module(WLR_PROTOCOLS wlr-protocols)
 if (WLR_PROTOCOLS_FOUND)
     ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
+    ws_generate(server wlr-protocols unstable/wlr-output-power-management-unstable-v1.xml wlr-output-power-management-unstable-v1-protocol)
     set(PROTOCOL_HEADERS
         types/qwlayershellv1.h
+        types/qwoutputpowermanagementv1.h
     )
     set(PROTOCOL_SOURCES
         types/qwlayershellv1.cpp
+        types/qwoutputpowermanagementv1.h
     )
     list(APPEND HEADERS ${PROTOCOL_HEADERS})
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
