@@ -93,7 +93,9 @@ set(SOURCES
     types/qwpointergesturesv1.cpp
     types/qwpointerconstraintv1.cpp
     types/qwpointerconstraintsv1.cpp
-    types/qwoutputmanagementv1.cpp
+    types/qwoutputmanagerv1.cpp
+    types/qwoutputconfigurationv1.cpp
+    types/qwoutputconfigurationheadv1.cpp
     types/qwlinuxdmabufv1.cpp
     types/qwinputmethodv2.cpp
     types/qwidlenotifyv1.cpp
@@ -231,7 +233,7 @@ if (WLR_PROTOCOLS_FOUND)
     )
     set(PROTOCOL_SOURCES
         types/qwlayershellv1.cpp
-        types/qwoutputpowermanagementv1.h
+        types/qwoutputpowermanagementv1.cpp
     )
     list(APPEND HEADERS ${PROTOCOL_HEADERS})
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
