@@ -8,10 +8,32 @@
 
 struct wl_display;
 struct wlr_data_device_manager;
+struct wlr_data_source;
+
+typedef uint32_t wl_data_device_manager_dnd_action_t;
 
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
+class QW_EXPORT QWDataSource
+{
+public:
+    QWDataSource() = delete;
+    ~QWDataSource() = delete;
+
+    void operator delete(QWDataSource *p, std::destroying_delete_t);
+
+    wlr_data_source *handle() const;
+
+    static QWDataSource *from(wlr_data_source *handle);
+
+    void accept(uint32_t serial, const char *mime_type);
+    void dndAction(wl_data_device_manager_dnd_action_t action);
+    void dndDrop();
+    void dndFinish();
+    void send(const char *mime_type, int32_t fd);
+};
+
 class QWDataDeviceManagerPrivate;
 class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
 {
