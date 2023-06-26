@@ -9,12 +9,14 @@
 #include <QHash>
 #include <QPointF>
 
+extern "C" {
 // avoid replace namespace
 #include <math.h>
-extern "C" {
 #define namespace scope
+#define static
 #include <wlr/types/wlr_layer_shell_v1.h>
 #undef namespace
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
@@ -114,8 +116,10 @@ public:
     {
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
+#if WLR_VERSION_MINOR <= 16
         sc.connect(&handle->events.map, this, &QWLayerSurfaceV1Private::on_map);
         sc.connect(&handle->events.unmap, this, &QWLayerSurfaceV1Private::on_unmap);
+#endif
         sc.connect(&handle->events.new_popup, this, &QWLayerSurfaceV1Private::on_new_popup);
         sc.connect(&handle->events.destroy, this, &QWLayerSurfaceV1Private::on_destroy);
     }
@@ -135,8 +139,10 @@ public:
         sc.invalidate();
     }
 
+#if WLR_VERSION_MINOR <= 16
     void on_map(void *);
     void on_unmap(void *);
+#endif
     void on_new_popup(void *);
     void on_destroy(void *);
 
@@ -153,17 +159,19 @@ void QWLayerSurfaceV1Private::on_destroy(void *)
     delete q_func();
 }
 
+#if WLR_VERSION_MINOR <= 16
 void QWLayerSurfaceV1Private::on_map(void *data)
 {
     Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->map();
+    Q_EMIT q_func()->surface()->map();
 }
 
 void QWLayerSurfaceV1Private::on_unmap(void *data)
 {
     Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->unmap();
+    Q_EMIT q_func()->surface()->unmap();
 }
+#endif
 
 void QWLayerSurfaceV1Private::on_new_popup(void *data)
 {
@@ -246,6 +254,11 @@ QWSurface *QWLayerSurfaceV1::popupSurfaceAt(const QPointF &xpos, QPointF *subPos
     if (!surface)
         return nullptr;
     return QWSurface::from(surface);
+}
+
+QWSurface *QWLayerSurfaceV1::surface() const
+{
+    return QWSurface::from(handle()->surface);
 }
 
 QW_END_NAMESPACE

@@ -11,7 +11,10 @@
 #include <QHash>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_xdg_shell.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
@@ -102,8 +105,10 @@ public:
         sc.connect(&handle->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
+#if WLR_VERSION_MINOR <= 16
         sc.connect(&handle->events.map, this, &QWXdgSurfacePrivate::on_map);
         sc.connect(&handle->events.unmap, this, &QWXdgSurfacePrivate::on_unmap);
+#endif
         sc.connect(&handle->events.configure, this, &QWXdgSurfacePrivate::on_configure);
         sc.connect(&handle->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
     }
@@ -126,8 +131,10 @@ public:
     void on_destroy(void *);
     void on_ping_timeout(void *);
     void on_new_popup(wlr_xdg_popup *data);
+#if WLR_VERSION_MINOR <= 16
     void on_map(void *);
     void on_unmap(void *);
+#endif
     void on_configure(void *data);
     void on_ack_configure(void *data);
 
@@ -154,15 +161,17 @@ void QWXdgSurfacePrivate::on_new_popup(wlr_xdg_popup *data)
     Q_EMIT q_func()->newPopup(QWXdgPopup::from(data));
 }
 
+#if WLR_VERSION_MINOR <= 16
 void QWXdgSurfacePrivate::on_map(void *)
 {
-    Q_EMIT q_func()->map();
+    Q_EMIT q_func()->surface()->map();
 }
 
 void QWXdgSurfacePrivate::on_unmap(void *)
 {
-    Q_EMIT q_func()->unmap();
+    Q_EMIT q_func()->surface()->unmap();
 }
+#endif
 
 void QWXdgSurfacePrivate::on_configure(void *data)
 {
@@ -233,6 +242,11 @@ QWXdgToplevel *QWXdgSurface::topToplevel() const
     auto toplevel = qobject_cast<QWXdgToplevel*>(const_cast<QWXdgSurface*>(this));
     Q_ASSERT(toplevel);
     return toplevel;
+}
+
+QWSurface *QWXdgSurface::surface() const
+{
+    return QWSurface::from(handle()->surface);
 }
 
 void QWXdgSurface::ping()

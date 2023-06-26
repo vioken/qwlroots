@@ -12,7 +12,9 @@
 extern "C" {
 #include <wlr/backend.h>
 #include <wlr/backend/multi.h>
+#define static
 #include <wlr/backend/drm.h>
+#undef static
 #include <wlr/backend/wayland.h>
 #include <wlr/backend/x11.h>
 #include <wlr/backend/libinput.h>

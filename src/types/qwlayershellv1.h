@@ -67,11 +67,10 @@ public:
     QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
     QRect getGeometry() const;
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
+    QWSurface *surface() const;
 
 Q_SIGNALS:
     void beforeDestroy(QWLayerSurfaceV1 *self);
-    void map();
-    void unmap();
     void newPopup();
 
 private:

@@ -12,7 +12,10 @@
 #include <QHash>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_cursor.h>
+#undef static
 #include <wlr/util/box.h>
 }
 

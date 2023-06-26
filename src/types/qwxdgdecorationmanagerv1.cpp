@@ -8,7 +8,10 @@
 #include <QHash>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_xdg_decoration_v1.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
