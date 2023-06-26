@@ -9,7 +9,10 @@
 #include <QHash>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_output_layout.h>
+#undef static
 #include <wlr/util/box.h>
 }
 

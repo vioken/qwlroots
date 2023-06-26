@@ -67,6 +67,7 @@ public:
 
     QWXdgPopup *toPopup() const;
     QWXdgToplevel *topToplevel() const;
+    QWSurface *surface() const;
 
     void ping();
     uint32_t scheduleConfigure();
@@ -81,8 +82,6 @@ Q_SIGNALS:
     void beforeDestroy(QWXdgSurface *self);
     void pingTimeout();
     void newPopup(QWXdgPopup *popup);
-    void map();
-    void unmap();
     void configure(wlr_xdg_surface_configure *conf);
     void ackConfigure(wlr_xdg_surface_configure *conf);
 

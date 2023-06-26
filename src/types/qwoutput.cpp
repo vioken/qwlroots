@@ -11,7 +11,10 @@
 #include <QSize>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_output.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE

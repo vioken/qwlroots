@@ -13,7 +13,10 @@
 #include <QPointF>
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_compositor.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
@@ -113,6 +116,8 @@ public:
         sc.connect(&handle->events.new_subsurface, this, &QWSurfacePrivate::on_new_subsurface);
 #if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.precommit, this, &QWSurfacePrivate::on_precommit);
+        sc.connect(&handle->events.map, this, &QWSurfacePrivate::on_map);
+        sc.connect(&handle->events.unmap, this, &QWSurfacePrivate::on_unmap);
 #endif
     }
     ~QWSurfacePrivate() {
@@ -135,6 +140,8 @@ public:
     void on_new_subsurface(void *);
 #if WLR_VERSION_MINOR > 16
     void on_precommit(void *);
+    void on_map(void *);
+    void on_unmap(void *);
 #endif
     static QHash<void*, QWSurface*> map;
     QW_DECLARE_PUBLIC(QWSurface)
@@ -172,6 +179,16 @@ void QWSurfacePrivate::on_new_subsurface(void *data)
 void QWSurfacePrivate::on_precommit(void *data)
 {
     Q_EMIT q_func()->precommit(reinterpret_cast<wlr_surface_state*>(data));
+}
+
+void QWSurfacePrivate::on_map(void *)
+{
+    Q_EMIT q_func()->map();
+}
+
+void QWSurfacePrivate::on_unmap(void *)
+{
+    Q_EMIT q_func()->unmap();
 }
 
 #endif
@@ -304,9 +321,9 @@ void QWSurface::setPreferredBufferTransform(wl_output_transform_t transform)
    wlr_surface_set_preferred_buffer_transform(handle(), static_cast<wl_output_transform>(transform));
 }
 
-void QWSurface::setRole(const wlr_surface_role *role, void *roleData, wl_resource *errorResource, uint32_t errorCode)
+void QWSurface::setRole(const wlr_surface_role *role, wl_resource *errorResource, uint32_t errorCode)
 {
-   wlr_surface_set_role(handle(), role, roleData, errorResource, errorCode);
+   wlr_surface_set_role(handle(), role, errorResource, errorCode);
 }
 #endif
 

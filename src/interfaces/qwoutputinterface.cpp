@@ -6,7 +6,10 @@
 #include "types/qwbuffer.h"
 
 extern "C" {
+#include <math.h>
+#define static
 #include <wlr/types/wlr_output.h>
+#undef static
 #include <wlr/interfaces/wlr_output.h>
 }
 

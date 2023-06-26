@@ -232,8 +232,9 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
     view->sceneTree = QWScene::xdgSurfaceCreate(scene, s);
     view->sceneTree->handle()->node.data = view;
     surface->data = view->sceneTree;
-    connect(s, &QWXdgSurface::map, this, &TinywlServer::onXdgToplevelMap);
-    connect(s, &QWXdgSurface::unmap, this, &TinywlServer::onXdgToplevelUnmap);
+    auto *ss = s->surface();
+    connect(ss, &QWSurface::map, this, &TinywlServer::onXdgToplevelMap);
+    connect(ss, &QWSurface::unmap, this, &TinywlServer::onXdgToplevelUnmap);
     connect(s, &QWXdgToplevel::requestMove, this, &TinywlServer::onXdgToplevelRequestMove);
     connect(s, &QWXdgToplevel::requestResize, this, &TinywlServer::onXdgToplevelRequestResize);
     connect(s, &QWXdgToplevel::requestMaximize, this, &TinywlServer::onXdgToplevelRequestMaximize);
