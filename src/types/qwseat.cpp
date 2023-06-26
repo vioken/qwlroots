@@ -16,6 +16,10 @@ extern "C" {
 #include <wlr/types/wlr_pointer.h>
 }
 
+static_assert(std::is_same_v<wlr_axis_orientation_t, std::underlying_type_t<wlr_axis_orientation>>);
+static_assert(std::is_same_v<wlr_axis_source_t, std::underlying_type_t<wlr_axis_source>>);
+static_assert(std::is_same_v<wlr_button_state_t, std::underlying_type_t<wlr_button_state>>);
+
 QW_BEGIN_NAMESPACE
 
 class QWSeatPrivate : public QWObjectPrivate

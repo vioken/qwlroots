@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <qwglobal.h>
 #include <QObject>
 
@@ -15,9 +16,9 @@ struct wlr_drag;
 struct wlr_data_source;
 struct wlr_keyboard_modifiers;
 
-typedef int wlr_axis_orientation_t;
-typedef int wlr_axis_source_t;
-typedef int wlr_button_state_t;
+typedef uint32_t wlr_axis_orientation_t;
+typedef uint32_t wlr_axis_source_t;
+typedef uint32_t wlr_button_state_t;
 
 QW_BEGIN_NAMESPACE
 
