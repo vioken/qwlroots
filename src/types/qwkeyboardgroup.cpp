@@ -3,6 +3,7 @@
 
 #include "qwkeyboardgroup.h"
 #include "util/qwsignalconnector.h"
+#include "qwkeyboard.h"
 
 #include <QHash>
 
@@ -83,22 +84,22 @@ QWKeyboardGroup *QWKeyboardGroup::from(wlr_keyboard_group *handle)
     return new QWKeyboardGroup(handle, false);
 }
 
-QWKeyboardGroup *QWKeyboardGroup::from(wlr_keyboard  *keyboard)
+QWKeyboardGroup *QWKeyboardGroup::from(QWKeyboard  *keyboard)
 {
-    auto *handle = wlr_keyboard_group_from_wlr_keyboard(keyboard);
+    auto *handle = wlr_keyboard_group_from_wlr_keyboard(keyboard->handle());
     if (!handle)
         return nullptr;
     return from(handle);
 }
 
-void QWKeyboardGroup::addKeyboard(wlr_keyboard *keyboard)
+void QWKeyboardGroup::addKeyboard(QWKeyboard *keyboard)
 {
-    wlr_keyboard_group_add_keyboard(handle(), keyboard);
+    wlr_keyboard_group_add_keyboard(handle(), keyboard->handle());
 }
 
-void QWKeyboardGroup::removeKeyboard(wlr_keyboard *keyboard)
+void QWKeyboardGroup::removeKeyboard(QWKeyboard *keyboard)
 {
-    wlr_keyboard_group_remove_keyboard(handle(), keyboard);
+    wlr_keyboard_group_remove_keyboard(handle(), keyboard->handle());
 }
 
 QW_END_NAMESPACE
