@@ -45,6 +45,7 @@ set(SOURCES
     render/qwegl.cpp
     types/qwbuffer.cpp
     types/qwcompositor.cpp
+    types/qwexportdmabufmanagerv1.cpp
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
     types/qwdatasource.cpp
@@ -137,6 +138,7 @@ set(HEADERS
     render/qwegl.h
     types/qwbuffer.h
     types/qwcompositor.h
+    types/qwexportdmabufv1.h
     types/qwsubcompositor.h
     types/qwdatadevice.h
     types/qwdatacontrolv1.h
