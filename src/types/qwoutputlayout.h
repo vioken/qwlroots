@@ -8,12 +8,12 @@
 
 struct wlr_output_layout;
 struct wlr_output_layout_output;
-struct wlr_output;
 
 typedef int wlr_direction_t;
 
 QW_BEGIN_NAMESPACE
 
+class QWOutput;
 class QWRenderer;
 class QWOutputLayoutPrivate;
 class QW_EXPORT QWOutputLayout : public QObject, public QWObject
@@ -30,22 +30,22 @@ public:
     static QWOutputLayout *get(wlr_output_layout *handle);
     static QWOutputLayout *from(wlr_output_layout *handle);
 
-    wlr_output_layout_output *get(wlr_output *reference) const;
-    wlr_output *outputAt(const QPointF &pos) const;
-    wlr_output *getCenterOutput() const;
-    wlr_output *adjacentOutput(wlr_direction_t wlr_direction, wlr_output *reference, const QPoint &pos) const;
-    wlr_output *farthestOutput(wlr_direction_t wlr_direction, wlr_output *reference, const QPoint &pos) const;
+    wlr_output_layout_output *get(QWOutput *reference) const;
+    QWOutput *outputAt(const QPointF &pos) const;
+    QWOutput *getCenterOutput() const;
+    QWOutput *adjacentOutput(wlr_direction_t wlr_direction, QWOutput *reference, const QPoint &pos) const;
+    QWOutput *farthestOutput(wlr_direction_t wlr_direction, QWOutput *reference, const QPoint &pos) const;
 
-    void add(wlr_output *output, const QPoint &pos);
-    void addAuto(wlr_output *output);
-    void move(wlr_output *output, const QPoint &pos);
-    void remove(wlr_output *output);
+    void add(QWOutput *output, const QPoint &pos);
+    void addAuto(QWOutput *output);
+    void move(QWOutput *output, const QPoint &pos);
+    void remove(QWOutput *output);
 
-    QPointF outputCoords(wlr_output *reference) const;
-    bool containsPoint(wlr_output *reference, const QPoint &pos) const;
-    bool intersects(wlr_output *reference, const QRect &targetBox) const;
-    QPointF closestPoint(wlr_output *reference, const QPointF &pos) const;
-    QRect getBox(wlr_output *reference) const;
+    QPointF outputCoords(QWOutput *reference) const;
+    bool containsPoint(QWOutput *reference, const QPoint &pos) const;
+    bool intersects(QWOutput *reference, const QRect &targetBox) const;
+    QPointF closestPoint(QWOutput *reference, const QPointF &pos) const;
+    QRect getBox(QWOutput *reference) const;
 
 Q_SIGNALS:
     void beforeDestroy(QWOutputLayout *self);

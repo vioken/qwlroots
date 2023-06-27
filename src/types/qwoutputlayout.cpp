@@ -3,6 +3,7 @@
 
 #include "qwoutputlayout.h"
 #include "util/qwsignalconnector.h"
+#include "qwoutput.h"
 
 #include <QPointF>
 #include <QRect>
@@ -98,70 +99,70 @@ QWOutputLayout *QWOutputLayout::from(wlr_output_layout *handle)
     return new QWOutputLayout(handle, false, nullptr);
 }
 
-wlr_output_layout_output *QWOutputLayout::get(wlr_output *reference) const
+wlr_output_layout_output *QWOutputLayout::get(QWOutput *reference) const
 {
-    return wlr_output_layout_get(handle(), reference);
+    return wlr_output_layout_get(handle(), reference->handle());
 }
 
-wlr_output *QWOutputLayout::outputAt(const QPointF &pos) const
+QWOutput *QWOutputLayout::outputAt(const QPointF &pos) const
 {
-    return wlr_output_layout_output_at(handle(), pos.x(), pos.y());
+    return QWOutput::from(wlr_output_layout_output_at(handle(), pos.x(), pos.y()));
 }
 
-wlr_output *QWOutputLayout::getCenterOutput() const
+QWOutput *QWOutputLayout::getCenterOutput() const
 {
-    return wlr_output_layout_get_center_output(handle());
+    return QWOutput::from(wlr_output_layout_get_center_output(handle()));
 }
 
-wlr_output *QWOutputLayout::adjacentOutput(wlr_direction_t direction, wlr_output *reference, const QPoint &pos) const
+QWOutput *QWOutputLayout::adjacentOutput(wlr_direction_t direction, QWOutput *reference, const QPoint &pos) const
 {
-    return wlr_output_layout_adjacent_output(handle(), static_cast<wlr_direction>(direction),
-                                             reference, pos.x(), pos.y());
+    return QWOutput::from(wlr_output_layout_adjacent_output(handle(), static_cast<wlr_direction>(direction),
+                                             reference->handle(), pos.x(), pos.y()));
 }
 
-wlr_output *QWOutputLayout::farthestOutput(wlr_direction_t direction, wlr_output *reference, const QPoint &pos) const
+QWOutput *QWOutputLayout::farthestOutput(wlr_direction_t direction, QWOutput *reference, const QPoint &pos) const
 {
-    return wlr_output_layout_farthest_output(handle(), static_cast<wlr_direction>(direction),
-                                             reference, pos.x(), pos.y());
+    return QWOutput::from(wlr_output_layout_farthest_output(handle(), static_cast<wlr_direction>(direction),
+                                             reference->handle(), pos.x(), pos.y()));
 }
 
-void QWOutputLayout::add(wlr_output *output, const QPoint &pos)
+void QWOutputLayout::add(QWOutput *output, const QPoint &pos)
 {
-    wlr_output_layout_add(handle(), output, pos.x(), pos.y());
+    wlr_output_layout_add(handle(), output->handle(), pos.x(), pos.y());
 }
 
-void QWOutputLayout::addAuto(wlr_output *output)
+void QWOutputLayout::addAuto(QWOutput *output)
 {
-    wlr_output_layout_add_auto(handle(), output);
+    wlr_output_layout_add_auto(handle(), output->handle());
 }
 
-void QWOutputLayout::move(wlr_output *output, const QPoint &pos)
+void QWOutputLayout::move(QWOutput *output, const QPoint &pos)
 {
 #if WLR_VERSION_MINOR > 16
-    wlr_output_layout_add(handle(), output, pos.x(), pos.y());
+    wlr_output_layout_add(handle(), output->handle(), pos.x(), pos.y());
 #else
-    wlr_output_layout_move(handle(), output, pos.x(), pos.y());
+    wlr_output_layout_move(handle(), output->handle(), pos.x(), pos.y());
 #endif
 }
 
-void QWOutputLayout::remove(wlr_output *output)
+void QWOutputLayout::remove(QWOutput *output)
 {
-    wlr_output_layout_remove(handle(), output);
+    wlr_output_layout_remove(handle(), output->handle());
 }
 
-QPointF QWOutputLayout::outputCoords(wlr_output *reference) const
+QPointF QWOutputLayout::outputCoords(QWOutput *reference) const
 {
     QPointF pos;
-    wlr_output_layout_output_coords(handle(), reference, &pos.rx(), &pos.ry());
+    wlr_output_layout_output_coords(handle(), reference->handle(), &pos.rx(), &pos.ry());
     return pos;
 }
 
-bool QWOutputLayout::containsPoint(wlr_output *reference, const QPoint &pos) const
+bool QWOutputLayout::containsPoint(QWOutput *reference, const QPoint &pos) const
 {
-    return wlr_output_layout_contains_point(handle(), reference, pos.x(), pos.y());
+    return wlr_output_layout_contains_point(handle(), reference->handle(), pos.x(), pos.y());
 }
 
-bool QWOutputLayout::intersects(wlr_output *reference, const QRect &targetBox) const
+bool QWOutputLayout::intersects(QWOutput *reference, const QRect &targetBox) const
 {
     wlr_box box {
         .x = targetBox.x(),
@@ -169,20 +170,20 @@ bool QWOutputLayout::intersects(wlr_output *reference, const QRect &targetBox) c
         .width = targetBox.width(),
         .height = targetBox.height()
     };
-    return wlr_output_layout_intersects(handle(), reference, &box);
+    return wlr_output_layout_intersects(handle(), reference->handle(), &box);
 }
 
-QPointF QWOutputLayout::closestPoint(wlr_output *reference, const QPointF &pos) const
+QPointF QWOutputLayout::closestPoint(QWOutput *reference, const QPointF &pos) const
 {
     QPointF rpos;
-    wlr_output_layout_closest_point(handle(), reference, pos.x(), pos.y(), &rpos.rx(), &rpos.ry());
+    wlr_output_layout_closest_point(handle(), reference->handle(), pos.x(), pos.y(), &rpos.rx(), &rpos.ry());
     return rpos;
 }
 
-QRect QWOutputLayout::getBox(wlr_output *reference) const
+QRect QWOutputLayout::getBox(QWOutput *reference) const
 {
     wlr_box box;
-    wlr_output_layout_get_box(handle(), reference, &box);
+    wlr_output_layout_get_box(handle(), reference->handle(), &box);
     return QRect(box.x, box.y, box.width, box.height);
 }
 

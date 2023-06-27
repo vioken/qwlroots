@@ -6,6 +6,7 @@
 #include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
 #include "types/qwoutputlayout.h"
+#include "qwoutput.h"
 
 #include <QImage>
 #include <QPointF>
@@ -280,14 +281,14 @@ void QWCursor::attachOutputLayout(QWOutputLayout *layout)
     wlr_cursor_attach_output_layout(handle(), layout->handle());
 }
 
-void QWCursor::mapToOutput(wlr_output *output)
+void QWCursor::mapToOutput(QWOutput *output)
 {
-    wlr_cursor_map_to_output(handle(), output);
+    wlr_cursor_map_to_output(handle(), output->handle());
 }
 
-void QWCursor::mapInputToOutput(QWInputDevice *dev, wlr_output *output)
+void QWCursor::mapInputToOutput(QWInputDevice *dev, QWOutput *output)
 {
-    wlr_cursor_map_input_to_output(handle(), dev->handle(), output);
+    wlr_cursor_map_input_to_output(handle(), dev->handle(), output->handle());
 }
 
 void QWCursor::mapToRegion(const QRect &box)
