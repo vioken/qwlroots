@@ -104,6 +104,7 @@ set(SOURCES
     types/qwinputpopupsurfacev2.cpp
     types/qwidlenotifyv1.cpp
     types/qwforeigntoplevelhandlev1.cpp
+    types/qwforeigntoplevelmanagerv1.cpp
     types/qwxdgforeignv1.cpp
     types/qwxdgforeignv2.cpp
     types/qwvirtualkeyboardv1.cpp
