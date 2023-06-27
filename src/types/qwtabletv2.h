@@ -6,9 +6,7 @@
 #include <qwglobal.h>
 #include <QObject>
 
-typedef int zwp_tablet_pad_v2_button_state_t;
-typedef int zwp_tablet_pad_v2_button_state_t;
-typedef int zwp_tablet_pad_v2_button_state_t;
+typedef uint32_t zwp_tablet_pad_v2_button_state_t;
 
 struct wlr_tablet_tool;
 struct wlr_tablet_pad_v2_grab;

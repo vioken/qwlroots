@@ -86,7 +86,7 @@ private:
     QWMultiBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
-typedef int wl_output_transform_t;
+typedef uint32_t wl_output_transform_t;
 class QW_EXPORT QWDrmBackend : public QWBackend
 {
     Q_OBJECT

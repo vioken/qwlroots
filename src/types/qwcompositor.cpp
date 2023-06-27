@@ -19,6 +19,8 @@ extern "C" {
 #undef static
 }
 
+static_assert(std::is_same_v<wl_output_transform_t, std::underlying_type_t<wl_output_transform>>);
+
 QW_BEGIN_NAMESPACE
 
 class QWCompositorPrivate : public QWObjectPrivate

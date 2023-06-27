@@ -7,7 +7,7 @@
 #include <QObject>
 
 struct wlr_content_type_manager_v1;
-typedef int wp_content_type_v1_type_t;
+typedef uint32_t wp_content_type_v1_type_t;
 
 QW_BEGIN_NAMESPACE
 

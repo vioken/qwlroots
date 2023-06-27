@@ -14,6 +14,9 @@ extern "C" {
 #undef class
 }
 
+static_assert(std::is_same_v<wlr_xwayland_icccm_input_model_t, std::underlying_type_t<enum wlr_xwayland_icccm_input_model>>);
+static_assert(std::is_same_v<xcb_stack_mode, std::underlying_type_t<xcb_stack_mode_t>>);
+
 QW_BEGIN_NAMESPACE
 
 QWXWaylandSurface* QWXWaylandSurface::from(wlr_xwayland_surface* surface)

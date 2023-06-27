@@ -12,6 +12,8 @@ extern "C" {
 #include <wlr/types/wlr_content_type_v1.h>
 }
 
+static_assert(std::is_same_v<wp_content_type_v1_type_t, std::underlying_type_t<wp_content_type_v1_type>>);
+
 QW_BEGIN_NAMESPACE
 
 class QWContentTypeManagerV1Private : public QWObjectPrivate

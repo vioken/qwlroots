@@ -9,7 +9,7 @@
 struct wlr_xdg_decoration_manager_v1;
 struct wlr_xdg_toplevel_decoration_v1;
 
-typedef int wlr_xdg_toplevel_decoration_v1_mode_t;
+typedef uint32_t wlr_xdg_toplevel_decoration_v1_mode_t;
 
 QW_BEGIN_NAMESPACE
 

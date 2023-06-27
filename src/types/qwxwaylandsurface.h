@@ -6,8 +6,8 @@
 
 #include <qwglobal.h>
 
-typedef int wlr_xwayland_icccm_input_model_t;
-typedef int xcb_stack_mode;
+typedef uint32_t wlr_xwayland_icccm_input_model_t;
+typedef uint32_t xcb_stack_mode;
 
 struct wlr_xwayland_surface;
 class QRect;
