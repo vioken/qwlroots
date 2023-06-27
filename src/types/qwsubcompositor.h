@@ -6,7 +6,6 @@
 #include <qwglobal.h>
 #include <QObject>
 
-struct wl_display;
 struct wlr_subcompositor;
 struct wlr_subsurface;
 

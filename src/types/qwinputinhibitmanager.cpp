@@ -4,6 +4,8 @@
 #include "qwinputinhibitmanager.h"
 #include "util/qwsignalconnector.h"
 
+#include <qwdisplay.h>
+
 #include <QHash>
 
 extern "C" {
@@ -86,9 +88,9 @@ QWInputInhibitManager *QWInputInhibitManager::get(wlr_input_inhibit_manager *han
     return new QWInputInhibitManager(handle, false);
 }
 
-QWInputInhibitManager *QWInputInhibitManager::create(wl_display *display)
+QWInputInhibitManager *QWInputInhibitManager::create(QWDisplay *display)
 {
-    auto *handle = wlr_input_inhibit_manager_create(display);
+    auto *handle = wlr_input_inhibit_manager_create(display->handle());
     if (!handle)
         return nullptr;
     return new QWInputInhibitManager(handle, true);

@@ -15,7 +15,6 @@ struct wlr_xdg_toplevel_resize_event;
 struct wlr_xdg_toplevel_show_window_menu_event;
 struct wlr_xdg_surface_configure;
 struct wlr_surface;
-struct wl_display;
 struct wl_resource;
 
 typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,

@@ -3,6 +3,7 @@
 
 #include "qwviewporter.h"
 #include "util/qwsignalconnector.h"
+#include "qwdisplay.h"
 
 #include <QHash>
 
@@ -70,9 +71,9 @@ QWViewPorter *QWViewPorter::from(wlr_viewporter *handle)
     return new QWViewPorter(handle, false);
 }
 
-QWViewPorter *QWViewPorter::create(wl_display *display)
+QWViewPorter *QWViewPorter::create(QWDisplay *display)
 {
-    auto *handle = wlr_viewporter_create(display);
+    auto *handle = wlr_viewporter_create(display->handle());
     if (!handle)
         return nullptr;
     return new QWViewPorter(handle, true);

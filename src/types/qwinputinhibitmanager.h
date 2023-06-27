@@ -7,10 +7,10 @@
 #include <QObject>
 
 struct wlr_input_inhibit_manager;
-struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWInputInhibitManagerPrivate;
 class QW_EXPORT QWInputInhibitManager : public QObject, public QWObject
 {
@@ -23,7 +23,7 @@ public:
 
     static QWInputInhibitManager *get(wlr_input_inhibit_manager *handle);
     static QWInputInhibitManager *from(wlr_input_inhibit_manager *handle);
-    static QWInputInhibitManager *create(wl_display *display);
+    static QWInputInhibitManager *create(QWDisplay *display);
 
 Q_SIGNALS:
     void beforeDestroy(QWInputInhibitManager *self);

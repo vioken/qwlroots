@@ -4,6 +4,7 @@
 #include "qwoutputinterface.h"
 #include "qwbackend.h"
 #include "types/qwbuffer.h"
+#include "qwdisplay.h"
 
 extern "C" {
 #include <math.h>
@@ -126,7 +127,7 @@ QWOutputInterface *QWOutputInterface::get(wlr_output *handle)
     return interface(handle);
 }
 
-void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, wl_display *display)
+void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display)
 {
     auto impl = new wlr_output_impl {
         QW_INIT_INTERFACE_FUNC(funMagicKey, set_cursor, &QWOutputInterface::setCursor),
@@ -143,7 +144,7 @@ void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, wl_di
     m_handleImpl = impl;
     m_handle = calloc(1, sizeof(_wlr_output));
     static_cast<_wlr_output *>(m_handle)->interface = this;
-    wlr_output_init(handle(), backend->handle(), impl, display);
+    wlr_output_init(handle(), backend->handle(), impl, display->handle());
 }
 
 QW_END_NAMESPACE
