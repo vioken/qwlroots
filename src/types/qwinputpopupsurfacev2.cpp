@@ -26,8 +26,10 @@ public:
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWInputPopupSurfaceV2Private::on_destroy);
+#if WLR_VERSION_MINOR <= 16
         sc.connect(&handle->events.map, this, &QWInputPopupSurfaceV2Private::on_map);
         sc.connect(&handle->events.unmap, this, &QWInputPopupSurfaceV2Private::on_unmap);
+#endif
     }
     ~QWInputPopupSurfaceV2Private() {
         if (!m_handle)
@@ -44,8 +46,11 @@ public:
     }
 
     void on_destroy(void *);
+
+#if WLR_VERSION_MINOR <= 16
     void on_map(void *);
     void on_unmap(void *);
+#endif
 
     static QHash<void*, QWInputPopupSurfaceV2*> map;
     QW_DECLARE_PUBLIC(QWInputPopupSurfaceV2)
@@ -60,17 +65,19 @@ void QWInputPopupSurfaceV2Private::on_destroy(void *)
     delete q_func();
 }
 
+#if WLR_VERSION_MINOR <= 16
 void QWInputPopupSurfaceV2Private::on_map(void *data)
 {
     Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->map();
+    Q_EMIT q_func()->surface()->map();
 }
 
 void QWInputPopupSurfaceV2Private::on_unmap(void *data)
 {
     Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->unmap();
+    Q_EMIT q_func()->surface()->unmap();
 }
+#endif
 
 QWInputPopupSurfaceV2::QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner)
     : QObject(nullptr)
@@ -114,6 +121,11 @@ void QWInputPopupSurfaceV2::send_text_input_rectangle(const QRect &sbox)
         .height = sbox.height()
     };
     wlr_input_popup_surface_v2_send_text_input_rectangle(handle(), &b);
+}
+
+QWSurface *QWInputPopupSurfaceV2::surface() const
+{
+    return QWSurface::from(handle()->surface);
 }
 
 QW_END_NAMESPACE
