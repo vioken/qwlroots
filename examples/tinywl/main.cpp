@@ -211,7 +211,7 @@ void TinywlServer::onNewOutput(QWOutput *output)
     }
 
     connect(output, &QWOutput::frame, this, &TinywlServer::onOutputFrame);
-    outputLayout->addAuto(output->handle());
+    outputLayout->addAuto(output);
 }
 
 void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)

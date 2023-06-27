@@ -7,8 +7,6 @@
 #include <QObject>
 
 struct wlr_cursor;
-struct wlr_output_layout;
-struct wlr_output;
 struct wlr_pointer_motion_event;
 struct wlr_pointer_motion_absolute_event;
 struct wlr_pointer_button_event;
@@ -36,6 +34,7 @@ class QWSurface;
 class QWOutputLayout;
 class QWCursorPrivate;
 class QWInputDevice;
+class QWOutput;
 
 class QW_EXPORT QWCursor : public QObject, public QWObject
 {
@@ -61,8 +60,8 @@ public:
     void attachInputDevice(QWInputDevice *dev);
     void detachInputDevice(QWInputDevice *dev);
     void attachOutputLayout(QWOutputLayout *layout);
-    void mapToOutput(wlr_output *output);
-    void mapInputToOutput(QWInputDevice *dev, wlr_output *output);
+    void mapToOutput(QWOutput *output);
+    void mapInputToOutput(QWInputDevice *dev, QWOutput *output);
     void mapToRegion(const QRect &box);
     void mapInputToRegion(QWInputDevice *dev, const QRect &box);
 
