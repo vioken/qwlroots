@@ -54,12 +54,12 @@ public:
     static QWInputPopupSurfaceV2 *from(wlr_input_popup_surface_v2 *handle);
     static QWInputPopupSurfaceV2 *from(QWSurface *handle);
 
+    QWSurface *surface() const;
+
     void send_text_input_rectangle(const QRect &sbox);
 
 Q_SIGNALS:
     void beforeDestroy(QWInputPopupSurfaceV2 *self);
-    void map();
-    void unmap();
 
 private:
     QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner);
