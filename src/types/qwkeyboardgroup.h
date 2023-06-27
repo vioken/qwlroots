@@ -7,11 +7,11 @@
 #include <QObject>
 
 struct wlr_keyboard_group;
-struct wlr_keyboard;
 struct wl_array;
 
 QW_BEGIN_NAMESPACE
 
+class QWKeyboard;
 class QWKeyboardGroupPrivate;
 class QW_EXPORT QWKeyboardGroup : public QObject, public QWObject
 {
@@ -26,9 +26,9 @@ public:
 
     static QWKeyboardGroup *get(wlr_keyboard_group *handle);
     static QWKeyboardGroup *from(wlr_keyboard_group *handle);
-    static QWKeyboardGroup *from(wlr_keyboard  *keyboard);
-    void addKeyboard(wlr_keyboard *keyboard);
-    void removeKeyboard(wlr_keyboard *keyboard);
+    static QWKeyboardGroup *from(QWKeyboard  *keyboard);
+    void addKeyboard(QWKeyboard *keyboard);
+    void removeKeyboard(QWKeyboard *keyboard);
 
 Q_SIGNALS:
     void beforeDestroy(QWKeyboardGroup *self);
