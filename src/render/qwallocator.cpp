@@ -5,6 +5,7 @@
 #include "qwbackend.h"
 #include "qwrenderer.h"
 #include "util/qwsignalconnector.h"
+#include "qwbuffer.h"
 
 #include <QHash>
 
@@ -82,9 +83,9 @@ QWAllocator *QWAllocator::from(wlr_allocator *handle)
     return new QWAllocator(handle, false);
 }
 
-wlr_buffer *QWAllocator::createBuffer(int width, int height, const wlr_drm_format *format)
+QWBuffer *QWAllocator::createBuffer(int width, int height, const wlr_drm_format *format)
 {
-    return wlr_allocator_create_buffer(handle(), width, height, format);
+    return QWBuffer::from(wlr_allocator_create_buffer(handle(), width, height, format));
 }
 
 QW_END_NAMESPACE

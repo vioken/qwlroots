@@ -10,10 +10,9 @@ struct wlr_buffer_impl;
 struct wlr_dmabuf_attributes;
 struct wlr_shm_attributes;
 
-class QWBuffer;
-
 QW_BEGIN_NAMESPACE
 
+class QWBuffer;
 class QWBufferInterface : public QWInterface
 {
 public:
@@ -26,7 +25,7 @@ public:
 
     inline wlr_buffer *handle() const { return QWInterface::handle<wlr_buffer>(); }
     inline wlr_buffer_impl *impl() const { return QWInterface::handle<wlr_buffer_impl>(); }
-    static QWBufferInterface *get(wlr_buffer *handle);
+    static QWBufferInterface *get(QWBuffer *handle);
 
 protected:
     template<class T>

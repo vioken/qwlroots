@@ -45,7 +45,7 @@ public:
     wlr_client_buffer *clientBufferCreate(const QWRenderer *renderer);
     wlr_client_buffer *clientBufferGet() const;
 
-    bool clientBufferApplyDamage(wlr_client_buffer *buffer, wlr_buffer *next,
+    bool clientBufferApplyDamage(wlr_client_buffer *buffer, QWBuffer *next,
                                  pixman_region32 *damage);
 
 Q_SIGNALS:
