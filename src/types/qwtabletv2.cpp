@@ -7,6 +7,8 @@ extern "C" {
 #include <wlr/types/wlr_tablet_v2.h>
 }
 
+static_assert(std::is_same_v<zwp_tablet_pad_v2_button_state_t, std::underlying_type_t<zwp_tablet_pad_v2_button_state>>);
+
 QW_BEGIN_NAMESPACE
 
 QWTabletPadV2Grab *QWTabletPadV2Grab::from(wlr_tablet_pad_v2_grab *handle)

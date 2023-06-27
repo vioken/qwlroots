@@ -14,6 +14,8 @@ extern "C" {
 #undef static
 }
 
+static_assert(std::is_same_v<wlr_xdg_toplevel_decoration_v1_mode_t, std::underlying_type_t<wlr_xdg_toplevel_decoration_v1_mode>>);
+
 QW_BEGIN_NAMESPACE
 
 /// QWXdgDecorationManagerV1

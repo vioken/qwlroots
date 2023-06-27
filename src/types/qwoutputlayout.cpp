@@ -17,6 +17,8 @@ extern "C" {
 #include <wlr/util/box.h>
 }
 
+static_assert(std::is_same_v<wlr_direction_t, std::underlying_type_t<wlr_direction>>);
+
 QW_BEGIN_NAMESPACE
 
 class QWOutputLayoutPrivate : public QWObjectPrivate

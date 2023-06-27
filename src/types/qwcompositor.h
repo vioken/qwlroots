@@ -14,7 +14,7 @@ struct wl_resource;
 struct wlr_surface_role;
 struct pixman_region32;
 typedef pixman_region32 pixman_region32_t;
-typedef int wl_output_transform_t;
+typedef uint32_t wl_output_transform_t;
 
 typedef void (*wlr_surface_iterator_func_t)(
     wlr_surface *surface, int sx, int sy, void *data

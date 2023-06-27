@@ -9,7 +9,7 @@
 struct wlr_output_layout;
 struct wlr_output_layout_output;
 
-typedef int wlr_direction_t;
+typedef uint32_t wlr_direction_t;
 
 QW_BEGIN_NAMESPACE
 

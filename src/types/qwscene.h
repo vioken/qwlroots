@@ -21,7 +21,7 @@ struct wlr_xdg_surface;
 
 struct pixman_region32;
 
-typedef int wl_output_transform_t;
+typedef uint32_t wl_output_transform_t;
 
 typedef bool (*wlr_scene_buffer_point_accepts_input_func_t)(
     struct wlr_scene_buffer *buffer, int sx, int sy);

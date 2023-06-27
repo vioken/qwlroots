@@ -24,8 +24,8 @@ struct wlr_output_event_commit;
 
 struct pixman_region32;
 
-typedef int wl_output_transform_t;
-typedef int wl_output_subpixel_t;
+typedef uint32_t wl_output_transform_t;
+typedef uint32_t wl_output_subpixel_t;
 
 QW_BEGIN_NAMESPACE
 

@@ -23,6 +23,8 @@ extern "C" {
 #include <wlr/util/box.h>
 }
 
+static_assert(std::is_same_v<wl_output_transform_t, std::underlying_type_t<wl_output_transform>>);
+
 QW_BEGIN_NAMESPACE
 
 class QWSceneNodePrivate : public QWObjectPrivate
