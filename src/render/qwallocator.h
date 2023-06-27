@@ -12,6 +12,7 @@ struct wlr_buffer;
 
 QW_BEGIN_NAMESPACE
 
+class QWBuffer;
 class QWBackend;
 class QWRenderer;
 class QWAllocatorPrivate;
@@ -28,7 +29,7 @@ public:
     static QWAllocator *get(wlr_allocator *handle);
     static QWAllocator *from(wlr_allocator *handle);
 
-    wlr_buffer *createBuffer(int width, int height, const wlr_drm_format *format);
+    QWBuffer *createBuffer(int width, int height, const wlr_drm_format *format);
 
 Q_SIGNALS:
     void beforeDestroy(QWAllocator *self);

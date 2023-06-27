@@ -3,6 +3,8 @@
 
 #include "qwbufferinterface.h"
 
+#include <qwbuffer.h>
+
 extern "C" {
 #include <wlr/interfaces/wlr_buffer.h>
 #include <wlr/types/wlr_buffer.h>
@@ -65,9 +67,9 @@ QWBufferInterface::~QWBufferInterface()
     delete impl();
 }
 
-QWBufferInterface *QWBufferInterface::get(wlr_buffer *handle)
+QWBufferInterface *QWBufferInterface::get(QWBuffer *handle)
 {
-    return interface(handle);
+    return interface(handle->handle());
 }
 
 bool QWBufferInterface::getDmabuf(wlr_dmabuf_attributes *) const

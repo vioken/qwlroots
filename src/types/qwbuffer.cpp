@@ -148,11 +148,11 @@ wlr_client_buffer *QWBuffer::clientBufferGet() const
     return wlr_client_buffer_get(handle());
 }
 
-bool QWBuffer::clientBufferApplyDamage(wlr_client_buffer *buffer, wlr_buffer *next,
+bool QWBuffer::clientBufferApplyDamage(wlr_client_buffer *buffer, QWBuffer *next,
                                        pixman_region32 *damage)
 {
     Q_D(QWBuffer);
-    return wlr_client_buffer_apply_damage(buffer, next, damage);
+    return wlr_client_buffer_apply_damage(buffer, next->handle(), damage);
 }
 
 QW_END_NAMESPACE
