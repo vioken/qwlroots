@@ -99,6 +99,7 @@ set(SOURCES
     types/qwoutputconfigurationv1.cpp
     types/qwoutputconfigurationheadv1.cpp
     types/qwlinuxdmabufv1.cpp
+    types/qwlinuxdmabuffeedbackv1.cpp
     types/qwinputmethodv2.cpp
     types/qwinputmethodkeyboardgrabv2.cpp
     types/qwinputpopupsurfacev2.cpp
