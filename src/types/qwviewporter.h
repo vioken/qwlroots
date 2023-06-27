@@ -7,10 +7,10 @@
 #include <QObject>
 
 struct wlr_viewporter;
-struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWViewPorterPrivate;
 class QW_EXPORT QWViewPorter : public QObject, public QWObject
 {
@@ -23,7 +23,7 @@ public:
 
     static QWViewPorter *get(wlr_viewporter *handle);
     static QWViewPorter *from(wlr_viewporter *handle);
-    static QWViewPorter *create(wl_display *display);
+    static QWViewPorter *create(QWDisplay *display);
 
 Q_SIGNALS:
     void beforeDestroy(QWViewPorter *self);

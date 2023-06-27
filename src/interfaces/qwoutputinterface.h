@@ -10,10 +10,10 @@ struct wlr_output;
 struct wlr_output_impl;
 struct wlr_output_state;
 struct wlr_drm_format_set;
-struct wl_display;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWBackend;
 class QWBuffer;
 class QW_EXPORT QWOutputInterface : public QWInterface
@@ -40,14 +40,14 @@ public:
 
 protected:
     template<class T>
-    inline void init(QWBackend *backend, wl_display *display) {
+    inline void init(QWBackend *backend, QWDisplay *display) {
         init(getFuncMagicKey<T>(&T::setCursor, &T::moveCursor, &T::test,
                                 &T::getGammaSize, &T::getCursorFormats,
                                 &T::getPrimaryFormats, &T::getCursorSize),
              backend, display);
     }
 
-    virtual void init(FuncMagicKey funMagicKey, QWBackend *backend, wl_display *display);
+    virtual void init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display);
 };
 
 QW_END_NAMESPACE
