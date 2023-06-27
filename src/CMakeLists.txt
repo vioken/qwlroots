@@ -53,6 +53,9 @@ set(SOURCES
     types/qwdatacontrolmanagerv1.cpp
     types/qwdamagering.cpp
     types/qwdrm.cpp
+    types/qwdrmleasev1.cpp
+    types/qwdrmleasev1manager.cpp
+    types/qwdrmleaserequestv1.cpp
     types/qwoutputlayout.cpp
     types/qwscene.cpp
     types/qwseat.cpp
@@ -145,6 +148,7 @@ set(HEADERS
     types/qwdatacontrolv1.h
     types/qwdamagering.h
     types/qwdrm.h
+    types/qwdrmleasev1.h
     types/qwoutputlayout.h
     types/qwscene.h
     types/qwseat.h
