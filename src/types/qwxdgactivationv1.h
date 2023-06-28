@@ -55,11 +55,12 @@ public:
 Q_SIGNALS:
     void beforeDestroy(QWXdgActivationV1 *self);
     void requestActivate(wlr_xdg_activation_v1_request_activate_event *);
+#if WLR_VERSION_MINOR > 16
     void newToken(QWXdgActivationTokenV1 *);
+#endif
 
 private:
     QWXdgActivationV1(wlr_xdg_activation_v1 *handle, bool isOwner);
 };
 
 QW_END_NAMESPACE
-
