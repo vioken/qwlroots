@@ -19,6 +19,7 @@ class QW_EXPORT QWKeyboardGroup : public QObject, public QWObject
     QW_DECLARE_PRIVATE(QWKeyboardGroup)
 public:
     explicit QWKeyboardGroup(QObject *parent = nullptr);
+    ~QWKeyboardGroup() = default;
 
     inline wlr_keyboard_group *handle() const {
         return QWObject::handle<wlr_keyboard_group>();

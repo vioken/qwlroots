@@ -21,6 +21,8 @@ class QW_EXPORT QWInputMethodKeyboardGrabV2 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputMethodKeyboardGrabV2)
 public:
+    ~QWInputMethodKeyboardGrabV2() = default;
+
     inline wlr_input_method_keyboard_grab_v2 *handle() const {
         return QWObject::handle<wlr_input_method_keyboard_grab_v2>();
     }
@@ -37,7 +39,6 @@ Q_SIGNALS:
 
 private:
     QWInputMethodKeyboardGrabV2(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner);
-    ~QWInputMethodKeyboardGrabV2() = default;
 };
 
 class QWInputPopupSurfaceV2Private;

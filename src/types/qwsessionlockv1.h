@@ -34,6 +34,7 @@ Q_SIGNALS:
 
 private:
     QWSessionLockSurfaceV1(wlr_session_lock_surface_v1 *handle, bool isOwner);
+    ~QWSessionLockSurfaceV1() = default;
 };
 
 class QWSessionLockV1Private;
@@ -42,6 +43,8 @@ class QW_EXPORT QWSessionLockV1 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSessionLockV1)
 public:
+    ~QWSessionLockV1() = default;
+
     inline wlr_session_lock_v1 *handle() const {
         return QWObject::handle<wlr_session_lock_v1>();
     }
@@ -81,6 +84,7 @@ Q_SIGNALS:
 
 private:
     QWSessionLockManagerV1(wlr_session_lock_manager_v1 *handle, bool isOwner);
+    ~QWSessionLockManagerV1() = default;
 };
 
 QW_END_NAMESPACE

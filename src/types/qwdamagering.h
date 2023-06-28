@@ -18,6 +18,9 @@ QW_BEGIN_NAMESPACE
 class QW_EXPORT QWDamageRing
 {
 public:
+    QWDamageRing() = delete;
+    ~QWDamageRing() = delete;
+
     wlr_damage_ring *handle() const;
 
     static QWDamageRing *from(wlr_damage_ring *handle);
@@ -29,10 +32,6 @@ public:
     void addWhole();
     void ringRotate();
     void getBufferDamage(int bufferAge, pixman_region32_t *damage) const;
-
-private:
-    QWDamageRing() = default;
-    ~QWDamageRing() = default;
 };
 
 QW_END_NAMESPACE

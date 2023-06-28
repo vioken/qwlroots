@@ -26,10 +26,10 @@ class QW_EXPORT QWXWaylandShellV1 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWaylandShellV1)
 public:
-    QWXWaylandShellV1(wlr_xwayland_shell_v1 *handle, bool isOwner = false, QObject *parent = nullptr);
+    explicit QWXWaylandShellV1(wlr_xwayland_shell_v1 *handle, bool isOwner, QWDisplay *parent);
     ~QWXWaylandShellV1() = default;
 
-    static QWXWaylandShellV1 *create(QWDisplay *display, uint32_t version, QObject *parent = nullptr);
+    static QWXWaylandShellV1 *create(QWDisplay *display, uint32_t version);
     static QWXWaylandShellV1 *get(wlr_xwayland_shell_v1 *handle);
 
     wlr_xwayland_shell_v1 *handle() const;

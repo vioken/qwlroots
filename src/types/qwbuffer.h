@@ -22,6 +22,8 @@ class QW_EXPORT QWBuffer : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWBuffer)
 public:
+    ~QWBuffer() = default;
+
     inline wlr_buffer *handle() const {
         return QWObject::handle<wlr_buffer>();
     }
@@ -54,7 +56,6 @@ Q_SIGNALS:
 
 private:
     QWBuffer(wlr_buffer *handle, bool isOwner);
-    ~QWBuffer() = default;
 };
 
 QW_END_NAMESPACE

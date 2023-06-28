@@ -46,6 +46,8 @@ class QW_EXPORT QWSceneNode : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneNode)
 public:
+    virtual ~QWSceneNode() override = default;
+
     inline wlr_scene_node *handle() const {
         return QWObject::handle<wlr_scene_node>();
     }
@@ -76,6 +78,7 @@ class QW_EXPORT QWSceneTree : public QWSceneNode
 {
     Q_OBJECT
 public:
+    ~QWSceneTree() override = default;
     explicit QWSceneTree(QWSceneTree *parent);
 
     wlr_scene_tree *handle() const;
@@ -97,6 +100,7 @@ class QW_EXPORT QWScene : public QWSceneTree
 {
     Q_OBJECT
 public:
+    ~QWScene() override = default;
     explicit QWScene(QObject *parent = nullptr);
 
     wlr_scene *handle() const;
@@ -118,6 +122,7 @@ class QW_EXPORT QWSceneBuffer : public QWSceneNode
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneBuffer)
 public:
+    ~QWSceneBuffer() override = default;
     explicit QWSceneBuffer(QWBuffer *buffer, QWSceneTree *parent);
 
     wlr_scene_buffer *handle() const;
@@ -148,6 +153,7 @@ class QW_EXPORT QWSceneRect : public QWSceneNode
 {
     Q_OBJECT
 public:
+    ~QWSceneRect() override = default;
     explicit QWSceneRect(const QSize &size, const QColor &color, QWSceneTree *parent);
 
     inline wlr_scene_rect *handle() const {
@@ -172,6 +178,7 @@ class QW_EXPORT QWSceneOutput : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneOutput)
 public:
+    ~QWSceneOutput() override = default;
     explicit QWSceneOutput(QWScene *scene, QWOutput *output);
 
     inline wlr_scene_output *handle() const {
@@ -192,7 +199,6 @@ Q_SIGNALS:
 
 private:
     QWSceneOutput(wlr_scene_output *handle, bool isOwner);
-    ~QWSceneOutput() = default;
 };
 
 QW_END_NAMESPACE

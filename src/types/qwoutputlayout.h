@@ -22,6 +22,7 @@ class QW_EXPORT QWOutputLayout : public QObject, public QWObject
     QW_DECLARE_PRIVATE(QWOutputLayout)
 public:
     explicit QWOutputLayout(QObject *parent = nullptr);
+    ~QWOutputLayout() = default;
 
     inline wlr_output_layout *handle() const {
         return QWObject::handle<wlr_output_layout>();

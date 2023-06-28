@@ -40,6 +40,7 @@ Q_SIGNALS:
 
 private:
     QWPointerGesturesV1(wlr_pointer_gestures_v1 *handle, bool isOwner);
+    ~QWPointerGesturesV1() = default;
 };
 
 QW_END_NAMESPACE

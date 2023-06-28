@@ -5,8 +5,6 @@
 #include "qwdisplay.h"
 #include "qwseat.h"
 
-#include <QHash>
-
 extern "C" {
 #include <wlr/types/wlr_idle_notify_v1.h>
 }

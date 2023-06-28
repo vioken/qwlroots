@@ -19,6 +19,8 @@ class QW_EXPORT QWPrimarySelectionSource : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPrimarySelectionSource)
 public:
+    ~QWPrimarySelectionSource() = default;
+
     inline wlr_primary_selection_source *handle() const {
         return QWObject::handle<wlr_primary_selection_source>();
     }

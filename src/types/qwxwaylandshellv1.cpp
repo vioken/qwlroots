@@ -55,10 +55,12 @@ QWXWaylandShellV1* QWXWaylandShellV1::get(wlr_xwayland_shell_v1* handle)
     return QWXWaylandShellV1Private::map.value(handle);
 }
 
-QWXWaylandShellV1* QWXWaylandShellV1::create(QWDisplay* display, uint32_t version, QObject* parent)
+QWXWaylandShellV1* QWXWaylandShellV1::create(QWDisplay* display, uint32_t version)
 {
     auto* handle = wlr_xwayland_shell_v1_create(display->handle(), version);
-    return handle ? new QWXWaylandShellV1(handle, true, parent) : nullptr;
+    if (!handle)
+        return nullptr;
+    return new QWXWaylandShellV1(handle, true, display);
 }
 
 wlr_xwayland_shell_v1* QWXWaylandShellV1::handle() const
@@ -77,7 +79,7 @@ QWSurface *QWXWaylandShellV1::surfaceFromSerial(uint64_t serial) const
     return surface ? QWSurface::from(surface) : nullptr;
 }
 
-QWXWaylandShellV1::QWXWaylandShellV1(wlr_xwayland_shell_v1* handle, bool isOwner, QObject* parent)
+QWXWaylandShellV1::QWXWaylandShellV1(wlr_xwayland_shell_v1* handle, bool isOwner, QWDisplay* parent)
     : QObject(parent)
     , QWObject(*new QWXWaylandShellV1Private(handle, isOwner, this))
 {

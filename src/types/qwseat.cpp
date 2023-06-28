@@ -169,15 +169,6 @@ QWSeat::QWSeat(wlr_seat *handle, bool isOwner)
 
 }
 
-QWSeat *QWSeat::create(QWDisplay *display, const char *name)
-{
-    auto handle = wlr_seat_create(display->handle(), name);
-    if (!handle)
-        return nullptr;
-    return new QWSeat(handle, true);
-}
-
-
 QWSeat *QWSeat::get(wlr_seat *handle)
 {
     return QWSeatPrivate::map.value(handle);
@@ -185,9 +176,17 @@ QWSeat *QWSeat::get(wlr_seat *handle)
 
 QWSeat *QWSeat::from(wlr_seat *handle)
 {
-    if (auto o = get(handle))
+    if (auto *o = get(handle))
         return o;
     return new QWSeat(handle, false);
+}
+
+QWSeat *QWSeat::create(QWDisplay *display, const char *name)
+{
+    auto *handle = wlr_seat_create(display->handle(), name);
+    if (!handle)
+        return nullptr;
+    return new QWSeat(handle, true);
 }
 
 void QWSeat::setKeyboard(QWKeyboard *keyboard)

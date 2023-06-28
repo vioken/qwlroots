@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwtabletv2.h"
+#include "qwinputdevice.h"
 #include "util/qwsignalconnector.h"
 
 #include <qwcompositor.h>
@@ -51,8 +52,8 @@ void QWTabletV2TabletPrivate::on_destroy(void *)
     delete q_func();
 }
 
-QWTabletV2Tablet::QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner)
-    : QObject(nullptr)
+QWTabletV2Tablet::QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent)
+    : QObject(parent)
     , QWObject(*new QWTabletV2TabletPrivate(handle, isOwner, this))
 {
 }
@@ -64,9 +65,10 @@ QWTabletV2Tablet *QWTabletV2Tablet::get(wlr_tablet_v2_tablet *handle)
 
 QWTabletV2Tablet *QWTabletV2Tablet::from(wlr_tablet_v2_tablet *handle)
 {
-    if (auto o = get(handle))
+    if (auto *o = get(handle))
         return o;
-    return new QWTabletV2Tablet(handle, false);
+    auto *parent = QWInputDevice::from(handle->wlr_device);
+    return new QWTabletV2Tablet(handle, false, parent);
 }
 
 bool QWTabletV2Tablet::canAcceptTablet(QWSurface *surface) const

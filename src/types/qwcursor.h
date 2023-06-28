@@ -42,6 +42,7 @@ class QW_EXPORT QWCursor : public QObject, public QWObject
     QW_DECLARE_PRIVATE(QWCursor)
 public:
     explicit QWCursor(QObject *parent = nullptr);
+    ~QWCursor() = default;
 
     inline wlr_cursor *handle() const {
         return QWObject::handle<wlr_cursor>();

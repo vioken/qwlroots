@@ -83,9 +83,9 @@ QWInputDevice *QWInputDevice::from(wlr_input_device *handle)
     case WLR_INPUT_DEVICE_SWITCH:
         return QWSwitch::fromInputDevice(handle);
     default:
-        // TODO: After implementing other device types
-        // Here should not create QWInputDevice
-        return new QWInputDevice(handle, false);;
+        // Here is not reachable
+        qCritical("Unknow input device type!");
+        return nullptr;
     }
 }
 

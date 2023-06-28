@@ -318,9 +318,9 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
     return wlr_output_get_primary_formats(handle(), bufferCaps);
 }
 
-void QWOutputCursor::destroy()
+void QWOutputCursor::operator delete(QWOutputCursor *p, std::destroying_delete_t)
 {
-    wlr_output_cursor_destroy(handle());
+    wlr_output_cursor_destroy(p->handle());
 }
 
 wlr_output_cursor *QWOutputCursor::handle() const

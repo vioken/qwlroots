@@ -17,6 +17,9 @@ QW_BEGIN_NAMESPACE
 class QWSurface;
 class QWXWaylandSurface {
 public:
+    QWXWaylandSurface() = delete;
+    ~QWXWaylandSurface() = delete;
+
     static QWXWaylandSurface* from(wlr_xwayland_surface* surface);
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
     static QWXWaylandSurface *tryFromWlrSurface(QWSurface *surface);

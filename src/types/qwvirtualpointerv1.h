@@ -32,6 +32,7 @@ Q_SIGNALS:
 
 private:
     QWVirtualPointerManagerV1(wlr_virtual_pointer_manager_v1 *handle, bool isOwner);
+    ~QWVirtualPointerManagerV1() = default;
 };
 
 QW_END_NAMESPACE

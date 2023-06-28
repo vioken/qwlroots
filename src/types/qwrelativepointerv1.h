@@ -30,6 +30,7 @@ Q_SIGNALS:
 
 private:
     QWRelativeV1(wlr_relative_pointer_v1 *handle, bool isOwner);
+    ~QWRelativeV1() = default;
 };
 
 class QWSeat;
@@ -55,6 +56,7 @@ Q_SIGNALS:
 
 private:
     QWRelativeManagerV1(wlr_relative_pointer_manager_v1 *handle, bool isOwner);
+    ~QWRelativeManagerV1() = default;
 };
 
 QW_END_NAMESPACE

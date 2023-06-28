@@ -44,6 +44,7 @@ Q_SIGNALS:
 
 private:
     QWVirtualKeyboardManagerV1(wlr_virtual_keyboard_manager_v1 *handle, bool isOwner);
+    ~QWVirtualKeyboardManagerV1() = default;
 };
 
 QW_END_NAMESPACE
