@@ -68,6 +68,7 @@ set(SOURCES
     types/qwkeyboard.cpp
     types/qwpointer.cpp
     types/qwtablet.cpp
+    types/qwtablettool.cpp
     types/qwtabletpad.cpp
     types/qwoutput.cpp
     types/qwxdgdecorationmanagerv1.cpp
