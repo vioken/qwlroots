@@ -11,22 +11,15 @@ struct wlr_single_pixel_buffer_manager_v1;
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
-class QWSinglePixelBufferManagerV1Private;
-class QW_EXPORT QWSinglePixelBufferManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWSinglePixelBufferManagerV1
 {
-    Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSinglePixelBufferManagerV1)
 public:
-    static QWSinglePixelBufferManagerV1 *get(wlr_single_pixel_buffer_manager_v1 *handle);
+    QWSinglePixelBufferManagerV1() = delete;
+    ~QWSinglePixelBufferManagerV1() = delete;
+
+    wlr_single_pixel_buffer_manager_v1 *handle() const;
     static QWSinglePixelBufferManagerV1 *from(wlr_single_pixel_buffer_manager_v1 *handle);
     static QWSinglePixelBufferManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void beforeDestroy(QWSinglePixelBufferManagerV1 *self);
-
-private:
-    QWSinglePixelBufferManagerV1(wlr_single_pixel_buffer_manager_v1 *handle, bool isOwner);
 };
 
 QW_END_NAMESPACE
-
