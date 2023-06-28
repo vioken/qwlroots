@@ -8,6 +8,7 @@
 #include <QObject>
 
 struct wlr_tablet;
+struct wlr_tablet_tool;
 
 QW_BEGIN_NAMESPACE
 
@@ -35,6 +36,27 @@ Q_SIGNALS:
 private:
     ~QWTablet() override = default;
     QWTablet(wlr_tablet *handle, bool isOwner);
+};
+
+class QWTabletToolPrivate;
+class QW_EXPORT QWTabletTool : public QObject, public QWObject
+{
+    Q_OBJECT
+    QW_DECLARE_PRIVATE(QWTabletTool)
+public:
+    inline wlr_tablet_tool *handle() const {
+        return QWObject::handle<wlr_tablet_tool>();
+    }
+
+    static QWTabletTool *get(wlr_tablet_tool *handle);
+    static QWTabletTool *from(wlr_tablet_tool *handle);
+
+Q_SIGNALS:
+    void beforeDestroy(QWTabletTool *self);
+
+private:
+    QWTabletTool(wlr_tablet_tool *handle, bool isOwner);
+    ~QWTabletTool() = default;
 };
 
 QW_END_NAMESPACE
