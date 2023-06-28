@@ -32,6 +32,7 @@ Q_SIGNALS:
 
 private:
     QWInputInhibitManager(wlr_input_inhibit_manager *handle, bool isOwner);
+    ~QWInputInhibitManager() = default;
 };
 
 QW_END_NAMESPACE

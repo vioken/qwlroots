@@ -16,7 +16,7 @@
 
 extern "C" {
 // avoid replace static
-#include <wayland-server-core.h>
+#include <math.h>
 #define static
 #include <wlr/types/wlr_scene.h>
 #undef static

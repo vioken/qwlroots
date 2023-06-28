@@ -44,6 +44,8 @@ class QW_EXPORT QWIdleTimeout : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdleTimeout)
 public:
+    ~QWIdleTimeout() = default;
+
     inline wlr_idle_timeout *handle() const {
         return QWObject::handle<wlr_idle_timeout>();
     }
@@ -59,7 +61,6 @@ Q_SIGNALS:
 
 private:
     QWIdleTimeout(wlr_idle_timeout *handle, bool isOwner);
-    ~QWIdleTimeout() = default;
 };
 
 QW_END_NAMESPACE

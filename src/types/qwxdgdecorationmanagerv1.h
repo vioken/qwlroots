@@ -34,6 +34,7 @@ Q_SIGNALS:
 
 private:
     QWXdgDecorationManagerV1(wlr_xdg_decoration_manager_v1 *handle, bool isOwner);
+    ~QWXdgDecorationManagerV1() = default;
 };
 
 class QWXdgToplevelDecorationV1Private;
@@ -56,6 +57,7 @@ Q_SIGNALS:
 
 private:
     QWXdgToplevelDecorationV1(wlr_xdg_toplevel_decoration_v1 *handle, bool isOwner);
+    ~QWXdgToplevelDecorationV1() = default;
 };
 
 QW_END_NAMESPACE

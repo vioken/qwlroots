@@ -43,6 +43,7 @@ Q_SIGNALS:
 
 private:
     QWTextInputV3(wlr_text_input_v3 *handle, bool isOwner);
+    ~QWTextInputV3() = default;
 };
 
 class QWTextInputManagerV3Private;
@@ -65,6 +66,7 @@ Q_SIGNALS:
 
 private:
     QWTextInputManagerV3(wlr_text_input_manager_v3 *handle, bool isOwner);
+    ~QWTextInputManagerV3() = default;
 };
 
 QW_END_NAMESPACE

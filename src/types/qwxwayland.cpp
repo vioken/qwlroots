@@ -3,6 +3,7 @@
 
 #include "qwxwayland.h"
 
+#include "qwxwaylandserver.h"
 #include "util/qwsignalconnector.h"
 #include <qwdisplay.h>
 #include <qwcompositor.h>
@@ -57,10 +58,13 @@ public:
 };
 QHash<void*, QWXWayland*> QWXWaylandPrivate::map;
 
-QWXWayland *QWXWayland::create(QWDisplay *wl_display, QWCompositor *compositor, bool lazy, QObject *parent)
+QWXWayland *QWXWayland::create(QWDisplay *wl_display, QWCompositor *compositor, bool lazy)
 {
     auto *handle = wlr_xwayland_create(wl_display->handle(), compositor->handle(), lazy);
-    return handle ? new QWXWayland(handle, true, parent) : nullptr;
+    if (!handle)
+        return nullptr;
+    auto *parent = QWXWaylandServer::from(handle->server);
+    return new QWXWayland(handle, true, parent);
 }
 
 QWXWayland *QWXWayland::get(wlr_xwayland *handle)
@@ -91,7 +95,7 @@ wlr_xwayland *QWXWayland::handle() const
     return QWObject::handle<wlr_xwayland>();
 }
 
-QWXWayland::QWXWayland(wlr_xwayland *handle, bool isOwner, QObject *parent)
+QWXWayland::QWXWayland(wlr_xwayland *handle, bool isOwner, QWXWaylandServer *parent)
     : QObject(parent)
     , QWObject(*new QWXWaylandPrivate(handle, isOwner, this))
 {

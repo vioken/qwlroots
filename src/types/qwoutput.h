@@ -39,6 +39,8 @@ class QW_EXPORT QWOutput : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutput)
 public:
+    ~QWOutput() = default;
+
     inline wlr_output *handle() const {
         return QWObject::handle<wlr_output>();
     }
@@ -106,13 +108,15 @@ Q_SIGNALS:
 
 private:
     QWOutput(wlr_output *handle, bool isOwner);
-    ~QWOutput() = default;
 };
 
 class QW_EXPORT QWOutputCursor
 {
 public:
-    void destroy();
+    QWOutputCursor() = delete;
+    ~QWOutputCursor() = delete;
+
+    void operator delete(QWOutputCursor *p, std::destroying_delete_t);
     wlr_output_cursor *handle() const;
 
     static QWOutputCursor *from(wlr_output_cursor *handle);
@@ -121,10 +125,6 @@ public:
     bool setImage(const QImage &image, const QPoint &hotspot);
     bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
     bool move(const QPointF &pos);
-
-private:
-    QWOutputCursor() = default;
-    ~QWOutputCursor() = default;
 };
 
 QW_END_NAMESPACE

@@ -26,9 +26,13 @@ QT_END_NAMESPACE
 
 QW_BEGIN_NAMESPACE
 
+class QWInputDevice;
+class QWTabletTool;
 class QW_EXPORT QWTabletPadV2Grab
 {
 public:
+    QWTabletPadV2Grab() = delete;
+    ~QWTabletPadV2Grab() = delete;
     static QWTabletPadV2Grab *from(wlr_tablet_pad_v2_grab *handle);
     wlr_tablet_pad_v2_grab *handle() const;
 };
@@ -36,6 +40,8 @@ public:
 class QW_EXPORT QWTabletToolV2Grab
 {
 public:
+    QWTabletToolV2Grab() = delete;
+    ~QWTabletToolV2Grab() = delete;
     static QWTabletToolV2Grab *from(wlr_tablet_tool_v2_grab *handle);
     wlr_tablet_tool_v2_grab *handle() const;
 };
@@ -62,7 +68,8 @@ Q_SIGNALS:
     void beforeDestroy(QWTabletV2Tablet *self);
 
 private:
-    QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner);
+    explicit QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent);
+    ~QWTabletV2Tablet() = default;
 };
 
 class QWSurface;
@@ -115,7 +122,8 @@ Q_SIGNALS:
     void setCursor(wlr_tablet_v2_event_cursor *);
 
 private:
-    QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner);
+    QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletTool *parent);
+    ~QWTabletV2TabletTool() = default;
 };
 
 class QWTabletV2TabletPadPrivate;
@@ -155,7 +163,8 @@ Q_SIGNALS:
     void stripFeedback(wlr_tablet_v2_event_feedback *);
 
 private:
-    QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner);
+    QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWInputDevice *parent);
+    ~QWTabletV2TabletPad() = default;
 };
 
 class QWDisplay;
@@ -184,6 +193,7 @@ Q_SIGNALS:
 
 private:
     QWTabletManagerV2(wlr_tablet_manager_v2 *handle, bool isOwner);
+    ~QWTabletManagerV2() = default;
 };
 
 QW_END_NAMESPACE

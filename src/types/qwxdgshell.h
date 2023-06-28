@@ -96,6 +96,8 @@ class QW_EXPORT QWXdgPopup : public QWXdgSurface
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgPopup)
 public:
+    ~QWXdgPopup() = default;
+
     wlr_xdg_popup *handle() const;
 
     static QWXdgPopup *get(wlr_xdg_popup *handle);
@@ -112,7 +114,6 @@ Q_SIGNALS:
 
 private:
     QWXdgPopup(wlr_xdg_popup *handle, bool isOwner);
-    ~QWXdgPopup() = default;
 };
 
 class QWXdgToplevelPrivate;

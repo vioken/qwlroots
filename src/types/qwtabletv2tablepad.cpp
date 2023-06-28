@@ -1,6 +1,7 @@
 // Copyright (C) 2023 Dingyuan Zhang <zhangdingyuan@uniontech.com>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
+#include "qwinputdevice.h"
 #include "qwtabletv2.h"
 #include "util/qwsignalconnector.h"
 
@@ -64,8 +65,8 @@ void QWTabletV2TabletPadPrivate::on_strip_feedback(wlr_tablet_v2_event_feedback 
     Q_EMIT q_func()->stripFeedback(event);
 }
 
-QWTabletV2TabletPad::QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner)
-    : QObject(nullptr)
+QWTabletV2TabletPad::QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWInputDevice *parent)
+    : QObject(parent)
     , QWObject(*new QWTabletV2TabletPadPrivate(handle, isOwner, this))
 {
 
@@ -80,7 +81,8 @@ QWTabletV2TabletPad *QWTabletV2TabletPad::from(wlr_tablet_v2_tablet_pad *handle)
 {
     if (auto o = get(handle))
         return o;
-    return new QWTabletV2TabletPad(handle, false);
+    auto *parent = QWInputDevice::from(handle->wlr_device);
+    return new QWTabletV2TabletPad(handle, false, parent);
 }
 
 uint32_t QWTabletV2TabletPad::sendEnter(QWTabletV2Tablet *tablet, QWSurface *surface)

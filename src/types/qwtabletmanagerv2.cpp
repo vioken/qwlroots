@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwtabletv2.h"
+#include "qwtablet.h"
 #include "util/qwsignalconnector.h"
 
 #include <qwinputdevice.h>
@@ -68,7 +69,7 @@ QWTabletManagerV2 *QWTabletManagerV2::get(wlr_tablet_manager_v2 *handle)
 
 QWTabletManagerV2 *QWTabletManagerV2::from(wlr_tablet_manager_v2 *handle)
 {
-    if (auto o = get(handle))
+    if (auto *o = get(handle))
         return o;
     return new QWTabletManagerV2(handle, false);
 }
@@ -82,19 +83,28 @@ QWTabletManagerV2 *QWTabletManagerV2::create(QWDisplay *display)
 QWTabletV2Tablet *QWTabletManagerV2::createTablet(QWSeat *wlr_seat, QWInputDevice *wlr_device)
 {
     auto *handle = wlr_tablet_create(this->handle(), wlr_seat->handle(), wlr_device->handle());
-    return handle ? new QWTabletV2Tablet(handle, true) : nullptr;
+    if (!handle)
+        return nullptr;
+    auto *parent = QWInputDevice::from(handle->wlr_device);
+    return new QWTabletV2Tablet(handle, true, parent);
 }
 
 QWTabletV2TabletPad *QWTabletManagerV2::createPad(QWSeat *wlr_seat, QWInputDevice *wlr_device)
 {
     auto *handle = wlr_tablet_pad_create(this->handle(), wlr_seat->handle(), wlr_device->handle());
-    return handle ? new QWTabletV2TabletPad(handle, true) : nullptr;
+    if (!handle)
+        return nullptr;
+    auto *parent = QWInputDevice::from(handle->wlr_device);
+    return new QWTabletV2TabletPad(handle, true, parent);
 }
 
 QWTabletV2TabletTool *QWTabletManagerV2::createTool(QWSeat *wlr_seat, wlr_tablet_tool *wlr_tool)
 {
     auto *handle = wlr_tablet_tool_create(this->handle(), wlr_seat->handle(), wlr_tool);
-    return handle ? new QWTabletV2TabletTool(handle, true) : nullptr;
+    if (!handle)
+        return nullptr;
+    auto *parent = QWTabletTool::from(handle->wlr_tool);
+    return new QWTabletV2TabletTool(handle, true, parent);
 }
 
 QW_END_NAMESPACE

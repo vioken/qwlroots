@@ -30,6 +30,7 @@ Q_SIGNALS:
 
 private:
     QWScreenCopyManagerV1(wlr_screencopy_manager_v1 *handle, bool isOwner);
+    ~QWScreenCopyManagerV1() = default;
 };
 
 QW_END_NAMESPACE

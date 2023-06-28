@@ -30,6 +30,7 @@ Q_SIGNALS:
 
 private:
     QWPrimarySelectionV1DeviceManager(wlr_primary_selection_v1_device_manager *handle, bool isOwner);
+    ~QWPrimarySelectionV1DeviceManager() = default;
 };
 
 QW_END_NAMESPACE

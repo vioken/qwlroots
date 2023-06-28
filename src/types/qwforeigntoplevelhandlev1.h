@@ -46,6 +46,8 @@ class QW_EXPORT QWForeignToplevelHandleV1 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWForeignToplevelHandleV1)
 public:
+    ~QWForeignToplevelHandleV1() = default;
+
     inline wlr_foreign_toplevel_handle_v1 *handle() const {
         return QWObject::handle<wlr_foreign_toplevel_handle_v1>();
     }
@@ -75,7 +77,6 @@ Q_SIGNALS:
 
 private:
     QWForeignToplevelHandleV1(wlr_foreign_toplevel_handle_v1 *handle, bool isOwner);
-    ~QWForeignToplevelHandleV1() = default;
 };
 
 QW_END_NAMESPACE

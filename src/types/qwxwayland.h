@@ -15,16 +15,17 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWCompositor;
 class QWSeat;
+class QWXWaylandServer;
 class QWXWaylandPrivate;
 class QW_EXPORT QWXWayland : public QObject, public QWObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWayland)
 public:
-    explicit QWXWayland(wlr_xwayland *handle, bool isOwner = false, QObject *parent = nullptr);
+    explicit QWXWayland(wlr_xwayland *handle, bool isOwner, QWXWaylandServer *parent);
     ~QWXWayland() = default;
 
-    static QWXWayland *create(QWDisplay *display, QWCompositor *compositor, bool lazy, QObject *parent = nullptr);
+    static QWXWayland *create(QWDisplay *display, QWCompositor *compositor, bool lazy);
     static QWXWayland *get(wlr_xwayland *handle);
     wlr_xwayland *handle() const;
 

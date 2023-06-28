@@ -35,6 +35,7 @@ Q_SIGNALS:
 
 private:
     QWPointerConstraintV1(wlr_pointer_constraint_v1 *handle, bool isOwner);
+    ~QWPointerConstraintV1() = default;
 };
 
 class QWSeat;
@@ -62,6 +63,7 @@ Q_SIGNALS:
 
 private:
     QWPointerConstraintsV1(wlr_pointer_constraints_v1 *handle, bool isOwner);
+    ~QWPointerConstraintsV1() = default;
 };
 
 QW_END_NAMESPACE

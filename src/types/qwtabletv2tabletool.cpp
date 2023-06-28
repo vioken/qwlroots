@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwtabletv2.h"
+#include "qwtablet.h"
 #include "util/qwsignalconnector.h"
 
 #include <qwcompositor.h>
@@ -48,8 +49,8 @@ public:
 };
 QHash<void*, QWTabletV2TabletTool*> QWTabletV2TabletToolPrivate::map;
 
-QWTabletV2TabletTool::QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner)
-    : QObject(nullptr)
+QWTabletV2TabletTool::QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletTool *parent)
+    : QObject(parent)
     , QWObject(*new QWTabletV2TabletToolPrivate(handle, isOwner, this))
 {
 
@@ -64,7 +65,8 @@ QWTabletV2TabletTool *QWTabletV2TabletTool::from(wlr_tablet_v2_tablet_tool *hand
 {
     if (auto o = get(handle))
         return o;
-    return new QWTabletV2TabletTool(handle, false);
+    auto *parent = QWTabletTool::from(handle->wlr_tool);
+    return new QWTabletV2TabletTool(handle, false, parent);
 }
 
 void QWTabletV2TabletTool::sendProximityIn(QWTabletV2Tablet *tablet, QWSurface *surface)

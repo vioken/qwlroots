@@ -31,7 +31,7 @@ class QW_EXPORT QWSeat : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSeat)
 public:
-    static QWSeat *create(QWDisplay *display, const char *name);
+    ~QWSeat() = default;
 
     inline wlr_seat *handle() const {
         return QWObject::handle<wlr_seat>();
@@ -39,6 +39,7 @@ public:
 
     static QWSeat *get(wlr_seat *handle);
     static QWSeat *from(wlr_seat *handle);
+    static QWSeat *create(QWDisplay *display, const char *name);
 
     void setKeyboard(QWKeyboard *keyboard);
     QWKeyboard *getKeyboard() const;
@@ -72,7 +73,6 @@ Q_SIGNALS:
 
 private:
     QWSeat(wlr_seat *handle, bool isOwner);
-    ~QWSeat() = default;
 };
 
 QW_END_NAMESPACE

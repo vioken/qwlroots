@@ -17,6 +17,8 @@ class QW_EXPORT QWXdgActivationTokenV1 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgActivationTokenV1)
 public:
+    ~QWXdgActivationTokenV1() = default;
+
     inline wlr_xdg_activation_token_v1 *handle() const {
         return QWObject::handle<wlr_xdg_activation_token_v1>();
     }
@@ -61,6 +63,7 @@ Q_SIGNALS:
 
 private:
     QWXdgActivationV1(wlr_xdg_activation_v1 *handle, bool isOwner);
+    ~QWXdgActivationV1() = default;
 };
 
 QW_END_NAMESPACE
