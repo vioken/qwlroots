@@ -18,6 +18,7 @@
 , xorg
 , seatd
 }:
+
 stdenv.mkDerivation rec {
   pname = "qwlroots";
   version = "0.0.1";
@@ -43,7 +44,6 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     qtbase
-    wlroots
     wayland
     wayland-protocols
     wlr-protocols
@@ -54,6 +54,10 @@ stdenv.mkDerivation rec {
     xorg.libXdmcp
     xorg.xcbutilerrors
     seatd
+  ];
+
+  propagatedBuildInputs = [
+    wlroots
   ];
 
   meta = with lib; {
