@@ -51,11 +51,18 @@ class QW_EXPORT QWObject
 public:
     template<typename Handle>
     inline Handle *handle() const {
+        if (!isValid()) {
+            return nullptr;
+        }
         return reinterpret_cast<Handle*>(qw_d_ptr->m_handle);
     }
 
     virtual ~QWObject();
     inline bool isValid() const {
+        // NOTE(lxz): Some functions of wlroots allow null pointer parameters. In order to reduce repeated verification code fragments, you can use reinterpret_cast to check `this ptr`. If this ptr is nullptr, return nullptr, which has no side effects.
+        if (!reinterpret_cast<QWObject*>(const_cast<QWObject*>(this))) {
+            return false;
+        }
         return qw_d_ptr->m_handle;
     }
 
