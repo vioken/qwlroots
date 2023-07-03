@@ -17,8 +17,7 @@ struct wlr_xdg_surface_configure;
 struct wlr_surface;
 struct wl_resource;
 
-typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
-    int sx, int sy, void *data);
+using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
 
 QW_BEGIN_NAMESPACE
 

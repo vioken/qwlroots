@@ -10,9 +10,9 @@
 struct wlr_layer_surface_v1;
 struct wlr_layer_shell_v1;
 struct wl_resource;
+struct wlr_surface;
 
-typedef void (*wlr_surface_iterator_func_t)(struct wlr_surface *surface,
-    int sx, int sy, void *data);
+using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
 
 QW_BEGIN_NAMESPACE
 

@@ -16,11 +16,11 @@ public:
     QWSignalConnector();
     ~QWSignalConnector();
 
-    typedef void (*SlotFun0)(void *obj);
+    using SlotFun0 = void (*)(void *obj);
     Listener *connect(wl_signal *signal, void *object, SlotFun0 slot);
-    typedef void (*SlotFun1)(void *obj, void *signalData);
+    using SlotFun1 = void (*)(void *obj, void *signalData);
     Listener *connect(wl_signal *signal, void *object, SlotFun1 slot);
-    typedef void (*SlotFun2)(void *obj, void *signalData, void *data);
+    using SlotFun2 = void (*)(void *obj, void *signalData, void *data);
     Listener *connect(wl_signal *signal, void *object, SlotFun2 slot, void *data);
     template <typename T>
     inline Listener *connect(wl_signal *signal, T *object, void (T::*slot)()) {

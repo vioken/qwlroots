@@ -31,7 +31,7 @@ protected:
     inline static constexpr
     typename std::enable_if<std::is_base_of<QWInterface, typename QtPrivate::FunctionPointer<F>::Object>::value && std::is_base_of<QWInterface, Derived>::value, bool>::type
     functionOverrided(F) {
-        typedef QtPrivate::FunctionPointer<F> FunInfo;
+        using FunInfo = QtPrivate::FunctionPointer<F>;
         return std::is_same<typename FunInfo::Object, Derived>::value;
     }
 

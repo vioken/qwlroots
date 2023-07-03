@@ -23,11 +23,9 @@ struct pixman_region32;
 
 typedef uint32_t wl_output_transform_t;
 
-typedef bool (*wlr_scene_buffer_point_accepts_input_func_t)(
-    struct wlr_scene_buffer *buffer, int sx, int sy);
+using wlr_scene_buffer_point_accepts_input_func_t = bool (*)(wlr_scene_buffer *buffer, int sx, int sy);
 
-typedef void (*wlr_scene_buffer_iterator_func_t)(
-    struct wlr_scene_buffer *buffer, int sx, int sy, void *user_data);
+using wlr_scene_buffer_iterator_func_t = void (*)(wlr_scene_buffer *buffer, int sx, int sy, void *user_data);
 
 QT_BEGIN_NAMESPACE
 class QPoint;
