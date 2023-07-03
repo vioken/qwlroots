@@ -16,9 +16,7 @@ struct pixman_region32;
 typedef pixman_region32 pixman_region32_t;
 typedef uint32_t wl_output_transform_t;
 
-typedef void (*wlr_surface_iterator_func_t)(
-    wlr_surface *surface, int sx, int sy, void *data
-);
+using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
 
 QW_BEGIN_NAMESPACE
 

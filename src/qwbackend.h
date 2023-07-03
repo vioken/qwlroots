@@ -66,7 +66,8 @@ protected:
     QWBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
 };
 
-typedef void (*wlr_multi_backend_iterator_func_t)(struct wlr_backend *backend, void *data);
+using wlr_multi_backend_iterator_func_t = void (*)(struct wlr_backend *backend, void *data);
+
 class QW_EXPORT QWMultiBackend : public QWBackend
 {
     Q_OBJECT
