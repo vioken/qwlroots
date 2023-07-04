@@ -65,6 +65,7 @@ set(SOURCES
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
     types/qwinputdevice.cpp
+    types/qwtouch.cpp
     types/qwkeyboard.cpp
     types/qwpointer.cpp
     types/qwtablet.cpp
@@ -160,6 +161,7 @@ set(HEADERS
     types/qwcursor.h
     types/qwxcursormanager.h
     types/qwinputdevice.h
+    types/qwtouch.h
     types/qwkeyboard.h
     types/qwpointer.h
     types/qwtablet.h

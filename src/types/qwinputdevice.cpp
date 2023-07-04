@@ -8,6 +8,7 @@
 #include "qwtablet.h"
 #include "qwtabletpad.h"
 #include "qwswitch.h"
+#include "qwtouch.h"
 
 extern "C" {
 #include <wlr/types/wlr_input_device.h>
@@ -82,6 +83,8 @@ QWInputDevice *QWInputDevice::from(wlr_input_device *handle)
         return QWTabletPad::fromInputDevice(handle);
     case WLR_INPUT_DEVICE_SWITCH:
         return QWSwitch::fromInputDevice(handle);
+    case WLR_INPUT_DEVICE_TOUCH:
+        return QWTouch::fromInputDevice(handle);
     default:
         // Here is not reachable
         qCritical("Unknow input device type!");
