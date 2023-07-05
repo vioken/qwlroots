@@ -91,16 +91,24 @@ QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
 
 }
 
+#if WLR_VERSION_MINOR > 17
+bool QWRenderer::begin(uint32_t width, uint32_t height)
+{
+    Q_D(QWRenderer);
+    return wlr_renderer_begin(handle(), width, height);
+}
+#else
 void QWRenderer::begin(uint32_t width, uint32_t height)
 {
     Q_D(QWRenderer);
     wlr_renderer_begin(handle(), width, height);
 }
+#endif
 
-void QWRenderer::begin(QWBuffer *buffer)
+bool QWRenderer::begin(QWBuffer *buffer)
 {
     Q_D(QWRenderer);
-    wlr_renderer_begin_with_buffer(handle(), buffer->handle());
+    return wlr_renderer_begin_with_buffer(handle(), buffer->handle());
 }
 
 void QWRenderer::end()

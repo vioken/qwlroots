@@ -34,9 +34,12 @@ public:
     static QWRenderer *get(wlr_renderer *handle);
     static QWRenderer *from(wlr_renderer *handle);
     static QWRenderer *autoCreate(QWBackend *backend);
-
+#if WLR_VERSION_MINOR > 17
+    bool begin(uint32_t width, uint32_t height);
+#else
     void begin(uint32_t width, uint32_t height);
-    void begin(QWBuffer *buffer);
+#endif
+    bool begin(QWBuffer *buffer);
     void end();
 
     bool initWlDisplay(QWDisplay *display);
