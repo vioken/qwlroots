@@ -158,21 +158,18 @@ void QWSurfacePrivate::on_destroy(void *)
     delete q_func();
 }
 
-void QWSurfacePrivate::on_client_commit(void *data)
+void QWSurfacePrivate::on_client_commit(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->client_commit();
 }
 
-void QWSurfacePrivate::on_commit(void *data)
+void QWSurfacePrivate::on_commit(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->commit();
 }
 
-void QWSurfacePrivate::on_new_subsurface(void *data)
+void QWSurfacePrivate::on_new_subsurface(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->new_subsurface();
 }
 
