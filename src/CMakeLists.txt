@@ -44,6 +44,7 @@ set(SOURCES
     render/qwallocator.cpp
     render/qwegl.cpp
     types/qwbuffer.cpp
+    types/qwclientbuffer.cpp
     types/qwcompositor.cpp
     types/qwexportdmabufmanagerv1.cpp
     types/qwsubcompositor.cpp

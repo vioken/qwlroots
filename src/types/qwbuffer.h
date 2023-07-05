@@ -12,6 +12,9 @@ struct wlr_shm_attributes;
 struct wlr_client_buffer;
 struct wl_resource;
 struct pixman_region32;
+struct wlr_client_buffer;
+struct wlr_renderer;
+typedef pixman_region32 pixman_region32_t;
 
 QW_BEGIN_NAMESPACE
 
@@ -56,6 +59,23 @@ Q_SIGNALS:
 
 private:
     QWBuffer(wlr_buffer *handle, bool isOwner);
+};
+
+class QW_EXPORT QWClientBuffer
+{
+public:
+    QWClientBuffer() = delete;
+    ~QWClientBuffer() = delete;
+
+    wlr_client_buffer *handle() const;
+
+    static QWClientBuffer *from(wlr_client_buffer *handle);
+    static QWClientBuffer *get(QWBuffer *buffer);
+    static QWClientBuffer *create(QWBuffer *buffer, QWRenderer *renderer);
+
+#if WLR_VERSION_MINOR > 17
+    bool applyDamage(QWBuffer *next, const pixman_region32_t *damage);
+#endif
 };
 
 QW_END_NAMESPACE
