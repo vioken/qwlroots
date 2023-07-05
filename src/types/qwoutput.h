@@ -21,6 +21,8 @@ struct wlr_output_event_damage;
 struct wlr_output_event_bind;
 struct wlr_output_event_precommit;
 struct wlr_output_event_commit;
+struct wlr_swapchain;
+struct wlr_render_pass;
 
 struct pixman_region32;
 
@@ -94,6 +96,12 @@ public:
     void lockSoftwareCursors(bool lock);
     void renderSoftwareCursors(pixman_region32 *damage);
     const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps);
+
+#if WLR_VERSION_MINOR > 16
+    void addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage);
+    bool configurePrimarySwapchain(const wlr_output_state *state, wlr_swapchain **swapchain);
+#endif
+
 
 Q_SIGNALS:
     void beforeDestroy(QWOutput *self);

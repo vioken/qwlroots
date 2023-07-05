@@ -318,6 +318,18 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
     return wlr_output_get_primary_formats(handle(), bufferCaps);
 }
 
+#if WLR_VERSION_MINOR > 16
+void addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage)
+{
+    wlr_output_add_software_cursors_to_render_pass(handle(), render_pass, damage);
+}
+
+bool QWOutput::configurePrimarySwapchain(const wlr_output_state *state, wlr_swapchain **swapchain)
+{
+    return wlr_output_configure_primary_swapchain(handle(), state, swapchain);
+}
+#endif
+
 void QWOutputCursor::operator delete(QWOutputCursor *p, std::destroying_delete_t)
 {
     wlr_output_cursor_destroy(p->handle());
