@@ -540,7 +540,7 @@ void QWXdgToplevel::sendClose()
     wlr_xdg_toplevel_send_close(handle());
 }
 
-bool QWXdgToplevel::setParsent(QWXdgToplevel *parent)
+bool QWXdgToplevel::setParent(QWXdgToplevel *parent)
 {
     return wlr_xdg_toplevel_set_parent(handle(), parent->handle());
 }
