@@ -23,8 +23,8 @@ struct wlr_output_event_precommit;
 struct wlr_output_event_commit;
 struct wlr_swapchain;
 struct wlr_render_pass;
-
 struct pixman_region32;
+typedef pixman_region32 pixman_region32_t;
 
 typedef uint32_t wl_output_transform_t;
 typedef uint32_t wl_output_subpixel_t;
