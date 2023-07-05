@@ -7,6 +7,7 @@ QW_BEGIN_NAMESPACE
 
 QWObject::QWObject(QWObjectPrivate &dd)
     : qw_d_ptr(&dd)
+    , m_data(std::make_pair(nullptr, nullptr))
 {
 
 }
@@ -27,6 +28,15 @@ QWObjectPrivate::QWObjectPrivate(void *handle, bool isOwner, QWObject *qq)
     , isHandleOwner(isOwner)
 {
 
+}
+
+void QWObject::setData(void *owner, void *data)
+{
+    if (m_data.first) {
+        Q_ASSERT(m_data.first == owner);
+    }
+
+    m_data = std::make_pair(owner, data);
 }
 
 QW_END_NAMESPACE
