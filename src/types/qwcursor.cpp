@@ -298,12 +298,12 @@ void QWCursor::attachOutputLayout(QWOutputLayout *layout)
 
 void QWCursor::mapToOutput(QWOutput *output)
 {
-    wlr_cursor_map_to_output(handle(), output->handle());
+    wlr_cursor_map_to_output(handle(), output ? output->handle() : nullptr);
 }
 
 void QWCursor::mapInputToOutput(QWInputDevice *dev, QWOutput *output)
 {
-    wlr_cursor_map_input_to_output(handle(), dev->handle(), output->handle());
+    wlr_cursor_map_input_to_output(handle(), dev->handle(), output ? output->handle() : nullptr);
 }
 
 void QWCursor::mapToRegion(const QRect &box)
