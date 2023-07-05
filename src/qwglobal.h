@@ -61,8 +61,9 @@ public:
     inline bool isValid() const {
         // NOTE(lxz): Some functions of wlroots allow null pointer parameters. In order to reduce repeated verification code fragments, If this ptr is nullptr, return nullptr.
         // WARNING(lxz): Check this in the member function, it is UB. Under some compilers it is necessary to use `volatile` to prevent compiler optimizations.
-        volatile auto thisPtr = this;
-        return thisPtr && qw_d_ptr->m_handle;
+        //                In the derived class, if the object address is nullptr, the address of this is not necessarily 0x0, it may be 0x01. The correct memory address starting position will not be lower than 0x1000, so it is considered that addresses lower than 0x1000 are nullptr.
+        volatile auto thisPtr = reinterpret_cast<quintptr>(this);
+        return thisPtr > 0x1000u && qw_d_ptr->m_handle;
     }
 
 protected:
