@@ -56,8 +56,8 @@ public:
 private Q_SLOTS:
     void onNewOutput(QWOutput *output);
     void onNewXdgSurface(wlr_xdg_surface *surface);
-    void onXdgToplevelMap();
-    void onXdgToplevelUnmap();
+    void onMap();
+    void onUnmap();
     void onXdgToplevelRequestMove(wlr_xdg_toplevel_move_event *);
     void onXdgToplevelRequestResize(wlr_xdg_toplevel_resize_event *event);
     void onXdgToplevelRequestMaximize(bool maximize);
@@ -136,6 +136,14 @@ TinywlServer::TinywlServer()
     if (!backend)
         qFatal("failed to create wlr_backend");
 
+    // Add output
+//    auto multiBackend = qobject_cast<QWMultiBackend*>(backend);
+//    multiBackend->forEachBackend([] (struct wlr_backend *backend, void *data) {
+//        auto x11 = QWX11Backend::from(backend);
+//        if (x11)
+//            x11->createOutput();
+//    }, nullptr);
+
     renderer = QWRenderer::autoCreate(backend);
     if (!renderer)
         qFatal("failed to create wlr_renderer");
@@ -205,10 +213,11 @@ void TinywlServer::onNewOutput(QWOutput *output)
     if (!wl_list_empty(&output->handle()->modes)) {
         auto *mode = output->preferredMode();
         output->setMode(mode);
-        output->enable(true);
-        if (!output->commit())
-            return;
     }
+
+    output->enable(true);
+    if (!output->commit())
+        return;
 
     connect(output, &QWOutput::frame, this, &TinywlServer::onOutputFrame);
     outputLayout->addAuto(output);
@@ -233,8 +242,8 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
     view->sceneTree->handle()->node.data = view;
     surface->data = view->sceneTree;
     auto *ss = s->surface();
-    connect(ss, &QWSurface::map, this, &TinywlServer::onXdgToplevelMap);
-    connect(ss, &QWSurface::unmap, this, &TinywlServer::onXdgToplevelUnmap);
+    connect(ss, &QWSurface::map, this, &TinywlServer::onMap);
+    connect(ss, &QWSurface::unmap, this, &TinywlServer::onUnmap);
     connect(s, &QWXdgToplevel::requestMove, this, &TinywlServer::onXdgToplevelRequestMove);
     connect(s, &QWXdgToplevel::requestResize, this, &TinywlServer::onXdgToplevelRequestResize);
     connect(s, &QWXdgToplevel::requestMaximize, this, &TinywlServer::onXdgToplevelRequestMaximize);
@@ -247,18 +256,22 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
     });
 }
 
-void TinywlServer::onXdgToplevelMap()
+void TinywlServer::onMap()
 {
-    auto surface = qobject_cast<QWXdgSurface*>(sender());
+    auto surface = QWXdgSurface::from(qobject_cast<QWSurface*>(sender()));
+    if (!surface)
+        return;
     auto view = getView(surface);
     Q_ASSERT(view);
     views.append(view);
     focusView(view, surface->handle()->surface);
 }
 
-void TinywlServer::onXdgToplevelUnmap()
+void TinywlServer::onUnmap()
 {
-    auto surface = qobject_cast<QWXdgSurface*>(sender());
+    auto surface = QWXdgSurface::from(qobject_cast<QWSurface*>(sender()));
+    if (!surface)
+        return;
     auto view = getView(surface);
     Q_ASSERT(view);
     views.removeOne(view);
