@@ -319,7 +319,7 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
 }
 
 #if WLR_VERSION_MINOR > 16
-void addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage)
+void QWOutput::addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage)
 {
     wlr_output_add_software_cursors_to_render_pass(handle(), render_pass, damage);
 }
