@@ -137,7 +137,7 @@ public:
     uint32_t setWmCapabilities(uint32_t caps);
 
     void sendClose();
-    bool setParsent(QWXdgToplevel *parent);
+    bool setParent(QWXdgToplevel *parent);
 
 Q_SIGNALS:
     void requestMaximize(bool maximize);
