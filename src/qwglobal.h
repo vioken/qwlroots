@@ -66,12 +66,22 @@ public:
         return thisPtr > 0x1000u && qw_d_ptr->m_handle;
     }
 
+    void setData(void* owner, void* data);
+
+    template<typename T>
+    T* getData() const {
+        return static_cast<T*>(m_data.second);
+    }
+
 protected:
     QWObject(QWObjectPrivate &dd);
     QScopedPointer<QWObjectPrivate> qw_d_ptr;
 
     Q_DISABLE_COPY(QWObject)
     QW_DECLARE_PRIVATE(QWObject)
+
+private:
+    std::pair<void*, void*> m_data; // <owner, data>
 };
 
 QW_END_NAMESPACE
