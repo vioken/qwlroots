@@ -515,9 +515,13 @@ void TinywlServer::processCursorMotion(uint32_t time)
     wlr_surface *surface = nullptr;
     QPointF spos;
     auto view = viewAt(cursor->position(), &surface, &spos);
+#if WLR_VERSION_MINOR > 16
+    if (!view)
+        cursor->setXCursor(cursorManager, "left_ptr");
+#else
     if (!view)
         cursorManager->setCursor("left_ptr", cursor);
-
+#endif
     if (surface) {
         seat->pointerNotifyEnter(QWSurface::from(surface), spos.x(), spos.y());
         seat->pointerNotifyMotion(time, spos.x(), spos.y());
