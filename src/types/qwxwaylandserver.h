@@ -30,7 +30,7 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWXWaylandServer *self);
-#if WLR_VERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 16
     void start();
     void ready();
 #endif
