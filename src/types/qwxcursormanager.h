@@ -26,7 +26,9 @@ public:
 
     bool load(float scale);
     wlr_xcursor *getXCursor(const char *name, float scale) const;
+#if WLR_VERSION_MINOR <= 16
     void setCursor(const char *name, QWCursor *cursor);
+#endif
 };
 
 QW_END_NAMESPACE

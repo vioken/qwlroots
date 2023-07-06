@@ -351,12 +351,14 @@ QWOutputCursor *QWOutputCursor::create(QWOutput *output)
     return from(handle);
 }
 
+#if WLR_VERSION_MINOR <= 16
 bool QWOutputCursor::setImage(const QImage &image, const QPoint &hotspot)
 {
     return wlr_output_cursor_set_image(handle(), reinterpret_cast<const uint8_t*>(image.constBits()),
                                        image.bitPlaneCount(), image.width(), image.height(),
                                        hotspot.x(), hotspot.y());
 }
+#endif
 
 bool QWOutputCursor::setBuffer(QWBuffer *buffer, const QPoint &hotspot)
 {

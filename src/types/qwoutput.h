@@ -130,7 +130,9 @@ public:
     static QWOutputCursor *from(wlr_output_cursor *handle);
     static QWOutputCursor *create(QWOutput *output);
 
+#if WLR_VERSION_MINOR <= 16
     bool setImage(const QImage &image, const QPoint &hotspot);
+#endif
     bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
     bool move(const QPointF &pos);
 };

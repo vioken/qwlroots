@@ -35,6 +35,8 @@ class QWOutputLayout;
 class QWCursorPrivate;
 class QWInputDevice;
 class QWOutput;
+class QWBuffer;
+class QWXCursorManager;
 
 class QW_EXPORT QWCursor : public QObject, public QWObject
 {
@@ -55,7 +57,12 @@ public:
     void warpClosest(QWInputDevice *dev, const QPointF &pos);
     void warpAbsolute(QWInputDevice *dev, const QPointF &pos);
     void move(QWInputDevice *dev, const QPointF &deltaPos);
+#if WLR_VERSION_MINOR > 16
+    void setBuffer(QWBuffer *buffer, const QPoint &hotspot, float scale);
+    void setXCursor(QWXCursorManager *manager, const char *name);
+#else
     void setImage(const QImage &image, const QPoint &hotspot);
+#endif
     void setSurface(QWSurface *surface, const QPoint &hotspot);
 
     void attachInputDevice(QWInputDevice *dev);
