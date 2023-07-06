@@ -32,7 +32,7 @@ QWClientBuffer *QWClientBuffer::create(QWBuffer *buffer, QWRenderer *renderer)
     return from(handle);
 }
 
-#if WLR_VERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 16
 bool QWClientBuffer::applyDamage(QWBuffer *next, const pixman_region32_t *damage)
 {
     return wlr_client_buffer_apply_damage(handle(), next->handle(), damage);

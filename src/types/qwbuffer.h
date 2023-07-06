@@ -73,7 +73,7 @@ public:
     static QWClientBuffer *get(QWBuffer *buffer);
     static QWClientBuffer *create(QWBuffer *buffer, QWRenderer *renderer);
 
-#if WLR_VERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 16
     bool applyDamage(QWBuffer *next, const pixman_region32_t *damage);
 #endif
 };

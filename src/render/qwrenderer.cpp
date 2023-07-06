@@ -91,7 +91,7 @@ QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
 
 }
 
-#if WLR_VERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 16
 bool QWRenderer::begin(uint32_t width, uint32_t height)
 {
     Q_D(QWRenderer);

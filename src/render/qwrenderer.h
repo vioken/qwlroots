@@ -34,7 +34,7 @@ public:
     static QWRenderer *get(wlr_renderer *handle);
     static QWRenderer *from(wlr_renderer *handle);
     static QWRenderer *autoCreate(QWBackend *backend);
-#if WLR_VERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 16
     bool begin(uint32_t width, uint32_t height);
 #else
     void begin(uint32_t width, uint32_t height);
