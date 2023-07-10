@@ -3,8 +3,11 @@
 
 #pragma once
 
+#include <interfaces/qwbufferinterface.h>
+
 #include <qwglobal.h>
 #include <QObject>
+#include <type_traits>
 
 struct wlr_buffer;
 struct wlr_dmabuf_attributes;
@@ -33,6 +36,13 @@ public:
 
     static QWBuffer *get(wlr_buffer *handle);
     static QWBuffer *from(wlr_buffer *handle);
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<class QWBufferInterface, Interface>::value, QWBuffer*>::type
+    create(Args&&... args) {
+        Interface *i = new Interface();
+        i->QWBufferInterface::template init<Interface>(std::forward<Args>(args)...);
+        return new QWBuffer(i->handle(), true);
+    }
 
     static QWBuffer *from(wl_resource *resource);
     static bool isBuffer(wl_resource *resource);
