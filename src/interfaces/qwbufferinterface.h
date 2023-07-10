@@ -15,6 +15,7 @@ QW_BEGIN_NAMESPACE
 class QWBuffer;
 class QWBufferInterface : public QWInterface
 {
+    friend class QWBuffer;
 public:
     virtual ~QWBufferInterface();
 

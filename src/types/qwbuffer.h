@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <interfaces/qwbufferinterface.h>
+#include <qwbufferinterface.h>
 
 #include <qwglobal.h>
 #include <QObject>
@@ -40,6 +40,12 @@ public:
     inline static typename std::enable_if<std::is_base_of<class QWBufferInterface, Interface>::value, QWBuffer*>::type
     create(Args&&... args) {
         Interface *i = new Interface();
+        return create(i, std::forward<Args>(args)...);
+    }
+
+    template<class Interface, typename... Args>
+    inline static typename std::enable_if<std::is_base_of<class QWBufferInterface, Interface>::value, QWBuffer*>::type
+    create(Interface *i, Args&&... args) {
         i->QWBufferInterface::template init<Interface>(std::forward<Args>(args)...);
         return new QWBuffer(i->handle(), true);
     }
