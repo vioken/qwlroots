@@ -16,8 +16,10 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWBackend;
 class QWBuffer;
+class QWOutput;
 class QW_EXPORT QWOutputInterface : public QWInterface
 {
+    friend class QWOutput;
 public:
     virtual ~QWOutputInterface();
     virtual bool setCursor(QWBuffer *buffer, const QPoint &hotspot);
