@@ -425,8 +425,11 @@ void TinywlServer::onOutputFrame()
     auto output = qobject_cast<QWOutput*>(sender());
     Q_ASSERT(output);
     auto sceneOutput = QWSceneOutput::from(scene, output);
+#if WLR_VERSION_MINOR > 16
+    sceneOutput->commit(nullptr);
+#else
     sceneOutput->commit();
-
+#endif
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     sceneOutput->sendFrameDone(&now);

@@ -18,6 +18,7 @@ struct wlr_buffer;
 struct wlr_fbox;
 struct wlr_output;
 struct wlr_xdg_surface;
+struct wlr_scene_output_state_options;
 
 struct pixman_region32;
 
@@ -186,8 +187,11 @@ public:
     static QWSceneOutput *get(wlr_scene_output *handle);
     static QWSceneOutput *from(wlr_scene_output *handle);
     static QWSceneOutput *from(QWScene *scene, QWOutput *output);
-
+#if WLR_VERSION_MINOR > 16
+    void commit(const wlr_scene_output_state_options *options);
+#else
     void commit();
+#endif
     void sendFrameDone(timespec *now);
 
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *user_data) const;

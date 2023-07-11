@@ -506,10 +506,17 @@ QWSceneOutput *QWSceneOutput::from(QWScene *scene, QWOutput *output)
     return from(handle);
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWSceneOutput::commit(const wlr_scene_output_state_options *options)
+{
+    wlr_scene_output_commit(handle(), options);
+}
+#else
 void QWSceneOutput::commit()
 {
     wlr_scene_output_commit(handle());
 }
+#endif
 
 void QWSceneOutput::sendFrameDone(timespec *now)
 {
