@@ -52,7 +52,7 @@ public:
     virtual QWTexture *textureFromBuffer(QWBuffer *buffer) const;
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
-    wlr_render_pass *beginBufferPass(QWBuffer *buffer, wlr_buffer_pass_options *options);
+    wlr_render_pass *beginBufferPass(QWBuffer *buffer, const wlr_buffer_pass_options *options);
     wlr_render_timer *renderTimerCreate();
 #endif
 

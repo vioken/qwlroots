@@ -266,7 +266,7 @@ static wlr_texture *texture_from_buffer(wlr_renderer *handle, wlr_buffer *buffer
 }
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
-static wlr_render_pass *begin_buffer_pass(wlr_renderer *handle, wlr_buffer *buffer, wlr_buffer_pass_options *options) {
+static wlr_render_pass *begin_buffer_pass(wlr_renderer *handle, wlr_buffer *buffer, const wlr_buffer_pass_options *options) {
     return interface(handle)->beginBufferPass(QWBuffer::from(buffer), options);
 }
 
@@ -332,7 +332,7 @@ QWTexture *QWRendererInterface::textureFromBuffer(QWBuffer *) const
 }
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
-wlr_render_pass *QWRendererInterface::beginBufferPass(QWBuffer *, wlr_buffer_pass_options *) {
+wlr_render_pass *QWRendererInterface::beginBufferPass(QWBuffer *, const wlr_buffer_pass_options *) {
     return nullptr;
 }
 
