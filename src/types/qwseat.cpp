@@ -209,9 +209,41 @@ void QWSeat::setSelection(wlr_data_source *source, uint32_t serial)
     wlr_seat_set_selection(handle(), source, serial);
 }
 
-void QWSeat::keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t num_keycodes, wlr_keyboard_modifiers *modifiers)
+void QWSeat::keyboardClearFocus()
 {
-    wlr_seat_keyboard_notify_enter(handle(), surface->handle(), keycodes, num_keycodes, modifiers);
+    wlr_seat_keyboard_clear_focus(handle());
+}
+
+void QWSeat::keyboardEndGrab()
+{
+    wlr_seat_keyboard_end_grab(handle());
+}
+
+#if WLR_VERSION_MINOR > 16
+void QWSeat::keyboardEnter(QWSurface *surface, const uint32_t *keycodes, size_t numKeycodes, const wlr_keyboard_modifiers *modifiers)
+{
+    wlr_seat_keyboard_enter(handle(), surface->handle(), keycodes, numKeycodes, modifiers);
+}
+#else
+void QWSeat::keyboardEnter(QWSurface *surface, uint32_t *keycodes, size_t numKeycodes, wlr_keyboard_modifiers *modifiers)
+{
+    wlr_seat_keyboard_enter(handle(), surface->handle(), keycodes, numKeycodes, modifiers);
+}
+#endif
+
+bool QWSeat::keyboardHasGrab() const
+{
+    return wlr_seat_keyboard_has_grab(handle());
+}
+
+void QWSeat::keyboardNotifyClearFocus()
+{
+    wlr_seat_keyboard_notify_clear_focus(handle());
+}
+
+void QWSeat::keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t numKeycodes, wlr_keyboard_modifiers *modifiers)
+{
+    wlr_seat_keyboard_notify_enter(handle(), surface->handle(), keycodes, numKeycodes, modifiers);
 }
 
 void QWSeat::keyboardNotifyKey(uint32_t time_msec, uint32_t key, uint32_t state)
@@ -224,6 +256,36 @@ void QWSeat::keyboardNotifyModifiers(wlr_keyboard_modifiers *modifiers)
     wlr_seat_keyboard_notify_modifiers(handle(), modifiers);
 }
 
+void QWSeat::keyboardSendKey(uint32_t timeMsec, uint32_t key, uint32_t state)
+{
+    wlr_seat_keyboard_send_key(handle(), timeMsec, key, state);
+}
+
+void QWSeat::keyboardSendModifiers(wlr_keyboard_modifiers *modifiers)
+{
+    wlr_seat_keyboard_send_modifiers(handle(), modifiers);
+}
+
+void QWSeat::keyboardStartGrab(wlr_seat_keyboard_grab *grab)
+{
+    wlr_seat_keyboard_start_grab(handle(), grab);
+}
+
+void QWSeat::pointerEndGrab()
+{
+    wlr_seat_pointer_end_grab(handle());
+}
+
+void QWSeat::pointerEnter(QWSurface *surface, double sx, double sy)
+{
+    wlr_seat_pointer_enter(handle(), surface->handle(), sx, sy);
+}
+
+bool QWSeat::pointerHasGrab() const
+{
+    return wlr_seat_pointer_has_grab(handle());
+}
+
 void QWSeat::pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orientation, double value, int32_t value_discrete, wlr_axis_source_t source)
 {
     wlr_seat_pointer_notify_axis(handle(), time_msec, static_cast<wlr_axis_orientation>(orientation), value, value_discrete, static_cast<wlr_axis_source>(source));
@@ -232,6 +294,11 @@ void QWSeat::pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orient
 void QWSeat::pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button_state_t state)
 {
     wlr_seat_pointer_notify_button(handle(), time_msec, button, static_cast<wlr_button_state>(state));
+}
+
+void QWSeat::pointerNotifyClearFocus()
+{
+    wlr_seat_pointer_notify_clear_focus(handle());
 }
 
 void QWSeat::pointerNotifyEnter(QWSurface *surface, double sx, double sy)
@@ -249,9 +316,154 @@ void QWSeat::pointerNotifyMotion(uint32_t time_msec, double sx, double sy)
     wlr_seat_pointer_notify_motion(handle(), time_msec, sx, sy);
 }
 
+void QWSeat::pointerSendAxis(uint32_t timeMsec, wlr_axis_orientation_t orientation, double value, int32_t valueDiscrete, wlr_axis_source_t source)
+{
+    wlr_seat_pointer_send_axis(handle(), timeMsec, static_cast<wlr_axis_orientation>(orientation), value, valueDiscrete, static_cast<wlr_axis_source>(source));
+}
+
+uint32_t QWSeat::pointerSendButton(uint32_t timeMsec, uint32_t button, wlr_button_state_t state)
+{
+    return wlr_seat_pointer_send_button(handle(), timeMsec, button, static_cast<wlr_button_state>(state));
+}
+
+void QWSeat::pointerSendFrame()
+{
+    wlr_seat_pointer_send_frame(handle());
+}
+
+void QWSeat::pointerSendMotion(uint32_t timeMsec, double sx, double sy)
+{
+    wlr_seat_pointer_send_motion(handle(), timeMsec, sx, sy);
+}
+
+void QWSeat::pointerStartGrab(wlr_seat_pointer_grab *grab)
+{
+    wlr_seat_pointer_start_grab(handle(), grab);
+}
+
+bool QWSeat::pointerSurfaceHasFocus(QWSurface *surface) const
+{
+    return wlr_seat_pointer_surface_has_focus(handle(), surface->handle());
+}
+
+void QWSeat::pointerWarp(double sx, double sy)
+{
+    wlr_seat_pointer_warp(handle(), sx, sy);
+}
+
 void QWSeat::pointerClearFocus()
 {
     wlr_seat_pointer_clear_focus(handle());
+}
+
+void QWSeat::setName(const char* name)
+{
+    wlr_seat_set_name(handle(), name);
+}
+
+void QWSeat::touchEndGrab()
+{
+    wlr_seat_touch_end_grab(handle());
+}
+
+wlr_touch_point *QWSeat::touchGetPoint(int32_t touchId) const
+{
+    return wlr_seat_touch_get_point(handle(), touchId);
+}
+
+bool QWSeat::touchHasGrab() const
+{
+    return wlr_seat_touch_has_grab(handle());
+}
+
+void QWSeat::touchNotifyCancel(QWSurface *surface)
+{
+    wlr_seat_touch_notify_cancel(handle(), surface->handle());
+}
+
+uint32_t QWSeat::touchNotifyDown(QWSurface *surface, uint32_t timeMsec, int32_t touch_id, double sx, double sy)
+{
+    return wlr_seat_touch_notify_down(handle(), surface->handle(), timeMsec, touch_id, sx, sy);
+}
+
+void QWSeat::touchNotifyFrame()
+{
+    wlr_seat_touch_notify_frame(handle());
+}
+
+void QWSeat::touchNotifyMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy)
+{
+    wlr_seat_touch_notify_motion(handle(), timeMsec, touchId, sx, sy);
+}
+
+void QWSeat::touchNotifyUp(uint32_t timeMsec, int32_t touchId)
+{
+    wlr_seat_touch_notify_up(handle(), timeMsec, touchId);
+}
+
+int QWSeat::touchNumPoints()
+{
+    return wlr_seat_touch_num_points(handle());
+}
+
+void QWSeat::touchPointClearFocus(uint32_t timeMsec, int32_t touchId)
+{
+    wlr_seat_touch_point_clear_focus(handle(), timeMsec, touchId);
+}
+
+void QWSeat::touchPointFocus(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy)
+{
+    wlr_seat_touch_point_focus(handle(), surface->handle(), timeMsec, touchId, sx, sy);
+}
+
+void QWSeat::touchSendCancel(QWSurface *surface)
+{
+    wlr_seat_touch_send_cancel(handle(), surface->handle());
+}
+
+uint32_t QWSeat::touchSendDown(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy)
+{
+    return wlr_seat_touch_send_down(handle(), surface->handle(), timeMsec, touchId, sx, sy);
+}
+
+void QWSeat::touchSendFrame()
+{
+    wlr_seat_touch_send_frame(handle());
+}
+
+void QWSeat::touchSendMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy)
+{
+    wlr_seat_touch_send_motion(handle(), timeMsec, touchId, sx, sy);
+}
+
+void QWSeat::touchSendUp(uint32_t timeMsec, int32_t touchId)
+{
+    wlr_seat_touch_send_up(handle(), timeMsec, touchId);
+}
+
+void QWSeat::touchStartGrab(wlr_seat_touch_grab *grab)
+{
+    wlr_seat_touch_start_grab(handle(), grab);
+}
+
+bool QWSeat::validaiteGrabSerial(uint32_t serial)
+{
+    return wlr_seat_validate_grab_serial(handle(), serial);
+}
+
+bool QWSeat::validatePointerGrabSerial(QWSurface *origin, uint32_t serial)
+{
+    return wlr_seat_validate_grab_serial(handle(), serial);
+}
+
+bool QWSeat::validateTouchGrabSerial(QWSurface *origin, uint32_t serial, wlr_touch_point **pointPtr)
+{
+    return wlr_seat_validate_touch_grab_serial(handle(), origin->handle(), serial, pointPtr);
+}
+
+bool QWSeat::surfaceAcceptsTouch(QWSurface *surface)
+{
+    return wlr_surface_accepts_touch(handle(), surface->handle());
 }
 
 QW_END_NAMESPACE
