@@ -38,7 +38,8 @@ wlr_swapchain* QWSwapchain::handle() const
 
 QWBuffer *QWSwapchain::acquire(int *age)
 {
-    return QWBuffer::from(wlr_swapchain_acquire(handle(), age));
+    auto *buffer = wlr_swapchain_acquire(handle(), age);
+    return buffer ? QWBuffer::from(buffer) : nullptr;
 }
 
 void QWSwapchain::setBufferSubmitted(QWBuffer *buffer)

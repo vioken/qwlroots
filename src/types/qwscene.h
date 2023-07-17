@@ -19,6 +19,7 @@ struct wlr_fbox;
 struct wlr_output;
 struct wlr_xdg_surface;
 struct wlr_scene_output_state_options;
+struct wlr_scene_output_sample_event;
 
 struct pixman_region32;
 
@@ -141,7 +142,11 @@ public:
 Q_SIGNALS:
     void outputEnter(wlr_scene_output *output);
     void outputLeave(wlr_scene_output *output);
+#if WLR_VERSION_MINOR > 16
+    void outputSample(wlr_scene_output_sample_event *output);
+#else
     void outputPresent(wlr_scene_output *output);
+#endif
     void frameDone(timespec *now);
 
 private:

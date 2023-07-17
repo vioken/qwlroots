@@ -87,10 +87,24 @@ QWPresentationFeedback *QWPresentation::surfaceSampled(QWSurface *surface) const
     return QWPresentationFeedback::from(wlr_presentation_surface_sampled(handle(), surface->handle()));
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWPresentation::surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output)
+{
+    wlr_presentation_surface_textured_on_output(handle(), surface->handle(), output->handle());
+}
+
+void QWPresentation::surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output)
+{
+    wlr_presentation_surface_scanned_out_on_output(handle(), surface->handle(), output->handle());
+}
+
+#else
+
 void QWPresentation::surfaceSampledOnOutput(QWSurface *surface, QWOutput *output)
 {
     wlr_presentation_surface_sampled_on_output(handle(), surface->handle(), output->handle());
 }
+#endif
 
 wlr_presentation_event *QWPresentationEvent::handle() const
 {

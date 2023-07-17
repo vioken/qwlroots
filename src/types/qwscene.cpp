@@ -257,13 +257,21 @@ public:
     {
         sc.connect(&handle->events.output_enter, this, &QWSceneBufferPrivate::on_output_enter);
         sc.connect(&handle->events.output_leave, this, &QWSceneBufferPrivate::on_output_leave);
+#if WLR_VERSION_MINOR > 16
+        sc.connect(&handle->events.output_sample, this, &QWSceneBufferPrivate::on_output_sample);
+#else
         sc.connect(&handle->events.output_present, this, &QWSceneBufferPrivate::on_output_present);
+#endif
         sc.connect(&handle->events.frame_done, this, &QWSceneBufferPrivate::on_frame_done);
     }
 
     void on_output_enter(void *data);
     void on_output_leave(void *data);
+#if WLR_VERSION_MINOR > 16
+    void on_output_sample(void *data);
+#else
     void on_output_present(void *data);
+#endif
     void on_frame_done(void *data);
 
     QW_DECLARE_PUBLIC(QWSceneBuffer)
@@ -279,10 +287,17 @@ void QWSceneBufferPrivate::on_output_leave(void *data)
     Q_EMIT q_func()->outputLeave(reinterpret_cast<wlr_scene_output*>(data));
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWSceneBufferPrivate::on_output_sample(void *data)
+{
+    Q_EMIT q_func()->outputSample(reinterpret_cast<wlr_scene_output_sample_event*>(data));
+}
+#else
 void QWSceneBufferPrivate::on_output_present(void *data)
 {
     Q_EMIT q_func()->outputPresent(reinterpret_cast<wlr_scene_output*>(data));
 }
+#endif
 
 void QWSceneBufferPrivate::on_frame_done(void *data)
 {
