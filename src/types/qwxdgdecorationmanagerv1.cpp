@@ -135,9 +135,8 @@ void QWXdgToplevelDecorationV1Private::on_destroy(void *)
     delete q_func();
 }
 
-void QWXdgToplevelDecorationV1Private::on_request_mode(void *data)
+void QWXdgToplevelDecorationV1Private::on_request_mode(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->requestMode();
 }
 

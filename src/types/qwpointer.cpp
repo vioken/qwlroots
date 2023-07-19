@@ -76,9 +76,8 @@ void QWPointerPrivate::on_axis(void *data)
     Q_EMIT q_func()->axis(static_cast<wlr_pointer_axis_event*>(data));
 }
 
-void QWPointerPrivate::on_frame(void *data)
+void QWPointerPrivate::on_frame(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->frame();
 }
 

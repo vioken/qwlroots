@@ -72,9 +72,8 @@ public:
 };
 QHash<void*, QWOutput*> QWOutputPrivate::map;
 
-void QWOutputPrivate::on_frame(void *data)
+void QWOutputPrivate::on_frame(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->frame();
 }
 
@@ -83,9 +82,8 @@ void QWOutputPrivate::on_damage(void *data)
     Q_EMIT q_func()->damage(reinterpret_cast<wlr_output_event_damage*>(data));
 }
 
-void QWOutputPrivate::on_needs_frame(void *data)
+void QWOutputPrivate::on_needs_frame(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->needsFrame();
 }
 
@@ -109,9 +107,8 @@ void QWOutputPrivate::on_bind(void *data)
     Q_EMIT q_func()->bind(reinterpret_cast<wlr_output_event_bind*>(data));
 }
 
-void QWOutputPrivate::on_description(void *data)
+void QWOutputPrivate::on_description(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->descriptionChanged();
 }
 

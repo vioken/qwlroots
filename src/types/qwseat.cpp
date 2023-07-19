@@ -89,39 +89,33 @@ void QWSeatPrivate::on_destroy(void *)
     delete q_func();
 }
 
-void QWSeatPrivate::on_pointer_grab_begin(void *data)
+void QWSeatPrivate::on_pointer_grab_begin(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->pointerGrabBegin();
 }
 
-void QWSeatPrivate::on_pointer_grab_end(void *data)
+void QWSeatPrivate::on_pointer_grab_end(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->pointerGrabEnd();
 }
 
-void QWSeatPrivate::on_touch_grab_begin(void *data)
+void QWSeatPrivate::on_touch_grab_begin(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->touchGrabBegin();
 }
 
-void QWSeatPrivate::on_touch_grab_end(void *data)
+void QWSeatPrivate::on_touch_grab_end(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->touchGrabEnd();
 }
 
-void QWSeatPrivate::on_keyboard_grab_begin(void *data)
+void QWSeatPrivate::on_keyboard_grab_begin(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->keyboardGrabBegin();
 }
 
-void QWSeatPrivate::on_keyboard_grab_end(void *data)
+void QWSeatPrivate::on_keyboard_grab_end(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->keyboardGrabEnd();
 }
 
@@ -135,9 +129,8 @@ void QWSeatPrivate::on_request_set_selection(void *data)
     Q_EMIT q_func()->requestSetSelection(reinterpret_cast<wlr_seat_request_set_selection_event*>(data));
 }
 
-void QWSeatPrivate::on_set_selection(void *data)
+void QWSeatPrivate::on_set_selection(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->selectionChanged();
 }
 
@@ -146,9 +139,8 @@ void QWSeatPrivate::on_request_set_primary_selection(void *data)
     Q_EMIT q_func()->requestSetPrimarySelection(reinterpret_cast<wlr_seat_request_set_primary_selection_event*>(data));
 }
 
-void QWSeatPrivate::on_set_primary_selection(void *data)
+void QWSeatPrivate::on_set_primary_selection(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->primarySelectionChanged();
 }
 

@@ -54,9 +54,8 @@ void QWTouchPrivate::on_cancel(void *data)
     Q_EMIT q_func()->cancel(reinterpret_cast<wlr_touch_cancel_event*>(data));
 }
 
-void QWTouchPrivate::on_frame(void *data)
+void QWTouchPrivate::on_frame(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->frame();
 }
 

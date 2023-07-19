@@ -56,9 +56,8 @@ void QWIdlePrivate::on_destroy(void *)
     delete q_func();
 }
 
-void QWIdlePrivate::on_activity_notify(void *data)
+void QWIdlePrivate::on_activity_notify(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->activityNotify();
 }
 
@@ -145,15 +144,13 @@ void QWIdleTimeoutPrivate::on_destroy(void *)
     delete q_func();
 }
 
-void QWIdleTimeoutPrivate::on_idle(void *data)
+void QWIdleTimeoutPrivate::on_idle(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->idle();
 }
 
-void QWIdleTimeoutPrivate::on_resume(void *data)
+void QWIdleTimeoutPrivate::on_resume(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->resume();
 }
 

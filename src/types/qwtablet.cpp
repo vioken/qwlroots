@@ -32,27 +32,23 @@ public:
     QW_DECLARE_PUBLIC(QWTablet)
 };
 
-void QWTabletPrivate::on_axis(void *data)
+void QWTabletPrivate::on_axis(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->axis();
 }
 
-void QWTabletPrivate::on_proximity(void *data)
+void QWTabletPrivate::on_proximity(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->proximity();
 }
 
-void QWTabletPrivate::on_tip(void *data)
+void QWTabletPrivate::on_tip(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->tip();
 }
 
-void QWTabletPrivate::on_button(void *data)
+void QWTabletPrivate::on_button(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->button();
 }
 

@@ -57,15 +57,15 @@ void QWInputInhibitManagerPrivate::on_destroy(void *)
     delete q_func();
 }
 
-void QWInputInhibitManagerPrivate::on_activate(void *data)
+void QWInputInhibitManagerPrivate::on_activate(void *)
 {
-    Q_ASSERT(m_handle == data);
+    // self
     Q_EMIT q_func()->activate();
 }
 
-void QWInputInhibitManagerPrivate::on_deactivate(void *data)
+void QWInputInhibitManagerPrivate::on_deactivate(void *)
 {
-    Q_ASSERT(m_handle == data);
+    // self
     Q_EMIT q_func()->deactivate();
 }
 
