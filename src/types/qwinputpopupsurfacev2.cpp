@@ -66,15 +66,13 @@ void QWInputPopupSurfaceV2Private::on_destroy(void *)
 }
 
 #if WLR_VERSION_MINOR <= 16
-void QWInputPopupSurfaceV2Private::on_map(void *data)
+void QWInputPopupSurfaceV2Private::on_map(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->surface()->map();
 }
 
-void QWInputPopupSurfaceV2Private::on_unmap(void *data)
+void QWInputPopupSurfaceV2Private::on_unmap(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->surface()->unmap();
 }
 #endif

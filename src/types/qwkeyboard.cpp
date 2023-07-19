@@ -37,21 +37,18 @@ void QWKeyboardPrivate::on_key(void *data)
     Q_EMIT q_func()->key(reinterpret_cast<wlr_keyboard_key_event *>(data));
 }
 
-void QWKeyboardPrivate::on_modifiers(void *data)
+void QWKeyboardPrivate::on_modifiers(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->modifiers();
 }
 
-void QWKeyboardPrivate::on_keymap(void *data)
+void QWKeyboardPrivate::on_keymap(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->keymapChanged();
 }
 
-void QWKeyboardPrivate::on_repeat_info(void *data)
+void QWKeyboardPrivate::on_repeat_info(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->repeatInfoChanged();
 }
 

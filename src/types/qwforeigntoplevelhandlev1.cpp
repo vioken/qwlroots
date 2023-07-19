@@ -89,9 +89,8 @@ void QWForeignToplevelHandleV1Private::on_request_fullscreen(void *data)
     Q_EMIT q_func()->requestFullscreen(reinterpret_cast<wlr_foreign_toplevel_handle_v1_fullscreen_event*>(data));
 }
 
-void QWForeignToplevelHandleV1Private::on_request_close(void *data)
+void QWForeignToplevelHandleV1Private::on_request_close(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->requestClose();
 }
 

@@ -58,8 +58,8 @@ void QWIdleInhibitManagerV1Private::on_destroy(void *)
 
 void QWIdleInhibitManagerV1Private::on_new_inhibitor(void *data)
 {
-    Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->newInhibitor();
+    auto *inhibitor = QWIdleInhibitorV1::from(static_cast<wlr_idle_inhibitor_v1*>(data));
+    Q_EMIT q_func()->newInhibitor(inhibitor);
 }
 
 QWIdleInhibitManagerV1::QWIdleInhibitManagerV1(wlr_idle_inhibit_manager_v1 *handle, bool isOwner)

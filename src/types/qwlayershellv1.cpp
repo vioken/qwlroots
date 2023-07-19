@@ -4,6 +4,7 @@
 #include "qwlayershellv1.h"
 #include "qwdisplay.h"
 #include "qwcompositor.h"
+#include "qwxdgshell.h"
 #include "util/qwsignalconnector.h"
 
 #include <QHash>
@@ -160,23 +161,21 @@ void QWLayerSurfaceV1Private::on_destroy(void *)
 }
 
 #if WLR_VERSION_MINOR <= 16
-void QWLayerSurfaceV1Private::on_map(void *data)
+void QWLayerSurfaceV1Private::on_map(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->surface()->map();
 }
 
-void QWLayerSurfaceV1Private::on_unmap(void *data)
+void QWLayerSurfaceV1Private::on_unmap(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->surface()->unmap();
 }
 #endif
 
 void QWLayerSurfaceV1Private::on_new_popup(void *data)
 {
-    Q_ASSERT(m_handle == data);
-    Q_EMIT q_func()->newPopup();
+    auto *popup = QWXdgPopup::from(static_cast<wlr_xdg_popup*>(data));
+    Q_EMIT q_func()->newPopup(popup);
 }
 
 QWLayerSurfaceV1::QWLayerSurfaceV1(wlr_layer_surface_v1 *handle, bool isOwner)

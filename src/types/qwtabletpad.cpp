@@ -33,21 +33,18 @@ public:
     QW_DECLARE_PUBLIC(QWTabletPad)
 };
 
-void QWTabletPadPrivate::on_button(void *data)
+void QWTabletPadPrivate::on_button(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->button();
 }
 
-void QWTabletPadPrivate::on_ring(void *data)
+void QWTabletPadPrivate::on_ring(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->ring();
 }
 
-void QWTabletPadPrivate::on_strip(void *data)
+void QWTabletPadPrivate::on_strip(void *)
 {
-    Q_ASSERT(m_handle == data);
     Q_EMIT q_func()->strip();
 }
 

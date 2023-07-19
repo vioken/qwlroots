@@ -12,6 +12,7 @@ struct wlr_idle_inhibitor_v1;
 QW_BEGIN_NAMESPACE
 
 class QWDisplay;
+class QWIdleInhibitorV1;
 class QWIdleInhibitManagerV1Private;
 class QW_EXPORT QWIdleInhibitManagerV1 : public QObject, public QWObject
 {
@@ -28,7 +29,7 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWIdleInhibitManagerV1 *self);
-    void newInhibitor();
+    void newInhibitor(QWIdleInhibitorV1 *inhibitor);
 
 private:
     QWIdleInhibitManagerV1(wlr_idle_inhibit_manager_v1 *handle, bool isOwner);
