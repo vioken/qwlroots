@@ -78,10 +78,7 @@ set(SOURCES
     types/qwidleinhibitv1.cpp
     types/qwinputinhibitmanager.cpp
     types/qwkeyboardgroup.cpp
-    types/qwxwayland.cpp
-    types/qwxwaylandsurface.cpp
     types/qwpresentation.cpp
-    types/qwxwaylandserver.cpp
     types/qwviewporter.cpp
     types/qwxdgforeignregistry.cpp
     types/qwxdgoutputv1.cpp
@@ -173,10 +170,7 @@ set(HEADERS
     types/qwidleinhibitv1.h
     types/qwinputinhibitmanager.h
     types/qwkeyboardgroup.h
-    types/qwxwayland.h
-    types/qwxwaylandsurface.h
     types/qwpresentation.h
-    types/qwxwaylandserver.h
     types/qwxdgforeignregistry.h
     types/qwxdgforeignregistry_p.h
     types/qwxdgforeignv1.h
@@ -225,16 +219,35 @@ ws_generate(server wayland-protocols staging/content-type/content-type-v1.xml co
 list(APPEND SOURCES
     render/qwswapchain.cpp
     types/qwshm.cpp
-    types/qwxwaylandshellv1.cpp
     types/qwfractionalscalev1.cpp
     types/qwcontenttypev1.cpp
 )
 list(APPEND HEADERS
     render/qwswapchain.h
     types/qwshm.h
-    types/qwxwaylandshellv1.h
     types/qwfractionalscalev1.cpp
     types/qwcontenttypev1.h
+)
+    if(WLR_HAVE_XWAYLAND)
+        list(APPEND SOURCES
+            types/qwxwaylandshellv1.cpp
+        )
+        list(APPEND HEADERS
+            types/qwxwaylandshellv1.h
+        )
+    endif()
+endif()
+
+if (WLR_HAVE_XWAYLAND)
+list(APPEND SOURCES
+    types/qwxwayland.cpp
+    types/qwxwaylandsurface.cpp
+    types/qwxwaylandserver.cpp
+)
+list(APPEND HEADERS
+    types/qwxwayland.h
+    types/qwxwaylandsurface.h
+    types/qwxwaylandserver.h
 )
 endif()
 
