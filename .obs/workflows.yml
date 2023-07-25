@@ -15,7 +15,7 @@ test_build:
             architectures:
               - x86_64
 
-          - name: Fedora_Rawhide
+          - name: Fedora_38
             paths:
               - target_project: home:rewine:vioken
                 target_repository: Fedora_Rawhide
