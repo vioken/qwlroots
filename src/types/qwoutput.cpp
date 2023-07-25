@@ -38,6 +38,9 @@ public:
         sc.connect(&handle->events.present, this, &QWOutputPrivate::on_present);
         sc.connect(&handle->events.bind, this, &QWOutputPrivate::on_bind);
         sc.connect(&handle->events.description, this, &QWOutputPrivate::on_description);
+#if WLR_VERSION_MINOR > 16
+        sc.connect(&handle->events.request_state, this, &QWOutputPrivate::on_request_state);
+#endif
         sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
     }
     ~QWOutputPrivate() {
@@ -64,6 +67,9 @@ public:
     void on_present(void *data);
     void on_bind(void *data);
     void on_description(void *data);
+#if WLR_VERSION_MINOR > 16
+    void on_request_state(void *data);
+#endif
     void on_destroy(void *data);
 
     static QHash<void*, QWOutput*> map;
@@ -89,22 +95,22 @@ void QWOutputPrivate::on_needs_frame(void *)
 
 void QWOutputPrivate::on_precommit(void *data)
 {
-    Q_EMIT q_func()->precommit(reinterpret_cast<wlr_output_event_precommit*>(data));
+    Q_EMIT q_func()->precommit(static_cast<wlr_output_event_precommit*>(data));
 }
 
 void QWOutputPrivate::on_commit(void *data)
 {
-    Q_EMIT q_func()->commit(reinterpret_cast<wlr_output_event_commit*>(data));
+    Q_EMIT q_func()->commit(static_cast<wlr_output_event_commit*>(data));
 }
 
 void QWOutputPrivate::on_present(void *data)
 {
-    Q_EMIT q_func()->present(reinterpret_cast<wlr_output_event_present*>(data));
+    Q_EMIT q_func()->present(static_cast<wlr_output_event_present*>(data));
 }
 
 void QWOutputPrivate::on_bind(void *data)
 {
-    Q_EMIT q_func()->bind(reinterpret_cast<wlr_output_event_bind*>(data));
+    Q_EMIT q_func()->bind(static_cast<wlr_output_event_bind*>(data));
 }
 
 void QWOutputPrivate::on_description(void *)
@@ -112,6 +118,12 @@ void QWOutputPrivate::on_description(void *)
     Q_EMIT q_func()->descriptionChanged();
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWOutputPrivate::on_request_state(void *data)
+{
+    Q_EMIT q_func()->requestState(static_cast<wlr_output_state*>(data));
+}
+#endif
 void QWOutputPrivate::on_destroy(void *)
 {
     destroy();

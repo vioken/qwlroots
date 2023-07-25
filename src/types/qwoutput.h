@@ -21,6 +21,7 @@ struct wlr_output_event_damage;
 struct wlr_output_event_bind;
 struct wlr_output_event_precommit;
 struct wlr_output_event_commit;
+struct wlr_output_state;
 struct wlr_swapchain;
 struct wlr_render_pass;
 struct pixman_region32;
@@ -113,6 +114,9 @@ Q_SIGNALS:
     void present(wlr_output_event_present *event);
     void bind(wlr_output_event_bind *event);
     void descriptionChanged();
+#if WLR_VERSION_MINOR > 16
+    void requestState(wlr_output_state *state);
+#endif
 
 private:
     QWOutput(wlr_output *handle, bool isOwner);
