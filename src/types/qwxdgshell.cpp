@@ -448,7 +448,8 @@ void QWXdgToplevelPrivate::on_request_show_window_menu(void *data)
 
 void QWXdgToplevelPrivate::on_set_parent(void *)
 {
-    Q_EMIT q_func()->parentChanged(QWXdgToplevel::from(q_func()->handle()->parent));
+    auto *parent = q_func()->handle()->parent ? QWXdgToplevel::from(q_func()->handle()->parent) : nullptr;
+    Q_EMIT q_func()->parentChanged(parent);
 }
 
 void QWXdgToplevelPrivate::on_set_title(void *)
