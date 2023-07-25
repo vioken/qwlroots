@@ -16,7 +16,9 @@ extern "C" {
 #include <wlr/backend/drm.h>
 #undef static
 #include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
 #include <wlr/backend/x11.h>
+#endif
 #include <wlr/backend/libinput.h>
 #include <wlr/backend/headless.h>
 }
@@ -93,8 +95,10 @@ QWBackend *QWBackendPrivate::createBackend(wlr_backend *handle, bool isOwner, QO
 {
     if (wlr_backend_is_multi(handle))
         return new QWMultiBackend(handle, isOwner, parent);
+    #ifdef WLR_HAVE_X11_BACKEND
     if (wlr_backend_is_x11(handle))
         return new QWX11Backend(handle, isOwner, parent);
+    #endif
     if (wlr_backend_is_drm(handle))
         return new QWDrmBackend(handle, isOwner, parent);
     if (wlr_backend_is_headless(handle))
@@ -350,6 +354,8 @@ QWWaylandBackend::QWWaylandBackend(wlr_backend *handle, bool isOwner, QObject *p
 
 }
 
+#ifdef WLR_HAVE_X11_BACKEND
+
 QWX11Backend *QWX11Backend::get(wlr_backend *handle)
 {
     return qobject_cast<QWX11Backend*>(QWBackend::get(handle));
@@ -405,6 +411,8 @@ QWX11Backend::QWX11Backend(wlr_backend *handle, bool isOwner, QObject *parent)
 {
 
 }
+
+#endif
 
 QWLibinputBackend *QWLibinputBackend::get(wlr_backend *handle)
 {
