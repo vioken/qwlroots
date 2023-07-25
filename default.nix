@@ -8,11 +8,11 @@ let
 in
 rec {
   wlroots-git = (pkgs.wlroots_0_16.override {
-    wayland = pkgs.wayland.overrideAttrs ( old : {
-      version = "1.22.0";
+    wayland-protocols = pkgs.wayland-protocols.overrideAttrs ( old : {
+      version = "1.32.0";
       src = pkgs.fetchurl {
-        url = "https://gitlab.freedesktop.org/wayland/wayland/-/releases/1.22.0/downloads/wayland-1.22.0.tar.xz";
-        hash = "sha256-FUCvHqaYpHHC2OnSiDMsfg/TYMjx0Sk267fny8JCWEI=";
+        url = "https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.32/downloads/wayland-protocols-1.32.tar.xz";
+        hash = "sha256-dFl5nTQMgpa2le+FfAfd7yTFoJsJq2p097kmQNKxuhE=";
       };
     });
   }).overrideAttrs (
