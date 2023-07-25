@@ -221,17 +221,26 @@ if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16)
 	staging/content-type/content-type-v1.xml
 	content-type-v1-protocol
     )
+    ws_generate(
+	server
+	wayland-protocols
+	staging/cursor-shape/cursor-shape-v1.xml
+	cursor-shape-v1-protocol
+    )
+
     list(APPEND SOURCES
         render/qwswapchain.cpp
         types/qwshm.cpp
         types/qwfractionalscalev1.cpp
         types/qwcontenttypev1.cpp
+        types/qwcursorshapev1.cpp
     )
     list(APPEND HEADERS
         render/qwswapchain.h
         types/qwshm.h
         types/qwfractionalscalev1.cpp
         types/qwcontenttypev1.h
+        types/qwcursorshapev1.h
     )
     if(WLR_HAVE_XWAYLAND)
         list(APPEND SOURCES
