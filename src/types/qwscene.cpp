@@ -5,6 +5,7 @@
 #include "qwoutputlayout.h"
 #include "qwbuffer.h"
 #include "qwxdgshell.h"
+#include "qwlayershellv1.h"
 #include "qwoutput.h"
 #include "qwcompositor.h"
 #include "util/qwsignalconnector.h"
@@ -541,6 +542,27 @@ void QWSceneOutput::sendFrameDone(timespec *now)
 void QWSceneOutput::forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *userData) const
 {
     wlr_scene_output_for_each_buffer(handle(), iterator, userData);
+}
+
+wlr_scene_layer_surface_v1 *QWSceneLayerSurfaceV1::handle() const
+{
+    return reinterpret_cast<wlr_scene_layer_surface_v1*>(const_cast<QWSceneLayerSurfaceV1*>(this));
+}
+
+QWSceneLayerSurfaceV1 *QWSceneLayerSurfaceV1::from(wlr_scene_layer_surface_v1 *handle)
+{
+    return reinterpret_cast<QWSceneLayerSurfaceV1*>(handle);
+}
+
+QWSceneLayerSurfaceV1 *QWSceneLayerSurfaceV1 ::create(QWSceneTree *parent, QWLayerSurfaceV1 *layerSurface)
+{
+    auto *handle = wlr_scene_layer_surface_v1_create(parent->handle(), layerSurface->handle());
+    return from(handle);
+}
+
+void QWSceneLayerSurfaceV1::configure(const wlr_box *fullArea, wlr_box *usableArea)
+{
+    wlr_scene_layer_surface_v1_configure(handle(), fullArea, usableArea);
 }
 
 QW_END_NAMESPACE

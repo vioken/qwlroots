@@ -20,6 +20,8 @@ struct wlr_output;
 struct wlr_xdg_surface;
 struct wlr_scene_output_state_options;
 struct wlr_scene_output_sample_event;
+struct wlr_scene_layer_surface_v1;
+struct wlr_box;
 
 struct pixman_region32;
 
@@ -206,6 +208,21 @@ Q_SIGNALS:
 
 private:
     QWSceneOutput(wlr_scene_output *handle, bool isOwner);
+};
+
+class QWLayerSurfaceV1;
+class QW_EXPORT QWSceneLayerSurfaceV1
+{
+public:
+    QWSceneLayerSurfaceV1() = delete;
+    ~QWSceneLayerSurfaceV1() = delete;
+
+    wlr_scene_layer_surface_v1 *handle() const;
+
+    static QWSceneLayerSurfaceV1 *from(wlr_scene_layer_surface_v1 *handle);
+    static QWSceneLayerSurfaceV1 *create(QWSceneTree *parent, QWLayerSurfaceV1 *layerSurface);
+
+    void configure(const wlr_box *fullArea, struct wlr_box *usableArea);
 };
 
 QW_END_NAMESPACE
