@@ -64,7 +64,7 @@ stdenv.mkDerivation rec {
     description = "Qt and QML bindings for wlroots";
     homepage = "https://github.com/vioken/qwlroots";
     license = licenses.gpl3Plus;
-    platforms = platforms.linux;
+    platforms = wlroots.meta.platforms;
   };
 }
 
