@@ -22,8 +22,10 @@ rec {
       version =  mkDate (wlroots_0_17_src.lastModifiedDate or "19700101") + "_" + (wlroots_0_17_src.shortRev or "dirty");
       src = wlroots_0_17_src;
       buildInputs = old.buildInputs ++ (with pkgs; [ 
-        hwdata 
+        hwdata
+        libliftoff
         libdisplay-info
+        cairo
       ]);
       postPatch = ""; # don't need patch hwdata path in wlroots 0.17
     }
