@@ -48,6 +48,7 @@ private:
     ~QWCompositor() = default;
 };
 
+class QWSubsurface;
 class QWSurfacePrivate;
 class QW_EXPORT QWSurface : public QObject, public QWObject
 {
@@ -86,9 +87,9 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWSurface *self);
-    void client_commit();
+    void clientCommit();
     void commit();
-    void new_subsurface();
+    void newSubsurface(QWSubsurface *surface);
     void map();
     void unmap();
 #if WLR_VERSION_MINOR > 16

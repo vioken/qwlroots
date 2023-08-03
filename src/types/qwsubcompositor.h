@@ -11,6 +11,7 @@ struct wlr_subsurface;
 
 QW_BEGIN_NAMESPACE
 
+class QWSurface;
 class QWDisplay;
 class QWSubcompositorPrivate;
 class QW_EXPORT QWSubcompositor : public QObject, public QWObject
@@ -32,6 +33,31 @@ Q_SIGNALS:
 private:
     QWSubcompositor(wlr_subcompositor *handle, bool isOwner);
     ~QWSubcompositor() = default;
+};
+
+class QWSubsurfacePrivate;
+class QW_EXPORT QWSubsurface : public QObject, public QWObject
+{
+    Q_OBJECT
+    QW_DECLARE_PRIVATE(QWSubsurface)
+
+public:
+    inline wlr_subsurface *handle() const {
+        return QWObject::handle<wlr_subsurface>();
+    }
+
+    static QWSubsurface *get(wlr_subsurface *handle);
+    static QWSubsurface *from(wlr_subsurface *handle);
+#if WLR_VERSION_MINOR > 16
+    static QWSubsurface *tryFrom(QWSurface *surface);
+#endif
+
+Q_SIGNALS:
+    void beforeDestroy(QWSubsurface *self);
+
+private:
+    QWSubsurface(wlr_subsurface *handle, bool isOwner);
+    ~QWSubsurface() = default;
 };
 
 QW_END_NAMESPACE

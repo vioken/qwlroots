@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwcompositor.h"
+#include "qwsubcompositor.h"
 #include "qwdisplay.h"
 #include "qwtexture.h"
 #include "qwoutput.h"
@@ -160,7 +161,7 @@ void QWSurfacePrivate::on_destroy(void *)
 
 void QWSurfacePrivate::on_client_commit(void *)
 {
-    Q_EMIT q_func()->client_commit();
+    Q_EMIT q_func()->clientCommit();
 }
 
 void QWSurfacePrivate::on_commit(void *)
@@ -168,9 +169,11 @@ void QWSurfacePrivate::on_commit(void *)
     Q_EMIT q_func()->commit();
 }
 
-void QWSurfacePrivate::on_new_subsurface(void *)
+void QWSurfacePrivate::on_new_subsurface(void *data)
 {
-    Q_EMIT q_func()->new_subsurface();
+    auto handle = reinterpret_cast<wlr_subsurface*>(data);
+    Q_ASSERT(handle);
+    Q_EMIT q_func()->newSubsurface(QWSubsurface::from(handle));
 }
 
 #if WLR_VERSION_MINOR > 16
