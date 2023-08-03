@@ -106,6 +106,7 @@ set(SOURCES
     types/qwinputmethodv2.cpp
     types/qwinputmethodkeyboardgrabv2.cpp
     types/qwinputpopupsurfacev2.cpp
+    types/qwinputmethodmanagerv2.cpp
     types/qwidlenotifyv1.cpp
     types/qwforeigntoplevelhandlev1.cpp
     types/qwforeigntoplevelmanagerv1.cpp

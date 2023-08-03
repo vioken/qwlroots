@@ -10,11 +10,38 @@ struct wlr_input_method_keyboard_grab_v2;
 struct wlr_keyboard_modifiers;
 struct wlr_input_method_v2;
 struct wlr_input_popup_surface_v2;
+struct wlr_input_method_manager_v2;
 
 QW_BEGIN_NAMESPACE
 
 class QWKeyboard;
 class QWSurface;
+class QWDisplay;
+class QWInputMethodV2;
+class QWInputMethodManagerV2Private;
+class QW_EXPORT QWInputMethodManagerV2 : public QObject, public QWObject
+{
+    Q_OBJECT
+    QW_DECLARE_PRIVATE(QWInputMethodManagerV2)
+public:
+    inline wlr_input_method_manager_v2 *handle() const {
+        return QWObject::handle<wlr_input_method_manager_v2>();
+    }
+
+    static QWInputMethodManagerV2 *get(wlr_input_method_manager_v2 *handle);
+    static QWInputMethodManagerV2 *from(wlr_input_method_manager_v2 *handle);
+    static QWInputMethodManagerV2 *create(QWDisplay *display);
+
+Q_SIGNALS:
+    void beforeDestroy(QWInputMethodManagerV2 *self);
+    void inputMethod(QWInputMethodV2 *input_method);
+
+private:
+    QWInputMethodManagerV2(wlr_input_method_manager_v2 *handle, bool isOwner);
+    ~QWInputMethodManagerV2() = default;
+};
+
+
 class QWInputMethodKeyboardGrabV2Private;
 class QW_EXPORT QWInputMethodKeyboardGrabV2 : public QObject, public QWObject
 {
