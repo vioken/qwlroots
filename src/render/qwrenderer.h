@@ -74,6 +74,9 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWRenderer *self);
+#if WLR_VERSION_MINOR > 16
+    void lost();
+#endif
 
 private:
     QWRenderer(wlr_renderer *handle, bool isOwner);
