@@ -60,6 +60,10 @@ stdenv.mkDerivation rec {
     wlroots
   ];
 
+  cmakeFlags = [
+    "-DPREFER_QT_5=${if lib.versionAtLeast qtbase.version "6" then "OFF" else "ON"}"
+  ];
+
   meta = with lib; {
     description = "Qt and QML bindings for wlroots";
     homepage = "https://github.com/vioken/qwlroots";
