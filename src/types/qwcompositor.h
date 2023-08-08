@@ -83,6 +83,8 @@ public:
     void setPreferredBufferScale(int32_t scale);
     void setPreferredBufferTransform(wl_output_transform_t transform);
     void setRole(const wlr_surface_role *role, wl_resource *errorResource, uint32_t errorCode);
+    void map();
+    void unmap();
 #endif
 
 Q_SIGNALS:
@@ -90,8 +92,8 @@ Q_SIGNALS:
     void clientCommit();
     void commit();
     void newSubsurface(QWSubsurface *surface);
-    void map();
-    void unmap();
+    void mapped();
+    void unmapped();
 #if WLR_VERSION_MINOR > 16
     void precommit(const wlr_surface_state *state);
 #endif
