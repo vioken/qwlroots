@@ -163,12 +163,12 @@ void QWLayerSurfaceV1Private::on_destroy(void *)
 #if WLR_VERSION_MINOR <= 16
 void QWLayerSurfaceV1Private::on_map(void *)
 {
-    Q_EMIT q_func()->surface()->map();
+    Q_EMIT q_func()->surface()->mapped();
 }
 
 void QWLayerSurfaceV1Private::on_unmap(void *)
 {
-    Q_EMIT q_func()->surface()->unmap();
+    Q_EMIT q_func()->surface()->unmapped();
 }
 #endif
 

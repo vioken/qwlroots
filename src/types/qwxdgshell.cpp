@@ -164,12 +164,12 @@ void QWXdgSurfacePrivate::on_new_popup(wlr_xdg_popup *data)
 #if WLR_VERSION_MINOR <= 16
 void QWXdgSurfacePrivate::on_map(void *)
 {
-    Q_EMIT q_func()->surface()->map();
+    Q_EMIT q_func()->surface()->mapped();
 }
 
 void QWXdgSurfacePrivate::on_unmap(void *)
 {
-    Q_EMIT q_func()->surface()->unmap();
+    Q_EMIT q_func()->surface()->unmapped();
 }
 #endif
 

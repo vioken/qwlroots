@@ -185,12 +185,12 @@ void QWSurfacePrivate::on_precommit(void *data)
 
 void QWSurfacePrivate::on_map(void *)
 {
-    Q_EMIT q_func()->map();
+    Q_EMIT q_func()->mapped();
 }
 
 void QWSurfacePrivate::on_unmap(void *)
 {
-    Q_EMIT q_func()->unmap();
+    Q_EMIT q_func()->unmapped();
 }
 
 #endif
@@ -320,12 +320,22 @@ void QWSurface::setPreferredBufferScale(int32_t scale)
 
 void QWSurface::setPreferredBufferTransform(wl_output_transform_t transform)
 {
-   wlr_surface_set_preferred_buffer_transform(handle(), static_cast<wl_output_transform>(transform));
+    wlr_surface_set_preferred_buffer_transform(handle(), static_cast<wl_output_transform>(transform));
 }
 
 void QWSurface::setRole(const wlr_surface_role *role, wl_resource *errorResource, uint32_t errorCode)
 {
-   wlr_surface_set_role(handle(), role, errorResource, errorCode);
+    wlr_surface_set_role(handle(), role, errorResource, errorCode);
+}
+
+void QWSurface::map()
+{
+    wlr_surface_map(handle());
+}
+
+void QWSurface::unmap()
+{
+    wlr_surface_unmap(handle());
 }
 #endif
 
