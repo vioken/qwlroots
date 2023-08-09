@@ -267,6 +267,11 @@ void QWCursor::setXCursor(QWXCursorManager *manager, const char *name)
 {
     wlr_cursor_set_xcursor(handle(), manager->handle(), name);
 }
+
+void QWCursor::unsetImage()
+{
+    wlr_cursor_unset_image(handle());
+}
 #else
 void QWCursor::setImage(const QImage &image, const QPoint &hotspot)
 {

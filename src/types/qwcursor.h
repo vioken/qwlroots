@@ -60,6 +60,7 @@ public:
 #if WLR_VERSION_MINOR > 16
     void setBuffer(QWBuffer *buffer, const QPoint &hotspot, float scale);
     void setXCursor(QWXCursorManager *manager, const char *name);
+    void unsetImage();
 #else
     void setImage(const QImage &image, const QPoint &hotspot);
 #endif
