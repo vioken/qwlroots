@@ -21,6 +21,7 @@ struct wlr_output_event_damage;
 struct wlr_output_event_bind;
 struct wlr_output_event_precommit;
 struct wlr_output_event_commit;
+struct wlr_output_event_request_state;
 struct wlr_output_state;
 struct wlr_swapchain;
 struct wlr_render_pass;
@@ -115,7 +116,7 @@ Q_SIGNALS:
     void bind(wlr_output_event_bind *event);
     void descriptionChanged();
 #if WLR_VERSION_MINOR > 16
-    void requestState(wlr_output_state *state);
+    void requestState(wlr_output_event_request_state *state);
 #endif
 
 private:

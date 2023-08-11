@@ -121,7 +121,7 @@ void QWOutputPrivate::on_description(void *)
 #if WLR_VERSION_MINOR > 16
 void QWOutputPrivate::on_request_state(void *data)
 {
-    Q_EMIT q_func()->requestState(static_cast<wlr_output_state*>(data));
+    Q_EMIT q_func()->requestState(static_cast<wlr_output_event_request_state*>(data));
 }
 #endif
 void QWOutputPrivate::on_destroy(void *)
