@@ -32,15 +32,6 @@ test_build:
   filters:
     event: pull_request
 
-tag_build:
-  steps:
-    - branch_package:
-        source_project: home:rewine:vioken
-        source_package: %{SCM_REPOSITORY_NAME} 
-        target_project: home:rewine:vioken:TAG
-  filters:
-    event: tag_push
-
 commit_build:
   steps:
     - trigger_services:

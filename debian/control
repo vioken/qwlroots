@@ -1,6 +1,6 @@
 Source: qwlroots
 Priority: optional
-Maintainer: rewine <luhongxu@outlook.com>
+Maintainer: rewine <lhongxu@outlook.com>
 Build-Depends: debhelper-compat (= 13),
                pkg-config,
                cmake,
