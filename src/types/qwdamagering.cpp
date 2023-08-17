@@ -12,24 +12,20 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-wlr_damage_ring *QWDamageRing::handle() const
-{
-    return reinterpret_cast<wlr_damage_ring*>(const_cast<QWDamageRing*>(this));
-}
-
-QWDamageRing *QWDamageRing::from(wlr_damage_ring *handle)
-{
-    return reinterpret_cast<QWDamageRing*>(handle);
-}
-
-void QWDamageRing::init()
+QWDamageRing::QWDamageRing():
+    m_handle(new wlr_damage_ring)
 {
     wlr_damage_ring_init(handle());
 }
 
-void QWDamageRing::finish()
+QWDamageRing::~QWDamageRing()
 {
     wlr_damage_ring_finish(handle());
+}
+
+wlr_damage_ring *QWDamageRing::handle() const
+{
+    return m_handle.get();
 }
 
 bool QWDamageRing::add(pixman_region32_t *damage)
@@ -53,7 +49,7 @@ void QWDamageRing::addWhole()
     wlr_damage_ring_add_whole(handle());
 }
 
-void QWDamageRing::ringRotate()
+void QWDamageRing::rotate()
 {
     wlr_damage_ring_rotate(handle());
 }
@@ -61,6 +57,11 @@ void QWDamageRing::ringRotate()
 void QWDamageRing::getBufferDamage(int bufferAge, pixman_region32_t *damage) const
 {
     wlr_damage_ring_get_buffer_damage(handle(), bufferAge, damage);
+}
+
+void QWDamageRing::setBounds(const QSize &bounds)
+{
+    wlr_damage_ring_set_bounds(handle(), bounds.width(), bounds.height());
 }
 
 QW_END_NAMESPACE
