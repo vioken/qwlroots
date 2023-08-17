@@ -307,6 +307,15 @@ QWWaylandBackend *QWWaylandBackend::from(wlr_backend *handle)
     return new QWWaylandBackend(handle, false);
 }
 
+#if WLR_VERSION_MINOR > 16
+QWWaylandBackend *QWWaylandBackend::create(QWDisplay *display, wl_display *remote_display, QObject *parent)
+{
+    auto handle = wlr_wl_backend_create(display->handle(), remote_display);
+    if (!handle)
+        return nullptr;
+    return new QWWaylandBackend(handle, true, parent);
+}
+#else
 QWWaylandBackend *QWWaylandBackend::create(QWDisplay *display, const char *remote, QObject *parent)
 {
     auto handle = wlr_wl_backend_create(display->handle(), remote);
@@ -314,6 +323,7 @@ QWWaylandBackend *QWWaylandBackend::create(QWDisplay *display, const char *remot
         return nullptr;
     return new QWWaylandBackend(handle, true, parent);
 }
+#endif
 
 wl_display *QWWaylandBackend::getRemoteDisplay() const
 {
