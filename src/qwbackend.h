@@ -117,8 +117,11 @@ class QW_EXPORT QWWaylandBackend : public QWBackend
 public:
     static QWWaylandBackend *get(wlr_backend *handle);
     static QWWaylandBackend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 16
+    static QWWaylandBackend *create(QWDisplay *display, wl_display *remote_display, QObject *parent = nullptr);
+#else
     static QWWaylandBackend *create(QWDisplay *display, const char *remote, QObject *parent = nullptr);
-
+#endif
     wl_display *getRemoteDisplay() const;
     QWOutput *createOutput();
 

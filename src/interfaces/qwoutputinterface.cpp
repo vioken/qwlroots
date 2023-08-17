@@ -127,7 +127,11 @@ QWOutputInterface *QWOutputInterface::get(wlr_output *handle)
     return interface(handle);
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display, wlr_output_state *state)
+#else
 void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display)
+#endif
 {
     auto impl = new wlr_output_impl {
         QW_INIT_INTERFACE_FUNC(funMagicKey, set_cursor, &QWOutputInterface::setCursor),
@@ -144,7 +148,11 @@ void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, QWDis
     m_handleImpl = impl;
     m_handle = calloc(1, sizeof(_wlr_output));
     static_cast<_wlr_output *>(m_handle)->interface = this;
+#if WLR_VERSION_MINOR > 16
+    wlr_output_init(handle(), backend->handle(), impl, display->handle(), state);
+#else
     wlr_output_init(handle(), backend->handle(), impl, display->handle());
+#endif
 }
 
 QW_END_NAMESPACE

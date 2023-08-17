@@ -41,6 +41,17 @@ public:
     static QWOutputInterface *get(wlr_output *handle);
 
 protected:
+#if WLR_VERSION_MINOR > 16
+    template<class T>
+    inline void init(QWBackend *backend, QWDisplay *display, wlr_output_state *state) {
+        init(getFuncMagicKey<T>(&T::setCursor, &T::moveCursor, &T::test,
+                                &T::getGammaSize, &T::getCursorFormats,
+                                &T::getPrimaryFormats, &T::getCursorSize),
+             backend, display, state);
+    }
+
+    virtual void init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display, wlr_output_state *state);
+#else
     template<class T>
     inline void init(QWBackend *backend, QWDisplay *display) {
         init(getFuncMagicKey<T>(&T::setCursor, &T::moveCursor, &T::test,
@@ -50,6 +61,7 @@ protected:
     }
 
     virtual void init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display);
+#endif
 };
 
 QW_END_NAMESPACE
