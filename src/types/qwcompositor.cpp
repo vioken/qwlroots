@@ -222,11 +222,12 @@ QWSurface *QWSurface::from(wl_resource *resource)
     return from(handle);
 }
 
+#if WLR_VERSION_MINOR <= 16
 void QWSurface::destroyRoleObject()
 {
     wlr_surface_destroy_role_object(handle());
 }
-
+#endif
 void QWSurface::forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const
 {
     wlr_surface_for_each_surface(handle(), iterator, userData);

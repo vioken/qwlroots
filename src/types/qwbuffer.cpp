@@ -136,23 +136,4 @@ void QWBuffer::endDataPtrAccess()
     wlr_buffer_end_data_ptr_access(handle());
 }
 
-wlr_client_buffer *QWBuffer::clientBufferCreate(const QWRenderer *renderer)
-{
-    Q_D(QWBuffer);
-    return wlr_client_buffer_create(handle(), renderer->handle());
-}
-
-wlr_client_buffer *QWBuffer::clientBufferGet() const
-{
-    Q_D(const QWBuffer);
-    return wlr_client_buffer_get(handle());
-}
-
-bool QWBuffer::clientBufferApplyDamage(wlr_client_buffer *buffer, QWBuffer *next,
-                                       pixman_region32 *damage)
-{
-    Q_D(QWBuffer);
-    return wlr_client_buffer_apply_damage(buffer, next->handle(), damage);
-}
-
 QW_END_NAMESPACE
