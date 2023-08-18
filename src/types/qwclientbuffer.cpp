@@ -26,14 +26,14 @@ QWClientBuffer *QWClientBuffer::get(QWBuffer *buffer)
     return from(handle);
 }
 
+#if WLR_VERSION_MINOR <= 16
 QWClientBuffer *QWClientBuffer::create(QWBuffer *buffer, QWRenderer *renderer)
 {
     auto *handle = wlr_client_buffer_create(buffer->handle(), renderer->handle());
     return from(handle);
 }
 
-#if WLR_VERSION_MINOR > 16
-bool QWClientBuffer::applyDamage(QWBuffer *next, const pixman_region32_t *damage)
+bool QWClientBuffer::applyDamage(QWBuffer *next, pixman_region32 *damage)
 {
     return wlr_client_buffer_apply_damage(handle(), next->handle(), damage);
 }

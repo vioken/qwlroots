@@ -62,9 +62,9 @@ public:
     static QWSurface *get(wlr_surface *handle);
     static QWSurface *from(wlr_surface *handle);
     static QWSurface *from(wl_resource *resource);
-
+#if WLR_VERSION_MINOR <= 16
     void destroyRoleObject();
-
+#endif
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     QRectF getBufferSourceBox() const;
     void getEffectiveDamage(pixman_region32_t *damage) const;
@@ -102,6 +102,5 @@ private:
     QWSurface(wlr_surface *handle, bool isOwner);
     ~QWSurface() = default;
 };
-
 
 QW_END_NAMESPACE

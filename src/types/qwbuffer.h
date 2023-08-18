@@ -63,12 +63,6 @@ public:
     void beginDataPtrAccess(uint32_t flags, void **data, uint32_t *format, size_t *stride);
     void endDataPtrAccess();
 
-    wlr_client_buffer *clientBufferCreate(const QWRenderer *renderer);
-    wlr_client_buffer *clientBufferGet() const;
-
-    bool clientBufferApplyDamage(wlr_client_buffer *buffer, QWBuffer *next,
-                                 pixman_region32 *damage);
-
 Q_SIGNALS:
     void beforeDestroy(QWBuffer *self);
     void release();
@@ -87,10 +81,9 @@ public:
 
     static QWClientBuffer *from(wlr_client_buffer *handle);
     static QWClientBuffer *get(QWBuffer *buffer);
+#if WLR_VERSION_MINOR <= 16
     static QWClientBuffer *create(QWBuffer *buffer, QWRenderer *renderer);
-
-#if WLR_VERSION_MINOR > 16
-    bool applyDamage(QWBuffer *next, const pixman_region32_t *damage);
+    bool applyDamage(QWBuffer *next, pixman_region32 *damage);
 #endif
 };
 
