@@ -8,6 +8,8 @@
 #include <qwdisplay.h>
 #include <qwcompositor.h>
 #include <qwseat.h>
+#include <qwxwaylandshellv1.h>
+
 #include <QImage>
 #include <QPoint>
 #include <QHash>
@@ -24,14 +26,14 @@ QW_BEGIN_NAMESPACE
 class QWXWaylandPrivate : public QWObjectPrivate
 {
 public:
-    QWXWaylandPrivate(wlr_xwayland *handle, bool isOwner, QWXWayland *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+    QWXWaylandPrivate(wlr_xwayland *handle, QWXWayland *qq)
+        : QWObjectPrivate(handle, false, qq)
     {
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.ready, q_func(), &QWXWayland::ready);
-        sc.connect(&handle->events.new_surface, q_func(), &QWXWayland::newSurface);
-        sc.connect(&handle->events.remove_startup_info, q_func(), &QWXWayland::removeStartupInfo);
+        sc.connect(&handle->events.new_surface, this, &QWXWaylandPrivate::on_new_surface);
+        sc.connect(&handle->events.remove_startup_info, this, &QWXWaylandPrivate::on_remove_startup_info);
     }
 
     ~QWXWaylandPrivate() {
@@ -39,10 +41,12 @@ public:
             return;
         }
         destroy();
-        if (isHandleOwner) {
-            wlr_xwayland_destroy(q_func()->handle());
-        }
+        // Destroy following wl_display.
+        Q_ASSERT(!isHandleOwner);
     }
+
+    void on_new_surface(wlr_xwayland_surface *surface);
+    void on_remove_startup_info(wlr_xwayland_remove_startup_info_event *event);
 
     inline void destroy() {
         Q_ASSERT(m_handle);
@@ -58,13 +62,23 @@ public:
 };
 QHash<void*, QWXWayland*> QWXWaylandPrivate::map;
 
+void QWXWaylandPrivate::on_new_surface(wlr_xwayland_surface *surface)
+{
+    Q_EMIT q_func()->newSurface(surface);
+}
+
+void QWXWaylandPrivate::on_remove_startup_info(wlr_xwayland_remove_startup_info_event *event)
+{
+    Q_EMIT q_func()->removeStartupInfo(event);
+}
+
 QWXWayland *QWXWayland::create(QWDisplay *wl_display, QWCompositor *compositor, bool lazy)
 {
     auto *handle = wlr_xwayland_create(wl_display->handle(), compositor->handle(), lazy);
     if (!handle)
         return nullptr;
     auto *parent = QWXWaylandServer::from(handle->server);
-    return new QWXWayland(handle, true, parent);
+    return new QWXWayland(handle, parent);
 }
 
 QWXWayland *QWXWayland::get(wlr_xwayland *handle)
@@ -95,9 +109,9 @@ wlr_xwayland *QWXWayland::handle() const
     return QWObject::handle<wlr_xwayland>();
 }
 
-QWXWayland::QWXWayland(wlr_xwayland *handle, bool isOwner, QWXWaylandServer *parent)
+QWXWayland::QWXWayland(wlr_xwayland *handle, QWXWaylandServer *parent)
     : QObject(parent)
-    , QWObject(*new QWXWaylandPrivate(handle, isOwner, this))
+    , QWObject(*new QWXWaylandPrivate(handle, this))
 {
 }
 
