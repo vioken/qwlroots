@@ -6,9 +6,14 @@
 #include <qwglobal.h>
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
 class QImage;
 class QPoint;
+QT_END_NAMESPACE
+
 struct wlr_xwayland;
+struct wlr_xwayland_surface;
+struct wlr_xwayland_remove_startup_info_event;
 
 QW_BEGIN_NAMESPACE
 
@@ -16,15 +21,13 @@ class QWDisplay;
 class QWCompositor;
 class QWSeat;
 class QWXWaylandServer;
+class QWXWaylandShellV1;
 class QWXWaylandPrivate;
 class QW_EXPORT QWXWayland : public QObject, public QWObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWayland)
 public:
-    explicit QWXWayland(wlr_xwayland *handle, bool isOwner, QWXWaylandServer *parent);
-    ~QWXWayland() = default;
-
     static QWXWayland *create(QWDisplay *display, QWCompositor *compositor, bool lazy);
     static QWXWayland *get(wlr_xwayland *handle);
     wlr_xwayland *handle() const;
@@ -35,8 +38,12 @@ public:
 Q_SIGNALS:
     void beforeDestroy(QWXWayland *self);
     void ready();
-    void newSurface();
-    void removeStartupInfo();
+    void newSurface(wlr_xwayland_surface *surface);
+    void removeStartupInfo(wlr_xwayland_remove_startup_info_event *event);
+
+private:
+    explicit QWXWayland(wlr_xwayland *handle, QWXWaylandServer *parent);
+    ~QWXWayland() = default;
 };
 
 QW_END_NAMESPACE

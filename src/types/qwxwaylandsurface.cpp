@@ -3,8 +3,10 @@
 
 #include "qwxwaylandsurface.h"
 #include "qwcompositor.h"
+#include "qwsignalconnector.h"
 
 #include <QRect>
+#include <QHash>
 
 extern "C" {
 #include <xcb/xproto.h>
@@ -19,14 +21,221 @@ static_assert(std::is_same_v<xcb_stack_mode, std::underlying_type_t<xcb_stack_mo
 
 QW_BEGIN_NAMESPACE
 
-QWXWaylandSurface* QWXWaylandSurface::from(wlr_xwayland_surface* surface)
+class QWXWaylandSurfacePrivate : public QWObjectPrivate
 {
-    return reinterpret_cast<QWXWaylandSurface*>(surface);
+public:
+    QWXWaylandSurfacePrivate(wlr_xwayland_surface *handle, bool isOwner, QWXWaylandSurface *qq)
+        : QWObjectPrivate(handle, isOwner, qq)
+    {
+        Q_ASSERT(!map.contains(handle));
+        map.insert(handle, qq);
+        sc.connect(&handle->events.destroy, this, &QWXWaylandSurfacePrivate::on_destroy);
+        sc.connect(&handle->events.request_configure, this, &QWXWaylandSurfacePrivate::on_request_configure);
+        sc.connect(&handle->events.request_move, this, &QWXWaylandSurfacePrivate::on_request_move);
+        sc.connect(&handle->events.request_resize, this, &QWXWaylandSurfacePrivate::on_request_resize);
+        sc.connect(&handle->events.request_minimize, this, &QWXWaylandSurfacePrivate::on_request_minimize);
+        sc.connect(&handle->events.request_maximize, this, &QWXWaylandSurfacePrivate::on_request_maximize);
+        sc.connect(&handle->events.request_fullscreen, this, &QWXWaylandSurfacePrivate::on_request_fullscreen);
+        sc.connect(&handle->events.request_activate, this, &QWXWaylandSurfacePrivate::on_request_activate);
+#if WLR_VERSION_MINOR > 16
+        sc.connect(&handle->events.associate, this, &QWXWaylandSurfacePrivate::on_associate);
+        sc.connect(&handle->events.dissociate, this, &QWXWaylandSurfacePrivate::on_dissociate);
+        sc.connect(&handle->events.set_strut_partial, this, &QWXWaylandSurfacePrivate::on_set_strut_partial);
+#endif
+        sc.connect(&handle->events.set_title, this, &QWXWaylandSurfacePrivate::on_set_title);
+        sc.connect(&handle->events.set_class, this, &QWXWaylandSurfacePrivate::on_set_class);
+        sc.connect(&handle->events.set_role, this, &QWXWaylandSurfacePrivate::on_set_role);
+        sc.connect(&handle->events.set_parent, this, &QWXWaylandSurfacePrivate::on_set_parent);
+        sc.connect(&handle->events.set_startup_id, this, &QWXWaylandSurfacePrivate::on_set_startup_id);
+        sc.connect(&handle->events.set_window_type, this, &QWXWaylandSurfacePrivate::on_set_window_type);
+        sc.connect(&handle->events.set_hints, this, &QWXWaylandSurfacePrivate::on_set_hints);
+        sc.connect(&handle->events.set_decorations, this, &QWXWaylandSurfacePrivate::on_set_decorations);
+        sc.connect(&handle->events.set_override_redirect, this, &QWXWaylandSurfacePrivate::on_set_override_redirect);
+        sc.connect(&handle->events.set_geometry, this, &QWXWaylandSurfacePrivate::on_set_geometry);
+        sc.connect(&handle->events.ping_timeout, this, &QWXWaylandSurfacePrivate::on_ping_timeout);
+    }
+    ~QWXWaylandSurfacePrivate() {
+        if (!m_handle)
+            return;
+        destroy();
+        Q_ASSERT(!isHandleOwner);
+    }
+
+    void on_destroy(void *);
+    void on_request_configure(wlr_xwayland_surface_configure_event *event);
+    void on_request_move(void *);
+    void on_request_resize(wlr_xwayland_resize_event *event);
+    void on_request_minimize(wlr_xwayland_minimize_event *event);
+    void on_request_maximize(void *);
+    void on_request_fullscreen(void *);
+    void on_request_activate(void *);
+#if WLR_VERSION_MINOR > 16
+    void on_associate(void *);
+    void on_dissociate(void *);
+    void on_set_strut_partial(void *);
+#endif
+    void on_set_title(void *);
+    void on_set_class(void *);
+    void on_set_role(void *);
+    void on_set_parent(void *);
+    void on_set_startup_id(void *);
+    void on_set_window_type(void *);
+    void on_set_hints(void *);
+    void on_set_decorations(void *);
+    void on_set_override_redirect(void *);
+    void on_set_geometry(void *);
+    void on_ping_timeout(void *);
+
+    inline void destroy() {
+        Q_ASSERT(m_handle);
+        Q_ASSERT(map.contains(m_handle));
+        Q_EMIT q_func()->beforeDestroy(q_func());
+        map.remove(m_handle);
+        sc.invalidate();
+    }
+
+    static QHash<void*, QWXWaylandSurface*> map;
+    QW_DECLARE_PUBLIC(QWXWaylandSurface)
+    QWSignalConnector sc;
+};
+QHash<void*, QWXWaylandSurface*> QWXWaylandSurfacePrivate::map;
+
+void QWXWaylandSurfacePrivate::on_destroy(void *)
+{
+    destroy();
+    m_handle = nullptr;
+    delete q_func();
+}
+
+void QWXWaylandSurfacePrivate::on_request_configure(wlr_xwayland_surface_configure_event *event)
+{
+    Q_EMIT q_func()->requestConfigure(event);
+}
+
+void QWXWaylandSurfacePrivate::on_request_move(void *)
+{
+    Q_EMIT q_func()->requestMove();
+}
+
+void QWXWaylandSurfacePrivate::on_request_resize(wlr_xwayland_resize_event *event)
+{
+    Q_EMIT q_func()->requestResize(event);
+}
+
+void QWXWaylandSurfacePrivate::on_request_minimize(wlr_xwayland_minimize_event *event)
+{
+    Q_EMIT q_func()->requestMinimize(event);
+}
+
+void QWXWaylandSurfacePrivate::on_request_maximize(void *)
+{
+    Q_EMIT q_func()->requestMaximize();
+}
+
+void QWXWaylandSurfacePrivate::on_request_fullscreen(void *)
+{
+    Q_EMIT q_func()->requestFullscreen();
+}
+
+void QWXWaylandSurfacePrivate::on_request_activate(void *)
+{
+    Q_EMIT q_func()->requestActivate();
+}
+
+#if WLR_VERSION_MINOR > 16
+void QWXWaylandSurfacePrivate::on_associate(void *)
+{
+    Q_EMIT q_func()->associate();
+}
+
+void QWXWaylandSurfacePrivate::on_dissociate(void *)
+{
+    Q_EMIT q_func()->dissociate();
+}
+
+void QWXWaylandSurfacePrivate::on_set_strut_partial(void *)
+{
+    Q_EMIT q_func()->strutPartialChanged();
+}
+#endif
+
+void QWXWaylandSurfacePrivate::on_set_title(void *)
+{
+    Q_EMIT q_func()->titleChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_class(void *)
+{
+    Q_EMIT q_func()->classChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_role(void *)
+{
+    Q_EMIT q_func()->roleChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_parent(void *)
+{
+    Q_EMIT q_func()->parentChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_startup_id(void *)
+{
+    Q_EMIT q_func()->startupIdChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_window_type(void *)
+{
+    Q_EMIT q_func()->windowTypeChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_hints(void *)
+{
+    Q_EMIT q_func()->hintsChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_decorations(void *)
+{
+    Q_EMIT q_func()->decorationsChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_override_redirect(void *)
+{
+    Q_EMIT q_func()->overrideRedirectChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_set_geometry(void *)
+{
+    Q_EMIT q_func()->geometryChanged();
+}
+
+void QWXWaylandSurfacePrivate::on_ping_timeout(void *)
+{
+    Q_EMIT q_func()->pingTimeout();
+}
+
+QWXWaylandSurface::QWXWaylandSurface(wlr_xwayland_surface *handle)
+    : QObject(nullptr)
+    , QWObject(*new QWXWaylandSurfacePrivate(handle, false, this))
+{
+
+}
+
+QWXWaylandSurface *QWXWaylandSurface::get(wlr_xwayland_surface *handle)
+{
+    return QWXWaylandSurfacePrivate::map.value(handle);
+}
+
+QWXWaylandSurface* QWXWaylandSurface::from(wlr_xwayland_surface* handle)
+{
+    if (auto o = get(handle))
+        return o;
+    return new QWXWaylandSurface(handle);
 }
 
 wlr_xwayland_surface* QWXWaylandSurface::handle() const
 {
-    return reinterpret_cast<wlr_xwayland_surface*>(const_cast<QWXWaylandSurface*>(this));
+    return QWObject::handle<wlr_xwayland_surface>();
 }
 
 void QWXWaylandSurface::activate(bool activated)
@@ -74,7 +283,8 @@ void QWXWaylandSurface::setFullscreen(bool fullscreen)
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
 QWXWaylandSurface *QWXWaylandSurface::tryFromWlrSurface(QWSurface *surface)
 {
-    return from(wlr_xwayland_surface_try_from_wlr_surface(surface->handle()));
+    auto handle = wlr_xwayland_surface_try_from_wlr_surface(surface->handle());
+    return handle ? from(handle) : nullptr;
 }
 #endif
 
