@@ -514,12 +514,20 @@ QWSceneOutput *QWSceneOutput::from(wlr_scene_output *handle)
     return new QWSceneOutput(handle, false);
 }
 
-QWSceneOutput *QWSceneOutput::from(QWScene *scene, QWOutput *output)
+QWSceneOutput *QWSceneOutput::get(QWScene *scene, QWOutput *output)
 {
     auto handle = wlr_scene_get_scene_output(scene->handle(), output->handle());
     if (!handle)
         return nullptr;
     return from(handle);
+}
+
+QWSceneOutput *QWSceneOutput::from(QWScene *scene, QWOutput *output)
+{
+    if (auto o = get(scene, output))
+        return o;
+
+    return new QWSceneOutput(scene, output);
 }
 
 #if WLR_VERSION_MINOR > 16

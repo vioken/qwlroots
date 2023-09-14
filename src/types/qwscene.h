@@ -193,6 +193,7 @@ public:
 
     static QWSceneOutput *get(wlr_scene_output *handle);
     static QWSceneOutput *from(wlr_scene_output *handle);
+    static QWSceneOutput *get(QWScene *scene, QWOutput *output);
     static QWSceneOutput *from(QWScene *scene, QWOutput *output);
 #if WLR_VERSION_MINOR > 16
     void commit(const wlr_scene_output_state_options *options);
