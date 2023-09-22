@@ -16,7 +16,7 @@ class QWBuffer;
 class QW_EXPORT QWSwapchain {
 public:
     QWSwapchain() = delete;
-    ~QWSwapchain() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWSwapchain)
 
     void operator delete(QWSwapchain *p, std::destroying_delete_t);
 

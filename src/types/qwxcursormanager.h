@@ -15,7 +15,7 @@ class QW_EXPORT QWXCursorManager
 {
 public:
     QWXCursorManager() = delete;
-    ~QWXCursorManager() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWXCursorManager)
 
     void operator delete(QWXCursorManager *p, std::destroying_delete_t);
 

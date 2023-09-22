@@ -18,7 +18,7 @@ class QW_EXPORT QWOutputConfigurationV1
 {
 public:
     QWOutputConfigurationV1() = delete;
-    ~QWOutputConfigurationV1() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWOutputConfigurationV1)
 
     void operator delete(QWOutputConfigurationV1 *p, std::destroying_delete_t);
 

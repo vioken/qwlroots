@@ -26,6 +26,22 @@
 #define QW_DECLARE_PUBLIC(Class) Q_DECLARE_PUBLIC(Class)
 #define QW_PRIVATE_SLOT(Func) Q_PRIVATE_SLOT(d_func(), Func)
 
+
+/*
+ *  We disallow some class's destructor, they are binding of a wlroots struct
+ *  which will be free in c language
+ *  We use destroying delete to avoid call destructor after delete, but clang++
+ *  still check destructor must not deleted nor private, we call abort() to ensure
+ *  destructor never called in runtime
+ *
+ *  More info https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0722r3.html
+ */
+#ifdef __clang__
+    #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() { std::abort(); };
+#else
+    #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() = delete;
+#endif
+
 #include <QScopedPointer>
 
 QW_BEGIN_NAMESPACE

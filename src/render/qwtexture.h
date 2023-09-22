@@ -18,7 +18,7 @@ class QW_EXPORT QWTexture
 {
 public:
     QWTexture() = delete;
-    ~QWTexture() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWTexture)
 
     void operator delete(QWTexture *p, std::destroying_delete_t);
 
