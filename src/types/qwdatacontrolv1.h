@@ -16,7 +16,7 @@ class QW_EXPORT QWDataControlDeviceV1
 {
 public:
     QWDataControlDeviceV1() = delete;
-    ~QWDataControlDeviceV1() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWDataControlDeviceV1)
 
     void operator delete(QWDataControlDeviceV1 *p, std::destroying_delete_t);
 

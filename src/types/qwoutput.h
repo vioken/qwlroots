@@ -127,7 +127,7 @@ class QW_EXPORT QWOutputCursor
 {
 public:
     QWOutputCursor() = delete;
-    ~QWOutputCursor() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWOutputCursor)
 
     void operator delete(QWOutputCursor *p, std::destroying_delete_t);
     wlr_output_cursor *handle() const;

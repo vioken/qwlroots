@@ -63,7 +63,7 @@ public:
 class QW_EXPORT QWPresentationFeedback {
 public:
     QWPresentationFeedback() = delete;
-    ~QWPresentationFeedback() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWPresentationFeedback)
 
     void operator delete(QWPresentationFeedback *p, std::destroying_delete_t);
 

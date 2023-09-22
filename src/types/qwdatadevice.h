@@ -19,7 +19,7 @@ class QW_EXPORT QWDataSource
 {
 public:
     QWDataSource() = delete;
-    ~QWDataSource() = delete;
+    QW_DISALLOW_DESTRUCTOR(QWDataSource)
 
     void operator delete(QWDataSource *p, std::destroying_delete_t);
 
