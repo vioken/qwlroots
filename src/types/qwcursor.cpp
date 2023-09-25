@@ -335,6 +335,13 @@ void QWCursor::mapInputToRegion(QWInputDevice *dev, const QRect &box)
     wlr_cursor_map_input_to_region(handle(), dev->handle(), &b);
 }
 
+QPointF QWCursor::absoluteToLayoutCoords(QWInputDevice *dev, const QPointF &pos) const
+{
+    double lx, ly;
+    wlr_cursor_absolute_to_layout_coords(handle(), dev->handle(), pos.x(), pos.y(), &lx, &ly);
+    return QPointF(lx, ly);
+}
+
 QPointF QWCursor::position() const
 {
     return QPointF(handle()->x, handle()->y);
