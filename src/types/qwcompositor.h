@@ -37,7 +37,7 @@ public:
 
     static QWCompositor *get(wlr_compositor *handle);
     static QWCompositor *from(wlr_compositor *handle);
-    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer);
+    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer, uint32_t version);
 
 Q_SIGNALS:
     void beforeDestroy(QWCompositor *self);
