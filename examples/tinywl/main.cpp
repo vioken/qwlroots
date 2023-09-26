@@ -153,7 +153,7 @@ TinywlServer::TinywlServer()
     if (!allocator)
         qFatal("failed to create wlr_allocator");
 
-    compositor = QWCompositor::create(display, renderer);
+    compositor = QWCompositor::create(display, renderer, 4);
     subcompositor = QWSubcompositor::create(display);
     dataDeviceManager = QWDataDeviceManager::create(display);
 

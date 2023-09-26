@@ -91,11 +91,12 @@ QWCompositor *QWCompositor::from(wlr_compositor *handle)
     return new QWCompositor(handle, false);
 }
 
-QWCompositor *QWCompositor::create(QWDisplay *display, QWRenderer *renderer)
+QWCompositor *QWCompositor::create(QWDisplay *display, QWRenderer *renderer, uint32_t version)
 {
 #if WLR_VERSION_MINOR > 16
-    auto compositor = wlr_compositor_create(display->handle(), 5, renderer->handle());
+    auto compositor = wlr_compositor_create(display->handle(), version, renderer->handle());
 #else
+    Q_UNUSED(version)
     auto compositor = wlr_compositor_create(display->handle(), renderer->handle());
 #endif
     if (!compositor)
