@@ -99,7 +99,6 @@ public:
     void touchSendMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy);
     void touchSendUp(uint32_t timeMsec, int32_t touchId);
     void touchStartGrab(wlr_seat_touch_grab *grab);
-    bool validaiteGrabSerial(uint32_t serial);
     bool validatePointerGrabSerial(QWSurface *origin, uint32_t serial);
     bool validateTouchGrabSerial(QWSurface *origin, uint32_t serial, wlr_touch_point **pointPtr);
     bool surfaceAcceptsTouch(QWSurface *surface);

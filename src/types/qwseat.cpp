@@ -438,14 +438,9 @@ void QWSeat::touchStartGrab(wlr_seat_touch_grab *grab)
     wlr_seat_touch_start_grab(handle(), grab);
 }
 
-bool QWSeat::validaiteGrabSerial(uint32_t serial)
-{
-    return wlr_seat_validate_grab_serial(handle(), serial);
-}
-
 bool QWSeat::validatePointerGrabSerial(QWSurface *origin, uint32_t serial)
 {
-    return wlr_seat_validate_grab_serial(handle(), serial);
+    return wlr_seat_validate_pointer_grab_serial(handle(), origin->handle(), serial);
 }
 
 bool QWSeat::validateTouchGrabSerial(QWSurface *origin, uint32_t serial, wlr_touch_point **pointPtr)

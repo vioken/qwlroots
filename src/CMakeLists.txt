@@ -74,7 +74,6 @@ set(SOURCES
     types/qwtabletpad.cpp
     types/qwoutput.cpp
     types/qwxdgdecorationmanagerv1.cpp
-    types/qwidle.cpp
     types/qwidleinhibitv1.cpp
     types/qwinputinhibitmanager.cpp
     types/qwkeyboardgroup.cpp
@@ -167,7 +166,6 @@ set(HEADERS
     types/qwtabletpad.h
     types/qwoutput.h
     types/qwxdgdecorationmanagerv1.h
-    types/qwidle.h
     types/qwidleinhibitv1.h
     types/qwinputinhibitmanager.h
     types/qwkeyboardgroup.h
@@ -217,16 +215,16 @@ set(PRIVATE_HEADERS
 
 if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16))
     ws_generate(
-	server
-	wayland-protocols
-	staging/content-type/content-type-v1.xml
-	content-type-v1-protocol
+        server
+        wayland-protocols
+        staging/content-type/content-type-v1.xml
+        content-type-v1-protocol
     )
     ws_generate(
-	server
-	wayland-protocols
-	staging/cursor-shape/cursor-shape-v1.xml
-	cursor-shape-v1-protocol
+        server
+        wayland-protocols
+        staging/cursor-shape/cursor-shape-v1.xml
+        cursor-shape-v1-protocol
     )
 
     list(APPEND SOURCES
@@ -251,6 +249,13 @@ if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16)
             types/qwxwaylandshellv1.h
         )
     endif()
+else()
+    list(APPEND SOURCES
+        types/qwidle.cpp
+    )
+    list(APPEND HEADERS
+        types/qwidle.h
+    )
 endif()
 
 if (WLR_HAVE_XWAYLAND)
