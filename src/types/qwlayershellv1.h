@@ -18,6 +18,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWSurface;
+class QWLayerSurfaceV1;
 class QWLayerShellV1Private;
 class QWXdgPopup;
 class QW_EXPORT QWLayerShellV1 : public QObject, public QWObject
@@ -38,7 +39,7 @@ public:
     static QWLayerShellV1 *from(wlr_layer_shell_v1 *handle);
 
 Q_SIGNALS:
-    void newSurface(wlr_layer_surface_v1 *surface);
+    void newSurface(QWLayerSurfaceV1 *surface);
     void beforeDestroy(QWLayerShellV1 *self);
 
 private:
