@@ -67,7 +67,8 @@ void QWLayerShellV1Private::on_destroy(void *)
 
 void QWLayerShellV1Private::on_new_surface(void *data)
 {
-    Q_EMIT q_func()->newSurface(reinterpret_cast<wlr_layer_surface_v1*>(data));
+    auto *surface = QWLayerSurfaceV1::from(reinterpret_cast<wlr_layer_surface_v1*>(data));
+    Q_EMIT q_func()->newSurface(surface);
 }
 
 QWLayerShellV1::QWLayerShellV1(wlr_layer_shell_v1 *handle, bool isOwner)
