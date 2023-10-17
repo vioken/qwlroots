@@ -5,13 +5,17 @@
 #include "util/qwsignalconnector.h"
 
 #include <qwinputdevice.h>
-#include <QHash>
 
 extern "C" {
 #include <wlr/types/wlr_virtual_keyboard_v1.h>
 }
 
 QW_BEGIN_NAMESPACE
+
+wlr_virtual_keyboard_v1 *QWVirtualKeyboardV1::handle() const
+{
+    return reinterpret_cast<wlr_virtual_keyboard_v1*>(const_cast<QWVirtualKeyboardV1*>(this));
+}
 
 QWVirtualKeyboardV1 *QWVirtualKeyboardV1::from(wlr_virtual_keyboard_v1 *handle)
 {

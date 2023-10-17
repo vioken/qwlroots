@@ -19,6 +19,8 @@ public:
     QWVirtualKeyboardV1() = delete;
     ~QWVirtualKeyboardV1() = delete;
 
+    wlr_virtual_keyboard_v1 *handle() const;
+
     static QWVirtualKeyboardV1 *from(wlr_virtual_keyboard_v1 *handle);
     static QWVirtualKeyboardV1 *fromInputDevice(QWInputDevice *inputDevice);
 };
