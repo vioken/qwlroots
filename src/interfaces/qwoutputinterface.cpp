@@ -78,7 +78,7 @@ static const wlr_drm_format_set *get_primary_formats(
 QWOutputInterface::~QWOutputInterface()
 {
     free(handle());
-    delete static_cast<wlr_output_impl*>(m_handleImpl);
+    delete impl();
 }
 
 bool QWOutputInterface::setCursor(QWBuffer *buffer, const QPoint &hotspot)

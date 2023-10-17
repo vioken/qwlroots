@@ -13,10 +13,15 @@ QW_BEGIN_NAMESPACE
 class QWSwitchInterface : public QWInterface {
     friend class QWSwitch;
 public:
+    virtual ~QWSwitchInterface();
     virtual const char* name() = 0;
 
     inline wlr_switch *handle() const {
         return QWInterface::handle<wlr_switch>();
+    }
+
+    inline wlr_switch_impl *impl() const {
+        return QWInterface::impl<wlr_switch_impl>();
     }
 
 protected:

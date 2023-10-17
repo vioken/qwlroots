@@ -19,6 +19,13 @@ struct _wlr_switch : public wlr_switch
     QWSwitchInterface *interface;
 };
 
+QWSwitchInterface::~QWSwitchInterface()
+{
+    wlr_switch_finish(handle());
+    free(handle());
+    delete impl();
+}
+
 void QWSwitchInterface::notifyToggle() const {
     wl_signal_emit_mutable(&handle()->events.toggle, nullptr);
 }

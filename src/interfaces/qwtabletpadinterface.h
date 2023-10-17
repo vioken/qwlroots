@@ -11,13 +11,18 @@ struct wlr_tablet_tool;
 
 QW_BEGIN_NAMESPACE
 class QWTabletPad;
-class QWTabletPadInterface : public QWInterface {
+class QW_EXPORT QWTabletPadInterface : public QWInterface {
     friend class QWTabletPad;
 public:
+    virtual ~QWTabletPadInterface();
     virtual const char* name() = 0;
 
     inline wlr_tablet_pad *handle() const {
         return QWInterface::handle<wlr_tablet_pad>();
+    }
+
+    inline wlr_tablet_pad_impl *impl() const {
+        return QWInterface::impl<wlr_tablet_pad_impl>();
     }
 
 protected:

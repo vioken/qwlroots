@@ -19,6 +19,13 @@ struct _wlr_pointer : public wlr_pointer
     QWPointerInterface *interface;
 };
 
+QWPointerInterface::~QWPointerInterface()
+{
+    wlr_pointer_finish(handle());
+    free(handle());
+    delete impl();
+}
+
 void QWPointerInterface::notifyMotion(wlr_pointer_motion_event *event) {
     wl_signal_emit_mutable(&handle()->events.motion, event);
 }

@@ -22,13 +22,17 @@ struct wlr_pointer_hold_end_event;
 
 QW_BEGIN_NAMESPACE
 
-class QWPointerInterface : public QWInterface {
+class QW_EXPORT QWPointerInterface : public QWInterface {
     friend class QWPointer;
 public:
+    virtual ~QWPointerInterface();
     virtual const char* name() = 0;
 
     inline wlr_pointer *handle() const {
         return QWInterface::handle<wlr_pointer>();
+    }
+    inline wlr_pointer_impl *impl() const {
+        return QWInterface::impl<wlr_pointer_impl>();
     }
 
 protected:
