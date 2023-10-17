@@ -48,8 +48,10 @@ Q_SIGNALS:
     void keymapChanged();
     void repeatInfoChanged();
 
-private:
+protected:
+    QWKeyboard(QWKeyboardPrivate &dd);
     ~QWKeyboard() override = default;
+private:
     QWKeyboard(wlr_keyboard *handle, bool isOwner);
 };
 

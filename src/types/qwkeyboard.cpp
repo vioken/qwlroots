@@ -2,8 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwkeyboard.h"
-#include "qwinputdevice_p.h"
-#include "util/qwsignalconnector.h"
+#include "qwkeyboard_p.h"
 
 extern "C" {
 #include <wlr/types/wlr_keyboard.h>
@@ -11,26 +10,19 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWKeyboardPrivate : public QWInputDevicePrivate
+QWKeyboardPrivate::QWKeyboardPrivate(wlr_keyboard *handle, bool isOwner, QWKeyboard *qq)
+    : QWInputDevicePrivate(&handle->base, isOwner, qq)
 {
-public:
-    QWKeyboardPrivate(wlr_keyboard *handle, bool isOwner, QWKeyboard *qq)
-        : QWInputDevicePrivate(&handle->base, isOwner, qq)
-    {
-        sc.connect(&handle->events.key, this, &QWKeyboardPrivate::on_key);
-        sc.connect(&handle->events.modifiers, this, &QWKeyboardPrivate::on_modifiers);
-        sc.connect(&handle->events.keymap, this, &QWKeyboardPrivate::on_keymap);
-        sc.connect(&handle->events.repeat_info, this, &QWKeyboardPrivate::on_repeat_info);
-    }
-    ~QWKeyboardPrivate() override = default;
+    sc.connect(&handle->events.key, this, &QWKeyboardPrivate::on_key);
+    sc.connect(&handle->events.modifiers, this, &QWKeyboardPrivate::on_modifiers);
+    sc.connect(&handle->events.keymap, this, &QWKeyboardPrivate::on_keymap);
+    sc.connect(&handle->events.repeat_info, this, &QWKeyboardPrivate::on_repeat_info);
+}
 
-    void on_key(void *);
-    void on_modifiers(void *);
-    void on_keymap(void *);
-    void on_repeat_info(void *);
+QWKeyboardPrivate::~QWKeyboardPrivate()
+{
 
-    QW_DECLARE_PUBLIC(QWKeyboard)
-};
+}
 
 void QWKeyboardPrivate::on_key(void *data)
 {
@@ -50,6 +42,12 @@ void QWKeyboardPrivate::on_keymap(void *)
 void QWKeyboardPrivate::on_repeat_info(void *)
 {
     Q_EMIT q_func()->repeatInfoChanged();
+}
+
+QWKeyboard::QWKeyboard(QWKeyboardPrivate &dd)
+    : QWInputDevice(dd)
+{
+
 }
 
 QWKeyboard::QWKeyboard(wlr_keyboard *handle, bool isOwner)
