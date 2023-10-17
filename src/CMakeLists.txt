@@ -112,6 +112,7 @@ set(SOURCES
     types/qwxdgforeignv1.cpp
     types/qwxdgforeignv2.cpp
     types/qwvirtualkeyboardv1.cpp
+    types/qwvirtualkeyboardmanagerv1.cpp
     types/qwvirtualpointerv1.cpp
     types/qwgammacontorlv1.cpp
     types/qwfullscreenshellv1.cpp
