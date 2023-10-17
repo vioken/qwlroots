@@ -19,6 +19,13 @@ struct _wlr_tablet_pad : public wlr_tablet_pad
     QWTabletPadInterface *interface;
 };
 
+QWTabletPadInterface::~QWTabletPadInterface()
+{
+    wlr_tablet_pad_finish(handle());
+    free(handle());
+    delete impl();
+}
+
 void QWTabletPadInterface::notifyButton()
 {
     wl_signal_emit_mutable(&handle()->events.button, nullptr);

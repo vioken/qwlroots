@@ -25,7 +25,7 @@ public:
         return QWInterface::handle<wlr_backend>();
     }
     inline wlr_backend_impl *impl() const {
-        return QWInterface::handle<wlr_backend_impl>();
+        return QWInterface::impl<wlr_backend_impl>();
     }
     static QWBackendInterface *get(wlr_backend *handle);
 

@@ -24,7 +24,7 @@ public:
         return QWInterface::handle<wlr_keyboard>();
     }
     inline wlr_keyboard_impl *impl() const {
-        return QWInterface::handle<wlr_keyboard_impl>();
+        return QWInterface::impl<wlr_keyboard_impl>();
     }
     static QWKeyboardInterface *get(wlr_keyboard *handle);
 

@@ -36,7 +36,7 @@ public:
         return QWInterface::handle<wlr_output>();
     }
     inline wlr_output_impl *impl() const {
-        return QWInterface::handle<wlr_output_impl>();
+        return QWInterface::impl<wlr_output_impl>();
     }
     static QWOutputInterface *get(wlr_output *handle);
 

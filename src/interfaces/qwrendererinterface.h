@@ -20,7 +20,7 @@ QW_BEGIN_NAMESPACE
 class QWTexture;
 class QWBuffer;
 class QWRenderer;
-class QWRendererInterface : public QWInterface
+class QW_EXPORT QWRendererInterface : public QWInterface
 {
     friend class QWRenderer;
 public:
@@ -63,7 +63,7 @@ public:
 
     inline QWRenderer *handle() const { return QWInterface::handle<QWRenderer>(); }
 
-    inline wlr_renderer_impl *impl() const { return QWInterface::handle<wlr_renderer_impl>(); }
+    inline wlr_renderer_impl *impl() const { return QWInterface::impl<wlr_renderer_impl>(); }
 
     static QWRendererInterface *get(QWRenderer *handle);
 

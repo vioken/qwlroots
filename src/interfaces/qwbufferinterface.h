@@ -13,7 +13,7 @@ struct wlr_shm_attributes;
 QW_BEGIN_NAMESPACE
 
 class QWBuffer;
-class QWBufferInterface : public QWInterface
+class QW_EXPORT QWBufferInterface : public QWInterface
 {
     friend class QWBuffer;
 public:
@@ -25,7 +25,7 @@ public:
     virtual void endDataPtrAccess();
 
     inline wlr_buffer *handle() const { return QWInterface::handle<wlr_buffer>(); }
-    inline wlr_buffer_impl *impl() const { return QWInterface::handle<wlr_buffer_impl>(); }
+    inline wlr_buffer_impl *impl() const { return QWInterface::impl<wlr_buffer_impl>(); }
     static QWBufferInterface *get(QWBuffer *handle);
 
 protected:
