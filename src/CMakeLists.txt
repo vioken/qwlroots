@@ -212,6 +212,7 @@ set(HEADERS
 
 set(PRIVATE_HEADERS
     types/qwinputdevice_p.h
+    types/qwkeyboard_p.h
 )
 
 if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16))

@@ -4,6 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
+#include <qwkeyboard.h>
 #include <QObject>
 
 struct wlr_virtual_keyboard_manager_v1;
@@ -13,16 +14,21 @@ QW_BEGIN_NAMESPACE
 
 class QWInputDevice;
 class QWVirtualKeyboardV1Private;
-class QW_EXPORT QWVirtualKeyboardV1
+class QW_EXPORT QWVirtualKeyboardV1: public QWKeyboard
 {
+    Q_OBJECT
 public:
-    QWVirtualKeyboardV1() = delete;
-    ~QWVirtualKeyboardV1() = delete;
+    inline wlr_virtual_keyboard_v1 *handle() const {
+        return QWObject::handle<wlr_virtual_keyboard_v1>();
+    }
 
-    wlr_virtual_keyboard_v1 *handle() const;
-
+    static QWVirtualKeyboardV1 *get(wlr_virtual_keyboard_v1 *handle);
     static QWVirtualKeyboardV1 *from(wlr_virtual_keyboard_v1 *handle);
     static QWVirtualKeyboardV1 *fromInputDevice(QWInputDevice *inputDevice);
+
+private:
+    ~QWVirtualKeyboardV1() override = default;
+    QWVirtualKeyboardV1(wlr_virtual_keyboard_v1 *handle, bool isOwner);
 };
 
 class QWDisplay;
