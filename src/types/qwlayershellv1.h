@@ -67,7 +67,6 @@ public:
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
     QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    QRect getGeometry() const;
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     QWSurface *surface() const;
 
