@@ -40,6 +40,7 @@ QWKeyboardInterface::~QWKeyboardInterface()
 
 void QWKeyboardInterface::ledUpdate(uint32_t leds) const
 {
+    Q_UNUSED(leds)
     return;
 }
 
