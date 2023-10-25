@@ -75,8 +75,8 @@ QWSceneNode::QWSceneNode(wlr_scene_node *handle, bool isOwner)
 
 }
 
-QWSceneNode::QWSceneNode(QWSceneNodePrivate &dd)
-    : QObject(nullptr)
+QWSceneNode::QWSceneNode(QWSceneNodePrivate &dd, QObject *parent)
+    : QObject(parent)
     , QWObject(dd)
 {
 
@@ -144,8 +144,8 @@ QWSceneTree::QWSceneTree(wlr_scene_tree *handle, bool isOwner)
 
 }
 
-QWSceneTree::QWSceneTree(QWSceneNodePrivate &dd)
-    : QWSceneNode(dd)
+QWSceneTree::QWSceneTree(QWSceneNodePrivate &dd, QObject *parent)
+    : QWSceneNode(dd, parent)
 {
 
 }
@@ -205,7 +205,7 @@ QWSceneTree *QWSceneTree::xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xd
 }
 
 QWScene::QWScene(wlr_scene *handle, bool isOwner, QObject *parent)
-    : QWSceneTree(*new QWSceneNodePrivate(&handle->tree.node, isOwner, this))
+    : QWSceneTree(*new QWSceneNodePrivate(&handle->tree.node, isOwner, this), parent)
 {
 
 }
@@ -490,8 +490,9 @@ void QWSceneOutputPrivate::on_destroy(void *)
 }
 
 QWSceneOutput::QWSceneOutput(wlr_scene_output *handle, bool isOwner)
-    : QWObject(*new QWSceneOutputPrivate(handle, isOwner, this))
-    , QObject(nullptr)
+    : QObject(nullptr)
+    , QWObject(*new QWSceneOutputPrivate(handle, isOwner, this))
+
 {
 
 }

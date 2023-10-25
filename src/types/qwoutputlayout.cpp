@@ -77,7 +77,7 @@ void QWOutputLayoutPrivate::on_change(void *data)
 }
 
 QWOutputLayout::QWOutputLayout(wlr_output_layout *handle, bool isOwner, QObject *parent)
-    : QObject(nullptr)
+    : QObject(parent)
     , QWObject(*new QWOutputLayoutPrivate(handle, isOwner, this))
 {
 

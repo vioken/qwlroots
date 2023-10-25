@@ -72,7 +72,7 @@ Q_SIGNALS:
     void beforeDestroy(QWSceneNode *self);
 
 protected:
-    QWSceneNode(QWSceneNodePrivate &dd);
+    QWSceneNode(QWSceneNodePrivate &dd, QObject *parent = nullptr);
     QWSceneNode(wlr_scene_node *handle, bool isOwner);
 };
 
@@ -93,7 +93,7 @@ public:
     static QWSceneTree *xdgSurfaceCreate(QWSceneTree *parent, QWXdgSurface *xdgSurface);
 
 protected:
-    QWSceneTree(QWSceneNodePrivate &dd);
+    QWSceneTree(QWSceneNodePrivate &dd, QObject *parent = nullptr);
     QWSceneTree(wlr_scene_tree *handle, bool isOwner);
 };
 
