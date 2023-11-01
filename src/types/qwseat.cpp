@@ -188,7 +188,8 @@ void QWSeat::setKeyboard(QWKeyboard *keyboard)
 
 QWKeyboard *QWSeat::getKeyboard() const
 {
-    return QWKeyboard::from(wlr_seat_get_keyboard(handle()));
+    auto kb = wlr_seat_get_keyboard(handle());
+    return kb ? QWKeyboard::from(kb) : nullptr;
 }
 
 void QWSeat::setCapabilities(uint32_t capabilities)
