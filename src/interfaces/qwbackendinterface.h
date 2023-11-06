@@ -17,7 +17,9 @@ public:
     virtual ~QWBackendInterface();
     virtual bool start() = 0;
 
+#if WLR_VERSION_MINOR <= 16
     virtual clockid_t getPresentationClock() const;
+#endif
     virtual int getDrmFd() const;
     virtual int getBufferCaps() const;
 

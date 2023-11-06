@@ -51,7 +51,6 @@ public:
     }
 
     static QWBuffer *from(wl_resource *resource);
-    static bool isBuffer(wl_resource *resource);
 
     void drop();
     void lock();

@@ -32,12 +32,14 @@ static void destroy(wlr_backend *handle) {
     delete interface(handle);
 }
 
+#if WLR_VERSION_MINOR <= 16
 static clockid_t get_presentation_clock(wlr_backend *handle) {
     return interface(handle)->getPresentationClock();
 }
+#endif
 
 static int get_drm_fd(wlr_backend *handle) {
-    return interface(handle)->getPresentationClock();
+    return interface(handle)->getDrmFd();
 }
 
 static uint32_t get_buffer_caps(wlr_backend *handle) {
@@ -52,10 +54,12 @@ QWBackendInterface::~QWBackendInterface()
     delete impl();
 }
 
+#if WLR_VERSION_MINOR <= 16
 clockid_t QWBackendInterface::getPresentationClock() const
 {
     return CLOCK_MONOTONIC;
 }
+#endif
 
 int QWBackendInterface::getDrmFd() const
 {
@@ -77,7 +81,9 @@ void QWBackendInterface::init(FuncMagicKey funMagicKey)
     auto impl = new wlr_backend_impl {
         .start = impl::start,
         .destroy = impl::destroy,
+#if WLR_VERSION_MINOR <= 16
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_presentation_clock, &QWBackendInterface::getPresentationClock),
+#endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_drm_fd, &QWBackendInterface::getDrmFd),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_buffer_caps, &QWBackendInterface::getBufferCaps),
     };

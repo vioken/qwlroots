@@ -46,7 +46,6 @@ public:
 
     static QWDrmBuffer *from(wlr_drm_buffer *handle);
     static QWDrmBuffer *from(wl_resource *resource);
-    static bool isDrmBufferResource(wl_resource *resource);
 };
 
 QW_END_NAMESPACE

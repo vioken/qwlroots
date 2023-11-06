@@ -75,15 +75,16 @@ QWBuffer *QWBuffer::from(wlr_buffer *handle)
 
 QWBuffer *QWBuffer::from(wl_resource *resource)
 {
+#if WLR_VERSION_MINOR > 16
+    auto handle = wlr_buffer_try_from_resource(resource);
+#else
+    if (!wlr_resource_is_buffer(resource))
+        return nullptr;
     auto handle = wlr_buffer_from_resource(resource);
+#endif
     if (!handle)
         return nullptr;
     return from(handle);
-}
-
-bool QWBuffer::isBuffer(wl_resource *resource)
-{
-    return wlr_resource_is_buffer(resource);
 }
 
 QWBuffer::QWBuffer(wlr_buffer *handle, bool isOwner)
