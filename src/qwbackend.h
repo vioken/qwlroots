@@ -50,7 +50,9 @@ public:
         return new QWBackend(i->handle(), true, nullptr);
     }
 
+#if WLR_VERSION_MINOR <= 16
     clockid_t presentationClock() const;
+#endif
     int drmFd() const;
 
 public Q_SLOTS:

@@ -149,11 +149,13 @@ QWBackend::~QWBackend()
 
 }
 
+#if WLR_VERSION_MINOR <= 16
 clockid_t QWBackend::presentationClock() const
 {
     Q_D(const QWBackend);
     return wlr_backend_get_presentation_clock(handle());
 }
+#endif
 
 int QWBackend::drmFd() const
 {
