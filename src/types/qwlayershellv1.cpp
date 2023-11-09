@@ -207,18 +207,23 @@ QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wl_resource *resource)
     return from(handle);
 }
 
-QWLayerSurfaceV1 *QWLayerSurfaceV1::from(QWSurface *surface)
+QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wlr_surface *surface)
 {
 #if WLR_VERSION_MINOR > 16
-    auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface->handle());
+    auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface);
 #else
-    if (!wlr_surface_is_layer_surface(surface->handle()))
+    if (!wlr_surface_is_layer_surface(surface))
         return nullptr;
-    auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface->handle());
+    auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface);
 #endif
     if (!handle)
         return nullptr;
     return from(handle);
+}
+
+QWLayerSurfaceV1 *QWLayerSurfaceV1::from(QWSurface *surface)
+{
+    return from(surface->handle());
 }
 
 uint32_t QWLayerSurfaceV1::configure(uint32_t width, uint32_t height)
