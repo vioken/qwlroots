@@ -61,6 +61,7 @@ public:
     static QWLayerSurfaceV1 *get(wlr_layer_surface_v1 *handle);
     static QWLayerSurfaceV1 *from(wlr_layer_surface_v1 *handle);
     static QWLayerSurfaceV1 *from(wl_resource *resource);
+    static QWLayerSurfaceV1 *from(wlr_surface *surface);
     static QWLayerSurfaceV1 *from(QWSurface *surface);
 
     uint32_t configure(uint32_t width, uint32_t height);
