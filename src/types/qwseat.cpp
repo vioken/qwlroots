@@ -129,9 +129,9 @@ void QWSeatPrivate::on_request_set_selection(void *data)
     Q_EMIT q_func()->requestSetSelection(reinterpret_cast<wlr_seat_request_set_selection_event*>(data));
 }
 
-void QWSeatPrivate::on_set_selection(void *)
+void QWSeatPrivate::on_set_selection(void *data)
 {
-    Q_EMIT q_func()->selectionChanged();
+    Q_EMIT q_func()->selectionChanged(reinterpret_cast<wlr_seat_request_set_selection_event*>(data));
 }
 
 void QWSeatPrivate::on_request_set_primary_selection(void *data)
@@ -139,9 +139,9 @@ void QWSeatPrivate::on_request_set_primary_selection(void *data)
     Q_EMIT q_func()->requestSetPrimarySelection(reinterpret_cast<wlr_seat_request_set_primary_selection_event*>(data));
 }
 
-void QWSeatPrivate::on_set_primary_selection(void *)
+void QWSeatPrivate::on_set_primary_selection(void *data)
 {
-    Q_EMIT q_func()->primarySelectionChanged();
+    Q_EMIT q_func()->primarySelectionChanged(reinterpret_cast<wlr_seat_request_set_primary_selection_event*>(data));
 }
 
 void QWSeatPrivate::on_request_start_drag(void *data)

@@ -113,9 +113,9 @@ Q_SIGNALS:
     void touchGrabEnd();
     void requestSetCursor(wlr_seat_pointer_request_set_cursor_event *event);
     void requestSetSelection(wlr_seat_request_set_selection_event *event);
-    void selectionChanged();
+    void selectionChanged(wlr_seat_request_set_selection_event *event);
     void requestSetPrimarySelection(wlr_seat_request_set_primary_selection_event *event);
-    void primarySelectionChanged();
+    void primarySelectionChanged(wlr_seat_request_set_primary_selection_event *event);
     void requestStartDrag(wlr_seat_request_start_drag_event *event);
     void startDrag(wlr_drag *drag);
 
