@@ -209,14 +209,14 @@ QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
     return QWXdgToplevel::from(handle->toplevel);
 }
 
-QWXdgSurface *QWXdgSurface::from(QWSurface *surface)
+QWXdgSurface *QWXdgSurface::from(wlr_surface *surface)
 {
 #if WLR_VERSION_MINOR > 16
-    auto handle = wlr_xdg_surface_try_from_wlr_surface(surface->handle());
+    auto handle = wlr_xdg_surface_try_from_wlr_surface(surface);
 #else
-    if (!wlr_surface_is_xdg_surface(surface->handle()))
+    if (!wlr_surface_is_xdg_surface(surface))
         return nullptr;
-    auto handle = wlr_xdg_surface_from_wlr_surface(surface->handle());
+    auto handle = wlr_xdg_surface_from_wlr_surface(surface);
 #endif
     if (!handle)
         return nullptr;
@@ -224,6 +224,11 @@ QWXdgSurface *QWXdgSurface::from(QWSurface *surface)
     if (handle->role == WLR_XDG_SURFACE_ROLE_POPUP)
         return QWXdgPopup::from(handle->popup);
     return QWXdgToplevel::from(handle->toplevel);
+}
+
+QWXdgSurface *QWXdgSurface::from(QWSurface *surface)
+{
+    return from(surface->handle());
 }
 
 QWXdgPopup *QWXdgSurface::toPopup() const

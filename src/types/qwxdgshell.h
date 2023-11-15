@@ -61,6 +61,7 @@ public:
 
     static QWXdgSurface *get(wlr_xdg_surface *handle);
     static QWXdgSurface *from(wl_resource *resource);
+    static QWXdgSurface *from(wlr_surface *surface);
     static QWXdgSurface *from(QWSurface *surface);
 
     QWXdgPopup *toPopup() const;
