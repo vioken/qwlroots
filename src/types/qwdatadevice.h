@@ -9,6 +9,9 @@
 struct wl_display;
 struct wlr_data_device_manager;
 struct wlr_data_source;
+struct wlr_drag;
+struct wlr_drag_motion_event;
+struct wlr_drag_drop_event;
 
 typedef uint32_t wl_data_device_manager_dnd_action_t;
 
@@ -54,6 +57,30 @@ Q_SIGNALS:
 private:
     QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner);
     ~QWDataDeviceManager() = default;
+};
+
+class QWDragPrivate;
+class QW_EXPORT QWDrag : public QObject, public QWObject
+{
+    Q_OBJECT
+    QW_DECLARE_PRIVATE(QWDrag)
+public:
+    inline wlr_drag *handle() const {
+        return QWObject::handle<wlr_drag>();
+    }
+
+    static QWDrag *get(wlr_drag *handle);
+    static QWDrag *from(wlr_drag *handle);
+
+Q_SIGNALS:
+    void focus();
+    void motion(wlr_drag_motion_event *event);
+    void drop(wlr_drag_drop_event *event);
+    void beforeDestroy(QWDrag *self);
+
+private:
+    QWDrag(wlr_drag *handle, bool isOwner);
+    ~QWDrag() = default;
 };
 
 QW_END_NAMESPACE

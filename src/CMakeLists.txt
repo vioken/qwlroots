@@ -50,6 +50,7 @@ set(SOURCES
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
     types/qwdatasource.cpp
+    types/qwdrag.cpp
     types/qwdatadevicev1.cpp
     types/qwdatacontrolmanagerv1.cpp
     types/qwdamagering.cpp
