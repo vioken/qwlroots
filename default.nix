@@ -5,21 +5,11 @@ let
     (builtins.substring 4 2 longDate)
     (builtins.substring 6 2 longDate)
   ]);
-
-  wayland-protocols_1_32 = pkgs.wayland-protocols.overrideAttrs ( old : {
-    version = "1.32.0";
-    src = pkgs.fetchurl {
-      url = "https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.32/downloads/wayland-protocols-1.32.tar.xz";
-      hash = "sha256-dFl5nTQMgpa2le+FfAfd7yTFoJsJq2p097kmQNKxuhE=";
-    };
-  });
 in
 rec {
-  wlroots-git = (pkgs.wlroots_0_16.override {
-    wayland-protocols = wayland-protocols_1_32; 
-  }).overrideAttrs (
+  wlroots_0_17 = pkgs.wlroots_0_16.overrideAttrs (
     old: {
-      version =  mkDate (wlroots_0_17_src.lastModifiedDate or "19700101") + "_" + (wlroots_0_17_src.shortRev or "dirty");
+      version = "0.17.0";
       src = wlroots_0_17_src;
       buildInputs = old.buildInputs ++ (with pkgs; [ 
         hwdata
@@ -33,17 +23,16 @@ rec {
 
   qwlroots-qt6 = pkgs.qt6.callPackage ./nix {
     inherit nix-filter;
-    wlroots = pkgs.wlroots_0_16;
+    wlroots = wlroots_0_17;
   };
   
   qwlroots-qt5 = pkgs.libsForQt5.callPackage ./nix {
     inherit nix-filter;
-    wlroots = pkgs.wlroots_0_16;
+    wlroots = wlroots_0_17;
   };
 
-  qwlroots-qt6-wlroots-git = qwlroots-qt6.override {
-    wlroots = wlroots-git;
-    wayland-protocols = wayland-protocols_1_32; 
+  qwlroots-qt6-wlroots-16 = qwlroots-qt6.override {
+    wlroots = pkgs.wlroots_0_16;
   };
 
   qwlroots-qt6-dbg = qwlroots-qt6.override {

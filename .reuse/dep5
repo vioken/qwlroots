@@ -4,7 +4,7 @@ Upstream-Contact: JiDe Zhang <zccrs@live.com>
 Source: https://github.com/vioken/qwlroots
 
 # ci
-Files: .github/* .obs/workflows.yml garnix.yaml
+Files: .github/* .obs/*.yml garnix.yaml
 Copyright: None
 License: CC0-1.0
 
