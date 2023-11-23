@@ -96,7 +96,9 @@ public:
     size_t getGammaSize() const;
     void setGamma(size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b);
     void lockSoftwareCursors(bool lock);
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     void renderSoftwareCursors(pixman_region32 *damage);
+#endif
     const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps);
 
 #if WLR_VERSION_MINOR > 16

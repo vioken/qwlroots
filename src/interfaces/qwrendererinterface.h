@@ -33,6 +33,8 @@ public:
     virtual bool begin(const QSize &size) = 0;
 #endif
     virtual void end() = 0;
+
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     virtual void clear(const QColor &color) = 0;
     virtual void scissor(const QRect &rect) = 0;
 
@@ -42,6 +44,7 @@ public:
                                             float alpha) = 0;
 
     virtual void renderQuadWithMatrix(const QColor &color, const QMatrix3x3 &matrix) = 0;
+#endif
 
     virtual bool readPixels(const QRect &src, QImage &dstImage);
     virtual int getDrmFd() const;

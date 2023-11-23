@@ -317,10 +317,12 @@ void QWOutput::lockSoftwareCursors(bool lock)
     wlr_output_lock_software_cursors(handle(), lock);
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWOutput::renderSoftwareCursors(pixman_region32 *damage)
 {
     wlr_output_render_software_cursors(handle(), damage);
 }
+#endif
 
 const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
 {

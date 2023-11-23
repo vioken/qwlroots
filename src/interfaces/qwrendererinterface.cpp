@@ -160,6 +160,7 @@ static void end(wlr_renderer *handle)
     return interface(handle)->end();
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 static void clear(wlr_renderer *handle, const float color[4])
 {
     return interface(handle)->clear(QColor(color[0], color[1], color[2], color[3]));
@@ -189,6 +190,7 @@ static void render_quad_with_matrix(wlr_renderer *handle,
     return interface(handle)->renderQuadWithMatrix(QColor(color[0], color[1], color[2], color[3]),
                                                    QMatrix3x3(matrix));
 }
+#endif
 
 static const uint32_t *get_shm_texture_formats(wlr_renderer *handle, size_t *len)
 {
@@ -347,10 +349,12 @@ void QWRendererInterface::init(FuncMagicKey funMagicKey)
         QW_INIT_INTERFACE_FUNC(funMagicKey, bind_buffer, &QWRendererInterface::bindBuffer),
         QW_INIT_INTERFACE_FUNC(funMagicKey, begin, &QWRendererInterface::begin),
         QW_INIT_INTERFACE_FUNC(funMagicKey, end, &QWRendererInterface::end),
+        #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, clear, &QWRendererInterface::clear),
         QW_INIT_INTERFACE_FUNC(funMagicKey, scissor, &QWRendererInterface::scissor),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_subtexture_with_matrix, &QWRendererInterface::renderSubtextureWithMatrix),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_quad_with_matrix, &QWRendererInterface::renderQuadWithMatrix),
+        #endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_shm_texture_formats, &QWRendererInterface::getShmTextureFormats),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_dmabuf_texture_formats, &QWRendererInterface::getDmabufTextureFormats),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_formats, &QWRendererInterface::getRenderFormats),

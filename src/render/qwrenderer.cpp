@@ -142,6 +142,7 @@ bool QWRenderer::initWlShm(QWDisplay *display)
     return wlr_renderer_init_wl_shm(handle(), display->handle());
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWRenderer::clear(const float *color)
 {
     Q_D(QWRenderer);
@@ -237,6 +238,7 @@ void QWRenderer::renderQuad(const QColor &color, const QMatrix3x3 &matrix)
 
     renderQuad(c, matrix.constData());
 }
+#endif
 
 const uint32_t *QWRenderer::getShmTextureFormats(size_t *len) const
 {

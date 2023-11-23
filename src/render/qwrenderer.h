@@ -45,6 +45,7 @@ public:
     bool initWlDisplay(QWDisplay *display);
     bool initWlShm(QWDisplay *display);
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     void clear(const float *color);
     void clear(const QColor &color);
     void scissor(wlr_box *box);
@@ -56,6 +57,7 @@ public:
     void renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection);
     void renderQuad(const float *color, const float *matrix);
     void renderQuad(const QColor &color, const QMatrix3x3 &matrix);
+#endif
 
     const uint32_t *getShmTextureFormats(size_t *len) const;
     const wlr_drm_format_set *getDmabufTextureFormats() const;

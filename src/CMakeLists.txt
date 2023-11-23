@@ -252,6 +252,10 @@ if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16)
             types/qwxwaylandshellv1.h
         )
     endif()
+    if (${WLROOTS_VERSION_MINOR} GREATER_EQUAL 18)
+        list(REMOVE_ITEM HEADERS types/qwinputinhibitmanager.h)
+        list(REMOVE_ITEM SOURCES types/qwinputinhibitmanager.cpp)
+    endif()
 else()
     list(APPEND SOURCES
         types/qwidle.cpp
