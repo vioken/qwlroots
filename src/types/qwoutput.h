@@ -61,7 +61,11 @@ public:
     }
 
     void enable(bool enable);
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     void createGlobal();
+#else
+    void createGlobal(QWDisplay *display);
+#endif
     void destroyGlobal();
     bool initRender(QWAllocator *allocator, QWRenderer *renderer);
     wlr_output_mode *preferredMode() const;

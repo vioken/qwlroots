@@ -3,6 +3,7 @@
 
 #include "qwoutput.h"
 #include "qwbuffer.h"
+#include "qwdisplay.h"
 #include "util/qwsignalconnector.h"
 #include "render/qwallocator.h"
 #include "render/qwrenderer.h"
@@ -163,10 +164,17 @@ void QWOutput::enable(bool enable)
     wlr_output_enable(handle(), enable);
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWOutput::createGlobal()
 {
     wlr_output_create_global(handle());
 }
+#else
+void QWOutput::createGlobal(QWDisplay *display)
+{
+    wlr_output_create_global(handle(), display->handle());
+}
+#endif
 
 void QWOutput::destroyGlobal()
 {

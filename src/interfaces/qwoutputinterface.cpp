@@ -148,7 +148,9 @@ void QWOutputInterface::init(FuncMagicKey funMagicKey, QWBackend *backend, QWDis
     m_handleImpl = impl;
     m_handle = calloc(1, sizeof(_wlr_output));
     static_cast<_wlr_output *>(m_handle)->interface = this;
-#if WLR_VERSION_MINOR > 16
+#if WLR_VERSION_MINOR > 17
+    wlr_output_init(handle(), backend->handle(), impl, wl_display_get_event_loop(display->handle()), state);
+#elif WLR_VERSION_MINOR > 16
     wlr_output_init(handle(), backend->handle(), impl, display->handle(), state);
 #else
     wlr_output_init(handle(), backend->handle(), impl, display->handle());

@@ -13,6 +13,7 @@ typedef uint32_t wlr_direction_t;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
 class QWOutput;
 class QWRenderer;
 class QWOutputLayoutPrivate;
@@ -21,7 +22,11 @@ class QW_EXPORT QWOutputLayout : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutputLayout)
 public:
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     explicit QWOutputLayout(QObject *parent = nullptr);
+#else
+    explicit QWOutputLayout(QWDisplay *display, QObject *parent = nullptr);
+#endif
     ~QWOutputLayout() = default;
 
     inline wlr_output_layout *handle() const {

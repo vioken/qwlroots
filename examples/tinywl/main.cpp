@@ -157,7 +157,11 @@ TinywlServer::TinywlServer()
     subcompositor = QWSubcompositor::create(display);
     dataDeviceManager = QWDataDeviceManager::create(display);
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     outputLayout = new QWOutputLayout(this);
+#else
+    outputLayout = new QWOutputLayout(display, this);
+#endif
     connect(backend, &QWBackend::newOutput, this, &TinywlServer::onNewOutput);
 
     scene = new QWScene(this);

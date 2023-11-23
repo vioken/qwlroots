@@ -4,6 +4,7 @@
 #include "qwoutputlayout.h"
 #include "util/qwsignalconnector.h"
 #include "qwoutput.h"
+#include "qwdisplay.h"
 
 #include <QPointF>
 #include <QRect>
@@ -83,11 +84,19 @@ QWOutputLayout::QWOutputLayout(wlr_output_layout *handle, bool isOwner, QObject 
 
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 QWOutputLayout::QWOutputLayout(QObject *parent)
     : QWOutputLayout(wlr_output_layout_create(), true, parent)
 {
 
 }
+#else
+QWOutputLayout::QWOutputLayout(QWDisplay *display, QObject *parent)
+    : QWOutputLayout(wlr_output_layout_create(display->handle()), true, parent)
+{
+
+}
+#endif
 
 QWOutputLayout *QWOutputLayout::get(wlr_output_layout *handle)
 {
