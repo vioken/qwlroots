@@ -36,4 +36,3 @@ private:
 };
 
 QW_END_NAMESPACE
-
