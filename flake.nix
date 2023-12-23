@@ -7,7 +7,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     wlroots-17 = {
-      url = "gitlab:wlroots/wlroots?host=gitlab.freedesktop.org&ref=0.17.0";
+      url = "gitlab:wlroots/wlroots?host=gitlab.freedesktop.org&ref=0.17.1";
       flake = false;
     };
   };
