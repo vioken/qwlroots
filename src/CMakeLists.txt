@@ -301,6 +301,8 @@ add_library(${TARGET}
     ${PRIVATE_HEADERS}
 )
 
+add_library(QWlroots::QWlroots ALIAS ${TARGET})
+
 target_compile_definitions(${TARGET}
 PRIVATE
     QW_LIBRARY
