@@ -21,7 +21,7 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "qwlroots";
-  version = "0.0.1";
+  version = "0.1.0";
 
   src = nix-filter.lib.filter {
     root = ./..;
