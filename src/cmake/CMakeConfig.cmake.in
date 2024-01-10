@@ -1,7 +1,9 @@
 @PACKAGE_INIT@
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(WLROOTS REQUIRED wlroots>=@WLROOTS_MINIMUM_REQUIRED@)
+include(CMakeFindDependencyMacro)
+find_dependency(Qt@QT_VERSION_MAJOR@Core REQUIRED)
+find_dependency(PkgConfig REQUIRED)
+pkg_check_modules(WLROOTS REQUIRED wlroots=@WLROOTS_VERSION@)
 pkg_check_modules(WAYLAND_SERVER REQUIRED wayland-server)
 pkg_check_modules(PIXMAN REQUIRED pixman-1)
 
