@@ -14,11 +14,16 @@ extern "C" {
 #include <wlr/types/wlr_keyboard.h>
 #include <wlr/types/wlr_data_device.h>
 #include <wlr/types/wlr_pointer.h>
+#define static
+#include <wlr/types/wlr_compositor.h>
+#undef static
 }
 
+#if WLR_VERSION_MINOR < 18
 static_assert(std::is_same_v<wlr_axis_orientation_t, std::underlying_type_t<wlr_axis_orientation>>);
 static_assert(std::is_same_v<wlr_axis_source_t, std::underlying_type_t<wlr_axis_source>>);
 static_assert(std::is_same_v<wlr_button_state_t, std::underlying_type_t<wlr_button_state>>);
+#endif
 
 QW_BEGIN_NAMESPACE
 
@@ -279,15 +284,29 @@ bool QWSeat::pointerHasGrab() const
     return wlr_seat_pointer_has_grab(handle());
 }
 
+#if WLR_VERSION_MINOR > 17
+void QWSeat::pointerNotifyAxis(uint32_t time_msec, wl_pointer_axis orientation, double value, int32_t value_discrete, wl_pointer_axis_source source, wl_pointer_axis_relative_direction relative_direction)
+{
+    wlr_seat_pointer_notify_axis(handle(), time_msec, orientation, value, value_discrete, static_cast<wl_pointer_axis_source>(source), relative_direction);
+}
+#else
 void QWSeat::pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orientation, double value, int32_t value_discrete, wlr_axis_source_t source)
 {
     wlr_seat_pointer_notify_axis(handle(), time_msec, static_cast<wlr_axis_orientation>(orientation), value, value_discrete, static_cast<wlr_axis_source>(source));
 }
+#endif
 
+#if WLR_VERSION_MINOR > 17
+void QWSeat::pointerNotifyButton(uint32_t time_msec, uint32_t button, wl_pointer_button_state state)
+{
+    wlr_seat_pointer_notify_button(handle(), time_msec, button, state);
+}
+#else
 void QWSeat::pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button_state_t state)
 {
     wlr_seat_pointer_notify_button(handle(), time_msec, button, static_cast<wlr_button_state>(state));
 }
+#endif
 
 void QWSeat::pointerNotifyClearFocus()
 {
@@ -309,15 +328,29 @@ void QWSeat::pointerNotifyMotion(uint32_t time_msec, double sx, double sy)
     wlr_seat_pointer_notify_motion(handle(), time_msec, sx, sy);
 }
 
+#if WLR_VERSION_MINOR > 17
+void QWSeat::pointerSendAxis(uint32_t timeMsec, wl_pointer_axis orientation, double value, int32_t valueDiscrete, wl_pointer_axis_source source, wl_pointer_axis_relative_direction relative_direction)
+{
+    wlr_seat_pointer_send_axis(handle(), timeMsec, orientation, value, valueDiscrete, source, relative_direction);
+}
+#else
 void QWSeat::pointerSendAxis(uint32_t timeMsec, wlr_axis_orientation_t orientation, double value, int32_t valueDiscrete, wlr_axis_source_t source)
 {
     wlr_seat_pointer_send_axis(handle(), timeMsec, static_cast<wlr_axis_orientation>(orientation), value, valueDiscrete, static_cast<wlr_axis_source>(source));
 }
+#endif
 
+#if WLR_VERSION_MINOR > 17
+uint32_t QWSeat::pointerSendButton(uint32_t timeMsec, uint32_t button, wl_pointer_button_state state)
+{
+    return wlr_seat_pointer_send_button(handle(), timeMsec, button, state);
+}
+#else
 uint32_t QWSeat::pointerSendButton(uint32_t timeMsec, uint32_t button, wlr_button_state_t state)
 {
     return wlr_seat_pointer_send_button(handle(), timeMsec, button, static_cast<wlr_button_state>(state));
 }
+#endif
 
 void QWSeat::pointerSendFrame()
 {
@@ -369,10 +402,18 @@ bool QWSeat::touchHasGrab() const
     return wlr_seat_touch_has_grab(handle());
 }
 
+#if WLR_VERSION_MINOR > 17
+// TODO: use QWSeatClient
+void QWSeat::touchNotifyCancel(wlr_seat_client *client)
+{
+    wlr_seat_touch_notify_cancel(handle(), client);
+}
+#else
 void QWSeat::touchNotifyCancel(QWSurface *surface)
 {
     wlr_seat_touch_notify_cancel(handle(), surface->handle());
 }
+#endif
 
 uint32_t QWSeat::touchNotifyDown(QWSurface *surface, uint32_t timeMsec, int32_t touch_id, double sx, double sy)
 {
@@ -409,10 +450,18 @@ void QWSeat::touchPointFocus(QWSurface *surface, uint32_t timeMsec, int32_t touc
     wlr_seat_touch_point_focus(handle(), surface->handle(), timeMsec, touchId, sx, sy);
 }
 
+
+#if WLR_VERSION_MINOR > 17
+void QWSeat::touchSendCancel(wlr_seat_client *client)
+{
+    wlr_seat_touch_send_cancel(handle(), client);
+}
+#else
 void QWSeat::touchSendCancel(QWSurface *surface)
 {
     wlr_seat_touch_send_cancel(handle(), surface->handle());
 }
+#endif
 
 uint32_t QWSeat::touchSendDown(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy)
 {
