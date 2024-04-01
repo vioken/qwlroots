@@ -77,7 +77,11 @@ QWInputDevice *QWInputDevice::from(wlr_input_device *handle)
         return QWKeyboard::fromInputDevice(handle);
     case WLR_INPUT_DEVICE_POINTER:
         return QWPointer::fromInputDevice(handle);
+#if WLR_VERSION_MINOR > 17
+    case WLR_INPUT_DEVICE_TABLET:
+#else
     case WLR_INPUT_DEVICE_TABLET_TOOL:
+#endif
         return QWTablet::fromInputDevice(handle);
     case WLR_INPUT_DEVICE_TABLET_PAD:
         return QWTabletPad::fromInputDevice(handle);

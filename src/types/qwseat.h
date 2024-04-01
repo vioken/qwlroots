@@ -6,12 +6,14 @@
 #include <cstdint>
 #include <qwglobal.h>
 #include <QObject>
+#include <wayland-server-protocol.h>
 
 struct wlr_seat;
 struct wlr_seat_pointer_request_set_cursor_event;
 struct wlr_seat_request_set_selection_event;
 struct wlr_seat_request_set_primary_selection_event;
 struct wlr_seat_request_start_drag_event;
+struct wlr_seat_client;
 struct wlr_drag;
 struct wlr_data_source;
 struct wlr_keyboard_modifiers;
@@ -20,9 +22,12 @@ struct wlr_seat_pointer_grab;
 struct wlr_seat_touch_grab;
 struct wlr_touch_point;
 
+#if WLR_VERSION_MINOR < 18
 typedef uint32_t wlr_axis_orientation_t;
 typedef uint32_t wlr_axis_source_t;
 typedef uint32_t wlr_button_state_t;
+#endif
+
 
 QW_BEGIN_NAMESPACE
 
@@ -67,14 +72,26 @@ public:
     void pointerEndGrab();
     void pointerEnter(QWSurface *surface, double sx, double sy);
     bool pointerHasGrab() const;
+#if WLR_VERSION_MINOR > 17
+    void pointerNotifyAxis(uint32_t time_msec, wl_pointer_axis orientation, double value, int32_t value_discrete, wl_pointer_axis_source source,
+        wl_pointer_axis_relative_direction relative_direction = wl_pointer_axis_relative_direction::WL_POINTER_AXIS_RELATIVE_DIRECTION_IDENTICAL);
+    void pointerNotifyButton(uint32_t time_msec, uint32_t button, wl_pointer_button_state state);
+#else
     void pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orientation, double value, int32_t value_discrete, wlr_axis_source_t source);
     void pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button_state_t state);
+#endif
     void pointerNotifyClearFocus();
     void pointerNotifyEnter(QWSurface *surface, double sx, double sy);
     void pointerNotifyFrame();
     void pointerNotifyMotion(uint32_t time_msec, double sx, double sy);
+#if WLR_VERSION_MINOR > 17
+    void pointerSendAxis(uint32_t timeMsec, wl_pointer_axis orientation, double value, int32_t valueDiscrete, wl_pointer_axis_source source,
+        wl_pointer_axis_relative_direction relative_direction = wl_pointer_axis_relative_direction::WL_POINTER_AXIS_RELATIVE_DIRECTION_IDENTICAL);
+    uint32_t pointerSendButton(uint32_t timeMsec, uint32_t button, wl_pointer_button_state state);
+#else
     void pointerSendAxis(uint32_t timeMsec, wlr_axis_orientation_t orientation, double value, int32_t valueDiscrete, wlr_axis_source_t source);
     uint32_t pointerSendButton(uint32_t timeMsec, uint32_t button, wlr_button_state_t state);
+#endif
     void pointerSendFrame();
     void pointerSendMotion(uint32_t timeMsec, double sx, double sy);
     void pointerStartGrab(wlr_seat_pointer_grab *grab);
@@ -85,7 +102,12 @@ public:
     void touchEndGrab();
     wlr_touch_point *touchGetPoint(int32_t touchId) const;
     bool touchHasGrab() const;
+
+#if WLR_VERSION_MINOR > 17
+    void touchNotifyCancel(wlr_seat_client *client);
+#else
     void touchNotifyCancel(QWSurface *surface);
+#endif
     uint32_t touchNotifyDown(QWSurface *surface, uint32_t timeMsec, int32_t touch_id, double sx, double sy);
     void touchNotifyFrame();
     void touchNotifyMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy);
@@ -93,7 +115,11 @@ public:
     int touchNumPoints();
     void touchPointClearFocus(uint32_t timeMsec, int32_t touchId);
     void touchPointFocus(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy);
+#if WLR_VERSION_MINOR > 17
+    void touchSendCancel(wlr_seat_client *client);
+#else
     void touchSendCancel(QWSurface *surface);
+#endif
     uint32_t touchSendDown(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy);
     void touchSendFrame();
     void touchSendMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy);

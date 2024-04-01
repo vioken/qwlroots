@@ -329,7 +329,11 @@ void TinywlServer::onCursorButton(wlr_pointer_button_event *event)
     QPointF spos;
     wlr_surface *surface = nullptr;
     auto view = viewAt(cursor->position(), &surface, &spos);
+#if WLR_VERSION_MINOR > 17
+    if (event->state == WL_POINTER_BUTTON_STATE_RELEASED) {
+#else
     if (event->state == WLR_BUTTON_RELEASED) {
+#endif
         cursorState = CursorState::Normal;
     } else {
         focusView(view, surface);
