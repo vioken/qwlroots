@@ -16,6 +16,7 @@ struct wlr_device;
 struct wlr_output_mode;
 struct wlr_drm_lease;
 struct wl_display;
+struct wl_event_loop;
 struct wl_seat;
 struct wl_surface;
 struct libinput_device;
@@ -76,7 +77,11 @@ class QW_EXPORT QWMultiBackend : public QWBackend
 public:
     static QWMultiBackend *get(wlr_backend *handle);
     static QWMultiBackend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 17
+    static QWMultiBackend *create(wl_event_loop *eventloop, QObject *parent = nullptr);
+#else
     static QWMultiBackend *create(QWDisplay *display, QObject *parent = nullptr);
+#endif
 
     bool add(QWBackend *backend);
     void remove(QWBackend *backend);
@@ -96,7 +101,11 @@ class QW_EXPORT QWDrmBackend : public QWBackend
 public:
     static QWDrmBackend *get(wlr_backend *handle);
     static QWDrmBackend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 17
+    static QWDrmBackend *create(wlr_session *session, wlr_device *dev, QWBackend *parent);
+#else
     static QWDrmBackend *create(QWDisplay *display, wlr_session *session, wlr_device *dev, QWBackend *parent);
+#endif
 
     static bool isDrmOutput(QWOutput *output);
     static uint32_t connectorGetId(QWOutput *output);
@@ -119,7 +128,9 @@ class QW_EXPORT QWWaylandBackend : public QWBackend
 public:
     static QWWaylandBackend *get(wlr_backend *handle);
     static QWWaylandBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 16
+#if WLR_VERSION_MINOR > 17
+    static QWWaylandBackend *create(wl_event_loop *eventloop, wl_display *remote_display, QObject *parent = nullptr);
+#elif WLR_VERSION_MINOR > 16
     static QWWaylandBackend *create(QWDisplay *display, wl_display *remote_display, QObject *parent = nullptr);
 #else
     static QWWaylandBackend *create(QWDisplay *display, const char *remote, QObject *parent = nullptr);
@@ -144,7 +155,11 @@ class QW_EXPORT QWX11Backend : public QWBackend
 public:
     static QWX11Backend *get(wlr_backend *handle);
     static QWX11Backend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 17
+    static QWX11Backend *create(wl_event_loop *eventloop, const char *x11Display, QObject *parent = nullptr);
+#else
     static QWX11Backend *create(QWDisplay *display, const char *x11Display, QObject *parent = nullptr);
+#endif
 
     QWOutput *createOutput();
 
@@ -163,7 +178,11 @@ class QW_EXPORT QWLibinputBackend : public QWBackend
 public:
     static QWLibinputBackend *get(wlr_backend *handle);
     static QWLibinputBackend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 17
+    static QWLibinputBackend *create(wlr_session *session, QObject *parent = nullptr);
+#else
     static QWLibinputBackend *create(QWDisplay *display, wlr_session *session, QObject *parent = nullptr);
+#endif
 
     static bool isLibinputDevice(QWInputDevice *device);
     static libinput_device *getDeviceHandle(QWInputDevice *dev);
@@ -179,7 +198,11 @@ class QW_EXPORT QWHeadlessBackend : public QWBackend
 public:
     static QWHeadlessBackend *get(wlr_backend *handle);
     static QWHeadlessBackend *from(wlr_backend *handle);
+#if WLR_VERSION_MINOR > 17
+    static QWHeadlessBackend *create(wl_event_loop *eventloop, QObject *parent = nullptr);
+#else
     static QWHeadlessBackend *create(QWDisplay *display, QObject *parent = nullptr);
+#endif
 
     QWOutput *addOutput(unsigned int width, unsigned int height);
     static bool isHeadlessOutput(QWOutput *output);

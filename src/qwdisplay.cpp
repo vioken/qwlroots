@@ -87,4 +87,9 @@ void QWDisplay::terminate()
     wl_display_terminate(handle());
 }
 
+wl_event_loop *QWDisplay::eventLoop() const
+{
+    return wl_display_get_event_loop(handle());
+}
+
 QW_END_NAMESPACE
