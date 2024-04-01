@@ -7,6 +7,7 @@
 #include <QObject>
 
 struct wl_display;
+struct wl_event_loop;
 
 QT_BEGIN_NAMESPACE
 class QThread;
@@ -32,6 +33,8 @@ public:
 
     void exec();
     void start(QThread *thread);
+
+    wl_event_loop *eventLoop() const;
 
 Q_SIGNALS:
     void beforeDestroy(QWDisplay *self);
