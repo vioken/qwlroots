@@ -29,6 +29,10 @@ public:
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWXdgShellPrivate::on_destroy);
         sc.connect(&handle->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
+#if WLR_VERSION_MINOR >= 18
+        sc.connect(&handle->events.new_toplevel, this, &QWXdgShellPrivate::on_new_toplevel);
+        sc.connect(&handle->events.new_popup, this, &QWXdgShellPrivate::on_new_popup);
+#endif
     }
     ~QWXdgShellPrivate() {
         if (!m_handle)
@@ -48,6 +52,10 @@ public:
 
     void on_destroy(void *);
     void on_new_surface(void *data);
+#if WLR_VERSION_MINOR >= 18
+    void on_new_toplevel(void *data);
+    void on_new_popup(void *data);
+#endif
 
     static QHash<void*, QWXdgShell*> map;
     QW_DECLARE_PUBLIC(QWXdgShell)
@@ -66,6 +74,18 @@ void QWXdgShellPrivate::on_new_surface(void *data)
 {
     Q_EMIT q_func()->newSurface(reinterpret_cast<wlr_xdg_surface*>(data));
 }
+
+#if WLR_VERSION_MINOR >= 18
+void QWXdgShellPrivate::on_new_toplevel(void *data)
+{
+    Q_EMIT q_func()->newToplevel(reinterpret_cast<wlr_xdg_toplevel*>(data));
+}
+
+void QWXdgShellPrivate::on_new_popup(void *data)
+{
+    Q_EMIT q_func()->newPopup(reinterpret_cast<wlr_xdg_popup*>(data));
+}
+#endif
 
 QWXdgShell::QWXdgShell(wlr_xdg_shell *handle, bool isOwner)
     : QObject(nullptr)
@@ -102,7 +122,10 @@ public:
     {
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
+#if WLR_VERSION_MINOR < 18
+        // >0.18 role object's destory first then base's, connect to those to keep same behavior
         sc.connect(&handle->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
+#endif
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
 #if WLR_VERSION_MINOR <= 16
@@ -311,6 +334,11 @@ public:
         : QWXdgSurfacePrivate(handle->base, isOwner, qq)
     {
         sc.connect(&handle->events.reposition, this, &QWXdgPopupPrivate::on_reposition);
+#if WLR_VERSION_MINOR >= 18
+        // wlr_xdg_popup.destory first then wlr_xdg_surface
+        // here connect QWXdgSurface::on_destroy, QWXdgSurface doesn't
+        sc.connect(&handle->events.destroy, this, &QWXdgPopupPrivate::on_destroy);
+#endif
     }
     ~QWXdgPopupPrivate () {
         if (!m_handle)
@@ -408,6 +436,11 @@ public:
         sc.connect(&handle->events.set_parent, this, &QWXdgToplevelPrivate::on_set_parent);
         sc.connect(&handle->events.set_title, this, &QWXdgToplevelPrivate::on_set_title);
         sc.connect(&handle->events.set_app_id, this, &QWXdgToplevelPrivate::on_set_app_id);
+#if WLR_VERSION_MINOR >= 18
+        // wlr_xdg_toplevel.destory first then wlr_xdg_surface
+        // here connect QWXdgSurface::on_destroy, QWXdgSurface doesn't
+        sc.connect(&handle->events.destroy, this, &QWXdgToplevelPrivate::on_destroy);
+#endif
     }
 
     void on_request_maximize(void *);

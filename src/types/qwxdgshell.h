@@ -41,6 +41,10 @@ public:
 Q_SIGNALS:
     void beforeDestroy(QWXdgShell *self);
     void newSurface(wlr_xdg_surface *surface);
+#if WLR_VERSION_MINOR >= 18
+    void newToplevel(wlr_xdg_toplevel *surface);
+    void newPopup(wlr_xdg_popup *surface);
+#endif
 
 private:
     QWXdgShell(wlr_xdg_shell *handle, bool isOwner);
@@ -112,6 +116,9 @@ public:
 
 Q_SIGNALS:
     void reposition();
+#if WLR_VERSION_MINOR >= 18
+    void beforeDestroy(QWXdgPopup *self);
+#endif
 
 private:
     QWXdgPopup(wlr_xdg_popup *handle, bool isOwner);
@@ -152,6 +159,9 @@ Q_SIGNALS:
     void parentChanged(QWXdgToplevel *newParent);
     void titleChanged(char *newTitle);
     void appidChanged(char *newAppid);
+#if WLR_VERSION_MINOR >= 18
+    void beforeDestroy(QWXdgToplevel *self);
+#endif
 
 private:
     QWXdgToplevel(wlr_xdg_toplevel *handle, bool isOwner);

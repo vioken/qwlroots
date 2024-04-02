@@ -55,7 +55,12 @@ public:
 
 private Q_SLOTS:
     void onNewOutput(QWOutput *output);
+#if WLR_VERSION_MINOR < 18
     void onNewXdgSurface(wlr_xdg_surface *surface);
+#endif
+    void onNewXdgToplevel(wlr_xdg_toplevel *surface);
+    void onNewXdgPopup(wlr_xdg_popup *surface);
+
     void onMap();
     void onUnmap();
     void onXdgToplevelRequestMove(wlr_xdg_toplevel_move_event *);
@@ -167,7 +172,12 @@ TinywlServer::TinywlServer()
     scene = new QWScene(this);
     scene->attachOutputLayout(outputLayout);
     xdgShell = QWXdgShell::create(display, 3);
+#if WLR_VERSION_MINOR > 17
+    connect(xdgShell, &QWXdgShell::newToplevel, this, &TinywlServer::onNewXdgToplevel);
+    connect(xdgShell, &QWXdgShell::newPopup, this, &TinywlServer::onNewXdgPopup);
+#else
     connect(xdgShell, &QWXdgShell::newSurface, this, &TinywlServer::onNewXdgSurface);
+#endif
 
     cursor = new QWCursor(this);
     cursor->attachOutputLayout(outputLayout);
@@ -228,24 +238,44 @@ void TinywlServer::onNewOutput(QWOutput *output)
     outputLayout->addAuto(output);
 }
 
+#if WLR_VERSION_MINOR < 18
 void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 {
     if (surface->role == WLR_XDG_SURFACE_ROLE_POPUP) {
-        auto *s = QWXdgPopup::from(surface->popup);
-        auto parent = QWXdgSurface::from(QWSurface::from(surface->popup->parent));
-        QWSceneTree *parentTree = reinterpret_cast<QWSceneTree*>(parent->handle()->data);
-        surface->data = QWScene::xdgSurfaceCreate(parentTree, s);
-        return;
+        onNewXdgPopup(surface->popup);
+    } else {
+        Q_ASSERT(surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
+        onNewXdgToplevel(surface->toplevel);
     }
-    Q_ASSERT(surface->role == WLR_XDG_SURFACE_ROLE_TOPLEVEL);
+}
+#endif
 
+void TinywlServer::onNewXdgPopup(wlr_xdg_popup *popup)
+{
+    auto *s = QWXdgPopup::from(popup);
+    auto parent = QWXdgSurface::from(QWSurface::from(popup->parent));
+    QWSceneTree *parentTree = reinterpret_cast<QWSceneTree*>(parent->handle()->data);
+    popup->base->data = QWScene::xdgSurfaceCreate(parentTree, s);
+#if WLR_VERSION_MINOR >= 18
+    QMetaObject::Connection initialCommitConn = connect(s, &QWXdgSurface::commit, this, [initialCommitConn, popup] {
+        if (popup->base->initial_commit) {
+            wlr_xdg_surface_schedule_configure(popup->base);
+            QObject::disconnect(initialCommitConn);
+        }
+    });
+#endif
+    return;
+}
+
+void TinywlServer::onNewXdgToplevel(wlr_xdg_toplevel *toplevel)
+{
     auto view = new View();
     view->server = this;
-    auto s = QWXdgToplevel::from(surface->toplevel);
+    auto s = QWXdgToplevel::from(toplevel);
     view->xdgToplevel = s;
     view->sceneTree = QWScene::xdgSurfaceCreate(scene, s);
     view->sceneTree->handle()->node.data = view;
-    surface->data = view->sceneTree;
+    toplevel->base->data = view->sceneTree;
     auto *ss = s->surface();
     connect(ss, &QWSurface::mapped, this, &TinywlServer::onMap);
     connect(ss, &QWSurface::unmapped, this, &TinywlServer::onUnmap);
@@ -259,6 +289,14 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
             grabbedView = nullptr;
         delete view;
     });
+#if WLR_VERSION_MINOR >= 18
+    QMetaObject::Connection initialCommitConn = connect(s, &QWXdgSurface::commit, this, [initialCommitConn, toplevel] {
+        if (toplevel->base->initial_commit) {
+            wlr_xdg_toplevel_set_size(toplevel, 0, 0);
+            QObject::disconnect(initialCommitConn);
+        }
+    });
+#endif
 }
 
 void TinywlServer::onMap()
