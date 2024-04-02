@@ -84,18 +84,30 @@ QWPresentation *QWPresentation::from(wlr_presentation *handle)
 
 QWPresentationFeedback *QWPresentation::surfaceSampled(QWSurface *surface) const
 {
+#if WLR_VERSION_MINOR > 17
+    return QWPresentationFeedback::from(wlr_presentation_surface_sampled(surface->handle()));
+#else
     return QWPresentationFeedback::from(wlr_presentation_surface_sampled(handle(), surface->handle()));
+#endif
 }
 
 #if WLR_VERSION_MINOR > 16
 void QWPresentation::surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output)
 {
+#if WLR_VERSION_MINOR > 17
+    wlr_presentation_surface_textured_on_output(surface->handle(), output->handle());
+#else
     wlr_presentation_surface_textured_on_output(handle(), surface->handle(), output->handle());
+#endif
 }
 
 void QWPresentation::surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output)
 {
+#if WLR_VERSION_MINOR > 17
+    wlr_presentation_surface_scanned_out_on_output(surface->handle(), output->handle());
+#else
     wlr_presentation_surface_scanned_out_on_output(handle(), surface->handle(), output->handle());
+#endif
 }
 
 #else

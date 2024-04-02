@@ -113,7 +113,10 @@ public:
     static QWScene *get(wlr_scene *handle);
     static QWScene *from(wlr_scene *handle);
 
+
+#if WLR_VERSION_MINOR<18
     void setPresentation(wlr_presentation *presentation);
+#endif
     bool attachOutputLayout(QWOutputLayout *outputLayout);
 
 private:

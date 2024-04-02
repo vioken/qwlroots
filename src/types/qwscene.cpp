@@ -240,10 +240,12 @@ QWScene *QWScene::from(wlr_scene *handle)
     return new QWScene(handle, true, nullptr);
 }
 
+#if WLR_VERSION_MINOR < 18
 void QWScene::setPresentation(wlr_presentation *presentation)
 {
     wlr_scene_set_presentation(handle(), presentation);
 }
+#endif
 
 bool QWScene::attachOutputLayout(QWOutputLayout *outputLayout)
 {
