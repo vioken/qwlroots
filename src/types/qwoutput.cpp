@@ -159,12 +159,12 @@ QWOutput *QWOutput::from(wl_resource *resource)
     return from(handle);
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWOutput::enable(bool enable)
 {
     wlr_output_enable(handle(), enable);
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWOutput::createGlobal()
 {
     wlr_output_create_global(handle());
@@ -190,7 +190,7 @@ wlr_output_mode *QWOutput::preferredMode() const
 {
     return wlr_output_preferred_mode(handle());
 }
-
+#if WLR_VERSION_MINOR < 18
 void QWOutput::setMode(wlr_output_mode *mode)
 {
     wlr_output_set_mode(handle(), mode);
@@ -226,6 +226,17 @@ void QWOutput::setSubpixel(wl_output_subpixel_t subpixel)
     wlr_output_set_subpixel(handle(), static_cast<wl_output_subpixel>(subpixel));
 }
 
+void QWOutput::setDamage(pixman_region32 *damage)
+{
+    wlr_output_set_damage(handle(), damage);
+}
+
+void QWOutput::setGamma(size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b)
+{
+    wlr_output_set_gamma(handle(), size, r, g, b);
+}
+#endif
+
 void QWOutput::setName(const QByteArray &name)
 {
     wlr_output_set_name(handle(), name.constData());
@@ -255,31 +266,30 @@ QSize QWOutput::effectiveResolution() const
     return size;
 }
 
+#if WLR_VERSION_MINOR < 18
 bool QWOutput::attachRender(int *bufferAge)
 {
     return wlr_output_attach_render(handle(), bufferAge);
 }
+void QWOutput::attachBuffer(QWBuffer *buffer)
+{
+    wlr_output_attach_buffer(handle(), buffer->handle());
+}
+#endif
 
 void QWOutput::lockAttachRender(bool lock)
 {
     wlr_output_lock_attach_render(handle(), lock);
 }
 
-void QWOutput::attachBuffer(QWBuffer *buffer)
-{
-    wlr_output_attach_buffer(handle(), buffer->handle());
-}
-
+#if WLR_VERSION_MINOR < 18
 uint32_t QWOutput::preferredReadFormat() const
 {
     return wlr_output_preferred_read_format(handle());
 }
+#endif
 
-void QWOutput::setDamage(pixman_region32 *damage)
-{
-    wlr_output_set_damage(handle(), damage);
-}
-
+#if WLR_VERSION_MINOR < 18
 bool QWOutput::test()
 {
     return wlr_output_test(handle());
@@ -294,6 +304,7 @@ void QWOutput::rollback()
 {
     wlr_output_rollback(handle());
 }
+#endif
 
 bool QWOutput::testState(wlr_output_state *state)
 {
@@ -305,6 +316,13 @@ bool QWOutput::commitState(wlr_output_state *state)
     return wlr_output_commit_state(handle(), state);
 }
 
+#if WLR_VERSION_MINOR > 16
+void QWOutput::finishState(wlr_output_state *state)
+{
+    wlr_output_state_finish(state);
+}
+#endif
+
 void QWOutput::scheduleFrame()
 {
     wlr_output_schedule_frame(handle());
@@ -313,11 +331,6 @@ void QWOutput::scheduleFrame()
 size_t QWOutput::getGammaSize() const
 {
     return wlr_output_get_gamma_size(handle());
-}
-
-void QWOutput::setGamma(size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b)
-{
-    wlr_output_set_gamma(handle(), size, r, g, b);
 }
 
 void QWOutput::lockSoftwareCursors(bool lock)
