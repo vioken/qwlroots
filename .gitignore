@@ -59,3 +59,6 @@ result
 
 # clangd
 .cache/
+
+# vscode
+.vscode/
