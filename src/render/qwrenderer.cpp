@@ -17,6 +17,9 @@ extern "C" {
 #include <wayland-server-core.h>
 #define static
 #include <wlr/render/wlr_renderer.h>
+#if WLR_VERSION_MINOR >= 18
+#include <wlr/render/pass.h>
+#endif
 #undef static
 #include <wlr/util/box.h>
 }
@@ -104,31 +107,40 @@ QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
 
 }
 
-#if WLR_VERSION_MINOR > 16
+#if WLR_VERSION_MINOR < 18
 bool QWRenderer::begin(uint32_t width, uint32_t height)
 {
     Q_D(QWRenderer);
     return wlr_renderer_begin(handle(), width, height);
 }
-#else
-void QWRenderer::begin(uint32_t width, uint32_t height)
-{
-    Q_D(QWRenderer);
-    wlr_renderer_begin(handle(), width, height);
-}
 #endif
 
+#if WLR_VERSION_MINOR < 18
 bool QWRenderer::begin(QWBuffer *buffer)
 {
     Q_D(QWRenderer);
     return wlr_renderer_begin_with_buffer(handle(), buffer->handle());
 }
-
+# else
+wlr_render_pass* QWRenderer::begin(QWBuffer *buffer, const wlr_buffer_pass_options *options)
+{
+    Q_D(QWRenderer);
+    return wlr_renderer_begin_buffer_pass(handle(), buffer->handle(), options);
+}
+#endif
+#if WLR_VERSION_MINOR > 17
+void QWRenderer::end(wlr_render_pass *pass)
+{
+    Q_D(QWRenderer);
+    wlr_render_pass_submit(pass);
+}
+#else
 void QWRenderer::end()
 {
     Q_D(QWRenderer);
     wlr_renderer_end(handle());
 }
+#endif
 
 bool QWRenderer::initWlDisplay(QWDisplay *display)
 {
@@ -252,12 +264,14 @@ const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats() const
     return wlr_renderer_get_dmabuf_texture_formats(handle());
 }
 
+#if WLR_VERSION_MINOR < 18
 bool QWRenderer::readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                             uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const
 {
     Q_D(const QWRenderer);
     return wlr_renderer_read_pixels(handle(), fmt, stride, width, height, src_x, src_y, dst_x, dst_y, data);
 }
+#endif
 
 int QWRenderer::getDrmFd() const
 {
