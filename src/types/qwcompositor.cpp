@@ -119,7 +119,9 @@ public:
         sc.connect(&handle->events.commit, this, &QWSurfacePrivate::on_commit);
         sc.connect(&handle->events.new_subsurface, this, &QWSurfacePrivate::on_new_subsurface);
 #if WLR_VERSION_MINOR > 16
+    #if WLR_VERSION_MINOR < 18
         sc.connect(&handle->events.precommit, this, &QWSurfacePrivate::on_precommit);
+    #endif
         sc.connect(&handle->events.map, this, &QWSurfacePrivate::on_map);
         sc.connect(&handle->events.unmap, this, &QWSurfacePrivate::on_unmap);
 #endif
