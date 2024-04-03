@@ -60,8 +60,8 @@ public:
         return new QWOutput(i->handle(), true);
     }
 
-    void enable(bool enable);
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
+    void enable(bool enable);
     void createGlobal();
 #else
     void createGlobal(QWDisplay *display);
@@ -70,6 +70,7 @@ public:
     bool initRender(QWAllocator *allocator, QWRenderer *renderer);
     wlr_output_mode *preferredMode() const;
 
+#if WLR_VERSION_MINOR < 18
     void setMode(wlr_output_mode *mode);
     void setCustomMode(const QSize &size, int32_t refresh);
     void setTransform(wl_output_transform_t wl_output_transform);
@@ -77,6 +78,8 @@ public:
     void setRenderFormat(uint32_t format);
     void setScale(float scale);
     void setSubpixel(wl_output_subpixel_t wl_output_subpixel);
+    void setDamage(pixman_region32 *damage);
+#endif
     void setName(const QByteArray &name);
     void setDescription(const QByteArray &desc);
     void scheduleDone();
@@ -84,17 +87,23 @@ public:
     QSize transformedResolution() const;
     QSize effectiveResolution() const;
 
+#if WLR_VERSION_MINOR < 18
     bool attachRender(int *bufferAge);
-    void lockAttachRender(bool lock);
     void attachBuffer(QWBuffer *buffer);
+#endif
+    void lockAttachRender(bool lock);
 
     uint32_t preferredReadFormat() const;
-    void setDamage(pixman_region32 *damage);
+#if WLR_VERSION_MINOR < 18
     bool test();
     bool commit();
     void rollback();
+#endif
     bool testState(wlr_output_state *state);
     bool commitState(wlr_output_state *state);
+#if WLR_VERSION_MINOR > 16
+    static void finishState(wlr_output_state *state);
+#endif
     void scheduleFrame();
 
     size_t getGammaSize() const;

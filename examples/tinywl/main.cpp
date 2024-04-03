@@ -212,15 +212,16 @@ void TinywlServer::onNewOutput(QWOutput *output)
 {
     Q_ASSERT(output);
     outputs.append(output);
-
     output->initRender(allocator, renderer);
+
+    wlr_output_state state;
+    wlr_output_state_init(&state);
     if (!wl_list_empty(&output->handle()->modes)) {
         auto *mode = output->preferredMode();
-        output->setMode(mode);
+        wlr_output_state_set_mode(&state, mode);
     }
-
-    output->enable(true);
-    if (!output->commit())
+    wlr_output_state_set_enabled(&state, true);
+    if (!output->commitState(&state))
         return;
 
     connect(output, &QWOutput::frame, this, &TinywlServer::onOutputFrame);
