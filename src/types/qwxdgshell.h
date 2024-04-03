@@ -83,6 +83,7 @@ Q_SIGNALS:
     void newPopup(QWXdgPopup *popup);
     void configure(wlr_xdg_surface_configure *conf);
     void ackConfigure(wlr_xdg_surface_configure *conf);
+    void commit();
 
 protected:
     QWXdgSurface(QWXdgSurfacePrivate &dd);
