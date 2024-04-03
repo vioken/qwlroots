@@ -14,6 +14,7 @@ struct wlr_box;
 struct wlr_fbox;
 struct wlr_drm_format_set;
 struct wl_display;
+struct wlr_render_texture_options;
 
 QW_BEGIN_NAMESPACE
 
@@ -39,8 +40,14 @@ public:
 #else
     void begin(uint32_t width, uint32_t height);
 #endif
+#if WLR_VERSION_MINOR > 17
+    // TODO: use QWRenderPass
+    wlr_render_pass* begin(QWBuffer *buffer, const wlr_buffer_pass_options *options);
+    void end(wlr_render_pass* pass);
+#else
     bool begin(QWBuffer *buffer);
     void end();
+#endif
 
     bool initWlDisplay(QWDisplay *display);
     bool initWlShm(QWDisplay *display);
@@ -61,8 +68,10 @@ public:
 
     const uint32_t *getShmTextureFormats(size_t *len) const;
     const wlr_drm_format_set *getDmabufTextureFormats() const;
+#if WLR_VERSION_MINOR < 18
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
+#endif
     int getDrmFd() const;
 
     template<class Interface, typename... Args>

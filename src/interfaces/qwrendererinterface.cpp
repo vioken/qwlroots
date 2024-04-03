@@ -346,20 +346,22 @@ wlr_render_timer *QWRendererInterface::renderTimerCreate() {
 void QWRendererInterface::init(FuncMagicKey funMagicKey)
 {
     auto impl = new wlr_renderer_impl {
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, bind_buffer, &QWRendererInterface::bindBuffer),
         QW_INIT_INTERFACE_FUNC(funMagicKey, begin, &QWRendererInterface::begin),
         QW_INIT_INTERFACE_FUNC(funMagicKey, end, &QWRendererInterface::end),
-        #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, clear, &QWRendererInterface::clear),
         QW_INIT_INTERFACE_FUNC(funMagicKey, scissor, &QWRendererInterface::scissor),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_subtexture_with_matrix, &QWRendererInterface::renderSubtextureWithMatrix),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_quad_with_matrix, &QWRendererInterface::renderQuadWithMatrix),
-        #endif
+#endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_shm_texture_formats, &QWRendererInterface::getShmTextureFormats),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_dmabuf_texture_formats, &QWRendererInterface::getDmabufTextureFormats),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_formats, &QWRendererInterface::getRenderFormats),
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, preferred_read_format, &QWRendererInterface::preferredReadFormat),
         QW_INIT_INTERFACE_FUNC(funMagicKey, read_pixels, &QWRendererInterface::readPixels),
+#endif
         .destroy = impl::destroy,
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_drm_fd, &QWRendererInterface::getDrmFd),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_buffer_caps, &QWRendererInterface::getRenderBufferCaps),
