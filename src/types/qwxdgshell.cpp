@@ -111,6 +111,9 @@ public:
 #endif
         sc.connect(&handle->events.configure, this, &QWXdgSurfacePrivate::on_configure);
         sc.connect(&handle->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
+#if WLR_VERSION_MINOR >= 18
+        sc.connect(&handle->surface->events.commit, q_func(), &QWXdgSurface::commit);
+#endif
     }
     ~QWXdgSurfacePrivate() {
         if (!m_handle)
