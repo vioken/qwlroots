@@ -1,4 +1,3 @@
-enable_testing()
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(Qt${QT_VERSION_MAJOR}
