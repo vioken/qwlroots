@@ -32,7 +32,7 @@ QWObjectPrivate::QWObjectPrivate(void *handle, bool isOwner, QWObject *qq)
 
 void QWObject::setData(void *owner, void *data)
 {
-    if (m_data.first) {
+    if (m_data.first && owner) {
         Q_ASSERT(m_data.first == owner);
     }
 
