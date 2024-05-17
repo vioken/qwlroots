@@ -24,10 +24,8 @@ public:
     wlr_linux_dmabuf_feedback_v1 *handle() const;
     static QWLinuxDmabufFeedbackV1 *from(wlr_linux_dmabuf_feedback_v1 *handle);
 
-#if WLR_VERSION_MINOR > 16
     void finish();
     bool initWithOptions(const wlr_linux_dmabuf_feedback_v1_init_options *options);
-#endif // WLR_VERSION_MINOR > 16
 };
 
 class QWLinuxDmabufV1Private;
@@ -42,12 +40,8 @@ public:
 
     static QWLinuxDmabufV1 *get(wlr_linux_dmabuf_v1 *handle);
     static QWLinuxDmabufV1 *from(wlr_linux_dmabuf_v1 *handle);
-#if WLR_VERSION_MINOR > 16
     static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, const QWLinuxDmabufFeedbackV1 *defaultFeedback);
     static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, QWRenderer *renderer);
-#else
-    static QWLinuxDmabufV1 *create(QWDisplay *display, QWRenderer *renderer);
-#endif // WLR_VERSION_MINOR > 16
 
 Q_SIGNALS:
     void beforeDestroy(QWLinuxDmabufV1 *self);

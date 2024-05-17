@@ -27,11 +27,7 @@ struct pixman_region32;
 
 typedef uint32_t wl_output_transform_t;
 
-#if WLR_VERSION_MINOR <= 16
-using wlr_scene_buffer_point_accepts_input_func_t = bool (*)(wlr_scene_buffer *buffer, int sx, int sy);
-#else
 using wlr_scene_buffer_point_accepts_input_func_t = bool (*)(wlr_scene_buffer *buffer, double *sx, double *sy);
-#endif
 using wlr_scene_buffer_iterator_func_t = void (*)(wlr_scene_buffer *buffer, int sx, int sy, void *user_data);
 
 QT_BEGIN_NAMESPACE
@@ -150,11 +146,7 @@ public:
 Q_SIGNALS:
     void outputEnter(wlr_scene_output *output);
     void outputLeave(wlr_scene_output *output);
-#if WLR_VERSION_MINOR > 16
     void outputSample(wlr_scene_output_sample_event *output);
-#else
-    void outputPresent(wlr_scene_output *output);
-#endif
     void frameDone(timespec *now);
 
 private:
@@ -201,11 +193,7 @@ public:
     static QWSceneOutput *from(wlr_scene_output *handle);
     static QWSceneOutput *get(QWScene *scene, QWOutput *output);
     static QWSceneOutput *from(QWScene *scene, QWOutput *output);
-#if WLR_VERSION_MINOR > 16
     void commit(const wlr_scene_output_state_options *options);
-#else
-    void commit();
-#endif
     void sendFrameDone(timespec *now);
 
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *user_data) const;

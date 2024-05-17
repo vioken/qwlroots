@@ -93,12 +93,7 @@ QWCompositor *QWCompositor::from(wlr_compositor *handle)
 
 QWCompositor *QWCompositor::create(QWDisplay *display, QWRenderer *renderer, uint32_t version)
 {
-#if WLR_VERSION_MINOR > 16
     auto compositor = wlr_compositor_create(display->handle(), version, renderer->handle());
-#else
-    Q_UNUSED(version)
-    auto compositor = wlr_compositor_create(display->handle(), renderer->handle());
-#endif
     if (!compositor)
         return nullptr;
     return new QWCompositor(compositor, true);
@@ -118,13 +113,11 @@ public:
         sc.connect(&handle->events.client_commit, this, &QWSurfacePrivate::on_client_commit);
         sc.connect(&handle->events.commit, this, &QWSurfacePrivate::on_commit);
         sc.connect(&handle->events.new_subsurface, this, &QWSurfacePrivate::on_new_subsurface);
-#if WLR_VERSION_MINOR > 16
-    #if WLR_VERSION_MINOR < 18
+#if WLR_VERSION_MINOR < 18
         sc.connect(&handle->events.precommit, this, &QWSurfacePrivate::on_precommit);
-    #endif
+#endif
         sc.connect(&handle->events.map, this, &QWSurfacePrivate::on_map);
         sc.connect(&handle->events.unmap, this, &QWSurfacePrivate::on_unmap);
-#endif
     }
     ~QWSurfacePrivate() {
         if (!m_handle)
@@ -144,11 +137,10 @@ public:
     void on_client_commit(void *);
     void on_commit(void *);
     void on_new_subsurface(void *);
-#if WLR_VERSION_MINOR > 16
     void on_precommit(void *);
     void on_map(void *);
     void on_unmap(void *);
-#endif
+
     static QHash<void*, QWSurface*> map;
     QW_DECLARE_PUBLIC(QWSurface)
     QWSignalConnector sc;
@@ -179,8 +171,6 @@ void QWSurfacePrivate::on_new_subsurface(void *data)
     Q_EMIT q_func()->newSubsurface(QWSubsurface::from(handle));
 }
 
-#if WLR_VERSION_MINOR > 16
-
 void QWSurfacePrivate::on_precommit(void *data)
 {
     Q_EMIT q_func()->precommit(reinterpret_cast<wlr_surface_state*>(data));
@@ -195,8 +185,6 @@ void QWSurfacePrivate::on_unmap(void *)
 {
     Q_EMIT q_func()->unmapped();
 }
-
-#endif
 
 QWSurface::QWSurface(wlr_surface *handle, bool isOwner)
     : QObject(nullptr)
@@ -225,12 +213,6 @@ QWSurface *QWSurface::from(wl_resource *resource)
     return from(handle);
 }
 
-#if WLR_VERSION_MINOR <= 16
-void QWSurface::destroyRoleObject()
-{
-    wlr_surface_destroy_role_object(handle());
-}
-#endif
 void QWSurface::forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const
 {
     wlr_surface_for_each_surface(handle(), iterator, userData);
@@ -316,7 +298,6 @@ void QWSurface::unlockCached(uint32_t seq)
     wlr_surface_unlock_cached(handle(), seq);
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWSurface::setPreferredBufferScale(int32_t scale)
 {
     wlr_surface_set_preferred_buffer_scale(handle(), scale);
@@ -341,6 +322,5 @@ void QWSurface::unmap()
 {
     wlr_surface_unmap(handle());
 }
-#endif
 
 QW_END_NAMESPACE

@@ -72,8 +72,6 @@ QWLinuxDmabufV1 *QWLinuxDmabufV1::from(wlr_linux_dmabuf_v1 *handle)
     return new QWLinuxDmabufV1(handle, false);
 }
 
-#if WLR_VERSION_MINOR > 16
-
 QWLinuxDmabufV1 *QWLinuxDmabufV1::create(QWDisplay *display, uint32_t version, const QWLinuxDmabufFeedbackV1 *defaultFeedback)
 {
     auto *handle = wlr_linux_dmabuf_v1_create(display->handle(), version, defaultFeedback->handle());
@@ -89,17 +87,5 @@ QWLinuxDmabufV1 *QWLinuxDmabufV1::create(QWDisplay *display, uint32_t version, Q
         return nullptr;
     return new QWLinuxDmabufV1(handle, true);
 }
-
-#else
-
-QWLinuxDmabufV1 *QWLinuxDmabufV1::create(QWDisplay *display, QWRenderer *renderer)
-{
-    auto *handle = wlr_linux_dmabuf_v1_create(display->handle(), renderer->handle());
-    if (!handle)
-        return nullptr;
-    return new QWLinuxDmabufV1(handle, true);
-}
-
-#endif // WLR_VERSION_MINOR > 16
 
 QW_END_NAMESPACE

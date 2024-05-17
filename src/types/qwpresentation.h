@@ -34,12 +34,8 @@ public:
 
     QWPresentationFeedback *surfaceSampled(QWSurface *surface) const;
 
-#if WLR_VERSION_MINOR > 16
     void surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output);
     void surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output);
-#else
-    void surfaceSampledOnOutput(QWSurface *surface, QWOutput *output);
-#endif
 
 Q_SIGNALS:
     void beforeDestroy(QWPresentation *self);

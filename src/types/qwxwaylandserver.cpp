@@ -21,10 +21,8 @@ public:
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWXWaylandServerPrivate::on_destroy);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.start, this, &QWXWaylandServerPrivate::on_start);
         sc.connect(&handle->events.ready, this, &QWXWaylandServerPrivate::on_ready);
-#endif
     }
     ~QWXWaylandServerPrivate() {
         if (!m_handle)
@@ -43,10 +41,8 @@ public:
     }
 
     void on_destroy(void *);
-#if WLR_VERSION_MINOR > 16
     void on_start(void *);
     void on_ready(void *);
-#endif
 
     static QHash<void*, QWXWaylandServer*> map;
     QW_DECLARE_PUBLIC(QWXWaylandServer)
@@ -61,7 +57,6 @@ void QWXWaylandServerPrivate::on_destroy(void *)
     delete q_func();
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWXWaylandServerPrivate::on_start(void *)
 {
     Q_EMIT q_func()->start();
@@ -71,7 +66,6 @@ void QWXWaylandServerPrivate::on_ready(void *)
 {
     Q_EMIT q_func()->ready();
 }
-#endif
 
 QWXWaylandServer::QWXWaylandServer(wlr_xwayland_server *handle, bool isOwner)
     : QObject(nullptr)

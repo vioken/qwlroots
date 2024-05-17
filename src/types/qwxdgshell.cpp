@@ -128,10 +128,6 @@ public:
 #endif
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
-#if WLR_VERSION_MINOR <= 16
-        sc.connect(&handle->events.map, this, &QWXdgSurfacePrivate::on_map);
-        sc.connect(&handle->events.unmap, this, &QWXdgSurfacePrivate::on_unmap);
-#endif
         sc.connect(&handle->events.configure, this, &QWXdgSurfacePrivate::on_configure);
         sc.connect(&handle->events.ack_configure, this, &QWXdgSurfacePrivate::on_ack_configure);
 #if WLR_VERSION_MINOR >= 18
@@ -157,10 +153,6 @@ public:
     void on_destroy(void *);
     void on_ping_timeout(void *);
     void on_new_popup(wlr_xdg_popup *data);
-#if WLR_VERSION_MINOR <= 16
-    void on_map(void *);
-    void on_unmap(void *);
-#endif
     void on_configure(void *data);
     void on_ack_configure(void *data);
 
@@ -186,18 +178,6 @@ void QWXdgSurfacePrivate::on_new_popup(wlr_xdg_popup *data)
 {
     Q_EMIT q_func()->newPopup(QWXdgPopup::from(data));
 }
-
-#if WLR_VERSION_MINOR <= 16
-void QWXdgSurfacePrivate::on_map(void *)
-{
-    Q_EMIT q_func()->surface()->mapped();
-}
-
-void QWXdgSurfacePrivate::on_unmap(void *)
-{
-    Q_EMIT q_func()->surface()->unmapped();
-}
-#endif
 
 void QWXdgSurfacePrivate::on_configure(void *data)
 {
@@ -237,13 +217,7 @@ QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
 
 QWXdgSurface *QWXdgSurface::from(wlr_surface *surface)
 {
-#if WLR_VERSION_MINOR > 16
     auto handle = wlr_xdg_surface_try_from_wlr_surface(surface);
-#else
-    if (!wlr_surface_is_xdg_surface(surface))
-        return nullptr;
-    auto handle = wlr_xdg_surface_from_wlr_surface(surface);
-#endif
     if (!handle)
         return nullptr;
 

@@ -78,7 +78,6 @@ QWLayerShellV1::QWLayerShellV1(wlr_layer_shell_v1 *handle, bool isOwner)
 
 }
 
-#if WLR_VERSION_MINOR > 16
 QWLayerShellV1 *QWLayerShellV1::create(QWDisplay *display, uint32_t version)
 {
     auto handle = wlr_layer_shell_v1_create(display->handle(), version);
@@ -86,15 +85,6 @@ QWLayerShellV1 *QWLayerShellV1::create(QWDisplay *display, uint32_t version)
         return nullptr;
     return new QWLayerShellV1(handle, true);
 }
-#else
-QWLayerShellV1 *QWLayerShellV1::create(QWDisplay *display)
-{
-    auto handle = wlr_layer_shell_v1_create(display->handle());
-    if (!handle)
-        return nullptr;
-    return new QWLayerShellV1(handle, true);
-}
-#endif // WLR_VERSION_MINOR > 16
 
 QWLayerShellV1 *QWLayerShellV1::get(wlr_layer_shell_v1 *handle)
 {
@@ -118,10 +108,6 @@ public:
     {
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
-#if WLR_VERSION_MINOR <= 16
-        sc.connect(&handle->events.map, this, &QWLayerSurfaceV1Private::on_map);
-        sc.connect(&handle->events.unmap, this, &QWLayerSurfaceV1Private::on_unmap);
-#endif
         sc.connect(&handle->events.new_popup, this, &QWLayerSurfaceV1Private::on_new_popup);
         sc.connect(&handle->events.destroy, this, &QWLayerSurfaceV1Private::on_destroy);
     }
@@ -141,10 +127,6 @@ public:
         sc.invalidate();
     }
 
-#if WLR_VERSION_MINOR <= 16
-    void on_map(void *);
-    void on_unmap(void *);
-#endif
     void on_new_popup(void *);
     void on_destroy(void *);
 
@@ -160,18 +142,6 @@ void QWLayerSurfaceV1Private::on_destroy(void *)
     m_handle = nullptr;
     delete q_func();
 }
-
-#if WLR_VERSION_MINOR <= 16
-void QWLayerSurfaceV1Private::on_map(void *)
-{
-    Q_EMIT q_func()->surface()->mapped();
-}
-
-void QWLayerSurfaceV1Private::on_unmap(void *)
-{
-    Q_EMIT q_func()->surface()->unmapped();
-}
-#endif
 
 void QWLayerSurfaceV1Private::on_new_popup(void *data)
 {
@@ -209,13 +179,7 @@ QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wl_resource *resource)
 
 QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wlr_surface *surface)
 {
-#if WLR_VERSION_MINOR > 16
     auto *handle = wlr_layer_surface_v1_try_from_wlr_surface(surface);
-#else
-    if (!wlr_surface_is_layer_surface(surface))
-        return nullptr;
-    auto *handle = wlr_layer_surface_v1_from_wlr_surface(surface);
-#endif
     if (!handle)
         return nullptr;
     return from(handle);

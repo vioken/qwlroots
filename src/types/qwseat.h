@@ -56,11 +56,7 @@ public:
     void setSelection(wlr_data_source *source, uint32_t serial);
     void keyboardClearFocus();
     void keyboardEndGrab();
-#if WLR_VERSION_MINOR > 16
     void keyboardEnter(QWSurface *surface, const uint32_t keycodes[], size_t numKeycodes, const wlr_keyboard_modifiers *modifiers);
-#else
-    void keyboardEnter(QWSurface *surface, uint32_t keycodes[], size_t numKeycodes, wlr_keyboard_modifiers *modifiers);
-#endif
     bool keyboardHasGrab() const;
     void keyboardNotifyClearFocus();
     void keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t numKeycodes, wlr_keyboard_modifiers *modifiers);

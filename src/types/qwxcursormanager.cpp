@@ -43,11 +43,4 @@ wlr_xcursor *QWXCursorManager::getXCursor(const char *name, float scale) const
     return wlr_xcursor_manager_get_xcursor(handle(), name, scale);
 }
 
-#if WLR_VERSION_MINOR <= 16
-void QWXCursorManager::setCursor(const char *name, QWCursor *cursor)
-{
-    wlr_xcursor_manager_set_cursor_image(handle(), name, cursor->handle());
-}
-#endif
-
 QW_END_NAMESPACE

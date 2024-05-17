@@ -93,13 +93,7 @@ QWDrmBuffer *QWDrmBuffer::from(wlr_drm_buffer *handle)
 
 QWDrmBuffer *QWDrmBuffer::from(wl_resource *resource)
 {
-#if WLR_VERSION_MINOR > 16
     auto *handle = wlr_drm_buffer_try_from_resource(resource);
-#else
-    if (!wlr_drm_buffer_is_resource(resource))
-        return nullptr;
-    auto *handle = wlr_drm_buffer_from_resource(resource);
-#endif
     return handle ? from(handle) : nullptr;
 }
 

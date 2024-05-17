@@ -91,7 +91,6 @@ QWPresentationFeedback *QWPresentation::surfaceSampled(QWSurface *surface) const
 #endif
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWPresentation::surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output)
 {
 #if WLR_VERSION_MINOR > 17
@@ -109,14 +108,6 @@ void QWPresentation::surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *out
     wlr_presentation_surface_scanned_out_on_output(handle(), surface->handle(), output->handle());
 #endif
 }
-
-#else
-
-void QWPresentation::surfaceSampledOnOutput(QWSurface *surface, QWOutput *output)
-{
-    wlr_presentation_surface_sampled_on_output(handle(), surface->handle(), output->handle());
-}
-#endif
 
 wlr_presentation_event *QWPresentationEvent::handle() const
 {

@@ -472,11 +472,7 @@ void TinywlServer::onOutputFrame()
     auto output = qobject_cast<QWOutput*>(sender());
     Q_ASSERT(output);
     auto sceneOutput = QWSceneOutput::from(scene, output);
-#if WLR_VERSION_MINOR > 16
     sceneOutput->commit(nullptr);
-#else
-    sceneOutput->commit();
-#endif
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     sceneOutput->sendFrameDone(&now);
@@ -495,11 +491,7 @@ TinywlServer::View *TinywlServer::viewAt(const QPointF &pos, wlr_surface **surfa
         return nullptr;
     }
     auto *sceneBuffer = QWSceneBuffer::from(node);
-#if WLR_VERSION_MINOR > 16
     auto *sceneSurface = wlr_scene_surface_try_from_buffer(sceneBuffer->handle());
-#else
-    auto *sceneSurface = wlr_scene_surface_from_buffer(sceneBuffer->handle());
-#endif
     if (!sceneSurface)
         return nullptr;
 
@@ -565,13 +557,8 @@ void TinywlServer::processCursorMotion(uint32_t time)
     wlr_surface *surface = nullptr;
     QPointF spos;
     auto view = viewAt(cursor->position(), &surface, &spos);
-#if WLR_VERSION_MINOR > 16
     if (!view)
         cursor->setXCursor(cursorManager, "left_ptr");
-#else
-    if (!view)
-        cursorManager->setCursor("left_ptr", cursor);
-#endif
     if (surface) {
         seat->pointerNotifyEnter(QWSurface::from(surface), spos.x(), spos.y());
         seat->pointerNotifyMotion(time, spos.x(), spos.y());

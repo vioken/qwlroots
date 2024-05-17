@@ -26,10 +26,6 @@ rec {
     wlroots = pkgs.wlroots_0_17;
   };
 
-  qwlroots-qt6-wlroots-16 = qwlroots-qt6.override {
-    wlroots = pkgs.wlroots_0_16;
-  };
-
   qwlroots-qt6-wlroots-master = qwlroots-qt6.override {
     wlroots = wlroots_master;
   };

@@ -217,17 +217,10 @@ void QWSeat::keyboardEndGrab()
     wlr_seat_keyboard_end_grab(handle());
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWSeat::keyboardEnter(QWSurface *surface, const uint32_t *keycodes, size_t numKeycodes, const wlr_keyboard_modifiers *modifiers)
 {
     wlr_seat_keyboard_enter(handle(), surface->handle(), keycodes, numKeycodes, modifiers);
 }
-#else
-void QWSeat::keyboardEnter(QWSurface *surface, uint32_t *keycodes, size_t numKeycodes, wlr_keyboard_modifiers *modifiers)
-{
-    wlr_seat_keyboard_enter(handle(), surface->handle(), keycodes, numKeycodes, modifiers);
-}
-#endif
 
 bool QWSeat::keyboardHasGrab() const
 {

@@ -39,9 +39,7 @@ public:
         sc.connect(&handle->events.present, this, &QWOutputPrivate::on_present);
         sc.connect(&handle->events.bind, this, &QWOutputPrivate::on_bind);
         sc.connect(&handle->events.description, this, &QWOutputPrivate::on_description);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.request_state, this, &QWOutputPrivate::on_request_state);
-#endif
         sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
     }
     ~QWOutputPrivate() {
@@ -68,9 +66,7 @@ public:
     void on_present(void *data);
     void on_bind(void *data);
     void on_description(void *data);
-#if WLR_VERSION_MINOR > 16
     void on_request_state(void *data);
-#endif
     void on_destroy(void *data);
 
     static QHash<void*, QWOutput*> map;
@@ -119,12 +115,11 @@ void QWOutputPrivate::on_description(void *)
     Q_EMIT q_func()->descriptionChanged();
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWOutputPrivate::on_request_state(void *data)
 {
     Q_EMIT q_func()->requestState(static_cast<wlr_output_event_request_state*>(data));
 }
-#endif
+
 void QWOutputPrivate::on_destroy(void *)
 {
     destroy();
@@ -316,12 +311,10 @@ bool QWOutput::commitState(wlr_output_state *state)
     return wlr_output_commit_state(handle(), state);
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWOutput::finishState(wlr_output_state *state)
 {
     wlr_output_state_finish(state);
 }
-#endif
 
 void QWOutput::scheduleFrame()
 {
@@ -350,7 +343,6 @@ const wlr_drm_format_set *QWOutput::getPrimaryFormats(uint32_t bufferCaps)
     return wlr_output_get_primary_formats(handle(), bufferCaps);
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWOutput::addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage)
 {
     wlr_output_add_software_cursors_to_render_pass(handle(), render_pass, damage);
@@ -360,7 +352,6 @@ bool QWOutput::configurePrimarySwapchain(const wlr_output_state *state, wlr_swap
 {
     return wlr_output_configure_primary_swapchain(handle(), state, swapchain);
 }
-#endif
 
 void QWOutputCursor::operator delete(QWOutputCursor *p, std::destroying_delete_t)
 {
@@ -382,15 +373,6 @@ QWOutputCursor *QWOutputCursor::create(QWOutput *output)
     auto handle = wlr_output_cursor_create(output->handle());
     return from(handle);
 }
-
-#if WLR_VERSION_MINOR <= 16
-bool QWOutputCursor::setImage(const QImage &image, const QPoint &hotspot)
-{
-    return wlr_output_cursor_set_image(handle(), reinterpret_cast<const uint8_t*>(image.constBits()),
-                                       image.bitPlaneCount(), image.width(), image.height(),
-                                       hotspot.x(), hotspot.y());
-}
-#endif
 
 bool QWOutputCursor::setBuffer(QWBuffer *buffer, const QPoint &hotspot)
 {

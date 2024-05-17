@@ -140,12 +140,10 @@ QWSubsurface *QWSubsurface::from(wlr_subsurface *handle)
     return new QWSubsurface(handle, false);
 }
 
-#if WLR_VERSION_MINOR > 16
 QWSubsurface *QWSubsurface::tryFrom(QWSurface *surface)
 {
     auto handle = wlr_subsurface_try_from_wlr_surface(surface->handle());
     return handle ? from(handle) : nullptr;
 }
-#endif
 
 QW_END_NAMESPACE

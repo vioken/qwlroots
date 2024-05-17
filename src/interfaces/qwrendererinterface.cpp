@@ -146,11 +146,7 @@ static bool bind_buffer(wlr_renderer *handle, wlr_buffer *buffer)
     return interface(handle)->bindBuffer(QWBuffer::from(buffer));
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR <= 16
-static void begin(wlr_renderer *handle, uint32_t width, uint32_t height)
-#else
 static bool begin(wlr_renderer *handle, uint32_t width, uint32_t height)
-#endif
 {
     return interface(handle)->begin({uint32ToPixelSize(width), uint32ToPixelSize(height)});
 }
@@ -267,7 +263,6 @@ static wlr_texture *texture_from_buffer(wlr_renderer *handle, wlr_buffer *buffer
     return texture ? texture->handle() : nullptr;
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
 static wlr_render_pass *begin_buffer_pass(wlr_renderer *handle, wlr_buffer *buffer, const wlr_buffer_pass_options *options) {
     return interface(handle)->beginBufferPass(QWBuffer::from(buffer), options);
 }
@@ -275,7 +270,6 @@ static wlr_render_pass *begin_buffer_pass(wlr_renderer *handle, wlr_buffer *buff
 static wlr_render_timer *render_timer_create(wlr_renderer *handle) {
     return interface(handle)->renderTimerCreate();
 }
-#endif
 } // namespace impl
 
 QWRendererInterface::~QWRendererInterface()
@@ -333,7 +327,6 @@ QWTexture *QWRendererInterface::textureFromBuffer(QWBuffer *) const
     return nullptr;
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
 wlr_render_pass *QWRendererInterface::beginBufferPass(QWBuffer *, const wlr_buffer_pass_options *) {
     return nullptr;
 }
@@ -341,7 +334,6 @@ wlr_render_pass *QWRendererInterface::beginBufferPass(QWBuffer *, const wlr_buff
 wlr_render_timer *QWRendererInterface::renderTimerCreate() {
     return nullptr;
 }
-#endif
 
 void QWRendererInterface::init(FuncMagicKey funMagicKey)
 {
@@ -366,10 +358,8 @@ void QWRendererInterface::init(FuncMagicKey funMagicKey)
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_drm_fd, &QWRendererInterface::getDrmFd),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_buffer_caps, &QWRendererInterface::getRenderBufferCaps),
         QW_INIT_INTERFACE_FUNC(funMagicKey, texture_from_buffer, &QWRendererInterface::textureFromBuffer),
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
         QW_INIT_INTERFACE_FUNC(funMagicKey, begin_buffer_pass, &QWRendererInterface::beginBufferPass),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_timer_create, &QWRendererInterface::renderTimerCreate),
-#endif
     };
     m_handleImpl = impl;
     m_handle = calloc(1, sizeof(_wlr_renderer));

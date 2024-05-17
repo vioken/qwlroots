@@ -19,8 +19,6 @@ QWLinuxDmabufFeedbackV1 *QWLinuxDmabufFeedbackV1::from(wlr_linux_dmabuf_feedback
     return reinterpret_cast<QWLinuxDmabufFeedbackV1*>(handle);
 }
 
-#if WLR_VERSION_MINOR > 16
-
 void QWLinuxDmabufFeedbackV1::finish()
 {
     wlr_linux_dmabuf_feedback_v1_finish(handle());
@@ -30,7 +28,5 @@ bool QWLinuxDmabufFeedbackV1::initWithOptions(const wlr_linux_dmabuf_feedback_v1
 {
     return wlr_linux_dmabuf_feedback_v1_init_with_options(handle(), options);
 }
-
-#endif // WLR_VERSION_MINOR > 16
 
 QW_END_NAMESPACE

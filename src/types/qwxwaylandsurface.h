@@ -30,18 +30,14 @@ class QW_EXPORT QWXWaylandSurface : public QObject, public QWObject
 public:
     static QWXWaylandSurface *get(wlr_xwayland_surface* handle);
     static QWXWaylandSurface* from(wlr_xwayland_surface* handle);
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
     static QWXWaylandSurface *tryFromWlrSurface(QWSurface *surface);
-#endif
 
     wlr_xwayland_surface* handle() const;
     void activate(bool activated);
     void restack(QWXWaylandSurface *sibling, xcb_stack_mode mode);
     void configure(const QRect &rect);
     void close();
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
     void setWithdrawn(bool withdrawn);
-#endif
     void setMinimized(bool minimized);
     void setMaximized(bool maximized);
     void setFullscreen(bool fullscreen);
@@ -69,11 +65,9 @@ Q_SIGNALS:
     void overrideRedirectChanged();
     void geometryChanged();
     void pingTimeout();
-#if WLR_VERSION_MINOR > 16
     void associate();
     void dissociate();
     void strutPartialChanged();
-#endif
 
 private:
     QWXWaylandSurface(wlr_xwayland_surface *handle);

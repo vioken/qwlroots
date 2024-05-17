@@ -256,7 +256,6 @@ void QWCursor::move(QWInputDevice *dev, const QPointF &deltaPos)
     wlr_cursor_move(handle(), dev ? dev->handle() : nullptr, deltaPos.x(), deltaPos.y());
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWCursor::setBuffer(QWBuffer *buffer, const QPoint &hotspot, float scale)
 {
     wlr_cursor_set_buffer(handle(), buffer->handle(),
@@ -272,14 +271,6 @@ void QWCursor::unsetImage()
 {
     wlr_cursor_unset_image(handle());
 }
-#else
-void QWCursor::setImage(const QImage &image, const QPoint &hotspot)
-{
-    wlr_cursor_set_image(handle(), reinterpret_cast<const uint8_t*>(image.constBits()),
-                         image.bytesPerLine(), image.width(), image.height(),
-                         hotspot.x(), hotspot.y(), image.devicePixelRatioF());
-}
-#endif
 
 void QWCursor::setSurface(QWSurface *surface, const QPoint &hotspot)
 {

@@ -37,11 +37,9 @@ public:
         sc.connect(&handle->events.request_maximize, this, &QWXWaylandSurfacePrivate::on_request_maximize);
         sc.connect(&handle->events.request_fullscreen, this, &QWXWaylandSurfacePrivate::on_request_fullscreen);
         sc.connect(&handle->events.request_activate, this, &QWXWaylandSurfacePrivate::on_request_activate);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.associate, this, &QWXWaylandSurfacePrivate::on_associate);
         sc.connect(&handle->events.dissociate, this, &QWXWaylandSurfacePrivate::on_dissociate);
         sc.connect(&handle->events.set_strut_partial, this, &QWXWaylandSurfacePrivate::on_set_strut_partial);
-#endif
         sc.connect(&handle->events.set_title, this, &QWXWaylandSurfacePrivate::on_set_title);
         sc.connect(&handle->events.set_class, this, &QWXWaylandSurfacePrivate::on_set_class);
         sc.connect(&handle->events.set_role, this, &QWXWaylandSurfacePrivate::on_set_role);
@@ -69,11 +67,9 @@ public:
     void on_request_maximize(void *);
     void on_request_fullscreen(void *);
     void on_request_activate(void *);
-#if WLR_VERSION_MINOR > 16
     void on_associate(void *);
     void on_dissociate(void *);
     void on_set_strut_partial(void *);
-#endif
     void on_set_title(void *);
     void on_set_class(void *);
     void on_set_role(void *);
@@ -142,7 +138,6 @@ void QWXWaylandSurfacePrivate::on_request_activate(void *)
     Q_EMIT q_func()->requestActivate();
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWXWaylandSurfacePrivate::on_associate(void *)
 {
     Q_EMIT q_func()->associate();
@@ -157,7 +152,6 @@ void QWXWaylandSurfacePrivate::on_set_strut_partial(void *)
 {
     Q_EMIT q_func()->strutPartialChanged();
 }
-#endif
 
 void QWXWaylandSurfacePrivate::on_set_title(void *)
 {
@@ -258,12 +252,10 @@ void QWXWaylandSurface::close()
     wlr_xwayland_surface_close(handle());
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
 void QWXWaylandSurface::setWithdrawn(bool withdrawn)
 {
     wlr_xwayland_surface_set_withdrawn(handle(), withdrawn);
 }
-#endif
 
 void QWXWaylandSurface::setMinimized(bool minimized)
 {
@@ -280,13 +272,11 @@ void QWXWaylandSurface::setFullscreen(bool fullscreen)
     wlr_xwayland_surface_set_fullscreen(handle(), fullscreen);
 }
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
 QWXWaylandSurface *QWXWaylandSurface::tryFromWlrSurface(QWSurface *surface)
 {
     auto handle = wlr_xwayland_surface_try_from_wlr_surface(surface->handle());
     return handle ? from(handle) : nullptr;
 }
-#endif
 
 void QWXWaylandSurface::ping()
 {
