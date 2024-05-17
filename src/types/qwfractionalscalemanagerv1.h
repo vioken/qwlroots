@@ -26,7 +26,7 @@ public:
     static QWFractionalScaleManagerV1 *from(wlr_fractional_scale_manager_v1 *handle);
     static QWFractionalScaleManagerV1 *create(QWDisplay *display, uint32_t version);
 
-    void notifyScale(QWSurface *surface, double scale);
+    static void notifyScale(QWSurface *surface, double scale);
 
 Q_SIGNALS:
     void beforeDestroy(QWFractionalScaleManagerV1 *self);
