@@ -35,11 +35,8 @@ public:
     static QWRenderer *get(wlr_renderer *handle);
     static QWRenderer *from(wlr_renderer *handle);
     static QWRenderer *autoCreate(QWBackend *backend);
-#if WLR_VERSION_MINOR > 16
     bool begin(uint32_t width, uint32_t height);
-#else
-    void begin(uint32_t width, uint32_t height);
-#endif
+
 #if WLR_VERSION_MINOR > 17
     // TODO: use QWRenderPass
     wlr_render_pass* begin(QWBuffer *buffer, const wlr_buffer_pass_options *options);
@@ -85,9 +82,7 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWRenderer *self);
-#if WLR_VERSION_MINOR > 16
     void lost();
-#endif
 
 private:
     QWRenderer(wlr_renderer *handle, bool isOwner);

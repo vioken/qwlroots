@@ -62,9 +62,7 @@ public:
     static QWSurface *get(wlr_surface *handle);
     static QWSurface *from(wlr_surface *handle);
     static QWSurface *from(wl_resource *resource);
-#if WLR_VERSION_MINOR <= 16
-    void destroyRoleObject();
-#endif
+
     void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
     QRectF getBufferSourceBox() const;
     void getEffectiveDamage(pixman_region32_t *damage) const;
@@ -79,13 +77,11 @@ public:
     void sendLeave(QWOutput *output);
     QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
     void unlockCached(uint32_t seq);
-#if WLR_VERSION_MINOR > 16
     void setPreferredBufferScale(int32_t scale);
     void setPreferredBufferTransform(wl_output_transform_t transform);
     void setRole(const wlr_surface_role *role, wl_resource *errorResource, uint32_t errorCode);
     void map();
     void unmap();
-#endif
 
 Q_SIGNALS:
     void beforeDestroy(QWSurface *self);
@@ -94,9 +90,7 @@ Q_SIGNALS:
     void newSubsurface(QWSubsurface *surface);
     void mapped();
     void unmapped();
-#if WLR_VERSION_MINOR > 16
     void precommit(const wlr_surface_state *state);
-#endif
 
 private:
     QWSurface(wlr_surface *handle, bool isOwner);

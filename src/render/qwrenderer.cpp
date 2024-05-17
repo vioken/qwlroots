@@ -35,9 +35,7 @@ public:
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWRendererPrivate::on_destroy);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.lost, this, &QWRendererPrivate::on_lost);
-#endif
     }
     ~QWRendererPrivate() {
         if (!m_handle)
@@ -56,9 +54,7 @@ public:
     }
 
     void on_destroy(void *);
-#if WLR_VERSION_MINOR > 16
     void on_lost(void *);
-#endif
 
     static QHash<void*, QWRenderer*> map;
     QW_DECLARE_PUBLIC(QWRenderer)
@@ -73,12 +69,10 @@ void QWRendererPrivate::on_destroy(void *)
     delete q_func();
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWRendererPrivate::on_lost(void *)
 {
     Q_EMIT q_func()->lost();
 }
-#endif
 
 QWRenderer *QWRenderer::get(wlr_renderer *handle)
 {

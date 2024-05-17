@@ -48,9 +48,7 @@ public:
 
     static QWSubsurface *get(wlr_subsurface *handle);
     static QWSubsurface *from(wlr_subsurface *handle);
-#if WLR_VERSION_MINOR > 16
     static QWSubsurface *tryFrom(QWSurface *surface);
-#endif
 
 Q_SIGNALS:
     void beforeDestroy(QWSubsurface *self);

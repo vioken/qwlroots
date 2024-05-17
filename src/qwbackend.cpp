@@ -122,10 +122,8 @@ QWBackend *QWBackend::autoCreate(QWDisplay *display, QObject *parent)
 {
 #if WLR_VERSION_MINOR >= 18
     auto handle = wlr_backend_autocreate(display->eventLoop(), nullptr);
-#elif WLR_VERSION_MINOR > 16
-    auto handle = wlr_backend_autocreate(display->handle(), nullptr);
 #else
-    auto handle = wlr_backend_autocreate(display->handle());
+    auto handle = wlr_backend_autocreate(display->handle(), nullptr);
 #endif
     if (!handle)
         return nullptr;
@@ -150,14 +148,6 @@ QWBackend::~QWBackend()
 {
 
 }
-
-#if WLR_VERSION_MINOR <= 16
-clockid_t QWBackend::presentationClock() const
-{
-    Q_D(const QWBackend);
-    return wlr_backend_get_presentation_clock(handle());
-}
-#endif
 
 int QWBackend::drmFd() const
 {
@@ -340,18 +330,10 @@ QWWaylandBackend *QWWaylandBackend::create(wl_event_loop *eventloop, wl_display 
         return nullptr;
     return new QWWaylandBackend(handle, true, parent);
 }
-#elif WLR_VERSION_MINOR > 16
+#else
 QWWaylandBackend *QWWaylandBackend::create(QWDisplay *display, wl_display *remote_display, QObject *parent)
 {
     auto handle = wlr_wl_backend_create(display->handle(), remote_display);
-    if (!handle)
-        return nullptr;
-    return new QWWaylandBackend(handle, true, parent);
-}
-#else
-QWWaylandBackend *QWWaylandBackend::create(QWDisplay *display, const char *remote, QObject *parent)
-{
-    auto handle = wlr_wl_backend_create(display->handle(), remote);
     if (!handle)
         return nullptr;
     return new QWWaylandBackend(handle, true, parent);

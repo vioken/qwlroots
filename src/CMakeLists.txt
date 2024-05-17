@@ -9,7 +9,7 @@ find_package(Qt${QT_VERSION_MAJOR}
     REQUIRED
 )
 
-set(WLROOTS_MINIMUM_REQUIRED 0.16.0)
+set(WLROOTS_MINIMUM_REQUIRED 0.17.0)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET wlroots>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
@@ -218,53 +218,44 @@ set(PRIVATE_HEADERS
     types/qwkeyboard_p.h
 )
 
-if ((${WLROOTS_VERSION_MAJOR} EQUAL 0) AND (${WLROOTS_VERSION_MINOR} GREATER 16))
-    ws_generate(
-        server
-        wayland-protocols
-        staging/content-type/content-type-v1.xml
-        content-type-v1-protocol
-    )
-    ws_generate(
-        server
-        wayland-protocols
-        staging/cursor-shape/cursor-shape-v1.xml
-        cursor-shape-v1-protocol
-    )
+ws_generate(
+    server
+    wayland-protocols
+    staging/content-type/content-type-v1.xml
+    content-type-v1-protocol
+)
+ws_generate(
+    server
+    wayland-protocols
+    staging/cursor-shape/cursor-shape-v1.xml
+    cursor-shape-v1-protocol
+)
 
+list(APPEND SOURCES
+    render/qwswapchain.cpp
+    types/qwshm.cpp
+    types/qwfractionalscalev1.cpp
+    types/qwcontenttypev1.cpp
+    types/qwcursorshapev1.cpp
+)
+list(APPEND HEADERS
+    render/qwswapchain.h
+    types/qwshm.h
+    types/qwfractionalscalev1.cpp
+    types/qwcontenttypev1.h
+    types/qwcursorshapev1.h
+)
+if(WLR_HAVE_XWAYLAND)
     list(APPEND SOURCES
-        render/qwswapchain.cpp
-        types/qwshm.cpp
-        types/qwfractionalscalev1.cpp
-        types/qwcontenttypev1.cpp
-        types/qwcursorshapev1.cpp
+        types/qwxwaylandshellv1.cpp
     )
     list(APPEND HEADERS
-        render/qwswapchain.h
-        types/qwshm.h
-        types/qwfractionalscalev1.cpp
-        types/qwcontenttypev1.h
-        types/qwcursorshapev1.h
+        types/qwxwaylandshellv1.h
     )
-    if(WLR_HAVE_XWAYLAND)
-        list(APPEND SOURCES
-            types/qwxwaylandshellv1.cpp
-        )
-        list(APPEND HEADERS
-            types/qwxwaylandshellv1.h
-        )
-    endif()
-    if (${WLROOTS_VERSION_MINOR} GREATER_EQUAL 18)
-        list(REMOVE_ITEM HEADERS types/qwinputinhibitmanager.h)
-        list(REMOVE_ITEM SOURCES types/qwinputinhibitmanager.cpp)
-    endif()
-else()
-    list(APPEND SOURCES
-        types/qwidle.cpp
-    )
-    list(APPEND HEADERS
-        types/qwidle.h
-    )
+endif()
+if (${WLROOTS_VERSION_MINOR} GREATER_EQUAL 18)
+    list(REMOVE_ITEM HEADERS types/qwinputinhibitmanager.h)
+    list(REMOVE_ITEM SOURCES types/qwinputinhibitmanager.cpp)
 endif()
 
 if (WLR_HAVE_XWAYLAND)

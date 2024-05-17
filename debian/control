@@ -8,7 +8,7 @@ Build-Depends: debhelper-compat (= 13),
                qt6-base-dev-tools,
                wayland-protocols,
 	       wlr-protocols,
-               libwlroots-dev (>=0.16.0),
+               libwlroots-dev (>=0.17.0),
                libpixman-1-dev,
                libxcb-ewmh-dev,
 	       libdrm-dev

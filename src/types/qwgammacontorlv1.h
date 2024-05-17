@@ -28,9 +28,7 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWGammaControlManagerV1 *self);
-#if WLR_VERSION_MINOR > 16
     void gammaChanged(wlr_gamma_control_manager_v1_set_gamma_event *event);
-#endif
 
 private:
     QWGammaControlManagerV1(wlr_gamma_control_manager_v1 *handle, bool isOwner);

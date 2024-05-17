@@ -26,11 +26,7 @@ class QW_EXPORT QWLayerShellV1 : public QObject, public QWObject
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWLayerShellV1)
 public:
-#if WLR_VERSION_MINOR > 16
     static QWLayerShellV1 *create(QWDisplay *display, uint32_t version);
-#else
-    static QWLayerShellV1 *create(QWDisplay *display);
-#endif
     inline wlr_layer_shell_v1 *handle() const {
         return QWObject::handle<wlr_layer_shell_v1>();
     }

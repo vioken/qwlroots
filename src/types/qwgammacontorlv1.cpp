@@ -22,9 +22,7 @@ public:
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWGammaControlManagerV1Private::on_destroy);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.set_gamma, this, &QWGammaControlManagerV1Private::on_set_gamma);
-#endif
     }
     ~QWGammaControlManagerV1Private() {
         if (!m_handle)
@@ -41,9 +39,7 @@ public:
     }
 
     void on_destroy(void *);
-#if WLR_VERSION_MINOR > 16
     void on_set_gamma(void *);
-#endif
 
     static QHash<void*, QWGammaControlManagerV1*> map;
     QW_DECLARE_PUBLIC(QWGammaControlManagerV1)
@@ -58,12 +54,10 @@ void QWGammaControlManagerV1Private::on_destroy(void *)
     delete q_func();
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWGammaControlManagerV1Private::on_set_gamma(void *data)
 {
     Q_EMIT q_func()->gammaChanged(reinterpret_cast<wlr_gamma_control_manager_v1_set_gamma_event*>(data));
 }
-#endif
 
 QWGammaControlManagerV1::QWGammaControlManagerV1(wlr_gamma_control_manager_v1 *handle, bool isOwner)
     : QObject(nullptr)

@@ -27,11 +27,7 @@ public:
     virtual ~QWRendererInterface();
 
     virtual bool bindBuffer(QWBuffer *buffer);
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR <= 16
-    virtual void begin(const QSize &size) = 0;
-#else
     virtual bool begin(const QSize &size) = 0;
-#endif
     virtual void end() = 0;
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
@@ -54,10 +50,8 @@ public:
 
     virtual QWTexture *textureFromBuffer(QWBuffer *buffer) const;
 
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
     wlr_render_pass *beginBufferPass(QWBuffer *buffer, const wlr_buffer_pass_options *options);
     wlr_render_timer *renderTimerCreate();
-#endif
 
     virtual const QVector<uint32_t>* getShmTextureFormats() const;
 
@@ -87,12 +81,9 @@ protected:
                                 &T::readPixels,
                                 &T::getDrmFd,
                                 &T::getRenderBufferCaps,
-                                &T::textureFromBuffer
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR > 16
-                                ,
+                                &T::textureFromBuffer,
                                 &T::beginBufferPass,
                                 &T::renderTimerCreate
-#endif
         ));
     }
 

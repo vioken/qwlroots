@@ -80,10 +80,6 @@ public:
 
     static QWClientBuffer *from(wlr_client_buffer *handle);
     static QWClientBuffer *get(QWBuffer *buffer);
-#if WLR_VERSION_MINOR <= 16
-    static QWClientBuffer *create(QWBuffer *buffer, QWRenderer *renderer);
-    bool applyDamage(QWBuffer *next, pixman_region32 *damage);
-#endif
 };
 
 QW_END_NAMESPACE

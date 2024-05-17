@@ -101,9 +101,7 @@ public:
 #endif
     bool testState(wlr_output_state *state);
     bool commitState(wlr_output_state *state);
-#if WLR_VERSION_MINOR > 16
     static void finishState(wlr_output_state *state);
-#endif
     void scheduleFrame();
 
     size_t getGammaSize() const;
@@ -114,11 +112,8 @@ public:
 #endif
     const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps);
 
-#if WLR_VERSION_MINOR > 16
     void addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage);
     bool configurePrimarySwapchain(const wlr_output_state *state, wlr_swapchain **swapchain);
-#endif
-
 
 Q_SIGNALS:
     void beforeDestroy(QWOutput *self);
@@ -130,9 +125,7 @@ Q_SIGNALS:
     void present(wlr_output_event_present *event);
     void bind(wlr_output_event_bind *event);
     void descriptionChanged();
-#if WLR_VERSION_MINOR > 16
     void requestState(wlr_output_event_request_state *state);
-#endif
 
 private:
     QWOutput(wlr_output *handle, bool isOwner);
@@ -150,9 +143,6 @@ public:
     static QWOutputCursor *from(wlr_output_cursor *handle);
     static QWOutputCursor *create(QWOutput *output);
 
-#if WLR_VERSION_MINOR <= 16
-    bool setImage(const QImage &image, const QPoint &hotspot);
-#endif
     bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
     bool move(const QPointF &pos);
 };

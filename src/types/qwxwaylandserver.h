@@ -30,10 +30,8 @@ public:
 
 Q_SIGNALS:
     void beforeDestroy(QWXWaylandServer *self);
-#if WLR_VERSION_MINOR > 16
     void start();
     void ready();
-#endif
 
 private:
     QWXWaylandServer(wlr_xwayland_server *handle, bool isOwner);

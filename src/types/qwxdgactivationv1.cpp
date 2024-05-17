@@ -23,9 +23,7 @@ public:
         map.insert(handle, qq);
         sc.connect(&handle->events.destroy, this, &QWXdgActivationV1Private::on_destroy);
         sc.connect(&handle->events.request_activate, this, &QWXdgActivationV1Private::on_request_activate);
-#if WLR_VERSION_MINOR > 16
         sc.connect(&handle->events.new_token, this, &QWXdgActivationV1Private::on_new_token);
-#endif
     }
     ~QWXdgActivationV1Private() {
         if (!m_handle)
@@ -43,9 +41,7 @@ public:
 
     void on_destroy(void *);
     void on_request_activate(wlr_xdg_activation_v1_request_activate_event *);
-#if WLR_VERSION_MINOR > 16
     void on_new_token(wlr_xdg_activation_token_v1 *);
-#endif
 
     static QHash<void*, QWXdgActivationV1*> map;
     QW_DECLARE_PUBLIC(QWXdgActivationV1)
@@ -65,12 +61,10 @@ void QWXdgActivationV1Private::on_request_activate(wlr_xdg_activation_v1_request
     Q_EMIT q_func()->requestActivate(event);
 }
 
-#if WLR_VERSION_MINOR > 16
 void QWXdgActivationV1Private::on_new_token(wlr_xdg_activation_token_v1 *token)
 {
     Q_EMIT q_func()->newToken(QWXdgActivationTokenV1::from(token));
 }
-#endif
 
 QWXdgActivationV1::QWXdgActivationV1(wlr_xdg_activation_v1 *handle, bool isOwner)
     : QObject(nullptr)
