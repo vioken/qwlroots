@@ -124,6 +124,7 @@ set(SOURCES
     types/qwtabletmanagerv2.cpp
     types/qwkeyboardshortcutsinhibitv1.cpp
     types/qwkeyboardshortcutsinhibitmanagerv1.cpp
+    types/qwfractionalscalemanagerv1.cpp
     util/qwsignalconnector.cpp
     util/qwlogging.cpp
     interfaces/qwbackendinterface.cpp
@@ -199,6 +200,7 @@ set(HEADERS
     types/qwgammacontorlv1.h
     types/qwfullscreenshellv1.h
     types/qwkeyboardshortcutsinhibitv1.h
+    types/qwfractionalscalemanagerv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
     interfaces/qwinterface.h
@@ -234,14 +236,12 @@ ws_generate(
 list(APPEND SOURCES
     render/qwswapchain.cpp
     types/qwshm.cpp
-    types/qwfractionalscalev1.cpp
     types/qwcontenttypev1.cpp
     types/qwcursorshapev1.cpp
 )
 list(APPEND HEADERS
     render/qwswapchain.h
     types/qwshm.h
-    types/qwfractionalscalev1.cpp
     types/qwcontenttypev1.h
     types/qwcursorshapev1.h
 )
