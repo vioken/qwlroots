@@ -6,10 +6,13 @@
 #include <qwglobal.h>
 #include <QObject>
 
+struct wlr_output_layout;
 struct wlr_xdg_output_manager_v1;
 
 QW_BEGIN_NAMESPACE
 
+class QWDisplay;
+class QWOutputLayout;
 class QWXdgOutputManagerV1Private;
 class QW_EXPORT QWXdgOutputManagerV1 : public QObject, public QWObject
 {
@@ -22,6 +25,7 @@ public:
 
     static QWXdgOutputManagerV1 *get(wlr_xdg_output_manager_v1 *handle);
     static QWXdgOutputManagerV1 *from(wlr_xdg_output_manager_v1 *handle);
+    static QWXdgOutputManagerV1 *create(QWDisplay *display, QWOutputLayout *layout);
 
 Q_SIGNALS:
     void beforeDestroy(QWXdgOutputManagerV1 *self);
