@@ -54,7 +54,7 @@ void QWLog::init(Importance importance)
 void QWLog::init(Importance importance, qwl_log_func_t callback)
 {
     logLevel = static_cast<wlr_log_importance>(importance);
-    wlr_log_init(logLevel, callback ? log_callback : wlr_log_func_t(callback));
+    wlr_log_init(logLevel, callback ? wlr_log_func_t(callback) : log_callback);
 }
 
 QW_END_NAMESPACE
