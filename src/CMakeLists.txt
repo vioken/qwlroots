@@ -125,6 +125,7 @@ set(SOURCES
     types/qwkeyboardshortcutsinhibitv1.cpp
     types/qwkeyboardshortcutsinhibitmanagerv1.cpp
     types/qwfractionalscalemanagerv1.cpp
+    types/qwsecuritycontextmanagerv1.cpp
     util/qwsignalconnector.cpp
     util/qwlogging.cpp
     interfaces/qwbackendinterface.cpp
@@ -201,6 +202,7 @@ set(HEADERS
     types/qwfullscreenshellv1.h
     types/qwkeyboardshortcutsinhibitv1.h
     types/qwfractionalscalemanagerv1.h
+    types/qwsecuritycontextmanagerv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
     interfaces/qwinterface.h
