@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwsessionlockv1.h"
+
 #include "util/qwsignalconnector.h"
 
 #include <QHash>
@@ -21,9 +22,12 @@ public:
         Q_ASSERT(!map.contains(handle));
         map.insert(handle, qq);
         sc.connect(&handle->events.new_surface, this, &QWSessionLockV1Private::on_new_surface);
+        sc.connect(&handle->events.unlock, this, &QWSessionLockV1Private::on_unlock);
         sc.connect(&handle->events.destroy, this, &QWSessionLockV1Private::on_destroy);
     }
-    ~QWSessionLockV1Private() {
+
+    ~QWSessionLockV1Private()
+    {
         if (!m_handle)
             return;
         destroy();
@@ -31,7 +35,8 @@ public:
             wlr_session_lock_v1_destroy(q_func()->handle());
     }
 
-    inline void destroy() {
+    inline void destroy()
+    {
         Q_ASSERT(m_handle);
         Q_ASSERT(map.contains(m_handle));
         Q_EMIT q_func()->beforeDestroy(q_func());
@@ -41,12 +46,14 @@ public:
 
     void on_destroy(void *);
     void on_new_surface(wlr_session_lock_surface_v1 *);
+    void on_unlock();
 
-    static QHash<void*, QWSessionLockV1*> map;
+    static QHash<void *, QWSessionLockV1 *> map;
     QW_DECLARE_PUBLIC(QWSessionLockV1)
     QWSignalConnector sc;
 };
-QHash<void*, QWSessionLockV1*> QWSessionLockV1Private::map;
+
+QHash<void *, QWSessionLockV1 *> QWSessionLockV1Private::map;
 
 void QWSessionLockV1Private::on_destroy(void *)
 {
@@ -60,11 +67,15 @@ void QWSessionLockV1Private::on_new_surface(wlr_session_lock_surface_v1 *surface
     Q_EMIT q_func()->newSurface(QWSessionLockSurfaceV1::from(surface));
 }
 
+void QWSessionLockV1Private::on_unlock()
+{
+    Q_EMIT q_func()->unlock();
+}
+
 QWSessionLockV1::QWSessionLockV1(wlr_session_lock_v1 *handle, bool isOwner)
     : QObject(nullptr)
     , QWObject(*new QWSessionLockV1Private(handle, isOwner, this))
 {
-
 }
 
 QWSessionLockV1 *QWSessionLockV1::get(wlr_session_lock_v1 *handle)
