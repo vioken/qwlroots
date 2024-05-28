@@ -11,6 +11,9 @@ let
       version = "0.18.0";
       src = wlroots_master_src;
       patches = [];
+      buildInputs = old.buildInputs ++ (with pkgs; [ 
+        lcms
+      ]);
     }
   );
 

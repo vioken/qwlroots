@@ -41,7 +41,7 @@ public:
     // TODO: use QWRenderPass
     wlr_render_pass* begin(QWBuffer *buffer, const wlr_buffer_pass_options *options);
     void end(wlr_render_pass* pass);
-#else
+#else // WLR_VERSION_MINOR <= 17
     bool begin(QWBuffer *buffer);
     void end();
 #endif
@@ -61,14 +61,14 @@ public:
     void renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection);
     void renderQuad(const float *color, const float *matrix);
     void renderQuad(const QColor &color, const QMatrix3x3 &matrix);
-#endif
-
     const uint32_t *getShmTextureFormats(size_t *len) const;
     const wlr_drm_format_set *getDmabufTextureFormats() const;
-#if WLR_VERSION_MINOR < 18
     bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                     uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
+#else // WLR_VERSION_MINOR >= 18
+    const wlr_drm_format_set *getDmabufTextureFormats(uint32_t buffer_caps) const;
 #endif
+
     int getDrmFd() const;
 
     template<class Interface, typename... Args>

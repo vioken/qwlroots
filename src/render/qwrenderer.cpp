@@ -201,7 +201,6 @@ void QWRenderer::renderQuad(const QColor &color, const QMatrix3x3 &matrix)
 
     renderQuad(c, matrix.constData());
 }
-#endif
 
 const uint32_t *QWRenderer::getShmTextureFormats(size_t *len) const
 {
@@ -213,12 +212,19 @@ const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats() const
     return wlr_renderer_get_dmabuf_texture_formats(handle());
 }
 
-#if WLR_VERSION_MINOR < 18
 bool QWRenderer::readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                             uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const
 {
     return wlr_renderer_read_pixels(handle(), fmt, stride, width, height, src_x, src_y, dst_x, dst_y, data);
 }
+#else // WLR_VERSION_MINOR >= 18
+
+const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats(uint32_t buffer_caps) const
+{
+    Q_D(const QWRenderer);
+    return wlr_renderer_get_texture_formats(handle(), buffer_caps);
+}
+
 #endif
 
 int QWRenderer::getDrmFd() const
