@@ -186,7 +186,6 @@ static void render_quad_with_matrix(wlr_renderer *handle,
     return interface(handle)->renderQuadWithMatrix(QColor(color[0], color[1], color[2], color[3]),
                                                    QMatrix3x3(matrix));
 }
-#endif
 
 static const uint32_t *get_shm_texture_formats(wlr_renderer *handle, size_t *len)
 {
@@ -199,6 +198,12 @@ static const wlr_drm_format_set *get_dmabuf_texture_formats(wlr_renderer *handle
 {
     return interface(handle)->getDmabufTextureFormats();
 }
+#else
+static const wlr_drm_format_set *get_texture_formats(wlr_renderer *handle, uint32_t buffer_caps)
+{
+    return interface(handle)->getTextureFormats(buffer_caps);
+}
+#endif
 
 static const wlr_drm_format_set *get_render_formats(wlr_renderer *handle)
 {
@@ -252,10 +257,12 @@ static int get_drm_fd(wlr_renderer *handle)
     return interface(handle)->getDrmFd();
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 static uint32_t get_render_buffer_caps(wlr_renderer *handle)
 {
     return interface(handle)->getRenderBufferCaps();
 }
+#endif
 
 static wlr_texture *texture_from_buffer(wlr_renderer *handle, wlr_buffer *buffer)
 {
@@ -288,6 +295,7 @@ bool QWRendererInterface::bindBuffer(QWBuffer *)
     return false;
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 const QVector<uint32_t>* QWRendererInterface::getShmTextureFormats() const
 {
     return nullptr;
@@ -297,6 +305,12 @@ const wlr_drm_format_set *QWRendererInterface::getDmabufTextureFormats() const
 {
     return nullptr;
 }
+#else
+const wlr_drm_format_set *QWRendererInterface::getTextureFormats(uint32_t buffer_caps) const
+{
+    return nullptr;
+}
+#endif
 
 const wlr_drm_format_set *QWRendererInterface::getRenderFormats() const
 {
@@ -317,10 +331,13 @@ int QWRendererInterface::getDrmFd() const
 {
     return 0;
 }
+
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 uint32_t QWRendererInterface::getRenderBufferCaps() const
 {
     return 0;
 }
+#endif
 
 QWTexture *QWRendererInterface::textureFromBuffer(QWBuffer *) const
 {
@@ -335,7 +352,11 @@ wlr_render_timer *QWRendererInterface::renderTimerCreate() {
     return nullptr;
 }
 
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWRendererInterface::init(FuncMagicKey funMagicKey)
+#else
+void QWRendererInterface::init(FuncMagicKey funMagicKey, uint32_t render_buffer_caps)
+#endif
 {
     auto impl = new wlr_renderer_impl {
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
@@ -346,9 +367,11 @@ void QWRendererInterface::init(FuncMagicKey funMagicKey)
         QW_INIT_INTERFACE_FUNC(funMagicKey, scissor, &QWRendererInterface::scissor),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_subtexture_with_matrix, &QWRendererInterface::renderSubtextureWithMatrix),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_quad_with_matrix, &QWRendererInterface::renderQuadWithMatrix),
-#endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_shm_texture_formats, &QWRendererInterface::getShmTextureFormats),
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_dmabuf_texture_formats, &QWRendererInterface::getDmabufTextureFormats),
+#else // WLR_VERSION_MINOR >= 18
+        QW_INIT_INTERFACE_FUNC(funMagicKey, get_texture_formats, &QWRendererInterface::getTextureFormats),
+#endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_formats, &QWRendererInterface::getRenderFormats),
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, preferred_read_format, &QWRendererInterface::preferredReadFormat),
@@ -356,7 +379,9 @@ void QWRendererInterface::init(FuncMagicKey funMagicKey)
 #endif
         .destroy = impl::destroy,
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_drm_fd, &QWRendererInterface::getDrmFd),
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
         QW_INIT_INTERFACE_FUNC(funMagicKey, get_render_buffer_caps, &QWRendererInterface::getRenderBufferCaps),
+#endif
         QW_INIT_INTERFACE_FUNC(funMagicKey, texture_from_buffer, &QWRendererInterface::textureFromBuffer),
         QW_INIT_INTERFACE_FUNC(funMagicKey, begin_buffer_pass, &QWRendererInterface::beginBufferPass),
         QW_INIT_INTERFACE_FUNC(funMagicKey, render_timer_create, &QWRendererInterface::renderTimerCreate),
@@ -364,7 +389,12 @@ void QWRendererInterface::init(FuncMagicKey funMagicKey)
     m_handleImpl = impl;
     m_handle = calloc(1, sizeof(_wlr_renderer));
     static_cast<_wlr_renderer *>(m_handle)->interface = this;
+
+#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     wlr_renderer_init(handle()->handle(), impl);
+#else
+    wlr_renderer_init(handle()->handle(), impl, render_buffer_caps);
+#endif
 }
 
 QW_END_NAMESPACE

@@ -22,7 +22,7 @@ if(PROJECT_IS_TOP_LEVEL) # if build as a separated project
         pkg_get_variable(WAYLAND_PROTOCOLS ${protocols} pkgdatadir)
         pkg_get_variable(WAYLAND_SCANNER wayland-scanner wayland_scanner)
 
-        if(NOT EXISTS input_file)
+        if(NOT EXISTS ${input_file})
             set(input_file ${WAYLAND_PROTOCOLS}/${input_file})
         endif()
 
