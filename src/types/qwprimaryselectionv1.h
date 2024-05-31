@@ -12,7 +12,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWPrimarySelectionV1DeviceManagerPrivate;
-class QW_EXPORT QWPrimarySelectionV1DeviceManager : public QObject, public QWObject
+class QW_EXPORT QWPrimarySelectionV1DeviceManager : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPrimarySelectionV1DeviceManager)
@@ -24,9 +24,6 @@ public:
     static QWPrimarySelectionV1DeviceManager *get(wlr_primary_selection_v1_device_manager *handle);
     static QWPrimarySelectionV1DeviceManager *from(wlr_primary_selection_v1_device_manager *handle);
     static QWPrimarySelectionV1DeviceManager *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void beforeDestroy(QWPrimarySelectionV1DeviceManager *self);
 
 private:
     QWPrimarySelectionV1DeviceManager(wlr_primary_selection_v1_device_manager *handle, bool isOwner);

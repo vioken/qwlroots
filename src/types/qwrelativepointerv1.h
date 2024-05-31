@@ -12,7 +12,7 @@ struct wlr_relative_pointer_manager_v1;
 
 QW_BEGIN_NAMESPACE
 class QWRelativeV1Private;
-class QW_EXPORT QWRelativeV1 : public QObject, public QWObject
+class QW_EXPORT QWRelativeV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWRelativeV1)
@@ -25,9 +25,6 @@ public:
     static QWRelativeV1 *from(wlr_relative_pointer_v1 *handle);
     static QWRelativeV1 *fromResource(wl_resource *resource);
 
-Q_SIGNALS:
-    void beforeDestroy(QWRelativeV1 *self);
-
 private:
     QWRelativeV1(wlr_relative_pointer_v1 *handle, bool isOwner);
     ~QWRelativeV1() = default;
@@ -36,7 +33,7 @@ private:
 class QWSeat;
 class QWDisplay;
 class QWRelativeManagerV1Private;
-class QW_EXPORT QWRelativeManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWRelativeManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWRelativeManagerV1)
@@ -50,9 +47,6 @@ public:
     static QWRelativeManagerV1 *create(QWDisplay *display);
 
     void sendRelativeMotion(QWSeat *seat, uint64_t time_usec, const QPointF &pos, const QPointF & unaccelPos);
-
-Q_SIGNALS:
-    void beforeDestroy(QWRelativeManagerV1 *self);
 
 private:
     QWRelativeManagerV1(wlr_relative_pointer_manager_v1 *handle, bool isOwner);

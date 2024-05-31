@@ -3,7 +3,7 @@
 
 #include "qwinputmethodv2.h"
 #include "qwkeyboard.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -15,57 +15,30 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWInputMethodKeyboardGrabV2Private : public QWObjectPrivate
+class QWInputMethodKeyboardGrabV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputMethodKeyboardGrabV2Private(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner, QWInputMethodKeyboardGrabV2 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_input_method_keyboard_grab_v2_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWInputMethodKeyboardGrabV2Private::on_destroy);
-    }
-    ~QWInputMethodKeyboardGrabV2Private() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_input_method_keyboard_grab_v2_destroy(q_func()->handle());
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWInputMethodKeyboardGrabV2*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputMethodKeyboardGrabV2)
-    QWSignalConnector sc;
 };
-QHash<void*, QWInputMethodKeyboardGrabV2*> QWInputMethodKeyboardGrabV2Private::map;
-
-void QWInputMethodKeyboardGrabV2Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWInputMethodKeyboardGrabV2Private::map;
 
 QWInputMethodKeyboardGrabV2::QWInputMethodKeyboardGrabV2(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWInputMethodKeyboardGrabV2Private(handle, isOwner, this))
+    : QWWrapObject(*new QWInputMethodKeyboardGrabV2Private(handle, isOwner, this))
 {
 
 }
 
 QWInputMethodKeyboardGrabV2 *QWInputMethodKeyboardGrabV2::get(wlr_input_method_keyboard_grab_v2 *handle)
 {
-    return QWInputMethodKeyboardGrabV2Private::map.value(handle);
+    return static_cast<QWInputMethodKeyboardGrabV2*>(QWInputMethodKeyboardGrabV2Private::map.value(handle));
 }
 
 QWInputMethodKeyboardGrabV2 *QWInputMethodKeyboardGrabV2::from(wlr_input_method_keyboard_grab_v2 *handle)

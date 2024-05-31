@@ -16,7 +16,7 @@ class QWSurface;
 class QWDisplay;
 class QWTextInputManagerV3;
 class QWTextInputV3Private;
-class QW_EXPORT QWTextInputV3 : public QObject, public QWObject
+class QW_EXPORT QWTextInputV3 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTextInputV3)
@@ -36,7 +36,6 @@ public:
     void sendDone();
 
 Q_SIGNALS:
-    void beforeDestroy(QWTextInputV3 *self);
     void enable(QWTextInputV3 *);
     void commit(QWTextInputV3 *);
     void disable(QWTextInputV3 *);
@@ -47,7 +46,7 @@ private:
 };
 
 class QWTextInputManagerV3Private;
-class QW_EXPORT QWTextInputManagerV3 : public QObject, public QWObject
+class QW_EXPORT QWTextInputManagerV3 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTextInputManagerV3)
@@ -61,7 +60,6 @@ public:
     static QWTextInputManagerV3 *create(QWDisplay *wl_display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWTextInputManagerV3 *self);
     void textInput(QWTextInputV3 *);
 
 private:

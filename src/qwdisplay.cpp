@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QAbstractEventDispatcher>
 #include <QSocketNotifier>
@@ -11,34 +11,29 @@
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplayPrivate : public QWObjectPrivate
+class QWDisplayPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDisplayPrivate(wl_display *handle, bool isOwner, QWDisplay *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, nullptr, nullptr,
+                              toDestroyFunction(wl_display_destroy))
     {
 
     }
     ~QWDisplayPrivate() {
-        Q_EMIT q_func()->beforeDestroy(q_func());
-
-        sc.invalidate();
         Q_ASSERT(isHandleOwner);
         if (m_handle) {
             auto display = q_func()->handle();
             wl_display_destroy_clients(display);
-            wl_display_destroy(display);
         }
     }
 
     QW_DECLARE_PUBLIC(QWDisplay)
-    QWSignalConnector sc;
     wl_event_loop *loop = nullptr;
 };
 
 QWDisplay::QWDisplay(QObject *parent)
-    : QObject(parent)
-    , QWObject(*new QWDisplayPrivate(wl_display_create(), true, this))
+    : QWWrapObject(*new QWDisplayPrivate(wl_display_create(), true, this), parent)
 {
 
 }

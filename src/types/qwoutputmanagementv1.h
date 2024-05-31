@@ -44,7 +44,7 @@ public:
 };
 
 class QWOutputManagerV1Private;
-class QW_EXPORT QWOutputManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWOutputManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutputManagerV1)
@@ -60,7 +60,6 @@ public:
     void setConfiguration(QWOutputConfigurationV1 *config);
 
 Q_SIGNALS:
-    void beforeDestroy(QWOutputManagerV1 *self);
     void apply(QWOutputConfigurationV1 *config);
     void test(QWOutputConfigurationV1 *config);
 

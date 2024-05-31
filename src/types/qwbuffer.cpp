@@ -3,7 +3,7 @@
 
 #include "qwbuffer.h"
 #include "render/qwrenderer.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,48 +13,22 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWBufferPrivate : public QWObjectPrivate
+class QWBufferPrivate : public QWWrapObjectPrivate
 {
 public:
     QWBufferPrivate(wlr_buffer *handle, bool isOwner, QWBuffer *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_buffer_drop))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWBufferPrivate::on_destroy);
         sc.connect(&handle->events.release, this, &QWBufferPrivate::on_release);
     }
-    ~QWBufferPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_buffer_drop(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_release(void *);
 
-    static QHash<void*, QWBuffer*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWBuffer)
-    QWSignalConnector sc;
 };
-QHash<void*, QWBuffer*> QWBufferPrivate::map;
-
-void QWBufferPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWBufferPrivate::map;
 
 void QWBufferPrivate::on_release(void *)
 {
@@ -63,7 +37,7 @@ void QWBufferPrivate::on_release(void *)
 
 QWBuffer *QWBuffer::get(wlr_buffer *handle)
 {
-    return QWBufferPrivate::map.value(handle);
+    return static_cast<QWBuffer*>(QWBufferPrivate::map.value(handle));
 }
 
 QWBuffer *QWBuffer::from(wlr_buffer *handle)
@@ -82,52 +56,44 @@ QWBuffer *QWBuffer::from(wl_resource *resource)
 }
 
 QWBuffer::QWBuffer(wlr_buffer *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWBufferPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWBufferPrivate(handle, isOwner, this))
 {
 
 }
 
 void QWBuffer::drop()
 {
-    Q_D(QWBuffer);
     wlr_buffer_drop(handle());
 }
 
 void QWBuffer::lock()
 {
-    Q_D(QWBuffer);
     wlr_buffer_lock(handle());
 }
 
 void QWBuffer::unlock()
 {
-    Q_D(QWBuffer);
     wlr_buffer_unlock(handle());
 }
 
 bool QWBuffer::getDmabuf(wlr_dmabuf_attributes *attribs) const
 {
-    Q_D(const QWBuffer);
     return wlr_buffer_get_dmabuf(handle(), attribs);
 }
 
 bool QWBuffer::getShm(wlr_shm_attributes *attribs) const
 {
-    Q_D(const QWBuffer);
     return wlr_buffer_get_shm(handle(), attribs);
 }
 
 void QWBuffer::beginDataPtrAccess(uint32_t flags, void **data,
                                   uint32_t *format, size_t *stride)
 {
-    Q_D(QWBuffer);
     wlr_buffer_begin_data_ptr_access(handle(), flags, data, format, stride);
 }
 
 void QWBuffer::endDataPtrAccess()
 {
-    Q_D(QWBuffer);
     wlr_buffer_end_data_ptr_access(handle());
 }
 

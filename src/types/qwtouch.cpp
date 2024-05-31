@@ -3,7 +3,7 @@
 
 #include "qwtouch.h"
 #include "qwinputdevice_p.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 extern "C" {
 #include <wlr/types/wlr_touch.h>

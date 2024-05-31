@@ -6,7 +6,7 @@
 #include "qwdisplay.h"
 #include "qwtexture.h"
 #include "types/qwbuffer.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QColor>
 #include <QRect>
@@ -26,48 +26,22 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWRendererPrivate : public QWObjectPrivate
+class QWRendererPrivate : public QWWrapObjectPrivate
 {
 public:
     QWRendererPrivate(wlr_renderer *handle, bool isOwner, QWRenderer *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_renderer_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWRendererPrivate::on_destroy);
         sc.connect(&handle->events.lost, this, &QWRendererPrivate::on_lost);
     }
-    ~QWRendererPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_renderer_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_lost(void *);
 
-    static QHash<void*, QWRenderer*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWRenderer)
-    QWSignalConnector sc;
 };
-QHash<void*, QWRenderer*> QWRendererPrivate::map;
-
-void QWRendererPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWRendererPrivate::map;
 
 void QWRendererPrivate::on_lost(void *)
 {
@@ -76,7 +50,7 @@ void QWRendererPrivate::on_lost(void *)
 
 QWRenderer *QWRenderer::get(wlr_renderer *handle)
 {
-    return QWRendererPrivate::map.value(handle);
+    return static_cast<QWRenderer*>(QWRendererPrivate::map.value(handle));
 }
 
 QWRenderer *QWRenderer::from(wlr_renderer *handle)
@@ -95,8 +69,7 @@ QWRenderer *QWRenderer::autoCreate(QWBackend *backend)
 }
 
 QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWRendererPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWRendererPrivate(handle, isOwner, this))
 {
 
 }
@@ -104,7 +77,6 @@ QWRenderer::QWRenderer(wlr_renderer *handle, bool isOwner)
 #if WLR_VERSION_MINOR < 18
 bool QWRenderer::begin(uint32_t width, uint32_t height)
 {
-    Q_D(QWRenderer);
     return wlr_renderer_begin(handle(), width, height);
 }
 #endif
@@ -112,46 +84,39 @@ bool QWRenderer::begin(uint32_t width, uint32_t height)
 #if WLR_VERSION_MINOR < 18
 bool QWRenderer::begin(QWBuffer *buffer)
 {
-    Q_D(QWRenderer);
     return wlr_renderer_begin_with_buffer(handle(), buffer->handle());
 }
 # else
 wlr_render_pass* QWRenderer::begin(QWBuffer *buffer, const wlr_buffer_pass_options *options)
 {
-    Q_D(QWRenderer);
     return wlr_renderer_begin_buffer_pass(handle(), buffer->handle(), options);
 }
 #endif
 #if WLR_VERSION_MINOR > 17
 void QWRenderer::end(wlr_render_pass *pass)
 {
-    Q_D(QWRenderer);
     wlr_render_pass_submit(pass);
 }
 #else
 void QWRenderer::end()
 {
-    Q_D(QWRenderer);
     wlr_renderer_end(handle());
 }
 #endif
 
 bool QWRenderer::initWlDisplay(QWDisplay *display)
 {
-    Q_D(QWRenderer);
     return wlr_renderer_init_wl_display(handle(), display->handle());
 }
 
 bool QWRenderer::initWlShm(QWDisplay *display)
 {
-    Q_D(QWRenderer);
     return wlr_renderer_init_wl_shm(handle(), display->handle());
 }
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
 void QWRenderer::clear(const float *color)
 {
-    Q_D(QWRenderer);
     wlr_renderer_clear(handle(), color);
 }
 
@@ -168,7 +133,6 @@ void QWRenderer::clear(const QColor &color)
 
 void QWRenderer::scissor(wlr_box *box)
 {
-    Q_D(QWRenderer);
     wlr_renderer_scissor(handle(), box);
 }
 
@@ -186,25 +150,21 @@ void QWRenderer::scissor(const QRect &box)
 
 void QWRenderer::renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha)
 {
-    Q_D(QWRenderer);
     wlr_render_texture(handle(), texture->handle(), projection, x, y, alpha);
 }
 
 void QWRenderer::renderTexture(QWTexture *texture, const float *matrix, float alpha)
 {
-    Q_D(QWRenderer);
     wlr_render_texture_with_matrix(handle(), texture->handle(), matrix, alpha);
 }
 
 void QWRenderer::renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha)
 {
-    Q_D(QWRenderer);
     wlr_render_subtexture_with_matrix(handle(), texture->handle(), fbox, matrix, alpha);
 }
 
 void QWRenderer::renderRect(const wlr_box *box, const float *color, const float *projection)
 {
-    Q_D(QWRenderer);
     wlr_render_rect(handle(), box, color, projection);
 }
 
@@ -229,7 +189,6 @@ void QWRenderer::renderRect(const QRect &box, const QColor &color, const QMatrix
 
 void QWRenderer::renderQuad(const float *color, const float *matrix)
 {
-    Q_D(QWRenderer);
     wlr_render_quad_with_matrix(handle(), color, matrix);
 }
 
@@ -248,13 +207,11 @@ void QWRenderer::renderQuad(const QColor &color, const QMatrix3x3 &matrix)
 
 const uint32_t *QWRenderer::getShmTextureFormats(size_t *len) const
 {
-    Q_D(const QWRenderer);
     return wlr_renderer_get_shm_texture_formats(handle(), len);
 }
 
 const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats() const
 {
-    Q_D(const QWRenderer);
     return wlr_renderer_get_dmabuf_texture_formats(handle());
 }
 
@@ -262,14 +219,12 @@ const wlr_drm_format_set *QWRenderer::getDmabufTextureFormats() const
 bool QWRenderer::readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
                             uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const
 {
-    Q_D(const QWRenderer);
     return wlr_renderer_read_pixels(handle(), fmt, stride, width, height, src_x, src_y, dst_x, dst_y, data);
 }
 #endif
 
 int QWRenderer::getDrmFd() const
 {
-    Q_D(const QWRenderer);
     return wlr_renderer_get_drm_fd(handle());
 }
 

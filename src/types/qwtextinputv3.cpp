@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwtextinputv3.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwcompositor.h>
 #include <QHash>
@@ -13,50 +13,25 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTextInputV3Private : public QWObjectPrivate
+class QWTextInputV3Private : public QWWrapObjectPrivate
 {
 public:
     QWTextInputV3Private(wlr_text_input_v3 *handle, bool isOwner, QWTextInputV3 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWTextInputV3Private::on_destroy);
         sc.connect(&handle->events.enable, this, &QWTextInputV3Private::on_enable);
         sc.connect(&handle->events.commit, this, &QWTextInputV3Private::on_commit);
         sc.connect(&handle->events.disable, this, &QWTextInputV3Private::on_disable);
     }
-    ~QWTextInputV3Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_enable(wlr_text_input_v3 *);
     void on_commit(wlr_text_input_v3 *);
     void on_disable(wlr_text_input_v3 *);
 
-    static QHash<void*, QWTextInputV3*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTextInputV3)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTextInputV3*> QWTextInputV3Private::map;
-
-void QWTextInputV3Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWTextInputV3Private::map;
 
 void QWTextInputV3Private::on_enable(wlr_text_input_v3 *handle)
 {
@@ -74,15 +49,14 @@ void QWTextInputV3Private::on_disable(wlr_text_input_v3 *handle)
 }
 
 QWTextInputV3::QWTextInputV3(wlr_text_input_v3 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWTextInputV3Private(handle, isOwner, this))
+    : QWWrapObject(*new QWTextInputV3Private(handle, isOwner, this))
 {
 
 }
 
 QWTextInputV3 *QWTextInputV3::get(wlr_text_input_v3 *handle)
 {
-    return QWTextInputV3Private::map.value(handle);
+    return static_cast<QWTextInputV3*>(QWTextInputV3Private::map.value(handle));
 }
 
 QWTextInputV3 *QWTextInputV3::from(wlr_text_input_v3 *handle)

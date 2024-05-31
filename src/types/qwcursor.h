@@ -38,7 +38,7 @@ class QWOutput;
 class QWBuffer;
 class QWXCursorManager;
 
-class QW_EXPORT QWCursor : public QObject, public QWObject
+class QW_EXPORT QWCursor : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWCursor)
@@ -75,7 +75,6 @@ public:
     QPointF position() const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWCursor *self);
     void motion(wlr_pointer_motion_event *event);
     void motionAbsolute(wlr_pointer_motion_absolute_event *event);
     void button(wlr_pointer_button_event *event);

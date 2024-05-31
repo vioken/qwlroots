@@ -15,7 +15,7 @@ QW_BEGIN_NAMESPACE
 class QWDrmPrivate;
 class QWDisplay;
 class QWRenderer;
-class QW_EXPORT QWDrm : public QObject, public QWObject
+class QW_EXPORT QWDrm : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDrm)
@@ -27,9 +27,6 @@ public:
     static QWDrm *get(wlr_drm *handle);
     static QWDrm *from(wlr_drm *handle);
     static QWDrm *create(QWDisplay *display, QWRenderer *render);
-
-Q_SIGNALS:
-    void beforeDestroy(QWDrm *self);
 
 private:
     QWDrm(wlr_drm *handle, bool isOwner);

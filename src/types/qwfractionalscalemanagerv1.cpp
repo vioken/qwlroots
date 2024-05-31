@@ -4,7 +4,7 @@
 #include "qwfractionalscalemanagerv1.h"
 #include "qwdisplay.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -14,55 +14,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWFractionalScaleManagerV1Private : public QWObjectPrivate
+class QWFractionalScaleManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWFractionalScaleManagerV1Private(wlr_fractional_scale_manager_v1 *handle, bool isOwner, QWFractionalScaleManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWFractionalScaleManagerV1Private::on_destroy);
-    }
-    ~QWFractionalScaleManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWFractionalScaleManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWFractionalScaleManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWFractionalScaleManagerV1*> QWFractionalScaleManagerV1Private::map;
-
-void QWFractionalScaleManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWFractionalScaleManagerV1Private::map;
 
 QWFractionalScaleManagerV1::QWFractionalScaleManagerV1(wlr_fractional_scale_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWFractionalScaleManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWFractionalScaleManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWFractionalScaleManagerV1 *QWFractionalScaleManagerV1::get(wlr_fractional_scale_manager_v1 *handle)
 {
-    return QWFractionalScaleManagerV1Private::map.value(handle);
+    return static_cast<QWFractionalScaleManagerV1*>(QWFractionalScaleManagerV1Private::map.value(handle));
 }
 
 QWFractionalScaleManagerV1 *QWFractionalScaleManagerV1::from(wlr_fractional_scale_manager_v1 *handle)

@@ -2,6 +2,8 @@ set(TARGET qwlroots)
 set(CMAKE_NAME ${CMAKE_PROJECT_NAME})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+add_compile_options(-Wall -Wextra -Werror=unused-variable -Werror=unused-parameter)
+
 find_package(Qt${QT_VERSION_MAJOR}
     COMPONENTS
     Core
@@ -220,6 +222,7 @@ set(HEADERS
 set(PRIVATE_HEADERS
     types/qwinputdevice_p.h
     types/qwkeyboard_p.h
+    private/qwglobal_p.h
 )
 
 ws_generate(

@@ -19,7 +19,7 @@ QW_BEGIN_NAMESPACE
 class QWOutput;
 class QWDisplay;
 class QWForeignToplevelManagerV1Private;
-class QW_EXPORT QWForeignToplevelManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWForeignToplevelManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWForeignToplevelManagerV1)
@@ -32,16 +32,13 @@ public:
     static QWForeignToplevelManagerV1 *from(wlr_foreign_toplevel_manager_v1 *handle);
     static QWForeignToplevelManagerV1 *create(QWDisplay *display);
 
-Q_SIGNALS:
-    void beforeDestroy(QWForeignToplevelManagerV1 *self);
-
 private:
     QWForeignToplevelManagerV1(wlr_foreign_toplevel_manager_v1 *handle, bool isOwner);
     ~QWForeignToplevelManagerV1() = default;
 };
 
 class QWForeignToplevelHandleV1Private;
-class QW_EXPORT QWForeignToplevelHandleV1 : public QObject, public QWObject
+class QW_EXPORT QWForeignToplevelHandleV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWForeignToplevelHandleV1)
@@ -67,7 +64,6 @@ public:
     void setTitle(const char *title);
 
 Q_SIGNALS:
-    void beforeDestroy(QWForeignToplevelHandleV1 *self);
     void requestMaximize(wlr_foreign_toplevel_handle_v1_maximized_event *event);
     void requestMinimize(wlr_foreign_toplevel_handle_v1_minimized_event *event);
     void requestActivate(wlr_foreign_toplevel_handle_v1_activated_event *event);

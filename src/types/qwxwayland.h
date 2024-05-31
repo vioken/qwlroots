@@ -23,7 +23,7 @@ class QWSeat;
 class QWXWaylandServer;
 class QWXWaylandShellV1;
 class QWXWaylandPrivate;
-class QW_EXPORT QWXWayland : public QObject, public QWObject
+class QW_EXPORT QWXWayland : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWayland)
@@ -36,7 +36,6 @@ public:
     void setSeat(QWSeat *seat);
 
 Q_SIGNALS:
-    void beforeDestroy(QWXWayland *self);
     void ready();
     void newSurface(wlr_xwayland_surface *surface);
     void removeStartupInfo(wlr_xwayland_remove_startup_info_event *event);

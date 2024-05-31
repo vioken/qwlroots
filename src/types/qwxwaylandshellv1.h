@@ -22,7 +22,7 @@ QW_BEGIN_NAMESPACE
 class QWSurface;
 class QWDisplay;
 class QWXWaylandShellV1Private;
-class QW_EXPORT QWXWaylandShellV1 : public QObject, public QWObject
+class QW_EXPORT QWXWaylandShellV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWaylandShellV1)
@@ -38,7 +38,6 @@ public:
     QWSurface *surfaceFromSerial(uint64_t serial) const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWXWaylandShellV1 *self);
     void newSurface(wlr_xwayland_surface *surface);
 
 private:

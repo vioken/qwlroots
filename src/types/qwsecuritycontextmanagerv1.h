@@ -15,7 +15,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWSecurityContextManagerV1Private;
-class QW_EXPORT QWSecurityContextManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWSecurityContextManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSecurityContextManagerV1)
@@ -29,9 +29,6 @@ public:
     static QWSecurityContextManagerV1 *create(QWDisplay *display);
 
     static const wlr_security_context_v1_state *lookupClient(QWSecurityContextManagerV1 *manager, wl_client *client);
-
-Q_SIGNALS:
-    void beforeDestroy(QWSecurityContextManagerV1 *self);
 
 private:
     QWSecurityContextManagerV1(wlr_security_context_manager_v1 *handle, bool isOwner);

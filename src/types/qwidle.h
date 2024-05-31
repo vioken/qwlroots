@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 class QWSeat;
 class QWDisplay;
 class QWIdlePrivate;
-class QW_EXPORT QWIdle : public QObject, public QWObject
+class QW_EXPORT QWIdle : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdle)
@@ -30,7 +30,6 @@ public:
     void setEnabled(QWSeat *seat, bool enabled);
 
 Q_SIGNALS:
-    void beforeDestroy(QWIdle *self);
     void activityNotify();
 
 private:
@@ -39,7 +38,7 @@ private:
 };
 
 class QWIdleTimeoutPrivate;
-class QW_EXPORT QWIdleTimeout : public QObject, public QWObject
+class QW_EXPORT QWIdleTimeout : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdleTimeout)
@@ -55,7 +54,6 @@ public:
     static QWIdleTimeout *create(QWIdle *idle, QWSeat *seat, uint32_t timeout);
 
 Q_SIGNALS:
-    void beforeDestroy(QWIdleTimeout *self);
     void idle();
     void resume();
 

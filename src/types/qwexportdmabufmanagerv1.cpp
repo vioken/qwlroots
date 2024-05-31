@@ -3,7 +3,7 @@
 
 #include "qwexportdmabufv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,55 +13,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWExportDmabufManagerV1Private : public QWObjectPrivate
+class QWExportDmabufManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWExportDmabufManagerV1Private(wlr_export_dmabuf_manager_v1 *handle, bool isOwner, QWExportDmabufManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWExportDmabufManagerV1Private::on_destroy);
-    }
-    ~QWExportDmabufManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWExportDmabufManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWExportDmabufManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWExportDmabufManagerV1*> QWExportDmabufManagerV1Private::map;
-
-void QWExportDmabufManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWExportDmabufManagerV1Private::map;
 
 QWExportDmabufManagerV1::QWExportDmabufManagerV1(wlr_export_dmabuf_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWExportDmabufManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWExportDmabufManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWExportDmabufManagerV1 *QWExportDmabufManagerV1::get(wlr_export_dmabuf_manager_v1 *handle)
 {
-    return QWExportDmabufManagerV1Private::map.value(handle);
+    return static_cast<QWExportDmabufManagerV1*>(QWExportDmabufManagerV1Private::map.value(handle));
 }
 
 QWExportDmabufManagerV1 *QWExportDmabufManagerV1::from(wlr_export_dmabuf_manager_v1 *handle)

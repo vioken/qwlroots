@@ -3,7 +3,7 @@
 
 #include "qwoutputpowermanagementv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWOutputPowerManagerV1Private : public QWObjectPrivate
+class QWOutputPowerManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWOutputPowerManagerV1Private(wlr_output_power_manager_v1 *handle, bool isOwner, QWOutputPowerManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWOutputPowerManagerV1Private::on_destroy);
         sc.connect(&handle->events.set_mode, this, &QWOutputPowerManagerV1Private::on_set_mode);
     }
-    ~QWOutputPowerManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_set_mode(void *);
 
-    static QHash<void*, QWOutputPowerManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputPowerManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWOutputPowerManagerV1*> QWOutputPowerManagerV1Private::map;
-
-void QWOutputPowerManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWOutputPowerManagerV1Private::map;
 
 void QWOutputPowerManagerV1Private::on_set_mode(void *data)
 {
@@ -60,15 +35,14 @@ void QWOutputPowerManagerV1Private::on_set_mode(void *data)
 }
 
 QWOutputPowerManagerV1::QWOutputPowerManagerV1(wlr_output_power_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWOutputPowerManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWOutputPowerManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWOutputPowerManagerV1 *QWOutputPowerManagerV1::get(wlr_output_power_manager_v1 *handle)
 {
-    return QWOutputPowerManagerV1Private::map.value(handle);
+    return static_cast<QWOutputPowerManagerV1*>(QWOutputPowerManagerV1Private::map.value(handle));
 }
 
 QWOutputPowerManagerV1 *QWOutputPowerManagerV1::from(wlr_output_power_manager_v1 *handle)

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwpointergesturesv1.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwseat.h>
 #include <qwdisplay.h>
@@ -15,55 +15,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWPointerGesturesV1Private : public QWObjectPrivate
+class QWPointerGesturesV1Private : public QWWrapObjectPrivate
 {
 public:
     QWPointerGesturesV1Private(wlr_pointer_gestures_v1 *handle, bool isOwner, QWPointerGesturesV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWPointerGesturesV1Private::on_destroy);
-    }
-    ~QWPointerGesturesV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWPointerGesturesV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPointerGesturesV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWPointerGesturesV1*> QWPointerGesturesV1Private::map;
-
-void QWPointerGesturesV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWPointerGesturesV1Private::map;
 
 QWPointerGesturesV1::QWPointerGesturesV1(wlr_pointer_gestures_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWPointerGesturesV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWPointerGesturesV1Private(handle, isOwner, this))
 {
 
 }
 
 QWPointerGesturesV1 *QWPointerGesturesV1::get(wlr_pointer_gestures_v1 *handle)
 {
-    return QWPointerGesturesV1Private::map.value(handle);
+    return static_cast<QWPointerGesturesV1*>(QWPointerGesturesV1Private::map.value(handle));
 }
 
 QWPointerGesturesV1 *QWPointerGesturesV1::from(wlr_pointer_gestures_v1 *handle)

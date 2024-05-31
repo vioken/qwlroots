@@ -14,42 +14,19 @@ extern "C" {
 }
 
 QW_BEGIN_NAMESPACE
-class QWXdgForeignV1Private : public QWObjectPrivate
+class QWXdgForeignV1Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgForeignV1Private(wlr_xdg_foreign_v1 *handle, bool isOwner, QWXdgForeignV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXdgForeignV1Private::on_destroy);
+
     }
 
-    ~QWXdgForeignV1Private() override {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    inline void on_destroy() {
-        destroy();
-        m_handle = nullptr;
-        delete q_func();
-    }
-
-    static QHash<void*, QWXdgForeignV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgForeignV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXdgForeignV1*> QWXdgForeignV1Private::map;
+QHash<void*, QWWrapObject*> QWXdgForeignV1Private::map;
 
 class QWXdgExportedV1Private : public QWXdgForeignExportedPrivate
 {
@@ -78,12 +55,11 @@ QWXdgForeignV1* QWXdgForeignV1::from(wlr_xdg_foreign_v1 *handle)
 
 QWXdgForeignV1* QWXdgForeignV1::get(wlr_xdg_foreign_v1 *handle)
 {
-    return QWXdgForeignV1Private::map.value(handle);
+    return static_cast<QWXdgForeignV1*>(QWXdgForeignV1Private::map.value(handle));
 }
 
 QWXdgForeignV1::QWXdgForeignV1(wlr_xdg_foreign_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(* new QWXdgForeignV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWXdgForeignV1Private(handle, isOwner, this))
 {
 }
 

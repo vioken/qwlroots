@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 
 class QWSurface;
 class QWSessionLockSurfaceV1Private;
-class QW_EXPORT QWSessionLockSurfaceV1 : public QObject, public QWObject
+class QW_EXPORT QWSessionLockSurfaceV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSessionLockSurfaceV1)
@@ -29,16 +29,13 @@ public:
 
     uint32_t configure(const QSize &size);
 
-Q_SIGNALS:
-    void beforeDestroy(QWSessionLockSurfaceV1 *self);
-
 private:
     QWSessionLockSurfaceV1(wlr_session_lock_surface_v1 *handle, bool isOwner);
     ~QWSessionLockSurfaceV1() = default;
 };
 
 class QWSessionLockV1Private;
-class QW_EXPORT QWSessionLockV1 : public QObject, public QWObject
+class QW_EXPORT QWSessionLockV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSessionLockV1)
@@ -55,7 +52,6 @@ public:
     void sendLocked();
 
 Q_SIGNALS:
-    void beforeDestroy(QWSessionLockV1 *self);
     void newSurface(QWSessionLockSurfaceV1 *);
     void unlock();
 
@@ -65,7 +61,7 @@ private:
 
 class QWDisplay;
 class QWSessionLockManagerV1Private;
-class QW_EXPORT QWSessionLockManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWSessionLockManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSessionLockManagerV1)
@@ -79,7 +75,6 @@ public:
     static QWSessionLockManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWSessionLockManagerV1 *self);
     void newLock(QWSessionLockV1 *);
 
 private:

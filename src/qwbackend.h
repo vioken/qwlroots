@@ -29,7 +29,7 @@ class QWDisplay;
 class QWOutput;
 class QWInputDevice;
 class QWBackendPrivate;
-class QW_EXPORT QWBackend : public QObject, public QWObject
+class QW_EXPORT QWBackend : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWBackend)
@@ -57,7 +57,6 @@ public Q_SLOTS:
     bool start();
 
 Q_SIGNALS:
-    void beforeDestroy(QWBackend *self);
     void newInput(QWInputDevice *device);
     void newOutput(QWOutput *output);
 

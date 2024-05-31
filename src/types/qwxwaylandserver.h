@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWXWaylandServerPrivate;
-class QW_EXPORT QWXWaylandServer : public QObject, public QWObject
+class QW_EXPORT QWXWaylandServer : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWaylandServer)
@@ -29,7 +29,6 @@ public:
     static QWXWaylandServer *create(QWDisplay *display, wlr_xwayland_server_options *options);
 
 Q_SIGNALS:
-    void beforeDestroy(QWXWaylandServer *self);
     void start();
     void ready();
 

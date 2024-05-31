@@ -12,7 +12,7 @@ struct wlr_xdg_activation_v1_request_activate_event;
 
 QW_BEGIN_NAMESPACE
 class QWXdgActivationTokenV1Private;
-class QW_EXPORT QWXdgActivationTokenV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgActivationTokenV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgActivationTokenV1)
@@ -28,16 +28,13 @@ public:
 
     const char *getName() const;
 
-Q_SIGNALS:
-    void beforeDestroy(QWXdgActivationTokenV1 *self);
-
 private:
     QWXdgActivationTokenV1(wlr_xdg_activation_token_v1 *handle, bool isOwner);
 };
 
 class QWDisplay;
 class QWXdgActivationV1Private;
-class QW_EXPORT QWXdgActivationV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgActivationV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgActivationV1)
@@ -55,7 +52,6 @@ public:
     QWXdgActivationTokenV1 *addToken(const char *token_str);
 
 Q_SIGNALS:
-    void beforeDestroy(QWXdgActivationV1 *self);
     void requestActivate(wlr_xdg_activation_v1_request_activate_event *);
     void newToken(QWXdgActivationTokenV1 *);
 

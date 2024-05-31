@@ -12,7 +12,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWExportDmabufManagerV1Private;
-class QW_EXPORT QWExportDmabufManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWExportDmabufManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWExportDmabufManagerV1)
@@ -24,9 +24,6 @@ public:
     static QWExportDmabufManagerV1 *get(wlr_export_dmabuf_manager_v1 *handle);
     static QWExportDmabufManagerV1 *from(wlr_export_dmabuf_manager_v1 *handle);
     static QWExportDmabufManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void beforeDestroy(QWExportDmabufManagerV1 *self);
 
 private:
     QWExportDmabufManagerV1(wlr_export_dmabuf_manager_v1 *handle, bool isOwner);

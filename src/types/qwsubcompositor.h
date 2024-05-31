@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWSurface;
 class QWDisplay;
 class QWSubcompositorPrivate;
-class QW_EXPORT QWSubcompositor : public QObject, public QWObject
+class QW_EXPORT QWSubcompositor : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSubcompositor)
@@ -27,16 +27,13 @@ public:
     static QWSubcompositor *from(wlr_subcompositor *handle);
     static QWSubcompositor *create(QWDisplay *display);
 
-Q_SIGNALS:
-    void beforeDestroy(QWSubcompositor *self);
-
 private:
     QWSubcompositor(wlr_subcompositor *handle, bool isOwner);
     ~QWSubcompositor() = default;
 };
 
 class QWSubsurfacePrivate;
-class QW_EXPORT QWSubsurface : public QObject, public QWObject
+class QW_EXPORT QWSubsurface : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSubsurface)
@@ -49,9 +46,6 @@ public:
     static QWSubsurface *get(wlr_subsurface *handle);
     static QWSubsurface *from(wlr_subsurface *handle);
     static QWSubsurface *tryFrom(QWSurface *surface);
-
-Q_SIGNALS:
-    void beforeDestroy(QWSubsurface *self);
 
 private:
     QWSubsurface(wlr_subsurface *handle, bool isOwner);

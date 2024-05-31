@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwxdgactivationv1.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -12,50 +12,22 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXdgActivationTokenV1Private : public QWObjectPrivate
+class QWXdgActivationTokenV1Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgActivationTokenV1Private(wlr_xdg_activation_token_v1 *handle, bool isOwner, QWXdgActivationTokenV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_xdg_activation_token_v1_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXdgActivationTokenV1Private::on_destroy);
-    }
-    ~QWXdgActivationTokenV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_xdg_activation_token_v1_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWXdgActivationTokenV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgActivationTokenV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXdgActivationTokenV1*> QWXdgActivationTokenV1Private::map;
-
-void QWXdgActivationTokenV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWXdgActivationTokenV1Private::map;
 
 QWXdgActivationTokenV1::QWXdgActivationTokenV1(wlr_xdg_activation_token_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWXdgActivationTokenV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWXdgActivationTokenV1Private(handle, isOwner, this))
 {
 
 }
@@ -67,7 +39,7 @@ const char *QWXdgActivationTokenV1::getName() const
 
 QWXdgActivationTokenV1 *QWXdgActivationTokenV1::get(wlr_xdg_activation_token_v1 *handle)
 {
-    return QWXdgActivationTokenV1Private::map.value(handle);
+    return static_cast<QWXdgActivationTokenV1*>(QWXdgActivationTokenV1Private::map.value(handle));
 }
 
 QWXdgActivationTokenV1 *QWXdgActivationTokenV1::from(wlr_xdg_activation_token_v1 *handle)

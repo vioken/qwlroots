@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWXdgForeignExported;
 class QWXdgForeignRegistryPrivate;
-class QW_EXPORT QWXdgForeignRegistry : public QObject, public QWObject
+class QW_EXPORT QWXdgForeignRegistry : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgForeignRegistry)
@@ -28,16 +28,13 @@ public:
         return QWObject::handle<wlr_xdg_foreign_registry>();
     }
 
-Q_SIGNALS:
-    void beforeDestroy(QWXdgForeignRegistry *self);
-
 private:
     explicit QWXdgForeignRegistry(wlr_xdg_foreign_registry *handle, bool isOwner);
     ~QWXdgForeignRegistry() override = default;
 };
 
 class QWXdgForeignExportedPrivate;
-class QW_EXPORT QWXdgForeignExported : public QObject, public QWObject
+class QW_EXPORT QWXdgForeignExported : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgForeignExported)
@@ -52,11 +49,8 @@ public:
     bool init(QWXdgForeignRegistry *registry);
     void finish();
 
-Q_SIGNALS:
-    void beforeDestroy(QWXdgForeignExported *self);
-
 protected:
-    QWXdgForeignExported(QWObjectPrivate &dd);
+    QWXdgForeignExported(QWXdgForeignExportedPrivate &dd);
     virtual ~QWXdgForeignExported() override = default;
 
 private:

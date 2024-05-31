@@ -3,7 +3,7 @@
 
 #include "qwforeigntoplevelhandlev1.h"
 #include "qwoutput.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -16,15 +16,13 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWForeignToplevelHandleV1Private : public QWObjectPrivate
+class QWForeignToplevelHandleV1Private : public QWWrapObjectPrivate
 {
 public:
     QWForeignToplevelHandleV1Private(wlr_foreign_toplevel_handle_v1 *handle, bool isOwner, QWForeignToplevelHandleV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_foreign_toplevel_handle_v1_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWForeignToplevelHandleV1Private::on_destroy);
         sc.connect(&handle->events.request_maximize, this, &QWForeignToplevelHandleV1Private::on_request_maximize);
         sc.connect(&handle->events.request_minimize, this, &QWForeignToplevelHandleV1Private::on_request_minimize);
         sc.connect(&handle->events.request_activate, this, &QWForeignToplevelHandleV1Private::on_request_activate);
@@ -32,23 +30,7 @@ public:
         sc.connect(&handle->events.request_close, this, &QWForeignToplevelHandleV1Private::on_request_close);
         sc.connect(&handle->events.set_rectangle, this, &QWForeignToplevelHandleV1Private::on_set_rectangle);
     }
-    ~QWForeignToplevelHandleV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_foreign_toplevel_handle_v1_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_request_maximize(void *);
     void on_request_minimize(void *);
     void on_request_activate(void *);
@@ -56,18 +38,10 @@ public:
     void on_request_close(void *);
     void on_set_rectangle(void *);
 
-    static QHash<void*, QWForeignToplevelHandleV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWForeignToplevelHandleV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWForeignToplevelHandleV1*> QWForeignToplevelHandleV1Private::map;
-
-void QWForeignToplevelHandleV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWForeignToplevelHandleV1Private::map;
 
 void QWForeignToplevelHandleV1Private::on_request_maximize(void *data)
 {
@@ -100,15 +74,14 @@ void QWForeignToplevelHandleV1Private::on_set_rectangle(void *data)
 }
 
 QWForeignToplevelHandleV1::QWForeignToplevelHandleV1(wlr_foreign_toplevel_handle_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWForeignToplevelHandleV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWForeignToplevelHandleV1Private(handle, isOwner, this))
 {
 
 }
 
 QWForeignToplevelHandleV1 *QWForeignToplevelHandleV1::get(wlr_foreign_toplevel_handle_v1 *handle)
 {
-    return QWForeignToplevelHandleV1Private::map.value(handle);
+    return static_cast<QWForeignToplevelHandleV1*>(QWForeignToplevelHandleV1Private::map.value(handle));
 }
 
 QWForeignToplevelHandleV1 *QWForeignToplevelHandleV1::from(wlr_foreign_toplevel_handle_v1 *handle)

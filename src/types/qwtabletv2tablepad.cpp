@@ -3,7 +3,7 @@
 
 #include "qwinputdevice.h"
 #include "qwtabletv2.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwcompositor.h>
 #include <QHash>
@@ -14,41 +14,25 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletV2TabletPadPrivate : public QWObjectPrivate
+class QWTabletV2TabletPadPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletPadPrivate(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWTabletV2TabletPad *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.button_feedback, this, &QWTabletV2TabletPadPrivate::on_button_feedback);
         sc.connect(&handle->events.ring_feedback, this, &QWTabletV2TabletPadPrivate::on_ring_feedback);
         sc.connect(&handle->events.strip_feedback, this, &QWTabletV2TabletPadPrivate::on_strip_feedback);
-    }
-    ~QWTabletV2TabletPadPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_button_feedback(wlr_tablet_v2_event_feedback *);
     void on_ring_feedback(wlr_tablet_v2_event_feedback *);
     void on_strip_feedback(wlr_tablet_v2_event_feedback *);
 
-    static QHash<void*, QWTabletV2TabletPad*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2TabletPad)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTabletV2TabletPad*> QWTabletV2TabletPadPrivate::map;
+QHash<void*, QWWrapObject*> QWTabletV2TabletPadPrivate::map;
 
 void QWTabletV2TabletPadPrivate::on_button_feedback(wlr_tablet_v2_event_feedback *event)
 {
@@ -66,15 +50,14 @@ void QWTabletV2TabletPadPrivate::on_strip_feedback(wlr_tablet_v2_event_feedback 
 }
 
 QWTabletV2TabletPad::QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWInputDevice *parent)
-    : QObject(parent)
-    , QWObject(*new QWTabletV2TabletPadPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWTabletV2TabletPadPrivate(handle, isOwner, this), parent)
 {
 
 }
 
 QWTabletV2TabletPad *QWTabletV2TabletPad::get(wlr_tablet_v2_tablet_pad *handle)
 {
-    return QWTabletV2TabletPadPrivate::map.value(handle);
+    return static_cast<QWTabletV2TabletPad*>(QWTabletV2TabletPadPrivate::map.value(handle));
 }
 
 QWTabletV2TabletPad *QWTabletV2TabletPad::from(wlr_tablet_v2_tablet_pad *handle)

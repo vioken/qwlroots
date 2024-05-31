@@ -17,7 +17,7 @@ class QWDisplay;
 class QWOutput;
 class QWRenderer;
 class QWOutputLayoutPrivate;
-class QW_EXPORT QWOutputLayout : public QObject, public QWObject
+class QW_EXPORT QWOutputLayout : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutputLayout)
@@ -54,7 +54,6 @@ public:
     QRect getBox(QWOutput *reference) const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWOutputLayout *self);
     // TODO: make to QWOutputLayoutOutput
     void add(wlr_output_layout_output *output);
     void change(wlr_output_layout_output *output);

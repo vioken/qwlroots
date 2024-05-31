@@ -11,7 +11,7 @@ struct wlr_ABC;
 QW_BEGIN_NAMESPACE
 
 class QWABCPrivate;
-class QW_EXPORT QWABC : public QObject, public QWObject
+class QW_EXPORT QWABC : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWABC)
@@ -23,9 +23,6 @@ public:
     static QWABC *get(wlr_ABC *handle);
     static QWABC *from(wlr_ABC *handle);
 
-Q_SIGNALS:
-    void beforeDestroy(QWABC *self);
-
 private:
     QWABC(wlr_ABC *handle, bool isOwner);
 };
@@ -36,7 +33,7 @@ QW_END_NAMESPACE
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwabc.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -46,57 +43,30 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWABCPrivate : public QWObjectPrivate
+class QWABCPrivate : public QWWrapObjectPrivate
 {
 public:
     QWABCPrivate(wlr_ABC *handle, bool isOwner, QWABC *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_ABC_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWABCPrivate::on_destroy);
-    }
-    ~QWABCPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_ABC_destroy(q_func()->handle());
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWABC*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWABC)
-    QWSignalConnector sc;
 };
-QHash<void*, QWABC*> QWABCPrivate::map;
-
-void QWABCPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWABCPrivate::map;
 
 QWABC::QWABC(wlr_ABC *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWABCPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWABCPrivate(handle, isOwner, this))
 {
 
 }
 
 QWABC *QWABC::get(wlr_ABC *handle)
 {
-    return QWABCPrivate::map.value(handle);
+    return static_cast<QWABC*>(QWABCPrivate::map.value(handle));
 }
 
 QWABC *QWABC::from(wlr_ABC *handle)

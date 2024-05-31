@@ -3,7 +3,7 @@
 
 #include "qwfullscreenshellv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWFullScreenShellV1Private : public QWObjectPrivate
+class QWFullScreenShellV1Private : public QWWrapObjectPrivate
 {
 public:
     QWFullScreenShellV1Private(wlr_fullscreen_shell_v1 *handle, bool isOwner, QWFullScreenShellV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWFullScreenShellV1Private::on_destroy);
         sc.connect(&handle->events.present_surface, this, &QWFullScreenShellV1Private::on_present_surface);
     }
-    ~QWFullScreenShellV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_present_surface(void *);
 
-    static QHash<void*, QWFullScreenShellV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWFullScreenShellV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWFullScreenShellV1*> QWFullScreenShellV1Private::map;
-
-void QWFullScreenShellV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWFullScreenShellV1Private::map;
 
 void QWFullScreenShellV1Private::on_present_surface(void *data)
 {
@@ -60,15 +35,14 @@ void QWFullScreenShellV1Private::on_present_surface(void *data)
 }
 
 QWFullScreenShellV1::QWFullScreenShellV1(wlr_fullscreen_shell_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWFullScreenShellV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWFullScreenShellV1Private(handle, isOwner, this))
 {
 
 }
 
 QWFullScreenShellV1 *QWFullScreenShellV1::get(wlr_fullscreen_shell_v1 *handle)
 {
-    return QWFullScreenShellV1Private::map.value(handle);
+    return static_cast<QWFullScreenShellV1*>(QWFullScreenShellV1Private::map.value(handle));
 }
 
 QWFullScreenShellV1 *QWFullScreenShellV1::from(wlr_fullscreen_shell_v1 *handle)

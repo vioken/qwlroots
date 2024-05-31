@@ -26,7 +26,7 @@ public:
 };
 
 class QWDataControlManagerV1Private;
-class QW_EXPORT QWDataControlManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWDataControlManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDataControlManagerV1)
@@ -40,7 +40,6 @@ public:
     static QWDataControlManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWDataControlManagerV1 *self);
     void newDevice(QWDataControlDeviceV1 *device);
 
 private:

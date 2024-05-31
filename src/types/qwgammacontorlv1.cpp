@@ -3,7 +3,7 @@
 
 #include "qwgammacontorlv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWGammaControlManagerV1Private : public QWObjectPrivate
+class QWGammaControlManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWGammaControlManagerV1Private(wlr_gamma_control_manager_v1 *handle, bool isOwner, QWGammaControlManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWGammaControlManagerV1Private::on_destroy);
         sc.connect(&handle->events.set_gamma, this, &QWGammaControlManagerV1Private::on_set_gamma);
     }
-    ~QWGammaControlManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_set_gamma(void *);
 
-    static QHash<void*, QWGammaControlManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWGammaControlManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWGammaControlManagerV1*> QWGammaControlManagerV1Private::map;
-
-void QWGammaControlManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWGammaControlManagerV1Private::map;
 
 void QWGammaControlManagerV1Private::on_set_gamma(void *data)
 {
@@ -60,15 +35,14 @@ void QWGammaControlManagerV1Private::on_set_gamma(void *data)
 }
 
 QWGammaControlManagerV1::QWGammaControlManagerV1(wlr_gamma_control_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWGammaControlManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWGammaControlManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWGammaControlManagerV1 *QWGammaControlManagerV1::get(wlr_gamma_control_manager_v1 *handle)
 {
-    return QWGammaControlManagerV1Private::map.value(handle);
+    return static_cast<QWGammaControlManagerV1*>(QWGammaControlManagerV1Private::map.value(handle));
 }
 
 QWGammaControlManagerV1 *QWGammaControlManagerV1::from(wlr_gamma_control_manager_v1 *handle)

@@ -19,7 +19,7 @@ class QWDisplay;
 class QWBackend;
 class QWPresentationFeedback;
 class QWPresentationPrivate;
-class QW_EXPORT QWPresentation : public QObject, public QWObject
+class QW_EXPORT QWPresentation : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPresentation)
@@ -36,9 +36,6 @@ public:
 
     void surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output);
     void surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output);
-
-Q_SIGNALS:
-    void beforeDestroy(QWPresentation *self);
 
 private:
     QWPresentation(wlr_presentation *handle, bool isOwner);

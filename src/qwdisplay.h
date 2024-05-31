@@ -16,7 +16,7 @@ QT_END_NAMESPACE
 QW_BEGIN_NAMESPACE
 
 class QWDisplayPrivate;
-class QW_EXPORT QWDisplay : public QObject, public QWObject
+class QW_EXPORT QWDisplay : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDisplay)
@@ -35,9 +35,6 @@ public:
     void start(QThread *thread);
 
     wl_event_loop *eventLoop() const;
-
-Q_SIGNALS:
-    void beforeDestroy(QWDisplay *self);
 
 public Q_SLOTS:
     void terminate();

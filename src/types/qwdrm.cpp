@@ -4,7 +4,7 @@
 #include "qwdrm.h"
 #include "qwdisplay.h"
 #include "qwrenderer.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -15,55 +15,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWDrmPrivate : public QWObjectPrivate
+class QWDrmPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDrmPrivate(wlr_drm *handle, bool isOwner, QWDrm *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWDrmPrivate::on_destroy);
-    }
-    ~QWDrmPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWDrm*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDrm)
-    QWSignalConnector sc;
 };
-QHash<void*, QWDrm*> QWDrmPrivate::map;
-
-void QWDrmPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWDrmPrivate::map;
 
 QWDrm::QWDrm(wlr_drm *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWDrmPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWDrmPrivate(handle, isOwner, this))
 {
 
 }
 
 QWDrm *QWDrm::get(wlr_drm *handle)
 {
-    return QWDrmPrivate::map.value(handle);
+    return static_cast<QWDrm*>(QWDrmPrivate::map.value(handle));
 }
 
 QWDrm *QWDrm::from(wlr_drm *handle)

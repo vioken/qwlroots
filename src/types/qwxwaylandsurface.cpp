@@ -3,7 +3,7 @@
 
 #include "qwxwaylandsurface.h"
 #include "qwcompositor.h"
-#include "qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QRect>
 #include <QHash>
@@ -21,15 +21,12 @@ static_assert(std::is_same_v<xcb_stack_mode, std::underlying_type_t<xcb_stack_mo
 
 QW_BEGIN_NAMESPACE
 
-class QWXWaylandSurfacePrivate : public QWObjectPrivate
+class QWXWaylandSurfacePrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandSurfacePrivate(wlr_xwayland_surface *handle, bool isOwner, QWXWaylandSurface *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXWaylandSurfacePrivate::on_destroy);
         sc.connect(&handle->events.request_configure, this, &QWXWaylandSurfacePrivate::on_request_configure);
         sc.connect(&handle->events.request_move, this, &QWXWaylandSurfacePrivate::on_request_move);
         sc.connect(&handle->events.request_resize, this, &QWXWaylandSurfacePrivate::on_request_resize);
@@ -55,11 +52,9 @@ public:
     ~QWXWaylandSurfacePrivate() {
         if (!m_handle)
             return;
-        destroy();
         Q_ASSERT(!isHandleOwner);
     }
 
-    void on_destroy(void *);
     void on_request_configure(wlr_xwayland_surface_configure_event *event);
     void on_request_move(void *);
     void on_request_resize(wlr_xwayland_resize_event *event);
@@ -82,26 +77,10 @@ public:
     void on_set_geometry(void *);
     void on_ping_timeout(void *);
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    static QHash<void*, QWXWaylandSurface*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandSurface)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXWaylandSurface*> QWXWaylandSurfacePrivate::map;
-
-void QWXWaylandSurfacePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWXWaylandSurfacePrivate::map;
 
 void QWXWaylandSurfacePrivate::on_request_configure(wlr_xwayland_surface_configure_event *event)
 {
@@ -209,15 +188,14 @@ void QWXWaylandSurfacePrivate::on_ping_timeout(void *)
 }
 
 QWXWaylandSurface::QWXWaylandSurface(wlr_xwayland_surface *handle)
-    : QObject(nullptr)
-    , QWObject(*new QWXWaylandSurfacePrivate(handle, false, this))
+    : QWWrapObject(*new QWXWaylandSurfacePrivate(handle, false, this))
 {
 
 }
 
 QWXWaylandSurface *QWXWaylandSurface::get(wlr_xwayland_surface *handle)
 {
-    return QWXWaylandSurfacePrivate::map.value(handle);
+    return static_cast<QWXWaylandSurface*>(QWXWaylandSurfacePrivate::map.value(handle));
 }
 
 QWXWaylandSurface* QWXWaylandSurface::from(wlr_xwayland_surface* handle)

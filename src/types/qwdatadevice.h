@@ -38,7 +38,7 @@ public:
 };
 
 class QWDataDeviceManagerPrivate;
-class QW_EXPORT QWDataDeviceManager : public QObject, public QWObject
+class QW_EXPORT QWDataDeviceManager : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDataDeviceManager)
@@ -51,16 +51,13 @@ public:
     static QWDataDeviceManager *from(wlr_data_device_manager *handle);
     static QWDataDeviceManager *create(QWDisplay *display);
 
-Q_SIGNALS:
-    void beforeDestroy(QWDataDeviceManager *self);
-
 private:
     QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner);
     ~QWDataDeviceManager() = default;
 };
 
 class QWDragPrivate;
-class QW_EXPORT QWDrag : public QObject, public QWObject
+class QW_EXPORT QWDrag : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDrag)
@@ -76,7 +73,6 @@ Q_SIGNALS:
     void focus();
     void motion(wlr_drag_motion_event *event);
     void drop(wlr_drag_drop_event *event);
-    void beforeDestroy(QWDrag *self);
 
 private:
     QWDrag(wlr_drag *handle, bool isOwner);

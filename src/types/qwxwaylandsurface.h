@@ -23,7 +23,7 @@ QW_BEGIN_NAMESPACE
 
 class QWSurface;
 class QWXWaylandSurfacePrivate;
-class QW_EXPORT QWXWaylandSurface : public QObject, public QWObject
+class QW_EXPORT QWXWaylandSurface : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXWaylandSurface)
@@ -46,7 +46,6 @@ public:
     wlr_xwayland_icccm_input_model_t icccmInputModel() const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWXWaylandSurface *self);
     void requestConfigure(wlr_xwayland_surface_configure_event *event);
     void requestMove();
     void requestResize(wlr_xwayland_resize_event *event);

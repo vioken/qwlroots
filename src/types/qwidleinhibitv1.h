@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWIdleInhibitorV1;
 class QWIdleInhibitManagerV1Private;
-class QW_EXPORT QWIdleInhibitManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWIdleInhibitManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdleInhibitManagerV1)
@@ -28,7 +28,6 @@ public:
     static QWIdleInhibitManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWIdleInhibitManagerV1 *self);
     void newInhibitor(QWIdleInhibitorV1 *inhibitor);
 
 private:
@@ -37,7 +36,7 @@ private:
 };
 
 class QWIdleInhibitorV1Private;
-class QW_EXPORT QWIdleInhibitorV1 : public QObject, public QWObject
+class QW_EXPORT QWIdleInhibitorV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdleInhibitorV1)
@@ -48,9 +47,6 @@ public:
 
     static QWIdleInhibitorV1 *get(wlr_idle_inhibitor_v1 *handle);
     static QWIdleInhibitorV1 *from(wlr_idle_inhibitor_v1 *handle);
-
-Q_SIGNALS:
-    void beforeDestroy(QWIdleInhibitorV1 *self);
 
 private:
     QWIdleInhibitorV1(wlr_idle_inhibitor_v1 *handle, bool isOwner);

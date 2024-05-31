@@ -3,10 +3,10 @@
 
 #include "qwxwaylandshellv1.h"
 
-#include <qwglobal.h>
-#include <qwdisplay.h>
-#include <qwcompositor.h>
-#include <util/qwsignalconnector.h>
+#include "qwglobal.h"
+#include "qwdisplay.h"
+#include "qwcompositor.h"
+#include <private/qwglobal_p.h>
 
 #include <QHash>
 
@@ -16,40 +16,27 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXWaylandShellV1Private : public QWObjectPrivate {
+class QWXWaylandShellV1Private : public QWWrapObjectPrivate {
 public:
     QWXWaylandShellV1Private(wlr_xwayland_shell_v1* handle, QWXWaylandShellV1* qq)
-        : QWObjectPrivate(handle, false, qq)
+        : QWWrapObjectPrivate(handle, false, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.new_surface, this, &QWXWaylandShellV1Private::on_new_surface);
     }
 
     ~QWXWaylandShellV1Private() {
-        if (!m_handle) {
+        if (!m_handle)
             return;
-        }
-        destroy();
         // Destroy following wl_display.
         Q_ASSERT(!isHandleOwner);
     }
 
     void on_new_surface(wlr_xwayland_surface *surface);
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    static QHash<void*, QWXWaylandShellV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandShellV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXWaylandShellV1*> QWXWaylandShellV1Private::map;
+QHash<void*, QWWrapObject*> QWXWaylandShellV1Private::map;
 
 void QWXWaylandShellV1Private::on_new_surface(wlr_xwayland_surface *surface)
 {
@@ -58,7 +45,7 @@ void QWXWaylandShellV1Private::on_new_surface(wlr_xwayland_surface *surface)
 
 QWXWaylandShellV1* QWXWaylandShellV1::get(wlr_xwayland_shell_v1* handle)
 {
-    return QWXWaylandShellV1Private::map.value(handle);
+    return static_cast<QWXWaylandShellV1*>(QWXWaylandShellV1Private::map.value(handle));
 }
 
 QWXWaylandShellV1* QWXWaylandShellV1::create(QWDisplay* display, uint32_t version)
@@ -86,8 +73,7 @@ QWSurface *QWXWaylandShellV1::surfaceFromSerial(uint64_t serial) const
 }
 
 QWXWaylandShellV1::QWXWaylandShellV1(wlr_xwayland_shell_v1* handle, QWDisplay* parent)
-    : QObject(parent)
-    , QWObject(*new QWXWaylandShellV1Private(handle, this))
+    : QWWrapObject(*new QWXWaylandShellV1Private(handle, this), parent)
 {
 }
 

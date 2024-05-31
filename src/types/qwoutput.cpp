@@ -4,7 +4,7 @@
 #include "qwoutput.h"
 #include "qwbuffer.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 #include "render/qwallocator.h"
 #include "render/qwrenderer.h"
 
@@ -23,14 +23,13 @@ static_assert(std::is_same_v<wl_output_subpixel_t, std::underlying_type_t<wl_out
 
 QW_BEGIN_NAMESPACE
 
-class QWOutputPrivate : public QWObjectPrivate
+class QWOutputPrivate : public QWWrapObjectPrivate
 {
 public:
     QWOutputPrivate(wlr_output *handle, bool isOwner, QWOutput *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_output_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.frame, this, &QWOutputPrivate::on_frame);
         sc.connect(&handle->events.damage, this, &QWOutputPrivate::on_damage);
         sc.connect(&handle->events.needs_frame, this, &QWOutputPrivate::on_needs_frame);
@@ -40,22 +39,6 @@ public:
         sc.connect(&handle->events.bind, this, &QWOutputPrivate::on_bind);
         sc.connect(&handle->events.description, this, &QWOutputPrivate::on_description);
         sc.connect(&handle->events.request_state, this, &QWOutputPrivate::on_request_state);
-        sc.connect(&handle->events.destroy, this, &QWOutputPrivate::on_destroy);
-    }
-    ~QWOutputPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_output_destroy(q_func()->handle());
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_frame(void *data);
@@ -67,13 +50,11 @@ public:
     void on_bind(void *data);
     void on_description(void *data);
     void on_request_state(void *data);
-    void on_destroy(void *data);
 
-    static QHash<void*, QWOutput*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutput)
-    QWSignalConnector sc;
 };
-QHash<void*, QWOutput*> QWOutputPrivate::map;
+QHash<void*, QWWrapObject*> QWOutputPrivate::map;
 
 void QWOutputPrivate::on_frame(void *)
 {
@@ -120,23 +101,16 @@ void QWOutputPrivate::on_request_state(void *data)
     Q_EMIT q_func()->requestState(static_cast<wlr_output_event_request_state*>(data));
 }
 
-void QWOutputPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
 
 QWOutput::QWOutput(wlr_output *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWOutputPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWOutputPrivate(handle, isOwner, this))
 {
 
 }
 
 QWOutput *QWOutput::get(wlr_output *handle)
 {
-    return QWOutputPrivate::map.value(handle);
+    return static_cast<QWOutput*>(QWOutputPrivate::map.value(handle));
 }
 
 QWOutput *QWOutput::from(wlr_output *handle)

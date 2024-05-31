@@ -17,54 +17,28 @@ extern "C" {
 QW_BEGIN_NAMESPACE
 
 QWInputDevicePrivate::QWInputDevicePrivate(wlr_input_device *handle, bool isOwner, QWInputDevice *qq)
-    : QWObjectPrivate(handle, isOwner, qq)
+    : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
 {
-    Q_ASSERT(!map.contains(handle));
-    map.insert(handle, qq);
-    sc.connect(&handle->events.destroy, this, &QWInputDevicePrivate::on_destroy);
+
 }
 
-QWInputDevicePrivate::~QWInputDevicePrivate()
-{
-    if (!m_handle)
-        return;
-    destroy();
-}
+QHash<void*, QWWrapObject*> QWInputDevicePrivate::map;
 
-void QWInputDevicePrivate::destroy() {
-    Q_ASSERT(m_handle);
-    Q_ASSERT(map.contains(m_handle));
-    Q_EMIT q_func()->beforeDestroy(q_func());
-    map.remove(m_handle);
-    sc.invalidate();
-}
-
-void QWInputDevicePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
-
-QHash<void*, QWInputDevice*> QWInputDevicePrivate::map;
-
-QWInputDevice::QWInputDevice(QWObjectPrivate &dd)
-    : QObject(nullptr)
-    , QWObject(dd)
+QWInputDevice::QWInputDevice(QWInputDevicePrivate &dd)
+    : QWWrapObject(dd)
 {
 
 }
 
 QWInputDevice::QWInputDevice(wlr_input_device *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWInputDevicePrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWInputDevicePrivate(handle, isOwner, this))
 {
 
 }
 
 QWInputDevice *QWInputDevice::get(wlr_input_device *handle)
 {
-    return QWInputDevicePrivate::map.value(handle);
+    return static_cast<QWInputDevice*>(QWInputDevicePrivate::map.value(handle));
 }
 
 QWInputDevice *QWInputDevice::from(wlr_input_device *handle)

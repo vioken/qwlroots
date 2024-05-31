@@ -3,7 +3,7 @@
 
 #include "qwsecuritycontextmanagerv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,55 +13,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWSecurityContextManagerV1Private : public QWObjectPrivate
+class QWSecurityContextManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWSecurityContextManagerV1Private(wlr_security_context_manager_v1 *handle, bool isOwner, QWSecurityContextManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWSecurityContextManagerV1Private::on_destroy);
-    }
-    ~QWSecurityContextManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWSecurityContextManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSecurityContextManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWSecurityContextManagerV1*> QWSecurityContextManagerV1Private::map;
-
-void QWSecurityContextManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWSecurityContextManagerV1Private::map;
 
 QWSecurityContextManagerV1::QWSecurityContextManagerV1(wlr_security_context_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWSecurityContextManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWSecurityContextManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWSecurityContextManagerV1 *QWSecurityContextManagerV1::get(wlr_security_context_manager_v1 *handle)
 {
-    return QWSecurityContextManagerV1Private::map.value(handle);
+    return static_cast<QWSecurityContextManagerV1*>(QWSecurityContextManagerV1Private::map.value(handle));
 }
 
 QWSecurityContextManagerV1 *QWSecurityContextManagerV1::from(wlr_security_context_manager_v1 *handle)

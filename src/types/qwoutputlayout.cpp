@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwoutputlayout.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 #include "qwoutput.h"
 #include "qwdisplay.h"
 
@@ -22,50 +22,24 @@ static_assert(std::is_same_v<wlr_direction_t, std::underlying_type_t<wlr_directi
 
 QW_BEGIN_NAMESPACE
 
-class QWOutputLayoutPrivate : public QWObjectPrivate
+class QWOutputLayoutPrivate : public QWWrapObjectPrivate
 {
 public:
     QWOutputLayoutPrivate(wlr_output_layout *handle, bool isOwner, QWOutputLayout *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_output_layout_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWOutputLayoutPrivate::on_destroy);
         sc.connect(&handle->events.add, this, &QWOutputLayoutPrivate::on_add);
         sc.connect(&handle->events.change, this, &QWOutputLayoutPrivate::on_change);
     }
-    ~QWOutputLayoutPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_output_layout_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_add(void *data);
     void on_change(void *data);
 
-    static QHash<void*, QWOutputLayout*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputLayout)
-    QWSignalConnector sc;
 };
-QHash<void*, QWOutputLayout*> QWOutputLayoutPrivate::map;
-
-void QWOutputLayoutPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWOutputLayoutPrivate::map;
 
 void QWOutputLayoutPrivate::on_add(void *data)
 {
@@ -78,8 +52,7 @@ void QWOutputLayoutPrivate::on_change(void *data)
 }
 
 QWOutputLayout::QWOutputLayout(wlr_output_layout *handle, bool isOwner, QObject *parent)
-    : QObject(parent)
-    , QWObject(*new QWOutputLayoutPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWOutputLayoutPrivate(handle, isOwner, this), parent)
 {
 
 }
@@ -100,7 +73,7 @@ QWOutputLayout::QWOutputLayout(QWDisplay *display, QObject *parent)
 
 QWOutputLayout *QWOutputLayout::get(wlr_output_layout *handle)
 {
-    return QWOutputLayoutPrivate::map.value(handle);
+    return static_cast<QWOutputLayout*>(QWOutputLayoutPrivate::map.value(handle));
 }
 
 QWOutputLayout *QWOutputLayout::from(wlr_output_layout *handle)

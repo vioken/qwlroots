@@ -42,7 +42,7 @@ QW_BEGIN_NAMESPACE
 class QWSurface;
 class QWXdgSurface;
 class QWSceneNodePrivate;
-class QW_EXPORT QWSceneNode : public QObject, public QWObject
+class QW_EXPORT QWSceneNode : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneNode)
@@ -66,9 +66,6 @@ public:
     bool coords(QPoint &pos) const;
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *userData) const;
     wlr_scene_node *at(const QPointF &lpos, QPointF *npos = nullptr) const;
-
-Q_SIGNALS:
-    void beforeDestroy(QWSceneNode *self);
 
 protected:
     QWSceneNode(QWSceneNodePrivate &dd, QObject *parent = nullptr);
@@ -177,7 +174,7 @@ private:
 
 class QWOutput;
 class QWSceneOutputPrivate;
-class QW_EXPORT QWSceneOutput : public QObject, public QWObject
+class QW_EXPORT QWSceneOutput : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneOutput)
@@ -197,9 +194,6 @@ public:
     void sendFrameDone(timespec *now);
 
     void forEachBuffer(wlr_scene_buffer_iterator_func_t iterator, void *user_data) const;
-
-Q_SIGNALS:
-    void beforeDestroy(QWSceneOutput *self);
 
 private:
     QWSceneOutput(wlr_scene_output *handle, bool isOwner);

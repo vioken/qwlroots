@@ -11,7 +11,7 @@ struct wlr_input_device;
 QW_BEGIN_NAMESPACE
 
 class QWInputDevicePrivate;
-class QW_EXPORT QWInputDevice : public QObject, public QWObject
+class QW_EXPORT QWInputDevice : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputDevice)
@@ -23,11 +23,8 @@ public:
     static QWInputDevice *get(wlr_input_device *handle);
     static QWInputDevice *from(wlr_input_device *handle);
 
-Q_SIGNALS:
-    void beforeDestroy(QWInputDevice *self);
-
 protected:
-    QWInputDevice(QWObjectPrivate &dd);
+    QWInputDevice(QWInputDevicePrivate &dd);
     virtual ~QWInputDevice() override = default;
 private:
     QWInputDevice(wlr_input_device *handle, bool isOwner);

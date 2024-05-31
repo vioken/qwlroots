@@ -12,7 +12,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWInputInhibitManagerPrivate;
-class QW_EXPORT QWInputInhibitManager : public QObject, public QWObject
+class QW_EXPORT QWInputInhibitManager : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputInhibitManager)
@@ -26,7 +26,6 @@ public:
     static QWInputInhibitManager *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWInputInhibitManager *self);
     void activate();
     void deactivate();
 

@@ -5,10 +5,10 @@
 #include "qwbuffer.h"
 #include "qwinputdevice.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
 #include "qwoutputlayout.h"
 #include "qwoutput.h"
 #include "qwxcursormanager.h"
+#include "private/qwglobal_p.h"
 
 #include <QImage>
 #include <QPointF>
@@ -24,14 +24,13 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWCursorPrivate : public QWObjectPrivate
+class QWCursorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWCursorPrivate(wlr_cursor *handle, bool isOwner, QWCursor *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, nullptr,
+                              toDestroyFunction(wlr_cursor_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.motion, this, &QWCursorPrivate::on_motion);
         sc.connect(&handle->events.motion_absolute, this, &QWCursorPrivate::on_motion_absolute);
         sc.connect(&handle->events.button, this, &QWCursorPrivate::on_button);
@@ -54,21 +53,6 @@ public:
         sc.connect(&handle->events.tablet_tool_proximity, this, &QWCursorPrivate::on_tablet_tool_proximity);
         sc.connect(&handle->events.tablet_tool_tip, this, &QWCursorPrivate::on_tablet_tool_tip);
         sc.connect(&handle->events.tablet_tool_button, this, &QWCursorPrivate::on_tablet_tool_button);
-    }
-    ~QWCursorPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_cursor_destroy(q_func()->handle());
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_motion(void *data);
@@ -94,11 +78,10 @@ public:
     void on_tablet_tool_tip(void *data);
     void on_tablet_tool_button(void *data);
 
-    static QHash<void*, QWCursor*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCursor)
-    QWSignalConnector sc;
 };
-QHash<void*, QWCursor*> QWCursorPrivate::map;
+QHash<void*, QWWrapObject*> QWCursorPrivate::map;
 
 void QWCursorPrivate::on_motion(void *data)
 {
@@ -212,8 +195,7 @@ void QWCursorPrivate::on_tablet_tool_button(void *data)
 }
 
 QWCursor::QWCursor(wlr_cursor *handle, bool isOwner, QObject *parent)
-    : QObject(parent)
-    , QWObject(*new QWCursorPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWCursorPrivate(handle, isOwner, this), parent)
 {
 
 }
@@ -226,7 +208,7 @@ QWCursor::QWCursor(QObject *parent)
 
 QWCursor *QWCursor::get(wlr_cursor *handle)
 {
-    return QWCursorPrivate::map.value(handle);
+    return static_cast<QWCursor*>(QWCursorPrivate::map.value(handle));
 }
 
 QWCursor *QWCursor::from(wlr_cursor *handle)

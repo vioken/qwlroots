@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwprimaryselection.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwseat.h>
 #include <QHash>
@@ -13,57 +13,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWPrimarySelectionSourcePrivate : public QWObjectPrivate
+class QWPrimarySelectionSourcePrivate : public QWWrapObjectPrivate
 {
 public:
     QWPrimarySelectionSourcePrivate(wlr_primary_selection_source *handle, bool isOwner, QWPrimarySelectionSource *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_primary_selection_source_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWPrimarySelectionSourcePrivate::on_destroy);
-    }
-    ~QWPrimarySelectionSourcePrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_primary_selection_source_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWPrimarySelectionSource*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPrimarySelectionSource)
-    QWSignalConnector sc;
 };
-QHash<void*, QWPrimarySelectionSource*> QWPrimarySelectionSourcePrivate::map;
-
-void QWPrimarySelectionSourcePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWPrimarySelectionSourcePrivate::map;
 
 QWPrimarySelectionSource::QWPrimarySelectionSource(wlr_primary_selection_source *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWPrimarySelectionSourcePrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWPrimarySelectionSourcePrivate(handle, isOwner, this))
 {
 
 }
 
 QWPrimarySelectionSource *QWPrimarySelectionSource::get(wlr_primary_selection_source *handle)
 {
-    return QWPrimarySelectionSourcePrivate::map.value(handle);
+    return static_cast<QWPrimarySelectionSource*>(QWPrimarySelectionSourcePrivate::map.value(handle));
 }
 
 QWPrimarySelectionSource *QWPrimarySelectionSource::from(wlr_primary_selection_source *handle)

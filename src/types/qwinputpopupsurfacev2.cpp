@@ -3,7 +3,7 @@
 
 #include "qwinputmethodv2.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 #include <QRect>
@@ -17,55 +17,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWInputPopupSurfaceV2Private : public QWObjectPrivate
+class QWInputPopupSurfaceV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputPopupSurfaceV2Private(wlr_input_popup_surface_v2 *handle, bool isOwner, QWInputPopupSurfaceV2 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWInputPopupSurfaceV2Private::on_destroy);
-    }
-    ~QWInputPopupSurfaceV2Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWInputPopupSurfaceV2*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputPopupSurfaceV2)
-    QWSignalConnector sc;
 };
-QHash<void*, QWInputPopupSurfaceV2*> QWInputPopupSurfaceV2Private::map;
-
-void QWInputPopupSurfaceV2Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWInputPopupSurfaceV2Private::map;
 
 QWInputPopupSurfaceV2::QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWInputPopupSurfaceV2Private(handle, isOwner, this))
+    : QWWrapObject(*new QWInputPopupSurfaceV2Private(handle, isOwner, this))
 {
 
 }
 
 QWInputPopupSurfaceV2 *QWInputPopupSurfaceV2::get(wlr_input_popup_surface_v2 *handle)
 {
-    return QWInputPopupSurfaceV2Private::map.value(handle);
+    return static_cast<QWInputPopupSurfaceV2*>(QWInputPopupSurfaceV2Private::map.value(handle));
 }
 
 QWInputPopupSurfaceV2 *QWInputPopupSurfaceV2::from(wlr_input_popup_surface_v2 *handle)

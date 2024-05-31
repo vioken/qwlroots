@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 
 class QWSeat;
 class QWPrimarySelectionSourcePrivate;
-class QW_EXPORT QWPrimarySelectionSource : public QObject, public QWObject
+class QW_EXPORT QWPrimarySelectionSource : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPrimarySelectionSource)
@@ -32,9 +32,6 @@ public:
     void send(const char *mime_type, int fd);
     void requestSetPrimarySelection(QWSeat *seat, wlr_seat_client *client, uint32_t serial);
     void setPrimarySelection(QWSeat *seat, uint32_t serial);
-
-Q_SIGNALS:
-    void beforeDestroy(QWPrimarySelectionSource *self);
 
 private:
     QWPrimarySelectionSource(wlr_primary_selection_source *handle, bool isOwner);

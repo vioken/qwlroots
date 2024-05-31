@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWGammaControlManagerV1Private;
-class QW_EXPORT QWGammaControlManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWGammaControlManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWGammaControlManagerV1)
@@ -27,7 +27,6 @@ public:
     static QWGammaControlManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWGammaControlManagerV1 *self);
     void gammaChanged(wlr_gamma_control_manager_v1_set_gamma_event *event);
 
 private:

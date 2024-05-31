@@ -4,8 +4,8 @@
 #include "qwallocator.h"
 #include "qwbackend.h"
 #include "qwrenderer.h"
-#include "util/qwsignalconnector.h"
 #include "qwbuffer.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -15,50 +15,23 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWAllocatorPrivate : public QWObjectPrivate
+class QWAllocatorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWAllocatorPrivate(wlr_allocator *handle, bool isOwner, QWAllocator *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_allocator_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWAllocatorPrivate::on_destroy);
-    }
-    ~QWAllocatorPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_allocator_destroy(q_func()->handle());
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWAllocator*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWAllocator)
-    QWSignalConnector sc;
 };
-QHash<void*, QWAllocator*> QWAllocatorPrivate::map;
-
-void QWAllocatorPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWAllocatorPrivate::map;
 
 QWAllocator::QWAllocator(wlr_allocator *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWAllocatorPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWAllocatorPrivate(handle, isOwner, this))
 {
 
 }
@@ -73,7 +46,7 @@ QWAllocator *QWAllocator::autoCreate(QWBackend *backend, QWRenderer *renderer)
 
 QWAllocator *QWAllocator::get(wlr_allocator *handle)
 {
-    return QWAllocatorPrivate::map.value(handle);
+    return static_cast<QWAllocator*>(QWAllocatorPrivate::map.value(handle));
 }
 
 QWAllocator *QWAllocator::from(wlr_allocator *handle)
