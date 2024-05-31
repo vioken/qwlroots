@@ -24,7 +24,7 @@ QW_BEGIN_NAMESPACE
 class QWSurface;
 class QWDisplay;
 class QWXdgShellPrivate;
-class QW_EXPORT QWXdgShell : public QObject, public QWObject
+class QW_EXPORT QWXdgShell : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgShell)
@@ -39,7 +39,6 @@ public:
     static QWXdgShell *from(wlr_xdg_shell *handle);
 
 Q_SIGNALS:
-    void beforeDestroy(QWXdgShell *self);
     void newSurface(wlr_xdg_surface *surface);
 #if WLR_VERSION_MINOR >= 18
     void newToplevel(wlr_xdg_toplevel *surface);
@@ -54,7 +53,7 @@ private:
 class QWXdgPopup;
 class QWXdgToplevel;
 class QWXdgSurfacePrivate;
-class QW_EXPORT QWXdgSurface : public QObject, public QWObject
+class QW_EXPORT QWXdgSurface : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgSurface)
@@ -82,7 +81,6 @@ public:
     void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWXdgSurface *self);
     void pingTimeout();
     void newPopup(QWXdgPopup *popup);
     void configure(wlr_xdg_surface_configure *conf);
@@ -91,7 +89,6 @@ Q_SIGNALS:
 
 protected:
     QWXdgSurface(QWXdgSurfacePrivate &dd);
-    QWXdgSurface(wlr_xdg_surface *handle, bool isOwner);
     ~QWXdgSurface() = default;
 };
 
@@ -117,7 +114,6 @@ public:
 Q_SIGNALS:
     void reposition();
 #if WLR_VERSION_MINOR >= 18
-    void beforeDestroy(QWXdgPopup *self);
 #endif
 
 private:
@@ -160,7 +156,6 @@ Q_SIGNALS:
     void titleChanged(char *newTitle);
     void appidChanged(char *newAppid);
 #if WLR_VERSION_MINOR >= 18
-    void beforeDestroy(QWXdgToplevel *self);
 #endif
 
 private:

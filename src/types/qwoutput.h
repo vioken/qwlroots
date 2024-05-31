@@ -38,7 +38,7 @@ class QWRenderer;
 class QWBuffer;
 class QWOutputInterface;
 class QWOutputPrivate;
-class QW_EXPORT QWOutput : public QObject, public QWObject
+class QW_EXPORT QWOutput : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutput)
@@ -116,7 +116,6 @@ public:
     bool configurePrimarySwapchain(const wlr_output_state *state, wlr_swapchain **swapchain);
 
 Q_SIGNALS:
-    void beforeDestroy(QWOutput *self);
     void frame();
     void damage(wlr_output_event_damage *event);
     void needsFrame();

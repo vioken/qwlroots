@@ -21,7 +21,7 @@ class QWSurface;
 class QWLayerSurfaceV1;
 class QWLayerShellV1Private;
 class QWXdgPopup;
-class QW_EXPORT QWLayerShellV1 : public QObject, public QWObject
+class QW_EXPORT QWLayerShellV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWLayerShellV1)
@@ -36,7 +36,6 @@ public:
 
 Q_SIGNALS:
     void newSurface(QWLayerSurfaceV1 *surface);
-    void beforeDestroy(QWLayerShellV1 *self);
 
 private:
     QWLayerShellV1(wlr_layer_shell_v1 *handle, bool isOwner);
@@ -44,7 +43,7 @@ private:
 };
 
 class QWLayerSurfaceV1Private;
-class QW_EXPORT QWLayerSurfaceV1 : public QObject, public QWObject
+class QW_EXPORT QWLayerSurfaceV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWLayerSurfaceV1)
@@ -68,7 +67,6 @@ public:
     QWSurface *surface() const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWLayerSurfaceV1 *self);
     void newPopup(QWXdgPopup *popup);
 
 private:

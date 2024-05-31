@@ -3,7 +3,7 @@
 
 #include "qwoutputmanagementv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -16,48 +16,23 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWOutputManagerV1Private : public QWObjectPrivate
+class QWOutputManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWOutputManagerV1Private(wlr_output_manager_v1 *handle, bool isOwner, QWOutputManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWOutputManagerV1Private::on_destroy);
         sc.connect(&handle->events.apply, this, &QWOutputManagerV1Private::on_apply);
         sc.connect(&handle->events.test, this, &QWOutputManagerV1Private::on_test);
     }
-    ~QWOutputManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_apply(void *);
     void on_test(void *);
 
-    static QHash<void*, QWOutputManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWOutputManagerV1*> QWOutputManagerV1Private::map;
-
-void QWOutputManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWOutputManagerV1Private::map;
 
 void QWOutputManagerV1Private::on_apply(void *data)
 {
@@ -72,15 +47,14 @@ void QWOutputManagerV1Private::on_test(void *data)
 }
 
 QWOutputManagerV1::QWOutputManagerV1(wlr_output_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWOutputManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWOutputManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWOutputManagerV1 *QWOutputManagerV1::get(wlr_output_manager_v1 *handle)
 {
-    return QWOutputManagerV1Private::map.value(handle);
+    return static_cast<QWOutputManagerV1*>(QWOutputManagerV1Private::map.value(handle));
 }
 
 QWOutputManagerV1 *QWOutputManagerV1::from(wlr_output_manager_v1 *handle)

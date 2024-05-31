@@ -3,7 +3,7 @@
 
 #include "qwdatadevice.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,57 +13,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWDataDeviceManagerPrivate : public QWObjectPrivate
+class QWDataDeviceManagerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDataDeviceManagerPrivate(wlr_data_device_manager *handle, bool isOwner, QWDataDeviceManager *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWDataDeviceManagerPrivate::on_destroy);
-    }
-    ~QWDataDeviceManagerPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            qFatal("QWDataDeviceManager(%p) can't to destroy, its ownership is wl_display", q_func());
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWDataDeviceManager*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDataDeviceManager)
-    QWSignalConnector sc;
 };
-QHash<void*, QWDataDeviceManager*> QWDataDeviceManagerPrivate::map;
-
-void QWDataDeviceManagerPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWDataDeviceManagerPrivate::map;
 
 QWDataDeviceManager::QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWDataDeviceManagerPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWDataDeviceManagerPrivate(handle, isOwner, this))
 {
 
 }
 
 QWDataDeviceManager *QWDataDeviceManager::get(wlr_data_device_manager *handle)
 {
-    return QWDataDeviceManagerPrivate::map.value(handle);
+    return static_cast<QWDataDeviceManager*>(QWDataDeviceManagerPrivate::map.value(handle));
 }
 
 QWDataDeviceManager *QWDataDeviceManager::from(wlr_data_device_manager *handle)

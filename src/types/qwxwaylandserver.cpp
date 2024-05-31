@@ -3,7 +3,7 @@
 
 #include "qwxwaylandserver.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -12,50 +12,24 @@ extern "C" {
 }
 
 QW_BEGIN_NAMESPACE
-class QWXWaylandServerPrivate : public QWObjectPrivate
+class QWXWaylandServerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandServerPrivate(wlr_xwayland_server *handle, bool isOwner, QWXWaylandServer *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_xwayland_server_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXWaylandServerPrivate::on_destroy);
         sc.connect(&handle->events.start, this, &QWXWaylandServerPrivate::on_start);
         sc.connect(&handle->events.ready, this, &QWXWaylandServerPrivate::on_ready);
     }
-    ~QWXWaylandServerPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_xwayland_server_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_start(void *);
     void on_ready(void *);
 
-    static QHash<void*, QWXWaylandServer*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandServer)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXWaylandServer*> QWXWaylandServerPrivate::map;
-
-void QWXWaylandServerPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWXWaylandServerPrivate::map;
 
 void QWXWaylandServerPrivate::on_start(void *)
 {
@@ -68,15 +42,14 @@ void QWXWaylandServerPrivate::on_ready(void *)
 }
 
 QWXWaylandServer::QWXWaylandServer(wlr_xwayland_server *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWXWaylandServerPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWXWaylandServerPrivate(handle, isOwner, this))
 {
 
 }
 
 QWXWaylandServer *QWXWaylandServer::get(wlr_xwayland_server *handle)
 {
-    return QWXWaylandServerPrivate::map.value(handle);
+    return static_cast<QWXWaylandServer*>(QWXWaylandServerPrivate::map.value(handle));
 }
 
 QWXWaylandServer *QWXWaylandServer::from(wlr_xwayland_server *handle)

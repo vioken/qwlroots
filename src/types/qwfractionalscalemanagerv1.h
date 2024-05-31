@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWSurface;
 class QWFractionalScaleManagerV1Private;
-class QW_EXPORT QWFractionalScaleManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWFractionalScaleManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWFractionalScaleManagerV1)
@@ -27,9 +27,6 @@ public:
     static QWFractionalScaleManagerV1 *create(QWDisplay *display, uint32_t version);
 
     static void notifyScale(QWSurface *surface, double scale);
-
-Q_SIGNALS:
-    void beforeDestroy(QWFractionalScaleManagerV1 *self);
 
 private:
     QWFractionalScaleManagerV1(wlr_fractional_scale_manager_v1 *handle, bool isOwner);

@@ -4,7 +4,7 @@
 #include "qwxwayland.h"
 
 #include "qwxwaylandserver.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 #include <qwdisplay.h>
 #include <qwcompositor.h>
 #include <qwseat.h>
@@ -23,44 +23,24 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXWaylandPrivate : public QWObjectPrivate
+class QWXWaylandPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandPrivate(wlr_xwayland *handle, QWXWayland *qq)
-        : QWObjectPrivate(handle, false, qq)
+        : QWWrapObjectPrivate(handle, false, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.ready, q_func(), &QWXWayland::ready);
         sc.connect(&handle->events.new_surface, this, &QWXWaylandPrivate::on_new_surface);
         sc.connect(&handle->events.remove_startup_info, this, &QWXWaylandPrivate::on_remove_startup_info);
     }
 
-    ~QWXWaylandPrivate() {
-        if (!m_handle) {
-            return;
-        }
-        destroy();
-        // Destroy following wl_display.
-        Q_ASSERT(!isHandleOwner);
-    }
-
     void on_new_surface(wlr_xwayland_surface *surface);
     void on_remove_startup_info(wlr_xwayland_remove_startup_info_event *event);
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    static QHash<void*, QWXWayland*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWayland)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXWayland*> QWXWaylandPrivate::map;
+QHash<void*, QWWrapObject*> QWXWaylandPrivate::map;
 
 void QWXWaylandPrivate::on_new_surface(wlr_xwayland_surface *surface)
 {
@@ -83,7 +63,7 @@ QWXWayland *QWXWayland::create(QWDisplay *wl_display, QWCompositor *compositor, 
 
 QWXWayland *QWXWayland::get(wlr_xwayland *handle)
 {
-    return QWXWaylandPrivate::map.value(handle);
+    return static_cast<QWXWayland*>(QWXWaylandPrivate::map.value(handle));
 }
 
 void QWXWayland::setCursor(const QImage &image, const QPoint &hotspot)
@@ -110,8 +90,7 @@ wlr_xwayland *QWXWayland::handle() const
 }
 
 QWXWayland::QWXWayland(wlr_xwayland *handle, QWXWaylandServer *parent)
-    : QObject(parent)
-    , QWObject(*new QWXWaylandPrivate(handle, this))
+    : QWWrapObject(*new QWXWaylandPrivate(handle, this), parent)
 {
 }
 

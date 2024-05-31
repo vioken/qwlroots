@@ -43,6 +43,7 @@
 #endif
 
 #include <QScopedPointer>
+#include <QObject>
 
 QW_BEGIN_NAMESPACE
 
@@ -98,6 +99,21 @@ protected:
 
 private:
     std::pair<void*, void*> m_data; // <owner, data>
+};
+
+class QWWrapObjectPrivate;
+class QW_EXPORT QWWrapObject : public QObject, public QWObject
+{
+    Q_OBJECT
+
+Q_SIGNALS:
+    void beforeDestroy();
+
+protected:
+    QWWrapObject(QWWrapObjectPrivate &dd, QObject *parent = nullptr);
+    ~QWWrapObject();
+
+    QW_DECLARE_PRIVATE(QWWrapObject)
 };
 
 QW_END_NAMESPACE

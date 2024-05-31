@@ -35,7 +35,7 @@ class QWSurface;
 class QWDisplay;
 class QWKeyboard;
 class QWSeatPrivate;
-class QW_EXPORT QWSeat : public QObject, public QWObject
+class QW_EXPORT QWSeat : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSeat)
@@ -126,7 +126,6 @@ public:
     bool surfaceAcceptsTouch(QWSurface *surface);
 
 Q_SIGNALS:
-    void beforeDestroy(QWSeat *self);
     void pointerGrabBegin();
     void pointerGrabEnd();
     void keyboardGrabBegin();

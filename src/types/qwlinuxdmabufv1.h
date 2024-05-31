@@ -29,7 +29,7 @@ public:
 };
 
 class QWLinuxDmabufV1Private;
-class QW_EXPORT QWLinuxDmabufV1 : public QObject, public QWObject
+class QW_EXPORT QWLinuxDmabufV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWLinuxDmabufV1)
@@ -42,9 +42,6 @@ public:
     static QWLinuxDmabufV1 *from(wlr_linux_dmabuf_v1 *handle);
     static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, const QWLinuxDmabufFeedbackV1 *defaultFeedback);
     static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, QWRenderer *renderer);
-
-Q_SIGNALS:
-    void beforeDestroy(QWLinuxDmabufV1 *self);
 
 private:
     QWLinuxDmabufV1(wlr_linux_dmabuf_v1 *handle, bool isOwner);

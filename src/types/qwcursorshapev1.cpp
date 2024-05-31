@@ -3,7 +3,7 @@
 
 #include "qwcursorshapev1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWCursorShapeManagerV1Private : public QWObjectPrivate
+class QWCursorShapeManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWCursorShapeManagerV1Private(wlr_cursor_shape_manager_v1 *handle, bool isOwner, QWCursorShapeManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWCursorShapeManagerV1Private::on_destroy);
         sc.connect(&handle->events.request_set_shape, this, &QWCursorShapeManagerV1Private::on_request_set_shape);
     }
-    ~QWCursorShapeManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_request_set_shape(void *);
 
-    static QHash<void*, QWCursorShapeManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCursorShapeManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWCursorShapeManagerV1*> QWCursorShapeManagerV1Private::map;
-
-void QWCursorShapeManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWCursorShapeManagerV1Private::map;
 
 void QWCursorShapeManagerV1Private::on_request_set_shape(void *data)
 {
@@ -60,15 +35,14 @@ void QWCursorShapeManagerV1Private::on_request_set_shape(void *data)
 }
 
 QWCursorShapeManagerV1::QWCursorShapeManagerV1(wlr_cursor_shape_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWCursorShapeManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWCursorShapeManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWCursorShapeManagerV1 *QWCursorShapeManagerV1::get(wlr_cursor_shape_manager_v1 *handle)
 {
-    return QWCursorShapeManagerV1Private::map.value(handle);
+    return static_cast<QWCursorShapeManagerV1*>(QWCursorShapeManagerV1Private::map.value(handle));
 }
 
 QWCursorShapeManagerV1 *QWCursorShapeManagerV1::from(wlr_cursor_shape_manager_v1 *handle)

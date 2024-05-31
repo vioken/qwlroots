@@ -26,7 +26,7 @@ class QWTexture;
 class QWOutput;
 class QWSurface;
 class QWCompositorPrivate;
-class QW_EXPORT QWCompositor : public QObject, public QWObject
+class QW_EXPORT QWCompositor : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWCompositor)
@@ -40,7 +40,6 @@ public:
     static QWCompositor *create(QWDisplay *display, QWRenderer *renderer, uint32_t version);
 
 Q_SIGNALS:
-    void beforeDestroy(QWCompositor *self);
     void newSurface(QWSurface *surface);
 
 private:
@@ -50,7 +49,7 @@ private:
 
 class QWSubsurface;
 class QWSurfacePrivate;
-class QW_EXPORT QWSurface : public QObject, public QWObject
+class QW_EXPORT QWSurface : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSurface)
@@ -84,7 +83,6 @@ public:
     void unmap();
 
 Q_SIGNALS:
-    void beforeDestroy(QWSurface *self);
     void clientCommit();
     void commit();
     void newSubsurface(QWSubsurface *surface);

@@ -6,8 +6,8 @@
 #include "qwdisplay.h"
 #include "qwtexture.h"
 #include "qwoutput.h"
-#include "util/qwsignalconnector.h"
 #include "render/qwrenderer.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 #include <QRectF>
@@ -24,47 +24,21 @@ static_assert(std::is_same_v<wl_output_transform_t, std::underlying_type_t<wl_ou
 
 QW_BEGIN_NAMESPACE
 
-class QWCompositorPrivate : public QWObjectPrivate
+class QWCompositorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWCompositorPrivate(wlr_compositor *handle, bool isOwner, QWCompositor *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWCompositorPrivate::on_destroy);
         sc.connect(&handle->events.new_surface, this, &QWCompositorPrivate::on_new_surface);
     }
-    ~QWCompositorPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            qFatal("QWCompositor(%p) can't to destroy, its ownership is wl_display", q_func());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_new_surface(void *data);
 
-    static QHash<void*, QWCompositor*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCompositor)
-    QWSignalConnector sc;
 };
-QHash<void*, QWCompositor*> QWCompositorPrivate::map;
-
-void QWCompositorPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWCompositorPrivate::map;
 
 void QWCompositorPrivate::on_new_surface(void *data)
 {
@@ -73,15 +47,14 @@ void QWCompositorPrivate::on_new_surface(void *data)
 }
 
 QWCompositor::QWCompositor(wlr_compositor *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWCompositorPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWCompositorPrivate(handle, isOwner, this))
 {
 
 }
 
 QWCompositor *QWCompositor::get(wlr_compositor *handle)
 {
-    return QWCompositorPrivate::map.value(handle);
+    return static_cast<QWCompositor*>(QWCompositorPrivate::map.value(handle));
 }
 
 QWCompositor *QWCompositor::from(wlr_compositor *handle)
@@ -101,15 +74,12 @@ QWCompositor *QWCompositor::create(QWDisplay *display, QWRenderer *renderer, uin
 
 /// QWSurface
 
-class QWSurfacePrivate : public QWObjectPrivate
+class QWSurfacePrivate : public QWWrapObjectPrivate
 {
 public:
     QWSurfacePrivate(wlr_surface *handle, bool isOwner, QWSurface *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWSurfacePrivate::on_destroy);
         sc.connect(&handle->events.client_commit, this, &QWSurfacePrivate::on_client_commit);
         sc.connect(&handle->events.commit, this, &QWSurfacePrivate::on_commit);
         sc.connect(&handle->events.new_subsurface, this, &QWSurfacePrivate::on_new_subsurface);
@@ -119,21 +89,7 @@ public:
         sc.connect(&handle->events.map, this, &QWSurfacePrivate::on_map);
         sc.connect(&handle->events.unmap, this, &QWSurfacePrivate::on_unmap);
     }
-    ~QWSurfacePrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_client_commit(void *);
     void on_commit(void *);
     void on_new_subsurface(void *);
@@ -141,18 +97,10 @@ public:
     void on_map(void *);
     void on_unmap(void *);
 
-    static QHash<void*, QWSurface*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSurface)
-    QWSignalConnector sc;
 };
-QHash<void*, QWSurface*> QWSurfacePrivate::map;
-
-void QWSurfacePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWSurfacePrivate::map;
 
 void QWSurfacePrivate::on_client_commit(void *)
 {
@@ -187,15 +135,14 @@ void QWSurfacePrivate::on_unmap(void *)
 }
 
 QWSurface::QWSurface(wlr_surface *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWSurfacePrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWSurfacePrivate(handle, isOwner, this))
 {
 
 }
 
 QWSurface *QWSurface::get(wlr_surface *handle)
 {
-    return QWSurfacePrivate::map.value(handle);
+    return static_cast<QWSurface*>(QWSurfacePrivate::map.value(handle));
 }
 
 QWSurface *QWSurface::from(wlr_surface *handle)
@@ -220,7 +167,7 @@ void QWSurface::forEachSurface(wlr_surface_iterator_func_t iterator, void *userD
 
 QRectF QWSurface::getBufferSourceBox() const
 {
-    wlr_fbox wfbox = { 0 };
+    wlr_fbox wfbox = { 0, 0, 0, 0 };
     wlr_surface_get_buffer_source_box(handle(), &wfbox);
     return QRectF { wfbox.x, wfbox.y, wfbox.width, wfbox.height };
 }
@@ -232,7 +179,7 @@ void QWSurface::getEffectiveDamage(pixman_region32_t *damage) const
 
 QRect QWSurface::getExtends() const
 {
-    wlr_box wbox = { 0 };
+    wlr_box wbox = { 0, 0, 0, 0 };
     wlr_surface_get_extends(handle(), &wbox);
     return QRect { wbox.x, wbox.y, wbox.width, wbox.height };
 }

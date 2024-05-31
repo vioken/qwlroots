@@ -42,7 +42,7 @@ public:
 };
 
 class QWDrmLeaseV1ManagerPrivate;
-class QW_EXPORT QWDrmLeaseV1Manager : public QObject, public QWObject
+class QW_EXPORT QWDrmLeaseV1Manager : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWDrmLeaseV1Manager)
@@ -61,7 +61,6 @@ public:
     void withdrawOutput(QWOutput *output);
 
 Q_SIGNALS:
-    void beforeDestroy(QWDrmLeaseV1Manager *self);
     void request(QWDrmLeaseRequestV1 *request);
 };
 

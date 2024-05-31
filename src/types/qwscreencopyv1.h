@@ -12,7 +12,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWScreenCopyManagerV1Private;
-class QW_EXPORT QWScreenCopyManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWScreenCopyManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWScreenCopyManagerV1)
@@ -24,9 +24,6 @@ public:
     static QWScreenCopyManagerV1 *get(wlr_screencopy_manager_v1 *handle);
     static QWScreenCopyManagerV1 *from(wlr_screencopy_manager_v1 *handle);
     static QWScreenCopyManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void beforeDestroy(QWScreenCopyManagerV1 *self);
 
 private:
     QWScreenCopyManagerV1(wlr_screencopy_manager_v1 *handle, bool isOwner);

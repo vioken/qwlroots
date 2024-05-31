@@ -5,7 +5,7 @@
 #include "qwdisplay.h"
 #include "qwcompositor.h"
 #include "qwxdgshell.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 #include <QPointF>
@@ -24,46 +24,21 @@ QW_BEGIN_NAMESPACE
 
 /// QWLayerShellV1
 
-class QWLayerShellV1Private : public QWObjectPrivate
+class QWLayerShellV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLayerShellV1Private(wlr_layer_shell_v1 *handle, bool isOwner, QWLayerShellV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.new_surface, this, &QWLayerShellV1Private::on_new_surface);
-        sc.connect(&handle->events.destroy, this, &QWLayerShellV1Private::on_destroy);
-    }
-    ~QWLayerShellV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_new_surface(void *);
-    void on_destroy(void *);
 
-    static QHash<void*, QWLayerShellV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLayerShellV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWLayerShellV1*> QWLayerShellV1Private::map;
-
-void QWLayerShellV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWLayerShellV1Private::map;
 
 void QWLayerShellV1Private::on_new_surface(void *data)
 {
@@ -72,8 +47,7 @@ void QWLayerShellV1Private::on_new_surface(void *data)
 }
 
 QWLayerShellV1::QWLayerShellV1(wlr_layer_shell_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWLayerShellV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWLayerShellV1Private(handle, isOwner, this))
 {
 
 }
@@ -88,7 +62,7 @@ QWLayerShellV1 *QWLayerShellV1::create(QWDisplay *display, uint32_t version)
 
 QWLayerShellV1 *QWLayerShellV1::get(wlr_layer_shell_v1 *handle)
 {
-    return QWLayerShellV1Private::map.value(handle);
+    return static_cast<QWLayerShellV1*>(QWLayerShellV1Private::map.value(handle));
 }
 
 QWLayerShellV1 *QWLayerShellV1::from(wlr_layer_shell_v1 *handle)
@@ -100,48 +74,22 @@ QWLayerShellV1 *QWLayerShellV1::from(wlr_layer_shell_v1 *handle)
 
 /// QWLayerSurfaceV1
 
-class QWLayerSurfaceV1Private : public QWObjectPrivate
+class QWLayerSurfaceV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLayerSurfaceV1Private(wlr_layer_surface_v1 *handle, bool isOwner, QWLayerSurfaceV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_layer_surface_v1_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.new_popup, this, &QWLayerSurfaceV1Private::on_new_popup);
-        sc.connect(&handle->events.destroy, this, &QWLayerSurfaceV1Private::on_destroy);
-    }
-    ~QWLayerSurfaceV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_layer_surface_v1_destroy(q_func()->handle());
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_new_popup(void *);
-    void on_destroy(void *);
 
-    static QHash<void*, QWLayerSurfaceV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLayerSurfaceV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWLayerSurfaceV1*> QWLayerSurfaceV1Private::map;
-
-void QWLayerSurfaceV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWLayerSurfaceV1Private::map;
 
 void QWLayerSurfaceV1Private::on_new_popup(void *data)
 {
@@ -150,8 +98,7 @@ void QWLayerSurfaceV1Private::on_new_popup(void *data)
 }
 
 QWLayerSurfaceV1::QWLayerSurfaceV1(wlr_layer_surface_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWLayerSurfaceV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWLayerSurfaceV1Private(handle, isOwner, this))
 {
 
 
@@ -159,7 +106,7 @@ QWLayerSurfaceV1::QWLayerSurfaceV1(wlr_layer_surface_v1 *handle, bool isOwner)
 
 QWLayerSurfaceV1 *QWLayerSurfaceV1::get(wlr_layer_surface_v1 *handle)
 {
-    return QWLayerSurfaceV1Private::map.value(handle);
+    return static_cast<QWLayerSurfaceV1*>(QWLayerSurfaceV1Private::map.value(handle));
 }
 
 QWLayerSurfaceV1 *QWLayerSurfaceV1::from(wlr_layer_surface_v1 *handle)

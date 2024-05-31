@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwtextinputv3.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwdisplay.h>
 #include <QHash>
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTextInputManagerV3Private : public QWObjectPrivate
+class QWTextInputManagerV3Private : public QWWrapObjectPrivate
 {
 public:
     QWTextInputManagerV3Private(wlr_text_input_manager_v3 *handle, bool isOwner, QWTextInputManagerV3 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWTextInputManagerV3Private::on_destroy);
         sc.connect(&handle->events.text_input, this, &QWTextInputManagerV3Private::on_text_input);
     }
-    ~QWTextInputManagerV3Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_text_input(wlr_text_input_v3 *);
 
-    static QHash<void*, QWTextInputManagerV3*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTextInputManagerV3)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTextInputManagerV3*> QWTextInputManagerV3Private::map;
-
-void QWTextInputManagerV3Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWTextInputManagerV3Private::map;
 
 void QWTextInputManagerV3Private::on_text_input(wlr_text_input_v3 *input)
 {
@@ -60,15 +35,14 @@ void QWTextInputManagerV3Private::on_text_input(wlr_text_input_v3 *input)
 }
 
 QWTextInputManagerV3::QWTextInputManagerV3(wlr_text_input_manager_v3 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWTextInputManagerV3Private(handle, isOwner, this))
+    : QWWrapObject(*new QWTextInputManagerV3Private(handle, isOwner, this))
 {
 
 }
 
 QWTextInputManagerV3 *QWTextInputManagerV3::get(wlr_text_input_manager_v3 *handle)
 {
-    return QWTextInputManagerV3Private::map.value(handle);
+    return static_cast<QWTextInputManagerV3*>(QWTextInputManagerV3Private::map.value(handle));
 }
 
 QWTextInputManagerV3 *QWTextInputManagerV3::from(wlr_text_input_manager_v3 *handle)

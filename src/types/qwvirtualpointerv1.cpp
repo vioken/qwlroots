@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwvirtualpointerv1.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwdisplay.h>
 #include <QHash>
@@ -16,46 +16,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWVirtualPointerManagerV1Private : public QWObjectPrivate
+class QWVirtualPointerManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWVirtualPointerManagerV1Private(wlr_virtual_pointer_manager_v1 *handle, bool isOwner, QWVirtualPointerManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWVirtualPointerManagerV1Private::on_destroy);
         sc.connect(&handle->events.new_virtual_pointer, this, &QWVirtualPointerManagerV1Private::on_new_virtual_pointer);
     }
-    ~QWVirtualPointerManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_new_virtual_pointer(wlr_virtual_pointer_v1_new_pointer_event *);
 
-    static QHash<void*, QWVirtualPointerManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWVirtualPointerManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWVirtualPointerManagerV1*> QWVirtualPointerManagerV1Private::map;
-
-void QWVirtualPointerManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWVirtualPointerManagerV1Private::map;
 
 void QWVirtualPointerManagerV1Private::on_new_virtual_pointer(wlr_virtual_pointer_v1_new_pointer_event *event)
 {
@@ -63,8 +38,7 @@ void QWVirtualPointerManagerV1Private::on_new_virtual_pointer(wlr_virtual_pointe
 }
 
 QWVirtualPointerManagerV1::QWVirtualPointerManagerV1(wlr_virtual_pointer_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWVirtualPointerManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWVirtualPointerManagerV1Private(handle, isOwner, this))
 {
 
 }
@@ -77,7 +51,7 @@ QWVirtualPointerManagerV1 *QWVirtualPointerManagerV1::create(QWDisplay *display)
 
 QWVirtualPointerManagerV1 *QWVirtualPointerManagerV1::get(wlr_virtual_pointer_manager_v1 *handle)
 {
-    return QWVirtualPointerManagerV1Private::map.value(handle);
+    return static_cast<QWVirtualPointerManagerV1*>(QWVirtualPointerManagerV1Private::map.value(handle));
 }
 
 QWVirtualPointerManagerV1 *QWVirtualPointerManagerV1::from(wlr_virtual_pointer_manager_v1 *handle)

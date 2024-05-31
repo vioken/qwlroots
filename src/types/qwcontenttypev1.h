@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWSurface;
 class QWContentTypeManagerV1Private;
-class QW_EXPORT QWContentTypeManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWContentTypeManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWContentTypeManagerV1)
@@ -28,9 +28,6 @@ public:
     static QWContentTypeManagerV1 *create(QWDisplay *display, uint32_t version);
 
     wp_content_type_v1_type_t getSurfaceContentType(QWSurface *surface);
-
-Q_SIGNALS:
-    void beforeDestroy(QWContentTypeManagerV1 *self);
 
 private:
     QWContentTypeManagerV1(wlr_content_type_manager_v1 *handle, bool isOwner);

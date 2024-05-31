@@ -4,7 +4,7 @@
 #include "qwcontenttypev1.h"
 #include "qwcompositor.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -16,55 +16,29 @@ static_assert(std::is_same_v<wp_content_type_v1_type_t, std::underlying_type_t<w
 
 QW_BEGIN_NAMESPACE
 
-class QWContentTypeManagerV1Private : public QWObjectPrivate
+class QWContentTypeManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWContentTypeManagerV1Private(wlr_content_type_manager_v1 *handle, bool isOwner, QWContentTypeManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWContentTypeManagerV1Private::on_destroy);
-    }
-    ~QWContentTypeManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWContentTypeManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWContentTypeManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWContentTypeManagerV1*> QWContentTypeManagerV1Private::map;
-
-void QWContentTypeManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWContentTypeManagerV1Private::map;
 
 QWContentTypeManagerV1::QWContentTypeManagerV1(wlr_content_type_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWContentTypeManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWContentTypeManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWContentTypeManagerV1 *QWContentTypeManagerV1::get(wlr_content_type_manager_v1 *handle)
 {
-    return QWContentTypeManagerV1Private::map.value(handle);
+    return static_cast<QWContentTypeManagerV1*>(QWContentTypeManagerV1Private::map.value(handle));
 }
 
 QWContentTypeManagerV1 *QWContentTypeManagerV1::from(wlr_content_type_manager_v1 *handle)

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwxdgforeignregistry.h"
+#include "private/qwglobal_p.h"
 
 #include <qwglobal.h>
 #include <qwxdgforeignregistry_p.h>
@@ -13,75 +14,27 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXdgForeignRegistryPrivate : public QWObjectPrivate
+class QWXdgForeignRegistryPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXdgForeignRegistryPrivate(wlr_xdg_foreign_registry *handle, bool isOwner, QWXdgForeignRegistry *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXdgForeignRegistryPrivate::on_destroy);
+
     }
 
-
-    ~QWXdgForeignRegistryPrivate() override {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    inline void on_destroy() {
-        destroy();
-        m_handle = nullptr;
-        delete q_func();
-    }
-
-    static QHash<void*, QWXdgForeignRegistry*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgForeignRegistry)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXdgForeignRegistry*> QWXdgForeignRegistryPrivate::map;
+QHash<void*, QWWrapObject*> QWXdgForeignRegistryPrivate::map;
 
 QWXdgForeignExportedPrivate::QWXdgForeignExportedPrivate(wlr_xdg_foreign_exported *handle, bool isOwner, QWXdgForeignExported *qq)
-    : QWObjectPrivate(handle, isOwner, qq)
+    : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
 {
-    Q_ASSERT(!map.contains(handle));
-    map.insert(handle, qq);
-    sc.connect(&handle->events.destroy, this, &QWXdgForeignExportedPrivate::on_destroy);
+
 }
 
-QWXdgForeignExportedPrivate::~QWXdgForeignExportedPrivate()
-{
-    if (!m_handle)
-        return;
-    destroy();
-}
-
-void QWXdgForeignExportedPrivate::destroy() {
-    Q_ASSERT(m_handle);
-    Q_ASSERT(map.contains(m_handle));
-    Q_EMIT q_func()->beforeDestroy(q_func());
-    map.remove(m_handle);
-    sc.invalidate();
-}
-
-void QWXdgForeignExportedPrivate::on_destroy()
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
-
-QHash<void*, QWXdgForeignExported*> QWXdgForeignExportedPrivate::map;
+QHash<void*, QWWrapObject*> QWXdgForeignExportedPrivate::map;
 
 QWXdgForeignRegistry *QWXdgForeignRegistry::create(QWDisplay *display)
 {
@@ -98,7 +51,7 @@ QWXdgForeignRegistry *QWXdgForeignRegistry::from(wlr_xdg_foreign_registry *handl
 
 QWXdgForeignRegistry *QWXdgForeignRegistry::get(wlr_xdg_foreign_registry *handle)
 {
-    return QWXdgForeignRegistryPrivate::map.value(handle);
+    return static_cast<QWXdgForeignRegistry*>(QWXdgForeignRegistryPrivate::map.value(handle));
 }
 
 QWXdgForeignExported *QWXdgForeignRegistry::findByHandle(const char *handle)
@@ -108,8 +61,7 @@ QWXdgForeignExported *QWXdgForeignRegistry::findByHandle(const char *handle)
 }
 
 QWXdgForeignRegistry::QWXdgForeignRegistry(wlr_xdg_foreign_registry *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(* new QWXdgForeignRegistryPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWXdgForeignRegistryPrivate(handle, isOwner, this))
 {
 }
 
@@ -122,7 +74,7 @@ QWXdgForeignExported *QWXdgForeignExported::from(wlr_xdg_foreign_exported *handl
 
 QWXdgForeignExported *QWXdgForeignExported::get(wlr_xdg_foreign_exported *handle)
 {
-    return QWXdgForeignExportedPrivate::map.value(handle);
+    return static_cast<QWXdgForeignExported*>(QWXdgForeignExportedPrivate::map.value(handle));
 }
 
 bool QWXdgForeignExported::init(QWXdgForeignRegistry *registry)
@@ -135,15 +87,13 @@ void QWXdgForeignExported::finish()
     return wlr_xdg_foreign_exported_finish(handle());
 }
 
-QWXdgForeignExported::QWXdgForeignExported(QWObjectPrivate &dd)
-    : QObject(nullptr)
-    , QWObject(dd)
+QWXdgForeignExported::QWXdgForeignExported(QWXdgForeignExportedPrivate &dd)
+    : QWWrapObject(dd)
 {
 }
 
 QWXdgForeignExported::QWXdgForeignExported(wlr_xdg_foreign_exported *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(* new QWXdgForeignExportedPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWXdgForeignExportedPrivate(handle, isOwner, this))
 {
 }
 

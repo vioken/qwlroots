@@ -19,7 +19,7 @@ class QWSurface;
 class QWDisplay;
 class QWInputMethodV2;
 class QWInputMethodManagerV2Private;
-class QW_EXPORT QWInputMethodManagerV2 : public QObject, public QWObject
+class QW_EXPORT QWInputMethodManagerV2 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputMethodManagerV2)
@@ -33,7 +33,6 @@ public:
     static QWInputMethodManagerV2 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWInputMethodManagerV2 *self);
     void inputMethod(QWInputMethodV2 *input_method);
 
 private:
@@ -43,7 +42,7 @@ private:
 
 
 class QWInputMethodKeyboardGrabV2Private;
-class QW_EXPORT QWInputMethodKeyboardGrabV2 : public QObject, public QWObject
+class QW_EXPORT QWInputMethodKeyboardGrabV2 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputMethodKeyboardGrabV2)
@@ -61,15 +60,12 @@ public:
     void sendModifiers(wlr_keyboard_modifiers *modifiers);
     void setKeyboard(QWKeyboard *keyboard);
 
-Q_SIGNALS:
-    void beforeDestroy(QWInputMethodKeyboardGrabV2 *self);
-
 private:
     QWInputMethodKeyboardGrabV2(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner);
 };
 
 class QWInputPopupSurfaceV2Private;
-class QW_EXPORT QWInputPopupSurfaceV2 : public QObject, public QWObject
+class QW_EXPORT QWInputPopupSurfaceV2 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputPopupSurfaceV2)
@@ -86,16 +82,13 @@ public:
 
     void send_text_input_rectangle(const QRect &sbox);
 
-Q_SIGNALS:
-    void beforeDestroy(QWInputPopupSurfaceV2 *self);
-
 private:
     QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner);
     ~QWInputPopupSurfaceV2() = default;
 };
 
 class QWInputMethodV2Private;
-class QW_EXPORT QWInputMethodV2 : public QObject, public QWObject
+class QW_EXPORT QWInputMethodV2 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWInputMethodV2)
@@ -116,7 +109,6 @@ public:
     void sendUnavailable();
 
 Q_SIGNALS:
-    void beforeDestroy(QWInputMethodV2 *self);
     void commit(QWInputMethodV2 *inputMethod);
     void newPopupSurface(QWInputPopupSurfaceV2 *surface);
     void grabKeybord(QWInputMethodKeyboardGrabV2 *keyboardGrab);

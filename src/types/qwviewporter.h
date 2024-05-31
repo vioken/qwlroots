@@ -12,7 +12,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWViewPorterPrivate;
-class QW_EXPORT QWViewPorter : public QObject, public QWObject
+class QW_EXPORT QWViewPorter : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWViewPorter)
@@ -24,9 +24,6 @@ public:
     static QWViewPorter *get(wlr_viewporter *handle);
     static QWViewPorter *from(wlr_viewporter *handle);
     static QWViewPorter *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void beforeDestroy(QWViewPorter *self);
 
 private:
     QWViewPorter(wlr_viewporter *handle, bool isOwner);

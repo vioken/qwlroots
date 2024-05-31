@@ -33,7 +33,7 @@ private:
 
 class QWDisplay;
 class QWVirtualKeyboardManagerV1Private;
-class QW_EXPORT QWVirtualKeyboardManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWVirtualKeyboardManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWVirtualKeyboardManagerV1)
@@ -47,7 +47,6 @@ public:
     static QWVirtualKeyboardManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWVirtualKeyboardManagerV1 *self);
     void newVirtualKeyboard(QWVirtualKeyboardV1 *);
 
 private:

@@ -6,7 +6,7 @@
 // WARNING: This file is not part of the QWlroots API.
 
 #include "qwglobal.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QObject>
 #include <QHash>
@@ -17,18 +17,13 @@ QW_BEGIN_NAMESPACE
 
 class QWInputDevice;
 
-class QWInputDevicePrivate : public QWObjectPrivate
+class QWInputDevicePrivate : public QWWrapObjectPrivate
 {
 public:
     QWInputDevicePrivate(wlr_input_device *handle, bool isOwner, QWInputDevice *qq);
-    virtual ~QWInputDevicePrivate() override;
 
-    inline void destroy();
-    void on_destroy(void *);
-
-    static QHash<void*, QWInputDevice*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputDevice)
-    QWSignalConnector sc;
 };
 
 QW_END_NAMESPACE

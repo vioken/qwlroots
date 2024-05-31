@@ -3,7 +3,7 @@
 
 #include "qwdatacontrolv1.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -13,46 +13,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWDataControlManagerV1Private : public QWObjectPrivate
+class QWDataControlManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWDataControlManagerV1Private(wlr_data_control_manager_v1 *handle, bool isOwner, QWDataControlManagerV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWDataControlManagerV1Private::on_destroy);
         sc.connect(&handle->events.new_device, this, &QWDataControlManagerV1Private::on_new_device);
     }
-    ~QWDataControlManagerV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_new_device(void *);
 
-    static QHash<void*, QWDataControlManagerV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDataControlManagerV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWDataControlManagerV1*> QWDataControlManagerV1Private::map;
-
-void QWDataControlManagerV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWDataControlManagerV1Private::map;
 
 void QWDataControlManagerV1Private::on_new_device(void *data)
 {
@@ -61,15 +36,14 @@ void QWDataControlManagerV1Private::on_new_device(void *data)
 }
 
 QWDataControlManagerV1::QWDataControlManagerV1(wlr_data_control_manager_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWDataControlManagerV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWDataControlManagerV1Private(handle, isOwner, this))
 {
 
 }
 
 QWDataControlManagerV1 *QWDataControlManagerV1::get(wlr_data_control_manager_v1 *handle)
 {
-    return QWDataControlManagerV1Private::map.value(handle);
+    return static_cast<QWDataControlManagerV1*>(QWDataControlManagerV1Private::map.value(handle));
 }
 
 QWDataControlManagerV1 *QWDataControlManagerV1::from(wlr_data_control_manager_v1 *handle)

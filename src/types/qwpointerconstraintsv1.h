@@ -12,7 +12,7 @@ struct wlr_pointer_constraints_v1;
 QW_BEGIN_NAMESPACE
 
 class QWPointerConstraintV1Private;
-class QW_EXPORT QWPointerConstraintV1 : public QObject, public QWObject
+class QW_EXPORT QWPointerConstraintV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPointerConstraintV1)
@@ -30,7 +30,6 @@ public:
     void sendDeactivated();
 
 Q_SIGNALS:
-    void beforeDestroy(QWPointerConstraintV1 *self);
     void setRegion();
 
 private:
@@ -42,7 +41,7 @@ class QWSeat;
 class QWDisplay;
 class QWSurface;
 class QWPointerConstraintsV1Private;
-class QW_EXPORT QWPointerConstraintsV1 : public QObject, public QWObject
+class QW_EXPORT QWPointerConstraintsV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWPointerConstraintsV1)
@@ -58,7 +57,6 @@ public:
     QWPointerConstraintV1* constraintForSurface(QWSurface *surface, QWSeat *seat);
 
 Q_SIGNALS:
-    void beforeDestroy(QWPointerConstraintsV1 *self);
     void newConstraint(QWPointerConstraintV1 *);
 
 private:

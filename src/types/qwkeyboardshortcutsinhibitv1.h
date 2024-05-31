@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWKeyboardShortcutsInhibitorV1Private;
-class QW_EXPORT QWKeyboardShortcutsInhibitorV1 : public QObject, public QWObject
+class QW_EXPORT QWKeyboardShortcutsInhibitorV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWKeyboardShortcutsInhibitorV1)
@@ -28,16 +28,13 @@ public:
     void activate();
     void deactivate();
 
-Q_SIGNALS:
-    void beforeDestroy(QWKeyboardShortcutsInhibitorV1 *self);
-
 private:
     QWKeyboardShortcutsInhibitorV1(wlr_keyboard_shortcuts_inhibitor_v1 *handle, bool isOwner);
     ~QWKeyboardShortcutsInhibitorV1() = default;
 };
 
 class QWKeyboardShortcutsInhibitManagerV1Private;
-class QW_EXPORT QWKeyboardShortcutsInhibitManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWKeyboardShortcutsInhibitManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWKeyboardShortcutsInhibitManagerV1)
@@ -51,7 +48,6 @@ public:
     static QWKeyboardShortcutsInhibitManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWKeyboardShortcutsInhibitManagerV1 *self);
     void newInhibitor(QWKeyboardShortcutsInhibitorV1 *inhibitor);
 
 private:

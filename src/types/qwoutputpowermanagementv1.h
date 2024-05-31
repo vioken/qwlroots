@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWOutputPowerManagerV1Private;
-class QW_EXPORT QWOutputPowerManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWOutputPowerManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWOutputPowerManagerV1)
@@ -27,7 +27,6 @@ public:
     static QWOutputPowerManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWOutputPowerManagerV1 *self);
     void modeChanged(wlr_output_power_v1_set_mode_event* event);
 
 private:

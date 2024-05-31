@@ -4,7 +4,7 @@
 #include "qwlinuxdmabufv1.h"
 #include "qwdisplay.h"
 #include "qwrenderer.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -14,55 +14,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWLinuxDmabufV1Private : public QWObjectPrivate
+class QWLinuxDmabufV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLinuxDmabufV1Private(wlr_linux_dmabuf_v1 *handle, bool isOwner, QWLinuxDmabufV1 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWLinuxDmabufV1Private::on_destroy);
-    }
-    ~QWLinuxDmabufV1Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWLinuxDmabufV1*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLinuxDmabufV1)
-    QWSignalConnector sc;
 };
-QHash<void*, QWLinuxDmabufV1*> QWLinuxDmabufV1Private::map;
-
-void QWLinuxDmabufV1Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWLinuxDmabufV1Private::map;
 
 QWLinuxDmabufV1::QWLinuxDmabufV1(wlr_linux_dmabuf_v1 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWLinuxDmabufV1Private(handle, isOwner, this))
+    : QWWrapObject(*new QWLinuxDmabufV1Private(handle, isOwner, this))
 {
 
 }
 
 QWLinuxDmabufV1 *QWLinuxDmabufV1::get(wlr_linux_dmabuf_v1 *handle)
 {
-    return QWLinuxDmabufV1Private::map.value(handle);
+    return static_cast<QWLinuxDmabufV1*>(QWLinuxDmabufV1Private::map.value(handle));
 }
 
 QWLinuxDmabufV1 *QWLinuxDmabufV1::from(wlr_linux_dmabuf_v1 *handle)

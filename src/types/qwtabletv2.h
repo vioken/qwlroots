@@ -48,7 +48,7 @@ public:
 
 class QWSurface;
 class QWTabletV2TabletPrivate;
-class QW_EXPORT QWTabletV2Tablet : public QObject, public QWObject
+class QW_EXPORT QWTabletV2Tablet : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTabletV2Tablet)
@@ -64,9 +64,6 @@ public:
 
     bool canAcceptTablet(QWSurface *surface) const;
 
-Q_SIGNALS:
-    void beforeDestroy(QWTabletV2Tablet *self);
-
 private:
     explicit QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent);
     ~QWTabletV2Tablet() = default;
@@ -74,7 +71,7 @@ private:
 
 class QWSurface;
 class QWTabletV2TabletToolPrivate;
-class QW_EXPORT QWTabletV2TabletTool : public QObject, public QWObject
+class QW_EXPORT QWTabletV2TabletTool : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTabletV2TabletTool)
@@ -118,7 +115,6 @@ public:
     bool hasImplicitGrab() const;
 
 Q_SIGNALS:
-    void beforeDestroy(QWTabletV2TabletTool *self);
     void setCursor(wlr_tablet_v2_event_cursor *);
 
 private:
@@ -127,7 +123,7 @@ private:
 };
 
 class QWTabletV2TabletPadPrivate;
-class QW_EXPORT QWTabletV2TabletPad : public QObject, public QWObject
+class QW_EXPORT QWTabletV2TabletPad : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTabletV2TabletPad)
@@ -157,7 +153,6 @@ public:
     void startGrab(QWTabletPadV2Grab *grab);
 
 Q_SIGNALS:
-    void beforeDestroy(QWTabletV2TabletPad *self);
     void buttonFeedback(wlr_tablet_v2_event_feedback *);
     void ringFeedback(wlr_tablet_v2_event_feedback *);
     void stripFeedback(wlr_tablet_v2_event_feedback *);
@@ -171,7 +166,7 @@ class QWDisplay;
 class QWSeat;
 class QWInputDevice;
 class QWTabletManagerV2Private;
-class QW_EXPORT QWTabletManagerV2 : public QObject, public QWObject
+class QW_EXPORT QWTabletManagerV2 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTabletManagerV2)
@@ -187,9 +182,6 @@ public:
     QWTabletV2Tablet *createTablet(QWSeat *wlr_seat, QWInputDevice *wlr_device);
     QWTabletV2TabletPad *createPad(QWSeat *wlr_seat, QWInputDevice *wlr_device);
     QWTabletV2TabletTool *createTool(QWSeat *wlr_seat, wlr_tablet_tool *wlr_tool);
-
-Q_SIGNALS:
-    void beforeDestroy(QWTabletManagerV2 *self);
 
 private:
     QWTabletManagerV2(wlr_tablet_manager_v2 *handle, bool isOwner);

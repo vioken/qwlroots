@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWCursorShapeManagerV1Private;
 
-class QW_EXPORT QWCursorShapeManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWCursorShapeManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWCursorShapeManagerV1)
@@ -28,7 +28,6 @@ public:
     static QWCursorShapeManagerV1 *create(QWDisplay *display, uint32_t version);
 
 Q_SIGNALS:
-    void beforeDestroy(QWCursorShapeManagerV1 *self);
     void requestSetShape(wlr_cursor_shape_manager_v1_request_set_shape_event *event);
 
 private:

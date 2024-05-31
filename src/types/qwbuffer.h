@@ -23,7 +23,7 @@ QW_BEGIN_NAMESPACE
 
 class QWRenderer;
 class QWBufferPrivate;
-class QW_EXPORT QWBuffer : public QObject, public QWObject
+class QW_EXPORT QWBuffer : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWBuffer)
@@ -63,7 +63,6 @@ public:
     void endDataPtrAccess();
 
 Q_SIGNALS:
-    void beforeDestroy(QWBuffer *self);
     void release();
 
 private:

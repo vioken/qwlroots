@@ -16,7 +16,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWXdgToplevelDecorationV1;
 class QWXdgDecorationManagerV1Private;
-class QW_EXPORT QWXdgDecorationManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgDecorationManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgDecorationManagerV1)
@@ -38,7 +38,7 @@ private:
 };
 
 class QWXdgToplevelDecorationV1Private;
-class QW_EXPORT QWXdgToplevelDecorationV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgToplevelDecorationV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgToplevelDecorationV1)

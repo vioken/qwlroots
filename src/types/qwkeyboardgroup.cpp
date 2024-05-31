@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwkeyboardgroup.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 #include "qwkeyboard.h"
 
 #include <QHash>
@@ -13,41 +13,24 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWKeyboardGroupPrivate : public QWObjectPrivate
+class QWKeyboardGroupPrivate : public QWWrapObjectPrivate
 {
 public:
     QWKeyboardGroupPrivate(wlr_keyboard_group *handle, bool isOwner, QWKeyboardGroup *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, nullptr,
+                              toDestroyFunction(wlr_keyboard_group_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.enter, this, &QWKeyboardGroupPrivate::on_enter);
         sc.connect(&handle->events.leave, this, &QWKeyboardGroupPrivate::on_leave);
-    }
-    ~QWKeyboardGroupPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_keyboard_group_destroy(q_func()->handle());
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_enter(void *);
     void on_leave(void *);
 
-    static QHash<void*, QWKeyboardGroup*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWKeyboardGroup)
-    QWSignalConnector sc;
 };
-QHash<void*, QWKeyboardGroup*> QWKeyboardGroupPrivate::map;
+QHash<void*, QWWrapObject*> QWKeyboardGroupPrivate::map;
 
 void QWKeyboardGroupPrivate::on_enter(void *data)
 {
@@ -60,8 +43,7 @@ void QWKeyboardGroupPrivate::on_leave(void *data)
 }
 
 QWKeyboardGroup::QWKeyboardGroup(wlr_keyboard_group *handle, bool isOwner, QObject *parent)
-    : QObject(parent)
-    , QWObject(*new QWKeyboardGroupPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWKeyboardGroupPrivate(handle, isOwner, this), parent)
 {
 
 }
@@ -74,7 +56,7 @@ QWKeyboardGroup::QWKeyboardGroup(QObject *parent)
 
 QWKeyboardGroup *QWKeyboardGroup::get(wlr_keyboard_group *handle)
 {
-    return QWKeyboardGroupPrivate::map.value(handle);
+    return static_cast<QWKeyboardGroup*>(QWKeyboardGroupPrivate::map.value(handle));
 }
 
 QWKeyboardGroup *QWKeyboardGroup::from(wlr_keyboard_group *handle)

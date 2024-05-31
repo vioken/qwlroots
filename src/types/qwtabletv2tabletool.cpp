@@ -3,7 +3,7 @@
 
 #include "qwtabletv2.h"
 #include "qwtablet.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwcompositor.h>
 #include <QHash>
@@ -15,50 +15,33 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletV2TabletToolPrivate : public QWObjectPrivate
+class QWTabletV2TabletToolPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletToolPrivate(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletV2TabletTool *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.set_cursor, this, &QWTabletV2TabletToolPrivate::on_set_cursor);
-    }
-    ~QWTabletV2TabletToolPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     inline void on_set_cursor(wlr_tablet_v2_event_cursor *cursor) {
         Q_EMIT q_func()->setCursor(cursor);
     }
 
-    static QHash<void*, QWTabletV2TabletTool*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2TabletTool)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTabletV2TabletTool*> QWTabletV2TabletToolPrivate::map;
+QHash<void*, QWWrapObject*> QWTabletV2TabletToolPrivate::map;
 
 QWTabletV2TabletTool::QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletTool *parent)
-    : QObject(parent)
-    , QWObject(*new QWTabletV2TabletToolPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWTabletV2TabletToolPrivate(handle, isOwner, this), parent)
 {
 
 }
 
 QWTabletV2TabletTool *QWTabletV2TabletTool::get(wlr_tablet_v2_tablet_tool *handle)
 {
-    return QWTabletV2TabletToolPrivate::map.value(handle);
+    return static_cast<QWTabletV2TabletTool*>(QWTabletV2TabletToolPrivate::map.value(handle));
 }
 
 QWTabletV2TabletTool *QWTabletV2TabletTool::from(wlr_tablet_v2_tablet_tool *handle)

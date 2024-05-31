@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWFullScreenShellV1Private;
-class QW_EXPORT QWFullScreenShellV1: public QObject, public QWObject
+class QW_EXPORT QWFullScreenShellV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWFullScreenShellV1)
@@ -27,7 +27,6 @@ public:
     static QWFullScreenShellV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWFullScreenShellV1 *self);
     void presentSurface(wlr_fullscreen_shell_v1_present_surface_event *event);
 
 private:

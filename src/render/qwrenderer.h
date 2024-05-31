@@ -23,7 +23,7 @@ class QWBackend;
 class QWBuffer;
 class QWTexture;
 class QWRendererPrivate;
-class QW_EXPORT QWRenderer : public QObject, public QWObject
+class QW_EXPORT QWRenderer : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWRenderer)
@@ -81,7 +81,6 @@ public:
 
 
 Q_SIGNALS:
-    void beforeDestroy(QWRenderer *self);
     void lost();
 
 private:

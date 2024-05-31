@@ -5,7 +5,7 @@
 #include "qwdisplay.h"
 #include "qwkeyboard.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -27,14 +27,13 @@ static_assert(std::is_same_v<wlr_button_state_t, std::underlying_type_t<wlr_butt
 
 QW_BEGIN_NAMESPACE
 
-class QWSeatPrivate : public QWObjectPrivate
+class QWSeatPrivate : public QWWrapObjectPrivate
 {
 public:
     QWSeatPrivate(wlr_seat *handle, bool isOwner, QWSeat *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_seat_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.pointer_grab_begin, this, &QWSeatPrivate::on_pointer_grab_begin);
         sc.connect(&handle->events.pointer_grab_end, this, &QWSeatPrivate::on_pointer_grab_end);
         sc.connect(&handle->events.keyboard_grab_begin, this, &QWSeatPrivate::on_keyboard_grab_begin);
@@ -48,22 +47,6 @@ public:
         sc.connect(&handle->events.set_primary_selection, this, &QWSeatPrivate::on_set_primary_selection);
         sc.connect(&handle->events.request_start_drag, this, &QWSeatPrivate::on_request_start_drag);
         sc.connect(&handle->events.start_drag, this, &QWSeatPrivate::on_start_drag);
-        sc.connect(&handle->events.destroy, this, &QWSeatPrivate::on_destroy);
-    }
-    ~QWSeatPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_seat_destroy(q_func()->handle());
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_pointer_grab_begin(void *);
@@ -75,24 +58,15 @@ public:
     void on_request_set_cursor(void *);
     void on_request_set_selection(void *);
     void on_set_selection(void *);
-    void on_destroy(void *);
     void on_request_set_primary_selection(void *);
     void on_set_primary_selection(void *);
     void on_request_start_drag(void *);
     void on_start_drag(void *);
 
-    static QHash<void*, QWSeat*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSeat)
-    QWSignalConnector sc;
 };
-QHash<void*, QWSeat*> QWSeatPrivate::map;
-
-void QWSeatPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWSeatPrivate::map;
 
 void QWSeatPrivate::on_pointer_grab_begin(void *)
 {
@@ -160,15 +134,14 @@ void QWSeatPrivate::on_start_drag(void *data)
 }
 
 QWSeat::QWSeat(wlr_seat *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWSeatPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWSeatPrivate(handle, isOwner, this))
 {
 
 }
 
 QWSeat *QWSeat::get(wlr_seat *handle)
 {
-    return QWSeatPrivate::map.value(handle);
+    return static_cast<QWSeat*>(QWSeatPrivate::map.value(handle));
 }
 
 QWSeat *QWSeat::from(wlr_seat *handle)

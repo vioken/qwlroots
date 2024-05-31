@@ -5,7 +5,7 @@
 #include "qwdisplay.h"
 #include "qwbackend.h"
 #include "qwoutput.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -15,37 +15,21 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWDrmLeaseV1ManagerPrivate : public QWObjectPrivate
+class QWDrmLeaseV1ManagerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDrmLeaseV1ManagerPrivate(wlr_drm_lease_v1_manager *handle, bool isOwner, QWDrmLeaseV1Manager *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
         sc.connect(&handle->events.request, this, &QWDrmLeaseV1ManagerPrivate::on_request);
-    }
-    ~QWDrmLeaseV1ManagerPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
-
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
 
     void on_request(void *);
 
-    static QHash<void*, QWDrmLeaseV1Manager*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDrmLeaseV1Manager)
-    QWSignalConnector sc;
 };
-QHash<void*, QWDrmLeaseV1Manager*> QWDrmLeaseV1ManagerPrivate::map;
+QHash<void*, QWWrapObject*> QWDrmLeaseV1ManagerPrivate::map;
 
 void QWDrmLeaseV1ManagerPrivate::on_request(void *data)
 {
@@ -54,15 +38,14 @@ void QWDrmLeaseV1ManagerPrivate::on_request(void *data)
 }
 
 QWDrmLeaseV1Manager::QWDrmLeaseV1Manager(wlr_drm_lease_v1_manager *handle, bool isOwner, QWDisplay *parent)
-    : QObject(parent)
-    , QWObject(*new QWDrmLeaseV1ManagerPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWDrmLeaseV1ManagerPrivate(handle, isOwner, this), parent)
 {
 
 }
 
 QWDrmLeaseV1Manager *QWDrmLeaseV1Manager::get(wlr_drm_lease_v1_manager *handle)
 {
-    return QWDrmLeaseV1ManagerPrivate::map.value(handle);
+    return static_cast<QWDrmLeaseV1Manager*>(QWDrmLeaseV1ManagerPrivate::map.value(handle));
 }
 
 QWDrmLeaseV1Manager *QWDrmLeaseV1Manager::create(QWDisplay *display, QWBackend *backend)

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qwinputmethodv2.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -14,50 +14,25 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWInputMethodV2Private : public QWObjectPrivate
+class QWInputMethodV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputMethodV2Private(wlr_input_method_v2 *handle, bool isOwner, QWInputMethodV2 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWInputMethodV2Private::on_destroy);
         sc.connect(&handle->events.commit, this, &QWInputMethodV2Private::on_commit);
         sc.connect(&handle->events.new_popup_surface, this, &QWInputMethodV2Private::on_new_popup_surface);
         sc.connect(&handle->events.grab_keyboard, this, &QWInputMethodV2Private::on_grab_keyboard);
     }
-    ~QWInputMethodV2Private() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_commit(void *);
     void on_new_popup_surface(void *);
     void on_grab_keyboard(void *);
 
-    static QHash<void*, QWInputMethodV2*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputMethodV2)
-    QWSignalConnector sc;
 };
-QHash<void*, QWInputMethodV2*> QWInputMethodV2Private::map;
-
-void QWInputMethodV2Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWInputMethodV2Private::map;
 
 void QWInputMethodV2Private::on_commit(void *data)
 {
@@ -78,15 +53,14 @@ void QWInputMethodV2Private::on_grab_keyboard(void *data)
 }
 
 QWInputMethodV2::QWInputMethodV2(wlr_input_method_v2 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWInputMethodV2Private(handle, isOwner, this))
+    : QWWrapObject(*new QWInputMethodV2Private(handle, isOwner, this))
 {
 
 }
 
 QWInputMethodV2 *QWInputMethodV2::get(wlr_input_method_v2 *handle)
 {
-    return QWInputMethodV2Private::map.value(handle);
+    return static_cast<QWInputMethodV2*>(QWInputMethodV2Private::map.value(handle));
 }
 
 QWInputMethodV2 *QWInputMethodV2::from(wlr_input_method_v2 *handle)

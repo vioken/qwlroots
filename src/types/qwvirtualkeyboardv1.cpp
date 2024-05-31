@@ -4,7 +4,7 @@
 #include "qwvirtualkeyboardv1.h"
 #include "qwkeyboard_p.h"
 #include "qwinputdevice.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 extern "C" {
 #include <wlr/types/wlr_virtual_keyboard_v1.h>

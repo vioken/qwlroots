@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWDisplay;
 class QWVirtualPointerManagerV1Private;
-class QW_EXPORT QWVirtualPointerManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWVirtualPointerManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWVirtualPointerManagerV1)
@@ -27,7 +27,6 @@ public:
     static QWVirtualPointerManagerV1 *create(QWDisplay *display);
 
 Q_SIGNALS:
-    void beforeDestroy(QWVirtualPointerManagerV1 *self);
     void newVirtualPointer(wlr_virtual_pointer_v1_new_pointer_event *);
 
 private:

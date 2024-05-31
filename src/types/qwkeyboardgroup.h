@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 
 class QWKeyboard;
 class QWKeyboardGroupPrivate;
-class QW_EXPORT QWKeyboardGroup : public QObject, public QWObject
+class QW_EXPORT QWKeyboardGroup : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWKeyboardGroup)
@@ -32,7 +32,6 @@ public:
     void removeKeyboard(QWKeyboard *keyboard);
 
 Q_SIGNALS:
-    void beforeDestroy(QWKeyboardGroup *self);
     void enter(wl_array *keycodes);
     void leave(wl_array *keycodes);
 

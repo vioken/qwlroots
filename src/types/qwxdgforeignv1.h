@@ -13,7 +13,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWXdgForeignRegistry;
 class QWXdgForeignV1Private;
-class QW_EXPORT QWXdgForeignV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgForeignV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgForeignV1)
@@ -25,9 +25,6 @@ public:
     inline wlr_xdg_foreign_v1 *handle() const {
         return QWObject::handle<wlr_xdg_foreign_v1>();
     }
-
-Q_SIGNALS:
-    void beforeDestroy(QWXdgForeignV1 *self);
 
 private:
     explicit QWXdgForeignV1(wlr_xdg_foreign_v1 *handle, bool isOwner);

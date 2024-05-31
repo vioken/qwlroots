@@ -3,7 +3,7 @@
 
 #include "qwtabletv2.h"
 #include "qwtablet.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwinputdevice.h>
 #include <qwseat.h>
@@ -16,55 +16,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletManagerV2Private : public QWObjectPrivate
+class QWTabletManagerV2Private : public QWWrapObjectPrivate
 {
 public:
     QWTabletManagerV2Private(wlr_tablet_manager_v2 *handle, bool isOwner, QWTabletManagerV2 *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWTabletManagerV2Private::on_destroy);
-    }
-    ~QWTabletManagerV2Private() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWTabletManagerV2*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletManagerV2)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTabletManagerV2*> QWTabletManagerV2Private::map;
-
-void QWTabletManagerV2Private::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWTabletManagerV2Private::map;
 
 QWTabletManagerV2::QWTabletManagerV2(wlr_tablet_manager_v2 *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWTabletManagerV2Private(handle, isOwner, this))
+    : QWWrapObject(*new QWTabletManagerV2Private(handle, isOwner, this))
 {
 
 }
 
 QWTabletManagerV2 *QWTabletManagerV2::get(wlr_tablet_manager_v2 *handle)
 {
-    return QWTabletManagerV2Private::map.value(handle);
+    return static_cast<QWTabletManagerV2*>(QWTabletManagerV2Private::map.value(handle));
 }
 
 QWTabletManagerV2 *QWTabletManagerV2::from(wlr_tablet_manager_v2 *handle)

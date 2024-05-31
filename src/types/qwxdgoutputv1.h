@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QWDisplay;
 class QWOutputLayout;
 class QWXdgOutputManagerV1Private;
-class QW_EXPORT QWXdgOutputManagerV1 : public QObject, public QWObject
+class QW_EXPORT QWXdgOutputManagerV1 : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgOutputManagerV1)
@@ -26,9 +26,6 @@ public:
     static QWXdgOutputManagerV1 *get(wlr_xdg_output_manager_v1 *handle);
     static QWXdgOutputManagerV1 *from(wlr_xdg_output_manager_v1 *handle);
     static QWXdgOutputManagerV1 *create(QWDisplay *display, QWOutputLayout *layout);
-
-Q_SIGNALS:
-    void beforeDestroy(QWXdgOutputManagerV1 *self);
 
 private:
     QWXdgOutputManagerV1(wlr_xdg_output_manager_v1 *handle, bool isOwner);

@@ -3,7 +3,7 @@
 
 #include "qwtabletv2.h"
 #include "qwinputdevice.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <qwcompositor.h>
 #include <QHash>
@@ -14,53 +14,28 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletV2TabletPrivate : public QWObjectPrivate
+class QWTabletV2TabletPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletPrivate(wlr_tablet_v2_tablet *handle, bool isOwner, QWTabletV2Tablet *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-    }
-    ~QWTabletV2TabletPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
+
     }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWTabletV2Tablet*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2Tablet)
-    QWSignalConnector sc;
 };
-QHash<void*, QWTabletV2Tablet*> QWTabletV2TabletPrivate::map;
-
-void QWTabletV2TabletPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWTabletV2TabletPrivate::map;
 
 QWTabletV2Tablet::QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent)
-    : QObject(parent)
-    , QWObject(*new QWTabletV2TabletPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWTabletV2TabletPrivate(handle, isOwner, this), parent)
 {
 }
 
 QWTabletV2Tablet *QWTabletV2Tablet::get(wlr_tablet_v2_tablet *handle)
 {
-    return QWTabletV2TabletPrivate::map.value(handle);
+    return static_cast<QWTabletV2Tablet*>(QWTabletV2TabletPrivate::map.value(handle));
 }
 
 QWTabletV2Tablet *QWTabletV2Tablet::from(wlr_tablet_v2_tablet *handle)

@@ -4,7 +4,7 @@
 #include "qwidle.h"
 #include "qwseat.h"
 #include "qwdisplay.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QHash>
 
@@ -15,46 +15,21 @@ extern "C" {
 QW_BEGIN_NAMESPACE
 
 /// QWIdle
-class QWIdlePrivate : public QWObjectPrivate
+class QWIdlePrivate : public QWWrapObjectPrivate
 {
 public:
     QWIdlePrivate(wlr_idle *handle, bool isOwner, QWIdle *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events->destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWIdlePrivate::on_destroy);
         sc.connect(&handle->events.activity_notify, this, &QWIdlePrivate::on_activity_notify);
     }
-    ~QWIdlePrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_activity_notify(void *);
 
-    static QHash<void*, QWIdle*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdle)
-    QWSignalConnector sc;
 };
-QHash<void*, QWIdle*> QWIdlePrivate::map;
-
-void QWIdlePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWIdlePrivate::map;
 
 void QWIdlePrivate::on_activity_notify(void *)
 {
@@ -62,15 +37,14 @@ void QWIdlePrivate::on_activity_notify(void *)
 }
 
 QWIdle::QWIdle(wlr_idle *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWIdlePrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWIdlePrivate(handle, isOwner, this))
 {
 
 }
 
 QWIdle *QWIdle::get(wlr_idle *handle)
 {
-    return QWIdlePrivate::map.value(handle);
+    return static_cast<QWIdle*>(QWIdlePrivate::map.value(handle));
 }
 
 QWIdle *QWIdle::from(wlr_idle *handle)
@@ -99,50 +73,24 @@ void QWIdle::setEnabled(QWSeat *seat, bool enabled)
 }
 
 /// QWIdleTimeout
-class QWIdleTimeoutPrivate : public QWObjectPrivate
+class QWIdleTimeoutPrivate : public QWWrapObjectPrivate
 {
 public:
     QWIdleTimeoutPrivate(wlr_idle_timeout *handle, bool isOwner, QWIdleTimeout *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_idle_timeout_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWIdleTimeoutPrivate::on_destroy);
         sc.connect(&handle->events.idle, this, &QWIdleTimeoutPrivate::on_idle);
         sc.connect(&handle->events.resume, this, &QWIdleTimeoutPrivate::on_resume);
     }
-    ~QWIdleTimeoutPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_idle_timeout_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_idle(void *);
     void on_resume(void *);
 
-    static QHash<void*, QWIdleTimeout*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdleTimeout)
-    QWSignalConnector sc;
 };
-QHash<void*, QWIdleTimeout*> QWIdleTimeoutPrivate::map;
-
-void QWIdleTimeoutPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWIdleTimeoutPrivate::map;
 
 void QWIdleTimeoutPrivate::on_idle(void *)
 {
@@ -155,15 +103,14 @@ void QWIdleTimeoutPrivate::on_resume(void *)
 }
 
 QWIdleTimeout::QWIdleTimeout(wlr_idle_timeout *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWIdleTimeoutPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWIdleTimeoutPrivate(handle, isOwner, this))
 {
 
 }
 
 QWIdleTimeout *QWIdleTimeout::get(wlr_idle_timeout *handle)
 {
-    return QWIdleTimeoutPrivate::map.value(handle);
+    return static_cast<QWIdleTimeout*>(QWIdleTimeoutPrivate::map.value(handle));
 }
 
 QWIdleTimeout *QWIdleTimeout::from(wlr_idle_timeout *handle)

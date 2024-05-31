@@ -4,7 +4,7 @@
 #include "qwxdgshell.h"
 #include "qwdisplay.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QPointF>
 #include <QRect>
@@ -19,56 +19,29 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWXdgShellPrivate : public QWObjectPrivate
+class QWXdgShellPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXdgShellPrivate(wlr_xdg_shell *handle, bool isOwner, QWXdgShell *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWXdgShellPrivate::on_destroy);
         sc.connect(&handle->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
 #if WLR_VERSION_MINOR >= 18
         sc.connect(&handle->events.new_toplevel, this, &QWXdgShellPrivate::on_new_toplevel);
         sc.connect(&handle->events.new_popup, this, &QWXdgShellPrivate::on_new_popup);
 #endif
     }
-    ~QWXdgShellPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            qFatal("QWXdgShell(%p) can't to destroy, its ownership is wl_display", q_func());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_new_surface(void *data);
 #if WLR_VERSION_MINOR >= 18
     void on_new_toplevel(void *data);
     void on_new_popup(void *data);
 #endif
 
-    static QHash<void*, QWXdgShell*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgShell)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXdgShell*> QWXdgShellPrivate::map;
-
-void QWXdgShellPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWXdgShellPrivate::map;
 
 void QWXdgShellPrivate::on_new_surface(void *data)
 {
@@ -88,8 +61,7 @@ void QWXdgShellPrivate::on_new_popup(void *data)
 #endif
 
 QWXdgShell::QWXdgShell(wlr_xdg_shell *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWXdgShellPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWXdgShellPrivate(handle, isOwner, this))
 {
 
 }
@@ -104,7 +76,7 @@ QWXdgShell *QWXdgShell::create(QWDisplay *display, uint32_t version)
 
 QWXdgShell *QWXdgShell::get(wlr_xdg_shell *handle)
 {
-    return QWXdgShellPrivate::map.value(handle);
+    return static_cast<QWXdgShell*>(QWXdgShellPrivate::map.value(handle));
 }
 
 QWXdgShell *QWXdgShell::from(wlr_xdg_shell *handle)
@@ -114,18 +86,14 @@ QWXdgShell *QWXdgShell::from(wlr_xdg_shell *handle)
     return new QWXdgShell(handle, false);
 }
 
-class QWXdgSurfacePrivate : public QWObjectPrivate
+class QWXdgSurfacePrivate : public QWWrapObjectPrivate
 {
 public:
-    QWXdgSurfacePrivate(wlr_xdg_surface *handle, bool isOwner, QWXdgSurface *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+    // >0.18 role object's destory first then base's, connect to those to keep same behavior
+    QWXdgSurfacePrivate(wlr_xdg_surface *handle, bool isOwner, QWXdgSurface *qq,
+                        wl_signal *destroy_signal, std::function<void (void *)> destroy_function = nullptr)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, destroy_signal, destroy_function)
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-#if WLR_VERSION_MINOR < 18
-        // >0.18 role object's destory first then base's, connect to those to keep same behavior
-        sc.connect(&handle->events.destroy, this, &QWXdgSurfacePrivate::on_destroy);
-#endif
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
         sc.connect(&handle->events.configure, this, &QWXdgSurfacePrivate::on_configure);
@@ -134,40 +102,16 @@ public:
         sc.connect(&handle->surface->events.commit, q_func(), &QWXdgSurface::commit);
 #endif
     }
-    ~QWXdgSurfacePrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            qFatal("QWXdgSurface(%p) can't to destroy, its ownership is wl_display", q_func());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
-    }
-
-    void on_destroy(void *);
     void on_ping_timeout(void *);
     void on_new_popup(wlr_xdg_popup *data);
     void on_configure(void *data);
     void on_ack_configure(void *data);
 
-    static QHash<void*, QWXdgSurface*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgSurface)
-    QWSignalConnector sc;
 };
-QHash<void*, QWXdgSurface*> QWXdgSurfacePrivate::map;
-
-void QWXdgSurfacePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWXdgSurfacePrivate::map;
 
 void QWXdgSurfacePrivate::on_ping_timeout(void *)
 {
@@ -189,22 +133,15 @@ void QWXdgSurfacePrivate::on_ack_configure(void *data)
     Q_EMIT q_func()->ackConfigure(reinterpret_cast<wlr_xdg_surface_configure*>(data));
 }
 
-QWXdgSurface::QWXdgSurface(wlr_xdg_surface *handle, bool isOwner)
-    : QWXdgSurface(*new QWXdgSurfacePrivate(handle, isOwner, this))
-{
-
-}
-
 QWXdgSurface::QWXdgSurface(QWXdgSurfacePrivate &dd)
-    : QObject(nullptr)
-    , QWObject(dd)
+    : QWWrapObject(dd)
 {
 
 }
 
 QWXdgSurface *QWXdgSurface::get(wlr_xdg_surface *handle)
 {
-    return QWXdgSurfacePrivate::map.value(handle);
+    return static_cast<QWXdgSurface*>(QWXdgSurfacePrivate::map.value(handle));
 }
 
 QWXdgSurface *QWXdgSurface::from(wl_resource *resource)
@@ -305,23 +242,17 @@ class QWXdgPopupPrivate : public QWXdgSurfacePrivate
 {
 public:
     QWXdgPopupPrivate(wlr_xdg_popup *handle, bool isOwner, QWXdgPopup *qq)
-        : QWXdgSurfacePrivate(handle->base, isOwner, qq)
+        : QWXdgSurfacePrivate(handle->base, isOwner, qq
+#if WLR_VERSION_MINOR >= 18
+                              // wlr_xdg_popup.destory first then wlr_xdg_surface
+                              // here connect QWWrapObjectPrivate::on_destroy, QWXdgSurface doesn't
+                              , &handle->events.destroy
+#else
+                              , &handle->base->events.destroy
+#endif
+                              , toDestroyFunction(wlr_xdg_popup_destroy))
     {
         sc.connect(&handle->events.reposition, this, &QWXdgPopupPrivate::on_reposition);
-#if WLR_VERSION_MINOR >= 18
-        // wlr_xdg_popup.destory first then wlr_xdg_surface
-        // here connect QWXdgSurface::on_destroy, QWXdgSurface doesn't
-        sc.connect(&handle->events.destroy, this, &QWXdgPopupPrivate::on_destroy);
-#endif
-    }
-    ~QWXdgPopupPrivate () {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner) {
-            wlr_xdg_popup_destroy(q_func()->handle());
-            m_handle = nullptr;
-        }
     }
 
     void on_reposition(void *);
@@ -399,7 +330,15 @@ class QWXdgToplevelPrivate : public QWXdgSurfacePrivate
 {
 public:
     QWXdgToplevelPrivate(wlr_xdg_toplevel *handle, bool isOwner, QWXdgToplevel *qq)
-        : QWXdgSurfacePrivate(handle->base, isOwner, qq)
+        : QWXdgSurfacePrivate(handle->base, isOwner, qq
+#if WLR_VERSION_MINOR >= 18
+                              // wlr_xdg_toplevel.destory first then wlr_xdg_surface
+                              // here connect QWWrapObjectPrivate::on_destroy, QWXdgSurface doesn't
+                              , &handle->events.destroy
+#else
+                              , &handle->base->events.destroy
+#endif
+                              )
     {
         sc.connect(&handle->events.request_maximize, this, &QWXdgToplevelPrivate::on_request_maximize);
         sc.connect(&handle->events.request_fullscreen, this, &QWXdgToplevelPrivate::on_request_fullscreen);
@@ -410,11 +349,6 @@ public:
         sc.connect(&handle->events.set_parent, this, &QWXdgToplevelPrivate::on_set_parent);
         sc.connect(&handle->events.set_title, this, &QWXdgToplevelPrivate::on_set_title);
         sc.connect(&handle->events.set_app_id, this, &QWXdgToplevelPrivate::on_set_app_id);
-#if WLR_VERSION_MINOR >= 18
-        // wlr_xdg_toplevel.destory first then wlr_xdg_surface
-        // here connect QWXdgSurface::on_destroy, QWXdgSurface doesn't
-        sc.connect(&handle->events.destroy, this, &QWXdgToplevelPrivate::on_destroy);
-#endif
     }
 
     void on_request_maximize(void *);

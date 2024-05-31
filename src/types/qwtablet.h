@@ -39,7 +39,7 @@ private:
 };
 
 class QWTabletToolPrivate;
-class QW_EXPORT QWTabletTool : public QObject, public QWObject
+class QW_EXPORT QWTabletTool : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWTabletTool)
@@ -50,9 +50,6 @@ public:
 
     static QWTabletTool *get(wlr_tablet_tool *handle);
     static QWTabletTool *from(wlr_tablet_tool *handle);
-
-Q_SIGNALS:
-    void beforeDestroy(QWTabletTool *self);
 
 private:
     QWTabletTool(wlr_tablet_tool *handle, bool isOwner);

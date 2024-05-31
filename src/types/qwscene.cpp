@@ -8,7 +8,7 @@
 #include "qwlayershellv1.h"
 #include "qwoutput.h"
 #include "qwcompositor.h"
-#include "util/qwsignalconnector.h"
+#include "private/qwglobal_p.h"
 
 #include <QColor>
 #include <QPoint>
@@ -28,46 +28,19 @@ static_assert(std::is_same_v<wl_output_transform_t, std::underlying_type_t<wl_ou
 
 QW_BEGIN_NAMESPACE
 
-class QWSceneNodePrivate : public QWObjectPrivate
+class QWSceneNodePrivate : public QWWrapObjectPrivate
 {
 public:
     QWSceneNodePrivate(wlr_scene_node *handle, bool isOwner, QWSceneNode *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_scene_node_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWSceneNodePrivate::on_destroy);
-    }
-    ~QWSceneNodePrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_scene_node_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWSceneNode*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSceneNode)
-    QWSignalConnector sc;
 };
-QHash<void*, QWSceneNode*> QWSceneNodePrivate::map;
-
-void QWSceneNodePrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWSceneNodePrivate::map;
 
 QWSceneNode::QWSceneNode(wlr_scene_node *handle, bool isOwner)
     : QWSceneNode(*new QWSceneNodePrivate(handle, isOwner, this))
@@ -76,15 +49,14 @@ QWSceneNode::QWSceneNode(wlr_scene_node *handle, bool isOwner)
 }
 
 QWSceneNode::QWSceneNode(QWSceneNodePrivate &dd, QObject *parent)
-    : QObject(parent)
-    , QWObject(dd)
+    : QWWrapObject(dd, parent)
 {
 
 }
 
 QWSceneNode *QWSceneNode::get(wlr_scene_node *handle)
 {
-    return QWSceneNodePrivate::map.value(handle);
+    return static_cast<QWSceneNode*>(QWSceneNodePrivate::map.value(handle));
 }
 
 void QWSceneNode::setEnabled(bool enabled)
@@ -435,50 +407,22 @@ void QWSceneRect::setColor(const QColor &color)
     wlr_scene_rect_set_color(handle(), c);
 }
 
-class QWSceneOutputPrivate : public QWObjectPrivate
+class QWSceneOutputPrivate : public QWWrapObjectPrivate
 {
 public:
     QWSceneOutputPrivate(wlr_scene_output *handle, bool isOwner, QWSceneOutput *qq)
-        : QWObjectPrivate(handle, isOwner, qq)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+                              toDestroyFunction(wlr_scene_output_destroy))
     {
-        Q_ASSERT(!map.contains(handle));
-        map.insert(handle, qq);
-        sc.connect(&handle->events.destroy, this, &QWSceneOutputPrivate::on_destroy);
-    }
-    ~QWSceneOutputPrivate() {
-        if (!m_handle)
-            return;
-        destroy();
-        if (isHandleOwner)
-            wlr_scene_output_destroy(q_func()->handle());
-    }
 
-    inline void destroy() {
-        Q_ASSERT(m_handle);
-        Q_ASSERT(map.contains(m_handle));
-        Q_EMIT q_func()->beforeDestroy(q_func());
-        map.remove(m_handle);
-        sc.invalidate();
     }
-
-    void on_destroy(void *);
-
-    static QHash<void*, QWSceneOutput*> map;
+    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSceneOutput)
-    QWSignalConnector sc;
 };
-QHash<void*, QWSceneOutput*> QWSceneOutputPrivate::map;
-
-void QWSceneOutputPrivate::on_destroy(void *)
-{
-    destroy();
-    m_handle = nullptr;
-    delete q_func();
-}
+QHash<void*, QWWrapObject*> QWSceneOutputPrivate::map;
 
 QWSceneOutput::QWSceneOutput(wlr_scene_output *handle, bool isOwner)
-    : QObject(nullptr)
-    , QWObject(*new QWSceneOutputPrivate(handle, isOwner, this))
+    : QWWrapObject(*new QWSceneOutputPrivate(handle, isOwner, this))
 
 {
 
@@ -492,7 +436,7 @@ QWSceneOutput::QWSceneOutput(QWScene *scene, QWOutput *output)
 
 QWSceneOutput *QWSceneOutput::get(wlr_scene_output *handle)
 {
-    return QWSceneOutputPrivate::map.value(handle);
+    return static_cast<QWSceneOutput*>(QWSceneOutputPrivate::map.value(handle));
 }
 
 QWSceneOutput *QWSceneOutput::from(wlr_scene_output *handle)
