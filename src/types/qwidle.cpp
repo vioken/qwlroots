@@ -19,17 +19,15 @@ class QWIdlePrivate : public QWWrapObjectPrivate
 {
 public:
     QWIdlePrivate(wlr_idle *handle, bool isOwner, QWIdle *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events->destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events->destroy)
     {
         sc.connect(&handle->events.activity_notify, this, &QWIdlePrivate::on_activity_notify);
     }
 
     void on_activity_notify(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdle)
 };
-QHash<void*, QWWrapObject*> QWIdlePrivate::map;
 
 void QWIdlePrivate::on_activity_notify(void *)
 {
@@ -77,7 +75,7 @@ class QWIdleTimeoutPrivate : public QWWrapObjectPrivate
 {
 public:
     QWIdleTimeoutPrivate(wlr_idle_timeout *handle, bool isOwner, QWIdleTimeout *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_idle_timeout_destroy))
     {
         sc.connect(&handle->events.idle, this, &QWIdleTimeoutPrivate::on_idle);
@@ -87,10 +85,8 @@ public:
     void on_idle(void *);
     void on_resume(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdleTimeout)
 };
-QHash<void*, QWWrapObject*> QWIdleTimeoutPrivate::map;
 
 void QWIdleTimeoutPrivate::on_idle(void *)
 {

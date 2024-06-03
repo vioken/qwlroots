@@ -18,7 +18,7 @@ class QWTabletV2TabletPadPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletPadPrivate(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWTabletV2TabletPad *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
+        : QWWrapObjectPrivate(handle, isOwner, qq)
     {
         sc.connect(&handle->events.button_feedback, this, &QWTabletV2TabletPadPrivate::on_button_feedback);
         sc.connect(&handle->events.ring_feedback, this, &QWTabletV2TabletPadPrivate::on_ring_feedback);
@@ -29,10 +29,8 @@ public:
     void on_ring_feedback(wlr_tablet_v2_event_feedback *);
     void on_strip_feedback(wlr_tablet_v2_event_feedback *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2TabletPad)
 };
-QHash<void*, QWWrapObject*> QWTabletV2TabletPadPrivate::map;
 
 void QWTabletV2TabletPadPrivate::on_button_feedback(wlr_tablet_v2_event_feedback *event)
 {

@@ -27,7 +27,7 @@ class QWOutputPrivate : public QWWrapObjectPrivate
 {
 public:
     QWOutputPrivate(wlr_output *handle, bool isOwner, QWOutput *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_output_destroy))
     {
         sc.connect(&handle->events.frame, this, &QWOutputPrivate::on_frame);
@@ -51,10 +51,8 @@ public:
     void on_description(void *data);
     void on_request_state(void *data);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutput)
 };
-QHash<void*, QWWrapObject*> QWOutputPrivate::map;
 
 void QWOutputPrivate::on_frame(void *)
 {

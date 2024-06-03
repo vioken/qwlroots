@@ -17,15 +17,13 @@ class QWPrimarySelectionV1DeviceManagerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWPrimarySelectionV1DeviceManagerPrivate(wlr_primary_selection_v1_device_manager *handle, bool isOwner, QWPrimarySelectionV1DeviceManager *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPrimarySelectionV1DeviceManager)
 };
-QHash<void*, QWWrapObject*> QWPrimarySelectionV1DeviceManagerPrivate::map;
 
 QWPrimarySelectionV1DeviceManager::QWPrimarySelectionV1DeviceManager(wlr_primary_selection_v1_device_manager *handle, bool isOwner)
     : QWWrapObject(*new QWPrimarySelectionV1DeviceManagerPrivate(handle, isOwner, this))

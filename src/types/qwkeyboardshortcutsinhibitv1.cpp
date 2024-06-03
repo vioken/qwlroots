@@ -16,15 +16,13 @@ class QWKeyboardShortcutsInhibitorV1Private : public QWWrapObjectPrivate
 {
 public:
     QWKeyboardShortcutsInhibitorV1Private(wlr_keyboard_shortcuts_inhibitor_v1 *handle, bool isOwner, QWKeyboardShortcutsInhibitorV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWKeyboardShortcutsInhibitorV1)
 };
-QHash<void*, QWWrapObject*> QWKeyboardShortcutsInhibitorV1Private::map;
 
 QWKeyboardShortcutsInhibitorV1::QWKeyboardShortcutsInhibitorV1(wlr_keyboard_shortcuts_inhibitor_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWKeyboardShortcutsInhibitorV1Private(handle, isOwner, this))

@@ -19,7 +19,7 @@ class QWTabletV2TabletToolPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletToolPrivate(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletV2TabletTool *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
+        : QWWrapObjectPrivate(handle, isOwner, qq)
     {
         sc.connect(&handle->events.set_cursor, this, &QWTabletV2TabletToolPrivate::on_set_cursor);
     }
@@ -28,10 +28,8 @@ public:
         Q_EMIT q_func()->setCursor(cursor);
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2TabletTool)
 };
-QHash<void*, QWWrapObject*> QWTabletV2TabletToolPrivate::map;
 
 QWTabletV2TabletTool::QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletTool *parent)
     : QWWrapObject(*new QWTabletV2TabletToolPrivate(handle, isOwner, this), parent)

@@ -20,17 +20,15 @@ class QWVirtualPointerManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWVirtualPointerManagerV1Private(wlr_virtual_pointer_manager_v1 *handle, bool isOwner, QWVirtualPointerManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_virtual_pointer, this, &QWVirtualPointerManagerV1Private::on_new_virtual_pointer);
     }
 
     void on_new_virtual_pointer(wlr_virtual_pointer_v1_new_pointer_event *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWVirtualPointerManagerV1)
 };
-QHash<void*, QWWrapObject*> QWVirtualPointerManagerV1Private::map;
 
 void QWVirtualPointerManagerV1Private::on_new_virtual_pointer(wlr_virtual_pointer_v1_new_pointer_event *event)
 {

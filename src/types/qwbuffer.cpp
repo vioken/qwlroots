@@ -17,7 +17,7 @@ class QWBufferPrivate : public QWWrapObjectPrivate
 {
 public:
     QWBufferPrivate(wlr_buffer *handle, bool isOwner, QWBuffer *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_buffer_drop))
     {
         sc.connect(&handle->events.release, this, &QWBufferPrivate::on_release);
@@ -25,10 +25,8 @@ public:
 
     void on_release(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWBuffer)
 };
-QHash<void*, QWWrapObject*> QWBufferPrivate::map;
 
 void QWBufferPrivate::on_release(void *)
 {

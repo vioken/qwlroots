@@ -20,15 +20,13 @@ class QWPresentationPrivate : public QWWrapObjectPrivate
 {
 public:
     QWPresentationPrivate(wlr_presentation *handle, bool isOwner, QWPresentation *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPresentation)
 };
-QHash<void*, QWWrapObject*> QWPresentationPrivate::map;
 
 QWPresentation::QWPresentation(wlr_presentation *handle, bool isOwner)
     : QWWrapObject(*new QWPresentationPrivate(handle, isOwner, this))

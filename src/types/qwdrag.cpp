@@ -16,7 +16,7 @@ class QWDragPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDragPrivate(wlr_drag *handle, bool isOwner, QWDrag *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.focus, this, &QWDragPrivate::on_focus);
         sc.connect(&handle->events.motion, this, &QWDragPrivate::on_motion);
@@ -27,10 +27,8 @@ public:
     void on_motion(void *);
     void on_drop(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDrag)
 };
-QHash<void*, QWWrapObject*> QWDragPrivate::map;
 
 void QWDragPrivate::on_focus(void *)
 {

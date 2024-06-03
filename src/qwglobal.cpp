@@ -42,17 +42,16 @@ void QWObject::setData(void *owner, void *data)
     m_data = std::make_pair(owner, data);
 }
 
+QHash<void*, QWWrapObject*> QWWrapObjectPrivate::map;
 QWWrapObjectPrivate::QWWrapObjectPrivate(void *handle, bool isOwner, QWWrapObject *qq,
-                                         QHash<void *, QWWrapObject *> *globalMap, wl_signal *destroy_signal,
+                                         wl_signal *destroy_signal,
                                          std::function<void (void *)> destroy_function)
     : QWObjectPrivate(handle, isOwner, qq)
     , wlr_destroy_function(destroy_function)
-    , map(globalMap)
 {
-    if (map) {
-        Q_ASSERT(!map->contains(handle));
-        map->insert(handle, qq);
-    }
+    Q_ASSERT(!map.contains(handle));
+    map.insert(handle, qq);
+
     if (destroy_signal)
         sc.connect(destroy_signal, this, &QWWrapObjectPrivate::on_destroy);
 }
@@ -79,10 +78,10 @@ void QWWrapObjectPrivate::destroy()
 {
     Q_ASSERT(m_handle);
     Q_EMIT q_func()->beforeDestroy();
-    if (map) {
-        Q_ASSERT(map->contains(m_handle));
-        map->remove(m_handle);
-    }
+
+    Q_ASSERT(map.contains(m_handle));
+    map.remove(m_handle);
+
     sc.invalidate();
 }
 

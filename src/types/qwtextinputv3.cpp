@@ -17,7 +17,7 @@ class QWTextInputV3Private : public QWWrapObjectPrivate
 {
 public:
     QWTextInputV3Private(wlr_text_input_v3 *handle, bool isOwner, QWTextInputV3 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.enable, this, &QWTextInputV3Private::on_enable);
         sc.connect(&handle->events.commit, this, &QWTextInputV3Private::on_commit);
@@ -28,10 +28,8 @@ public:
     void on_commit(wlr_text_input_v3 *);
     void on_disable(wlr_text_input_v3 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTextInputV3)
 };
-QHash<void*, QWWrapObject*> QWTextInputV3Private::map;
 
 void QWTextInputV3Private::on_enable(wlr_text_input_v3 *handle)
 {

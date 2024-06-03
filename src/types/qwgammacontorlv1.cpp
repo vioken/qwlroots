@@ -17,17 +17,15 @@ class QWGammaControlManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWGammaControlManagerV1Private(wlr_gamma_control_manager_v1 *handle, bool isOwner, QWGammaControlManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.set_gamma, this, &QWGammaControlManagerV1Private::on_set_gamma);
     }
 
     void on_set_gamma(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWGammaControlManagerV1)
 };
-QHash<void*, QWWrapObject*> QWGammaControlManagerV1Private::map;
 
 void QWGammaControlManagerV1Private::on_set_gamma(void *data)
 {

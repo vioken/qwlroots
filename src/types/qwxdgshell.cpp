@@ -23,7 +23,7 @@ class QWXdgShellPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXdgShellPrivate(wlr_xdg_shell *handle, bool isOwner, QWXdgShell *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_surface, this, &QWXdgShellPrivate::on_new_surface);
 #if WLR_VERSION_MINOR >= 18
@@ -38,10 +38,8 @@ public:
     void on_new_popup(void *data);
 #endif
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgShell)
 };
-QHash<void*, QWWrapObject*> QWXdgShellPrivate::map;
 
 void QWXdgShellPrivate::on_new_surface(void *data)
 {
@@ -92,7 +90,7 @@ public:
     // >0.18 role object's destory first then base's, connect to those to keep same behavior
     QWXdgSurfacePrivate(wlr_xdg_surface *handle, bool isOwner, QWXdgSurface *qq,
                         wl_signal *destroy_signal, std::function<void (void *)> destroy_function = nullptr)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, destroy_signal, destroy_function)
+        : QWWrapObjectPrivate(handle, isOwner, qq, destroy_signal, destroy_function)
     {
         sc.connect(&handle->events.ping_timeout, this, &QWXdgSurfacePrivate::on_ping_timeout);
         sc.connect(&handle->events.new_popup, this, &QWXdgSurfacePrivate::on_new_popup);
@@ -108,10 +106,8 @@ public:
     void on_configure(void *data);
     void on_ack_configure(void *data);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgSurface)
 };
-QHash<void*, QWWrapObject*> QWXdgSurfacePrivate::map;
 
 void QWXdgSurfacePrivate::on_ping_timeout(void *)
 {

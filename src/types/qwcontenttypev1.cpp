@@ -20,15 +20,13 @@ class QWContentTypeManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWContentTypeManagerV1Private(wlr_content_type_manager_v1 *handle, bool isOwner, QWContentTypeManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWContentTypeManagerV1)
 };
-QHash<void*, QWWrapObject*> QWContentTypeManagerV1Private::map;
 
 QWContentTypeManagerV1::QWContentTypeManagerV1(wlr_content_type_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWContentTypeManagerV1Private(handle, isOwner, this))

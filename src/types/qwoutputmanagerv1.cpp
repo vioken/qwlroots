@@ -20,7 +20,7 @@ class QWOutputManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWOutputManagerV1Private(wlr_output_manager_v1 *handle, bool isOwner, QWOutputManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.apply, this, &QWOutputManagerV1Private::on_apply);
         sc.connect(&handle->events.test, this, &QWOutputManagerV1Private::on_test);
@@ -29,10 +29,8 @@ public:
     void on_apply(void *);
     void on_test(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputManagerV1)
 };
-QHash<void*, QWWrapObject*> QWOutputManagerV1Private::map;
 
 void QWOutputManagerV1Private::on_apply(void *data)
 {

@@ -47,16 +47,14 @@ class QWABCPrivate : public QWWrapObjectPrivate
 {
 public:
     QWABCPrivate(wlr_ABC *handle, bool isOwner, QWABC *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_ABC_destroy))
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWABC)
 };
-QHash<void*, QWWrapObject*> QWABCPrivate::map;
 
 QWABC::QWABC(wlr_ABC *handle, bool isOwner)
     : QWWrapObject(*new QWABCPrivate(handle, isOwner, this))

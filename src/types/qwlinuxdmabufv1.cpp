@@ -18,15 +18,13 @@ class QWLinuxDmabufV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLinuxDmabufV1Private(wlr_linux_dmabuf_v1 *handle, bool isOwner, QWLinuxDmabufV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLinuxDmabufV1)
 };
-QHash<void*, QWWrapObject*> QWLinuxDmabufV1Private::map;
 
 QWLinuxDmabufV1::QWLinuxDmabufV1(wlr_linux_dmabuf_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWLinuxDmabufV1Private(handle, isOwner, this))

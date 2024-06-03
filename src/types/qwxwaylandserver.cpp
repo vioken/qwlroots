@@ -16,7 +16,7 @@ class QWXWaylandServerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandServerPrivate(wlr_xwayland_server *handle, bool isOwner, QWXWaylandServer *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_xwayland_server_destroy))
     {
         sc.connect(&handle->events.start, this, &QWXWaylandServerPrivate::on_start);
@@ -26,10 +26,8 @@ public:
     void on_start(void *);
     void on_ready(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandServer)
 };
-QHash<void*, QWWrapObject*> QWXWaylandServerPrivate::map;
 
 void QWXWaylandServerPrivate::on_start(void *)
 {

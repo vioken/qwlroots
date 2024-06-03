@@ -22,7 +22,6 @@ class QWInputDevicePrivate : public QWWrapObjectPrivate
 public:
     QWInputDevicePrivate(wlr_input_device *handle, bool isOwner, QWInputDevice *qq);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputDevice)
 };
 

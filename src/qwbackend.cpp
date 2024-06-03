@@ -29,7 +29,7 @@ class QWBackendPrivate : public QWWrapObjectPrivate
 {
 public:
     QWBackendPrivate(wlr_backend *handle, bool isOwner, QWBackend *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map,
+        : QWWrapObjectPrivate(handle, isOwner, qq,
                               &handle->events.destroy,
                               toDestroyFunction(wlr_backend_destroy))
     {
@@ -42,10 +42,8 @@ public:
 
     static QWBackend *createBackend(wlr_backend *handle, bool isOwner, QObject *parent);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWBackend)
 };
-QHash<void*, QWWrapObject*> QWBackendPrivate::map;
 
 void QWBackendPrivate::on_new_input(wlr_input_device *device)
 {

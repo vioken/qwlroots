@@ -18,15 +18,13 @@ class QWFractionalScaleManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWFractionalScaleManagerV1Private(wlr_fractional_scale_manager_v1 *handle, bool isOwner, QWFractionalScaleManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWFractionalScaleManagerV1)
 };
-QHash<void*, QWWrapObject*> QWFractionalScaleManagerV1Private::map;
 
 QWFractionalScaleManagerV1::QWFractionalScaleManagerV1(wlr_fractional_scale_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWFractionalScaleManagerV1Private(handle, isOwner, this))

@@ -27,7 +27,7 @@ class QWXWaylandPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandPrivate(wlr_xwayland *handle, QWXWayland *qq)
-        : QWWrapObjectPrivate(handle, false, qq, &map)
+        : QWWrapObjectPrivate(handle, false, qq)
     {
         sc.connect(&handle->events.ready, q_func(), &QWXWayland::ready);
         sc.connect(&handle->events.new_surface, this, &QWXWaylandPrivate::on_new_surface);
@@ -37,10 +37,8 @@ public:
     void on_new_surface(wlr_xwayland_surface *surface);
     void on_remove_startup_info(wlr_xwayland_remove_startup_info_event *event);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWayland)
 };
-QHash<void*, QWWrapObject*> QWXWaylandPrivate::map;
 
 void QWXWaylandPrivate::on_new_surface(wlr_xwayland_surface *surface)
 {

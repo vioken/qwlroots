@@ -19,17 +19,15 @@ class QWDrmLeaseV1ManagerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDrmLeaseV1ManagerPrivate(wlr_drm_lease_v1_manager *handle, bool isOwner, QWDrmLeaseV1Manager *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
+        : QWWrapObjectPrivate(handle, isOwner, qq)
     {
         sc.connect(&handle->events.request, this, &QWDrmLeaseV1ManagerPrivate::on_request);
     }
 
     void on_request(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDrmLeaseV1Manager)
 };
-QHash<void*, QWWrapObject*> QWDrmLeaseV1ManagerPrivate::map;
 
 void QWDrmLeaseV1ManagerPrivate::on_request(void *data)
 {

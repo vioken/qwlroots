@@ -17,15 +17,13 @@ class QWExportDmabufManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWExportDmabufManagerV1Private(wlr_export_dmabuf_manager_v1 *handle, bool isOwner, QWExportDmabufManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWExportDmabufManagerV1)
 };
-QHash<void*, QWWrapObject*> QWExportDmabufManagerV1Private::map;
 
 QWExportDmabufManagerV1::QWExportDmabufManagerV1(wlr_export_dmabuf_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWExportDmabufManagerV1Private(handle, isOwner, this))

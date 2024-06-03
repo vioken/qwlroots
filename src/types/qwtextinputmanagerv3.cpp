@@ -17,17 +17,15 @@ class QWTextInputManagerV3Private : public QWWrapObjectPrivate
 {
 public:
     QWTextInputManagerV3Private(wlr_text_input_manager_v3 *handle, bool isOwner, QWTextInputManagerV3 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.text_input, this, &QWTextInputManagerV3Private::on_text_input);
     }
 
     void on_text_input(wlr_text_input_v3 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTextInputManagerV3)
 };
-QHash<void*, QWWrapObject*> QWTextInputManagerV3Private::map;
 
 void QWTextInputManagerV3Private::on_text_input(wlr_text_input_v3 *input)
 {

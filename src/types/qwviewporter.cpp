@@ -17,15 +17,13 @@ class QWViewPorterPrivate : public QWWrapObjectPrivate
 {
 public:
     QWViewPorterPrivate(wlr_viewporter *handle, bool isOwner, QWViewPorter *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWViewPorter)
 };
-QHash<void*, QWWrapObject*> QWViewPorterPrivate::map;
 
 QWViewPorter::QWViewPorter(wlr_viewporter *handle, bool isOwner)
     : QWWrapObject(*new QWViewPorterPrivate(handle, isOwner, this))

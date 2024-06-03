@@ -19,17 +19,15 @@ class QWInputMethodManagerV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputMethodManagerV2Private(wlr_input_method_manager_v2 *handle, bool isOwner, QWInputMethodManagerV2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.input_method, this, &QWInputMethodManagerV2Private::on_input_method);
     }
 
     void on_input_method(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputMethodManagerV2)
 };
-QHash<void*, QWWrapObject*> QWInputMethodManagerV2Private::map;
 
 void QWInputMethodManagerV2Private::on_input_method(void *data)
 {

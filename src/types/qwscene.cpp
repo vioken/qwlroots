@@ -32,15 +32,13 @@ class QWSceneNodePrivate : public QWWrapObjectPrivate
 {
 public:
     QWSceneNodePrivate(wlr_scene_node *handle, bool isOwner, QWSceneNode *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_scene_node_destroy))
     {
 
     }
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSceneNode)
 };
-QHash<void*, QWWrapObject*> QWSceneNodePrivate::map;
 
 QWSceneNode::QWSceneNode(wlr_scene_node *handle, bool isOwner)
     : QWSceneNode(*new QWSceneNodePrivate(handle, isOwner, this))
@@ -411,15 +409,13 @@ class QWSceneOutputPrivate : public QWWrapObjectPrivate
 {
 public:
     QWSceneOutputPrivate(wlr_scene_output *handle, bool isOwner, QWSceneOutput *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_scene_output_destroy))
     {
 
     }
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSceneOutput)
 };
-QHash<void*, QWWrapObject*> QWSceneOutputPrivate::map;
 
 QWSceneOutput::QWSceneOutput(wlr_scene_output *handle, bool isOwner)
     : QWWrapObject(*new QWSceneOutputPrivate(handle, isOwner, this))

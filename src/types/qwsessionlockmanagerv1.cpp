@@ -17,17 +17,15 @@ class QWSessionLockManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWSessionLockManagerV1Private(wlr_session_lock_manager_v1 *handle, bool isOwner, QWSessionLockManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_lock, this, &QWSessionLockManagerV1Private::on_new_lock);
     }
 
     void on_new_lock(wlr_session_lock_v1 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSessionLockManagerV1)
 };
-QHash<void*, QWWrapObject*> QWSessionLockManagerV1Private::map;
 
 void QWSessionLockManagerV1Private::on_new_lock(wlr_session_lock_v1 *lock)
 {

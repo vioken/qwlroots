@@ -19,7 +19,7 @@ QW_BEGIN_NAMESPACE
 class QWXWaylandShellV1Private : public QWWrapObjectPrivate {
 public:
     QWXWaylandShellV1Private(wlr_xwayland_shell_v1* handle, QWXWaylandShellV1* qq)
-        : QWWrapObjectPrivate(handle, false, qq, &map)
+        : QWWrapObjectPrivate(handle, false, qq)
     {
         sc.connect(&handle->events.new_surface, this, &QWXWaylandShellV1Private::on_new_surface);
     }
@@ -33,10 +33,8 @@ public:
 
     void on_new_surface(wlr_xwayland_surface *surface);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandShellV1)
 };
-QHash<void*, QWWrapObject*> QWXWaylandShellV1Private::map;
 
 void QWXWaylandShellV1Private::on_new_surface(wlr_xwayland_surface *surface)
 {

@@ -19,15 +19,13 @@ class QWRelativeManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWRelativeManagerV1Private(wlr_relative_pointer_manager_v1 *handle, bool isOwner, QWRelativeManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWRelativeManagerV1)
 };
-QHash<void*, QWWrapObject*> QWRelativeManagerV1Private::map;
 
 QWRelativeManagerV1::QWRelativeManagerV1(wlr_relative_pointer_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWRelativeManagerV1Private(handle, isOwner, this))

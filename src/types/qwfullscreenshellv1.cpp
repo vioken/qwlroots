@@ -17,17 +17,15 @@ class QWFullScreenShellV1Private : public QWWrapObjectPrivate
 {
 public:
     QWFullScreenShellV1Private(wlr_fullscreen_shell_v1 *handle, bool isOwner, QWFullScreenShellV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.present_surface, this, &QWFullScreenShellV1Private::on_present_surface);
     }
 
     void on_present_surface(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWFullScreenShellV1)
 };
-QHash<void*, QWWrapObject*> QWFullScreenShellV1Private::map;
 
 void QWFullScreenShellV1Private::on_present_surface(void *data)
 {

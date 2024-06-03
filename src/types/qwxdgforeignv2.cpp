@@ -18,15 +18,13 @@ class QWXdgForeignv2Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgForeignv2Private(wlr_xdg_foreign_v2 *handle, bool isOwner, QWXdgForeignv2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgForeignv2)
 };
-QHash<void*, QWWrapObject*> QWXdgForeignv2Private::map;
 
 class QWXdgExportedv2Private : public QWXdgForeignExportedPrivate
 {
