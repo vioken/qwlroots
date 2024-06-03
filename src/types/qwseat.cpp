@@ -31,7 +31,7 @@ class QWSeatPrivate : public QWWrapObjectPrivate
 {
 public:
     QWSeatPrivate(wlr_seat *handle, bool isOwner, QWSeat *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_seat_destroy))
     {
         sc.connect(&handle->events.pointer_grab_begin, this, &QWSeatPrivate::on_pointer_grab_begin);
@@ -63,10 +63,8 @@ public:
     void on_request_start_drag(void *);
     void on_start_drag(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSeat)
 };
-QHash<void*, QWWrapObject*> QWSeatPrivate::map;
 
 void QWSeatPrivate::on_pointer_grab_begin(void *)
 {

@@ -21,15 +21,13 @@ class QWXdgOutputManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgOutputManagerV1Private(wlr_xdg_output_manager_v1 *handle, bool isOwner, QWXdgOutputManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgOutputManagerV1)
 };
-QHash<void*, QWWrapObject*> QWXdgOutputManagerV1Private::map;
 
 QWXdgOutputManagerV1::QWXdgOutputManagerV1(wlr_xdg_output_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWXdgOutputManagerV1Private(handle, isOwner, this))

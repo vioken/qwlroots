@@ -17,17 +17,15 @@ class QWVirtualKeyboardManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWVirtualKeyboardManagerV1Private(wlr_virtual_keyboard_manager_v1 *handle, bool isOwner, QWVirtualKeyboardManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_virtual_keyboard, this, &QWVirtualKeyboardManagerV1Private::on_new_virtual_keyboard);
     }
 
     void on_new_virtual_keyboard(wlr_virtual_keyboard_v1 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWVirtualKeyboardManagerV1)
 };
-QHash<void*, QWWrapObject*> QWVirtualKeyboardManagerV1Private::map;
 
 void QWVirtualKeyboardManagerV1Private::on_new_virtual_keyboard(wlr_virtual_keyboard_v1 *handle)
 {

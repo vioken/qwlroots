@@ -18,7 +18,7 @@ class QWInputInhibitManagerPrivate : public QWWrapObjectPrivate
 {
 public:
     QWInputInhibitManagerPrivate(wlr_input_inhibit_manager *handle, bool isOwner, QWInputInhibitManager *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.activate, this, &QWInputInhibitManagerPrivate::on_activate);
         sc.connect(&handle->events.deactivate, this, &QWInputInhibitManagerPrivate::on_deactivate);
@@ -27,10 +27,8 @@ public:
     void on_activate(void *);
     void on_deactivate(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputInhibitManager)
 };
-QHash<void*, QWWrapObject*> QWInputInhibitManagerPrivate::map;
 
 void QWInputInhibitManagerPrivate::on_activate(void *)
 {

@@ -16,15 +16,13 @@ class QWTabletToolPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletToolPrivate(wlr_tablet_tool *handle, bool isOwner, QWTabletTool *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletTool)
 };
-QHash<void*, QWWrapObject*> QWTabletToolPrivate::map;
 
 QWTabletTool::QWTabletTool(wlr_tablet_tool *handle, bool isOwner)
     : QWWrapObject(*new QWTabletToolPrivate(handle, isOwner, this))

@@ -20,7 +20,7 @@ class QWForeignToplevelHandleV1Private : public QWWrapObjectPrivate
 {
 public:
     QWForeignToplevelHandleV1Private(wlr_foreign_toplevel_handle_v1 *handle, bool isOwner, QWForeignToplevelHandleV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_foreign_toplevel_handle_v1_destroy))
     {
         sc.connect(&handle->events.request_maximize, this, &QWForeignToplevelHandleV1Private::on_request_maximize);
@@ -38,10 +38,8 @@ public:
     void on_request_close(void *);
     void on_set_rectangle(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWForeignToplevelHandleV1)
 };
-QHash<void*, QWWrapObject*> QWForeignToplevelHandleV1Private::map;
 
 void QWForeignToplevelHandleV1Private::on_request_maximize(void *data)
 {

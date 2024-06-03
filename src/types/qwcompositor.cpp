@@ -28,17 +28,15 @@ class QWCompositorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWCompositorPrivate(wlr_compositor *handle, bool isOwner, QWCompositor *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_surface, this, &QWCompositorPrivate::on_new_surface);
     }
 
     void on_new_surface(void *data);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCompositor)
 };
-QHash<void*, QWWrapObject*> QWCompositorPrivate::map;
 
 void QWCompositorPrivate::on_new_surface(void *data)
 {
@@ -78,7 +76,7 @@ class QWSurfacePrivate : public QWWrapObjectPrivate
 {
 public:
     QWSurfacePrivate(wlr_surface *handle, bool isOwner, QWSurface *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.client_commit, this, &QWSurfacePrivate::on_client_commit);
         sc.connect(&handle->events.commit, this, &QWSurfacePrivate::on_commit);
@@ -97,10 +95,8 @@ public:
     void on_map(void *);
     void on_unmap(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSurface)
 };
-QHash<void*, QWWrapObject*> QWSurfacePrivate::map;
 
 void QWSurfacePrivate::on_client_commit(void *)
 {

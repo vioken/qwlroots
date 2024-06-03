@@ -17,15 +17,13 @@ class QWPrimarySelectionSourcePrivate : public QWWrapObjectPrivate
 {
 public:
     QWPrimarySelectionSourcePrivate(wlr_primary_selection_source *handle, bool isOwner, QWPrimarySelectionSource *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_primary_selection_source_destroy))
     {
 
     }
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPrimarySelectionSource)
 };
-QHash<void*, QWWrapObject*> QWPrimarySelectionSourcePrivate::map;
 
 QWPrimarySelectionSource::QWPrimarySelectionSource(wlr_primary_selection_source *handle, bool isOwner)
     : QWWrapObject(*new QWPrimarySelectionSourcePrivate(handle, isOwner, this))

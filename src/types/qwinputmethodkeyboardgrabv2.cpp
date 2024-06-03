@@ -19,16 +19,14 @@ class QWInputMethodKeyboardGrabV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputMethodKeyboardGrabV2Private(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner, QWInputMethodKeyboardGrabV2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_input_method_keyboard_grab_v2_destroy))
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputMethodKeyboardGrabV2)
 };
-QHash<void*, QWWrapObject*> QWInputMethodKeyboardGrabV2Private::map;
 
 QWInputMethodKeyboardGrabV2::QWInputMethodKeyboardGrabV2(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner)
     : QWWrapObject(*new QWInputMethodKeyboardGrabV2Private(handle, isOwner, this))

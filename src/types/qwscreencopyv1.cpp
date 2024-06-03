@@ -17,15 +17,13 @@ class QWScreenCopyManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWScreenCopyManagerV1Private(wlr_screencopy_manager_v1 *handle, bool isOwner, QWScreenCopyManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWScreenCopyManagerV1)
 };
-QHash<void*, QWWrapObject*> QWScreenCopyManagerV1Private::map;
 
 QWScreenCopyManagerV1::QWScreenCopyManagerV1(wlr_screencopy_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWScreenCopyManagerV1Private(handle, isOwner, this))

@@ -28,7 +28,7 @@ class QWCursorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWCursorPrivate(wlr_cursor *handle, bool isOwner, QWCursor *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, nullptr,
+        : QWWrapObjectPrivate(handle, isOwner, qq, nullptr,
                               toDestroyFunction(wlr_cursor_destroy))
     {
         sc.connect(&handle->events.motion, this, &QWCursorPrivate::on_motion);
@@ -78,10 +78,8 @@ public:
     void on_tablet_tool_tip(void *data);
     void on_tablet_tool_button(void *data);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCursor)
 };
-QHash<void*, QWWrapObject*> QWCursorPrivate::map;
 
 void QWCursorPrivate::on_motion(void *data)
 {

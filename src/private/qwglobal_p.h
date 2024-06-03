@@ -12,7 +12,7 @@ class QWWrapObjectPrivate : public QWObjectPrivate
 {
 public:
     explicit QWWrapObjectPrivate(void *handle, bool isOwner, QWWrapObject *qq,
-                                 QHash<void*, QWWrapObject*> *globalMap, wl_signal *destroy_signal = nullptr,
+                                 wl_signal *destroy_signal = nullptr,
                                  std::function<void(void*)> destroy_function = nullptr);
 
     ~QWWrapObjectPrivate();
@@ -29,7 +29,7 @@ protected:
 
     QWSignalConnector sc;
     std::function<void(void*)> wlr_destroy_function;
-    QHash<void*, QWWrapObject*> *map;
+    static QHash<void*, QWWrapObject*> map;
 
     QW_DECLARE_PUBLIC(QWWrapObject)
 };

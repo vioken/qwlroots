@@ -20,15 +20,13 @@ class QWTabletManagerV2Private : public QWWrapObjectPrivate
 {
 public:
     QWTabletManagerV2Private(wlr_tablet_manager_v2 *handle, bool isOwner, QWTabletManagerV2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletManagerV2)
 };
-QHash<void*, QWWrapObject*> QWTabletManagerV2Private::map;
 
 QWTabletManagerV2::QWTabletManagerV2(wlr_tablet_manager_v2 *handle, bool isOwner)
     : QWWrapObject(*new QWTabletManagerV2Private(handle, isOwner, this))

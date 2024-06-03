@@ -17,7 +17,7 @@ class QWKeyboardGroupPrivate : public QWWrapObjectPrivate
 {
 public:
     QWKeyboardGroupPrivate(wlr_keyboard_group *handle, bool isOwner, QWKeyboardGroup *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, nullptr,
+        : QWWrapObjectPrivate(handle, isOwner, qq, nullptr,
                               toDestroyFunction(wlr_keyboard_group_destroy))
     {
         sc.connect(&handle->events.enter, this, &QWKeyboardGroupPrivate::on_enter);
@@ -27,10 +27,8 @@ public:
     void on_enter(void *);
     void on_leave(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWKeyboardGroup)
 };
-QHash<void*, QWWrapObject*> QWKeyboardGroupPrivate::map;
 
 void QWKeyboardGroupPrivate::on_enter(void *data)
 {

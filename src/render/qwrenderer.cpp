@@ -30,7 +30,7 @@ class QWRendererPrivate : public QWWrapObjectPrivate
 {
 public:
     QWRendererPrivate(wlr_renderer *handle, bool isOwner, QWRenderer *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_renderer_destroy))
     {
         sc.connect(&handle->events.lost, this, &QWRendererPrivate::on_lost);
@@ -38,10 +38,8 @@ public:
 
     void on_lost(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWRenderer)
 };
-QHash<void*, QWWrapObject*> QWRendererPrivate::map;
 
 void QWRendererPrivate::on_lost(void *)
 {

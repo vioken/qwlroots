@@ -17,17 +17,15 @@ class QWOutputPowerManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWOutputPowerManagerV1Private(wlr_output_power_manager_v1 *handle, bool isOwner, QWOutputPowerManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.set_mode, this, &QWOutputPowerManagerV1Private::on_set_mode);
     }
 
     void on_set_mode(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputPowerManagerV1)
 };
-QHash<void*, QWWrapObject*> QWOutputPowerManagerV1Private::map;
 
 void QWOutputPowerManagerV1Private::on_set_mode(void *data)
 {

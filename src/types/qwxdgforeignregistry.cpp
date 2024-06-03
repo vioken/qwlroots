@@ -18,23 +18,20 @@ class QWXdgForeignRegistryPrivate : public QWWrapObjectPrivate
 {
 public:
     QWXdgForeignRegistryPrivate(wlr_xdg_foreign_registry *handle, bool isOwner, QWXdgForeignRegistry *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgForeignRegistry)
 };
-QHash<void*, QWWrapObject*> QWXdgForeignRegistryPrivate::map;
 
 QWXdgForeignExportedPrivate::QWXdgForeignExportedPrivate(wlr_xdg_foreign_exported *handle, bool isOwner, QWXdgForeignExported *qq)
-    : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+    : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
 {
 
 }
 
-QHash<void*, QWWrapObject*> QWXdgForeignExportedPrivate::map;
 
 QWXdgForeignRegistry *QWXdgForeignRegistry::create(QWDisplay *display)
 {

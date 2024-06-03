@@ -16,15 +16,13 @@ class QWXdgActivationTokenV1Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgActivationTokenV1Private(wlr_xdg_activation_token_v1 *handle, bool isOwner, QWXdgActivationTokenV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_xdg_activation_token_v1_destroy))
     {
 
     }
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgActivationTokenV1)
 };
-QHash<void*, QWWrapObject*> QWXdgActivationTokenV1Private::map;
 
 QWXdgActivationTokenV1::QWXdgActivationTokenV1(wlr_xdg_activation_token_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWXdgActivationTokenV1Private(handle, isOwner, this))

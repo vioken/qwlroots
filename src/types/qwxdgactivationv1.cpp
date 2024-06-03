@@ -17,7 +17,7 @@ class QWXdgActivationV1Private : public QWWrapObjectPrivate
 {
 public:
     QWXdgActivationV1Private(wlr_xdg_activation_v1 *handle, bool isOwner, QWXdgActivationV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.request_activate, this, &QWXdgActivationV1Private::on_request_activate);
         sc.connect(&handle->events.new_token, this, &QWXdgActivationV1Private::on_new_token);
@@ -26,10 +26,8 @@ public:
     void on_request_activate(wlr_xdg_activation_v1_request_activate_event *);
     void on_new_token(wlr_xdg_activation_token_v1 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgActivationV1)
 };
-QHash<void*, QWWrapObject*> QWXdgActivationV1Private::map;
 
 void QWXdgActivationV1Private::on_request_activate(wlr_xdg_activation_v1_request_activate_event *event)
 {

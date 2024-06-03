@@ -19,17 +19,15 @@ class QWIdleInhibitManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWIdleInhibitManagerV1Private(wlr_idle_inhibit_manager_v1 *handle, bool isOwner, QWIdleInhibitManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_inhibitor, this, &QWIdleInhibitManagerV1Private::on_new_inhibitor);
     }
 
     void on_new_inhibitor(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdleInhibitManagerV1)
 };
-QHash<void*, QWWrapObject*> QWIdleInhibitManagerV1Private::map;
 
 void QWIdleInhibitManagerV1Private::on_new_inhibitor(void *data)
 {
@@ -69,16 +67,14 @@ class QWIdleInhibitorV1Private : public QWWrapObjectPrivate
 {
 public:
     QWIdleInhibitorV1Private(wlr_idle_inhibitor_v1 *handle, bool isOwner, QWIdleInhibitorV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
     void on_new_inhibitor(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWIdleInhibitorV1)
 };
-QHash<void*, QWWrapObject*> QWIdleInhibitorV1Private::map;
 
 QWIdleInhibitorV1::QWIdleInhibitorV1(wlr_idle_inhibitor_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWIdleInhibitorV1Private(handle, isOwner, this))

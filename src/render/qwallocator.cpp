@@ -19,16 +19,14 @@ class QWAllocatorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWAllocatorPrivate(wlr_allocator *handle, bool isOwner, QWAllocator *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_allocator_destroy))
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWAllocator)
 };
-QHash<void*, QWWrapObject*> QWAllocatorPrivate::map;
 
 QWAllocator::QWAllocator(wlr_allocator *handle, bool isOwner)
     : QWWrapObject(*new QWAllocatorPrivate(handle, isOwner, this))

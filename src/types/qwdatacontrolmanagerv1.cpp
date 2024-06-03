@@ -17,17 +17,15 @@ class QWDataControlManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWDataControlManagerV1Private(wlr_data_control_manager_v1 *handle, bool isOwner, QWDataControlManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_device, this, &QWDataControlManagerV1Private::on_new_device);
     }
 
     void on_new_device(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDataControlManagerV1)
 };
-QHash<void*, QWWrapObject*> QWDataControlManagerV1Private::map;
 
 void QWDataControlManagerV1Private::on_new_device(void *data)
 {

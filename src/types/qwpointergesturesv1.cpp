@@ -19,15 +19,13 @@ class QWPointerGesturesV1Private : public QWWrapObjectPrivate
 {
 public:
     QWPointerGesturesV1Private(wlr_pointer_gestures_v1 *handle, bool isOwner, QWPointerGesturesV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPointerGesturesV1)
 };
-QHash<void*, QWWrapObject*> QWPointerGesturesV1Private::map;
 
 QWPointerGesturesV1::QWPointerGesturesV1(wlr_pointer_gestures_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWPointerGesturesV1Private(handle, isOwner, this))

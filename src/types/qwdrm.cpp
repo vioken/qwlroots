@@ -19,15 +19,13 @@ class QWDrmPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDrmPrivate(wlr_drm *handle, bool isOwner, QWDrm *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWDrm)
 };
-QHash<void*, QWWrapObject*> QWDrmPrivate::map;
 
 QWDrm::QWDrm(wlr_drm *handle, bool isOwner)
     : QWWrapObject(*new QWDrmPrivate(handle, isOwner, this))

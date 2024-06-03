@@ -17,15 +17,13 @@ class QWSecurityContextManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWSecurityContextManagerV1Private(wlr_security_context_manager_v1 *handle, bool isOwner, QWSecurityContextManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSecurityContextManagerV1)
 };
-QHash<void*, QWWrapObject*> QWSecurityContextManagerV1Private::map;
 
 QWSecurityContextManagerV1::QWSecurityContextManagerV1(wlr_security_context_manager_v1 *handle, bool isOwner)
     : QWWrapObject(*new QWSecurityContextManagerV1Private(handle, isOwner, this))

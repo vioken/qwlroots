@@ -18,15 +18,13 @@ class QWTabletV2TabletPrivate : public QWWrapObjectPrivate
 {
 public:
     QWTabletV2TabletPrivate(wlr_tablet_v2_tablet *handle, bool isOwner, QWTabletV2Tablet *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
+        : QWWrapObjectPrivate(handle, isOwner, qq)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWTabletV2Tablet)
 };
-QHash<void*, QWWrapObject*> QWTabletV2TabletPrivate::map;
 
 QWTabletV2Tablet::QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent)
     : QWWrapObject(*new QWTabletV2TabletPrivate(handle, isOwner, this), parent)

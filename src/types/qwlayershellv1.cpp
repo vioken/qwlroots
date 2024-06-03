@@ -28,17 +28,15 @@ class QWLayerShellV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLayerShellV1Private(wlr_layer_shell_v1 *handle, bool isOwner, QWLayerShellV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.new_surface, this, &QWLayerShellV1Private::on_new_surface);
     }
 
     void on_new_surface(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLayerShellV1)
 };
-QHash<void*, QWWrapObject*> QWLayerShellV1Private::map;
 
 void QWLayerShellV1Private::on_new_surface(void *data)
 {
@@ -78,7 +76,7 @@ class QWLayerSurfaceV1Private : public QWWrapObjectPrivate
 {
 public:
     QWLayerSurfaceV1Private(wlr_layer_surface_v1 *handle, bool isOwner, QWLayerSurfaceV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_layer_surface_v1_destroy))
     {
         sc.connect(&handle->events.new_popup, this, &QWLayerSurfaceV1Private::on_new_popup);
@@ -86,10 +84,8 @@ public:
 
     void on_new_popup(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWLayerSurfaceV1)
 };
-QHash<void*, QWWrapObject*> QWLayerSurfaceV1Private::map;
 
 void QWLayerSurfaceV1Private::on_new_popup(void *data)
 {

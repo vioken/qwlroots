@@ -26,7 +26,7 @@ class QWOutputLayoutPrivate : public QWWrapObjectPrivate
 {
 public:
     QWOutputLayoutPrivate(wlr_output_layout *handle, bool isOwner, QWOutputLayout *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_output_layout_destroy))
     {
         sc.connect(&handle->events.add, this, &QWOutputLayoutPrivate::on_add);
@@ -36,10 +36,8 @@ public:
     void on_add(void *data);
     void on_change(void *data);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWOutputLayout)
 };
-QHash<void*, QWWrapObject*> QWOutputLayoutPrivate::map;
 
 void QWOutputLayoutPrivate::on_add(void *data)
 {

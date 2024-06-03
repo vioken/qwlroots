@@ -21,15 +21,13 @@ class QWInputPopupSurfaceV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputPopupSurfaceV2Private(wlr_input_popup_surface_v2 *handle, bool isOwner, QWInputPopupSurfaceV2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputPopupSurfaceV2)
 };
-QHash<void*, QWWrapObject*> QWInputPopupSurfaceV2Private::map;
 
 QWInputPopupSurfaceV2::QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner)
     : QWWrapObject(*new QWInputPopupSurfaceV2Private(handle, isOwner, this))

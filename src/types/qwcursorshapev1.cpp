@@ -17,17 +17,15 @@ class QWCursorShapeManagerV1Private : public QWWrapObjectPrivate
 {
 public:
     QWCursorShapeManagerV1Private(wlr_cursor_shape_manager_v1 *handle, bool isOwner, QWCursorShapeManagerV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.request_set_shape, this, &QWCursorShapeManagerV1Private::on_request_set_shape);
     }
 
     void on_request_set_shape(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWCursorShapeManagerV1)
 };
-QHash<void*, QWWrapObject*> QWCursorShapeManagerV1Private::map;
 
 void QWCursorShapeManagerV1Private::on_request_set_shape(void *data)
 {

@@ -17,12 +17,11 @@ extern "C" {
 QW_BEGIN_NAMESPACE
 
 QWInputDevicePrivate::QWInputDevicePrivate(wlr_input_device *handle, bool isOwner, QWInputDevice *qq)
-    : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+    : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
 {
 
 }
 
-QHash<void*, QWWrapObject*> QWInputDevicePrivate::map;
 
 QWInputDevice::QWInputDevice(QWInputDevicePrivate &dd)
     : QWWrapObject(dd)

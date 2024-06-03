@@ -15,7 +15,7 @@ class QWDisplayPrivate : public QWWrapObjectPrivate
 {
 public:
     QWDisplayPrivate(wl_display *handle, bool isOwner, QWDisplay *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, nullptr, nullptr,
+        : QWWrapObjectPrivate(handle, isOwner, qq, nullptr,
                               toDestroyFunction(wl_display_destroy))
     {
 

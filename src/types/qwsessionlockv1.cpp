@@ -17,7 +17,7 @@ class QWSessionLockV1Private : public QWWrapObjectPrivate
 {
 public:
     QWSessionLockV1Private(wlr_session_lock_v1 *handle, bool isOwner, QWSessionLockV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy,
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy,
                               toDestroyFunction(wlr_session_lock_v1_destroy))
     {
         sc.connect(&handle->events.new_surface, this, &QWSessionLockV1Private::on_new_surface);
@@ -27,11 +27,9 @@ public:
     void on_new_surface(wlr_session_lock_surface_v1 *);
     void on_unlock();
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSessionLockV1)
 };
 
-QHash<void*, QWWrapObject*> QWSessionLockV1Private::map;
 
 void QWSessionLockV1Private::on_new_surface(wlr_session_lock_surface_v1 *surface)
 {

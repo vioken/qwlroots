@@ -16,7 +16,6 @@ class QWXdgForeignExportedPrivate : public QWWrapObjectPrivate
 public:
     QWXdgForeignExportedPrivate(wlr_xdg_foreign_exported *handle, bool isOwner, QWXdgForeignExported *qq);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXdgForeignExported)
 };
 

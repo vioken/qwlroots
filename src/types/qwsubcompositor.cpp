@@ -18,15 +18,13 @@ class QWSubcompositorPrivate : public QWWrapObjectPrivate
 {
 public:
     QWSubcompositorPrivate(wlr_subcompositor *handle, bool isOwner, QWSubcompositor *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSubcompositor)
 };
-QHash<void*, QWWrapObject*> QWSubcompositorPrivate::map;
 
 QWSubcompositor::QWSubcompositor(wlr_subcompositor *handle, bool isOwner)
     : QWWrapObject(*new QWSubcompositorPrivate(handle, isOwner, this))
@@ -58,15 +56,13 @@ class QWSubsurfacePrivate : public QWWrapObjectPrivate
 {
 public:
     QWSubsurfacePrivate(wlr_subsurface *handle, bool isOwner, QWSubsurface *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
 
     }
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWSubsurface)
 };
-QHash<void*, QWWrapObject*> QWSubsurfacePrivate::map;
 
 QWSubsurface::QWSubsurface(wlr_subsurface *handle, bool isOwner)
     : QWWrapObject(*new QWSubsurfacePrivate(handle, isOwner, this))

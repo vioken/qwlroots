@@ -18,7 +18,7 @@ class QWInputMethodV2Private : public QWWrapObjectPrivate
 {
 public:
     QWInputMethodV2Private(wlr_input_method_v2 *handle, bool isOwner, QWInputMethodV2 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.commit, this, &QWInputMethodV2Private::on_commit);
         sc.connect(&handle->events.new_popup_surface, this, &QWInputMethodV2Private::on_new_popup_surface);
@@ -29,10 +29,8 @@ public:
     void on_new_popup_surface(void *);
     void on_grab_keyboard(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWInputMethodV2)
 };
-QHash<void*, QWWrapObject*> QWInputMethodV2Private::map;
 
 void QWInputMethodV2Private::on_commit(void *data)
 {

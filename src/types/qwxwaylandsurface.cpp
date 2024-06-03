@@ -25,7 +25,7 @@ class QWXWaylandSurfacePrivate : public QWWrapObjectPrivate
 {
 public:
     QWXWaylandSurfacePrivate(wlr_xwayland_surface *handle, bool isOwner, QWXWaylandSurface *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map, &handle->events.destroy)
+        : QWWrapObjectPrivate(handle, isOwner, qq, &handle->events.destroy)
     {
         sc.connect(&handle->events.request_configure, this, &QWXWaylandSurfacePrivate::on_request_configure);
         sc.connect(&handle->events.request_move, this, &QWXWaylandSurfacePrivate::on_request_move);
@@ -77,10 +77,8 @@ public:
     void on_set_geometry(void *);
     void on_ping_timeout(void *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWXWaylandSurface)
 };
-QHash<void*, QWWrapObject*> QWXWaylandSurfacePrivate::map;
 
 void QWXWaylandSurfacePrivate::on_request_configure(wlr_xwayland_surface_configure_event *event)
 {

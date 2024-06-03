@@ -19,17 +19,15 @@ class QWPointerConstraintsV1Private : public QWWrapObjectPrivate
 {
 public:
     QWPointerConstraintsV1Private(wlr_pointer_constraints_v1 *handle, bool isOwner, QWPointerConstraintsV1 *qq)
-        : QWWrapObjectPrivate(handle, isOwner, qq, &map)
+        : QWWrapObjectPrivate(handle, isOwner, qq)
     {
         sc.connect(&handle->events.new_constraint, this, &QWPointerConstraintsV1Private::new_constraint);
     }
 
     void new_constraint(wlr_pointer_constraint_v1 *);
 
-    static QHash<void*, QWWrapObject*> map;
     QW_DECLARE_PUBLIC(QWPointerConstraintsV1)
 };
-QHash<void*, QWWrapObject*> QWPointerConstraintsV1Private::map;
 
 void QWPointerConstraintsV1Private::new_constraint(wlr_pointer_constraint_v1 *constraint)
 {
