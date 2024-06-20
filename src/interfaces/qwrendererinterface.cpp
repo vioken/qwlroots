@@ -308,6 +308,7 @@ const wlr_drm_format_set *QWRendererInterface::getDmabufTextureFormats() const
 #else
 const wlr_drm_format_set *QWRendererInterface::getTextureFormats(uint32_t buffer_caps) const
 {
+    Q_UNUSED(buffer_caps)
     return nullptr;
 }
 #endif
