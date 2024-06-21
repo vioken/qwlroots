@@ -1,0 +1,153 @@
+// Copyright (C) 2024 JiDe Zhang <zhangjide@deepin.org>.
+// SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+
+#pragma once
+
+#include <qwglobal.h>
+#include <qwsignalconnector.h>
+
+#include <QHash>
+#include <functional>
+
+QW_BEGIN_NAMESPACE
+
+namespace qw {
+static QHash<void*, QObject*> &map() {
+    static QHash<void*, QObject*> map;
+    return map;
+}
+}
+
+template<typename Handle, typename Derive>
+class qw_object : public QObject
+{
+public:
+    typedef Handle HandleType;
+    typedef Derive DeriveType;
+
+    qw_object(Handle *h, bool isOwner)
+        : m_handle(h)
+        , isHandleOwner(isOwner)
+    {
+        static_assert(QtPrivate::HasQ_OBJECT_Macro<Derive>::Value,
+                      "Please add Q_OBJECT macro to the derive class.");
+
+        Q_ASSERT(!qw::map().contains(h));
+        qw::map().insert((void*)(h), this);
+
+        constexpr bool has_destroy_signal = requires(const Handle& h) {
+            h.events->destroy;
+        };
+
+        if constexpr (has_destroy_signal) {
+            sc.connect(&h->events->destroy, this, [] (qw_object *self) {
+                self->pre_destroy();
+                self->m_handle = nullptr;
+                delete self;
+            });
+        }
+    }
+
+    ~qw_object() {
+        Q_ASSERT(qw::map().contains((void*)m_handle));
+        qw::map().remove((void*)m_handle);
+
+        if (m_handle && isHandleOwner) {
+            constexpr bool has_destroy = requires(const Derive& t) {
+                t.destroy();
+            };
+
+            if constexpr (has_destroy) {
+                static_cast<Derive*>(this)->Derive::destroy();
+            } else {
+                qFatal("qwl_wrap_object(%p) can't to destroy, maybe its ownership is wl_display.",
+                       static_cast<void*>(this));
+            }
+        }
+    }
+
+    static QW_ALWAYS_INLINE Derive *get(Handle *handle) {
+        return static_cast<Derive*>(qw::map().value(handle));
+    }
+
+    static QW_ALWAYS_INLINE Derive *from(Handle *handle) {
+        if (auto o = get(handle))
+            return o;
+
+        if constexpr (std::is_same<decltype(Derive::create(handle)), Derive*>::value) {
+            return Derive::create(handle);
+        } else {
+            static_assert(false, "Can't create a new object by 'from' function");
+        }
+    }
+
+    QW_ALWAYS_INLINE bool is_valid() const {
+        // NOTE(lxz): Some functions of wlroots allow null pointer parameters. In order to reduce repeated verification code fragments, If this ptr is nullptr, return nullptr.
+        // WARNING(lxz): Check this in the member function, it is UB. Under some compilers it is necessary to use `volatile` to prevent compiler optimizations.
+        //               In the derived class, if the object address is nullptr, the address of this is not necessarily 0x0, it may be 0x01. The correct memory address starting position will not be lower than 0x1000, so it is considered that addresses lower than 0x1000 are nullptr.
+        volatile auto thisPtr = reinterpret_cast<qintptr>(this);
+        return thisPtr > 0x1000 && m_handle;
+    }
+
+    QW_ALWAYS_INLINE Handle *handle() const {
+        if (!is_valid())
+            return nullptr;
+
+        return m_handle;
+    }
+
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
+
+    QW_ALWAYS_INLINE void setData(void* owner, void* data) {
+        if (m_data.first && owner) {
+            Q_ASSERT(m_data.first == owner);
+        }
+
+        m_data = std::make_pair(owner, data);
+    }
+
+    template<typename Data>
+    QW_ALWAYS_INLINE Data* getData() const {
+        return reinterpret_cast<Handle*>(m_data.second);
+    }
+
+Q_SIGNALS:
+    void beforeDestroy();
+
+protected:
+    inline void pre_destroy() {
+        Q_ASSERT(m_handle);
+        Q_EMIT beforeDestroy();
+
+        sc.invalidate();
+    }
+
+    Handle *m_handle;
+    bool isHandleOwner;
+    qwl_signal_connector sc;
+
+private:
+    Q_DISABLE_COPY(qw_object)
+    std::pair<void*, void*> m_data; // <owner, data>
+};
+
+#define QW_CLASS_OBJECT(wlr_type_suffix) \
+qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
+
+#define QW_SIGNAL(name, ...) \
+Q_SIGNALS: \
+    void notify_##name(__VA_ARGS__); \
+    private: \
+    struct _signal_##name { \
+        _signal_##name() { \
+            typedef DeriveType Derive; \
+            auto _self = reinterpret_cast<char*>(this) \
+              - reinterpret_cast<char*>(&reinterpret_cast<Derive*>(0)->qw_signal_##name); \
+            Derive *self = reinterpret_cast<Derive*>(_self); \
+            self->sc.connect(&self->handle()->events.name, self, &Derive::notify_##name); \
+    } \
+} qw_signal_##name;
+
+QW_END_NAMESPACE

@@ -7,7 +7,7 @@
 #include <QRect>
 #include <QLoggingCategory>
 
-#include <qwbackend.h>
+#include <qw_backend.h>
 #include <qwdisplay.h>
 #include <qwrenderer.h>
 #include <qwallocator.h>
@@ -41,6 +41,8 @@ extern "C" {
 #undef static
 #include <wayland-server.h>
 }
+
+#include <qw_texture.h>
 
 QW_USE_NAMESPACE
 
@@ -629,6 +631,13 @@ bool TinywlServer::handleKeybinding(xkb_keysym_t sym)
 
 int main(int argc, char **argv)
 {
+    qw_texture *test = qw_texture::from(nullptr);
+    wlr_texture_update_from_buffer(*test, nullptr, nullptr);
+    bool ok = test->update_from_buffer(nullptr, nullptr);
+    delete test;
+
+    qw_backend *backend = nullptr;
+
     wlr_log_init(WLR_DEBUG, NULL);
     QGuiApplication app(argc, argv);
 

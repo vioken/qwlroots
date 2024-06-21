@@ -149,10 +149,11 @@ set(SOURCES
 
 set(HEADERS
     qwglobal.h
-    qwbackend.h
+    qwobject.h
+    qw_backend.h
     qwdisplay.h
     render/qwrenderer.h
-    render/qwtexture.h
+    render/qw_texture.h
     render/qwallocator.h
     render/qwegl.h
     types/qwbuffer.h
@@ -214,8 +215,8 @@ set(HEADERS
     types/qwsecuritycontextmanagerv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
-    interfaces/qwinterface.h
-    interfaces/qwbackendinterface.h
+    interfaces/qw_interface.h
+    interfaces/qw_backend_interface.h
     interfaces/qwbufferinterface.h
     interfaces/qwrendererinterface.h
     interfaces/qwoutputinterface.h
