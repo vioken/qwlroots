@@ -139,7 +139,7 @@ qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suf
 #define QW_SIGNAL(name, ...) \
 Q_SIGNALS: \
     void notify_##name(__VA_ARGS__); \
-    private: \
+private: \
     struct _signal_##name { \
         _signal_##name() { \
             typedef DeriveType Derive; \
@@ -147,7 +147,7 @@ Q_SIGNALS: \
               - reinterpret_cast<char*>(&reinterpret_cast<Derive*>(0)->qw_signal_##name); \
             Derive *self = reinterpret_cast<Derive*>(_self); \
             self->sc.connect(&self->handle()->events.name, self, &Derive::notify_##name); \
-    } \
-} qw_signal_##name;
+        } \
+    } qw_signal_##name;
 
 QW_END_NAMESPACE
