@@ -3,7 +3,21 @@
 
 #pragma once
 
-#include <qwinterface.h>
+#include <qw_interface.h>
+
+extern "C" {
+#include <wlr/backend.h>
+#include <wlr/backend/multi.h>
+#define static
+#include <wlr/backend/drm.h>
+#undef static
+#include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
+#include <wlr/backend/x11.h>
+#endif
+#include <wlr/backend/libinput.h>
+#include <wlr/backend/headless.h>
+}
 
 struct wlr_backend;
 struct wlr_backend_impl;
@@ -35,6 +49,13 @@ protected:
     }
 
     virtual void init(FuncMagicKey funMagicKey);
+};
+
+// template<typename Derive>
+class qw_backend_interface : public qw_interface<wlr_backend, wlr_backend_impl, qw_backend_interface>
+{
+public:
+    QW_INTERFACE0(start)
 };
 
 QW_END_NAMESPACE

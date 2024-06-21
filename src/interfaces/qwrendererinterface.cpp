@@ -5,7 +5,7 @@
 
 #include "qwbuffer.h"
 #include "qwrenderer.h"
-#include "qwtexture.h"
+#include "qw_texture.h"
 #include "qwconfig.h"
 
 #include <QtGlobal>

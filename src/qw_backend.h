@@ -4,22 +4,25 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <qwbackendinterface.h>
+#include <qwobject.h>
+#include <qw_backend_interface.h>
 
 #include <QObject>
 #include <type_traits>
 
-struct wlr_backend;
-struct wlr_output;
-struct wlr_session;
-struct wlr_device;
-struct wlr_output_mode;
-struct wlr_drm_lease;
-struct wl_display;
-struct wl_event_loop;
-struct wl_seat;
-struct wl_surface;
-struct libinput_device;
+extern "C" {
+#include <wlr/backend.h>
+#include <wlr/backend/multi.h>
+#define static
+#include <wlr/backend/drm.h>
+#undef static
+#include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
+#include <wlr/backend/x11.h>
+#endif
+#include <wlr/backend/libinput.h>
+#include <wlr/backend/headless.h>
+}
 
 typedef struct _drmModeModeInfo drmModeModeInfo;
 
@@ -53,16 +56,58 @@ public:
 
     int drmFd() const;
 
-public Q_SLOTS:
-    bool start();
-
 Q_SIGNALS:
     void newInput(QWInputDevice *device);
     void newOutput(QWOutput *output);
 
+public Q_SLOTS:
+    bool start();
+
 protected:
     QWBackend(QWBackendPrivate &dd, QObject *parent = nullptr);
     QWBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+};
+
+class QW_CLASS_OBJECT(backend)
+{
+    Q_OBJECT
+
+public:
+    // template<class Interface, typename... Args>
+    // inline static typename std::enable_if<std::is_base_of<QWInterface, Interface>::value, QWBackend*>::type
+    // create(Args&&... args) {
+    //     Interface *i = new Interface();
+    //     i->QWInterface::template init<Interface>(std::forward<Args>(args)...);
+    //     return new DeriveType(i->handle(), true, nullptr);
+    // }
+
+    static DeriveType *create(HandleType *handle) {
+        // if (wlr_backend_is_multi(handle))
+//             return new QWMultiBackend(handle, isOwner, parent);
+// #ifdef WLR_HAVE_X11_BACKEND
+//         if (wlr_backend_is_x11(handle))
+//             return new QWX11Backend(handle, isOwner, parent);
+// #endif
+//         if (wlr_backend_is_drm(handle))
+//             return new QWDrmBackend(handle, isOwner, parent);
+//         if (wlr_backend_is_headless(handle))
+//             return new QWHeadlessBackend(handle, isOwner, parent);
+//         if (wlr_backend_is_libinput(handle))
+//             return new QWLibinputBackend(handle, isOwner, parent);
+//         if (wlr_backend_is_wl(handle))
+//             return new QWWaylandBackend(handle, isOwner, parent);
+
+        return new DeriveType(handle, false);
+    }
+
+    QW_FUNC_MEMBER(backend, auto_create)
+    QW_FUNC_MEMBER(backend, get_drm_fd)
+
+    QW_SIGNAL(new_output, wlr_output*)
+    QW_SIGNAL(new_input, wlr_input_device*)
+
+protected:
+    using qw_object::qw_object;
 };
 
 using wlr_multi_backend_iterator_func_t = void (*)(struct wlr_backend *backend, void *data);
