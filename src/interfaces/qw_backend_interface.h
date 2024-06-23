@@ -5,6 +5,10 @@
 
 #include <qw_interface.h>
 
+#include <functional>
+#include <type_traits>
+#include <utility>
+
 extern "C" {
 #include <wlr/backend.h>
 #include <wlr/backend/multi.h>
@@ -17,6 +21,7 @@ extern "C" {
 #endif
 #include <wlr/backend/libinput.h>
 #include <wlr/backend/headless.h>
+#include <wlr/backend/interface.h>
 }
 
 struct wlr_backend;
@@ -51,11 +56,17 @@ protected:
     virtual void init(FuncMagicKey funMagicKey);
 };
 
-// template<typename Derive>
-class qw_backend_interface : public qw_interface<wlr_backend, wlr_backend_impl, qw_backend_interface>
+template<typename Derive>
+class QW_CLASS_INTERFACE(backend)
 {
 public:
-    QW_INTERFACE0(start)
+    ~qw_backend_interface() override {
+        wlr_backend_finish(handle());
+    }
+
+    QW_INTERFACE(start)
+    QW_INTERFACE(get_drm_fd)
+    QW_INTERFACE(get_buffer_caps)
 };
 
 QW_END_NAMESPACE

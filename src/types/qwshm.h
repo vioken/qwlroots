@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qwglobal.h>
+#include <qw_global.h>
 
 struct wlr_shm;
 struct wl_display;

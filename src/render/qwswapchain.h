@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qwglobal.h>
+#include <qw_global.h>
 
 struct wlr_swapchain;
 struct wlr_drm_format;

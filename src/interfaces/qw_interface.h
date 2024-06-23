@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qwglobal.h>
+#include <qw_global.h>
 #include <QObject>
 
 #include <type_traits>
@@ -59,13 +59,17 @@ protected:
     void *m_handleImpl = nullptr;
 };
 
-template<typename Handle, typename Impl, typename Derive>
+template<typename Handle, typename Impl>
 class qw_interface
 {
+protected:
+    struct _handle : public Handle {
+        qw_interface *interface;
+    };
+
 public:
     typedef Handle HandleType;
     typedef Impl ImplType;
-    typedef Derive DeriveType;
 
     QW_ALWAYS_INLINE Handle *handle() const {
         return m_handle;
@@ -79,25 +83,71 @@ public:
         return impl();
     }
 
-protected:
-    template <class Derived, typename F>
-    inline static constexpr
-    typename std::enable_if<std::is_base_of<qw_interface, typename QtPrivate::FunctionPointer<F>::Object>::value && std::is_base_of<qw_interface, Derived>::value, bool>::type
-    overrided(F) {
-        using FunInfo = QtPrivate::FunctionPointer<F>;
-        return std::is_same<typename FunInfo::Object, Derived>::value;
+    QW_ALWAYS_INLINE static qw_interface *get(Handle *handle) {
+        auto h = static_cast<_handle*>(handle);
+        Q_ASSERT(h->interface && h->impl == handle->impl);
+        return h->interface;
     }
 
-    struct _handle : public Handle
-    {
-        Derive *interface;
+protected:
+    template <typename I, I i, typename II, II ii>
+    struct qw_interface_binder {
+        typedef I interface_type;
+        typedef II impl_type;
+
+        template<typename T>
+        struct caller {};
+
+        template <class Obj, typename Ret, typename ...Args>
+        struct caller<Ret (Obj::*) (Args...)> {
+            typedef Ret return_type;
+            // typedef Args... arguments;
+
+            static Ret call(HandleType *handle, Args &&... args) {
+                return (static_cast<_handle*>(handle)->interface->*i)(std::forward<Args>(args)...);
+            }
+        };
+
+        typedef caller<I> callback;
+        typedef typename callback::return_type return_type;
+
+        static inline void bind(qw_interface *self) {
+            self->m_handleImpl->*ii = callback::call;
+        }
+
+        qw_interface_binder(qw_interface *self) {
+            bind(self);
+        }
     };
+
+    template <typename I, typename II>
+    void bind_interface(I impl, II i) {
+        qw_interface_binder<I, impl, II, i>::bind(this);
+    }
+
+    static void destroy(Handle *handle) {
+        auto self = get(handle);
+        Q_ASSERT(self);
+        delete self;
+    }
 
     qw_interface()
         : m_handleImpl(new Impl)
         , m_handle(calloc(1, sizeof(_handle)))
     {
-        static_cast<_handle*>(m_handle)->interface = static_cast<Derive*>(this);
+        static_cast<_handle*>(m_handle)->interface = this;
+        constexpr bool has_destroy = requires(const Impl &i) {
+            i.destroy;
+        };
+
+        if constexpr (has_destroy) {
+            m_handleImpl.destroy = destroy;
+        }
+    }
+
+    virtual ~qw_interface() {
+        free(handle());
+        delete impl();
     }
 
     Handle *m_handle = nullptr;
@@ -105,32 +155,30 @@ protected:
 };
 
 #define QW_CLASS_INTERFACE(wlr_type_suffix) \
-template<typename Derive> \
-class qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl, Derive>
+qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl>
 
-#define QW_INTERFACE_BIND(name) \
-struct _interface_##name { \
-    template <typename ...Args> \
-    static auto callback(HandleType *handle, Args &&... args) { \
-        return static_cast<_handle*>(handle)->interface->name(std::forward<Args>(args)...); \
-    } \
-    _interface_##name() { \
-        if constexpr (!allows_null || overrided(DeriveType::name)) { \
-            m_handleImpl->name = callback<typename QtPrivate::FunctionPointer<DeriveType::name>::Arguments>; \
+#define QW_INTERFACE(name) \
+template <typename I, typename II> \
+struct qw_interface_##name { \
+    static_assert(std::is_base_of<qw_interface, I>::value, "Please inherit the qw_foo_interface calss."); \
+    qw_interface_##name(qw_interface *self) { \
+        constexpr bool has_impl = requires(const I &i) { \
+            &i.name; \
+        }; \
+        constexpr bool has_interface = requires(const II &i) { \
+            &i.name; \
+        }; \
+        if constexpr (has_impl) { \
+            if constexpr (has_interface) { \
+                self->bind_interface(&I::name, &II::name); \
+            } else { \
+                static_assert(false, "Not found \"" QT_STRINGIFY(name) "\", Please check your wlroot's version."); \
+            } \
         } else { \
-            m_handleImpl->name = nullptr; \
+            self->impl()->name = nullptr; \
         } \
     } \
-} qw_interface_##name;
-
-#define QW_INTERFACE0(name) \
-virtual QtPrivate::FunctionPointer<ImplType::name>::ReturnType \
-name(QtPrivate::FunctionPointer<ImplType::name>::Arguments::Cdr) = 0; \
-QW_INTERFACE_BIND(name)
-
-#define QW_INTERFACE1(name, default_value) \
-virtual QtPrivate::FunctionPointer<ImplType::name>::ReturnType \
-name(QtPrivate::FunctionPointer<ImplType::name>::Arguments::Cdr) { return default_value; } \
-QW_INTERFACE_BIND(name)
+}; \
+qw_interface_##name<Derive, ImplType> _interface_##name = this;
 
 QW_END_NAMESPACE

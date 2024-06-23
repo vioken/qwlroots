@@ -629,14 +629,35 @@ bool TinywlServer::handleKeybinding(xkb_keysym_t sym)
     return true;
 }
 
+class Test {
+public:
+    struct A {
+        A(Test *t) {
+            qDebug() << this << t;
+        }
+    };
+
+    A a = this;
+    A b = this;
+    A c = this;
+};
+
 int main(int argc, char **argv)
 {
-    qw_texture *test = qw_texture::from(nullptr);
-    wlr_texture_update_from_buffer(*test, nullptr, nullptr);
-    bool ok = test->update_from_buffer(nullptr, nullptr);
-    delete test;
+    auto s = sizeof(Test);
+    auto sa = sizeof(Test::A);
+    qDebug() << sizeof(Test) << sizeof(Test::A) << sizeof(int);
 
-    qw_backend *backend = nullptr;
+    Test test;
+    qDebug() << &test << &test.a << &test.c;
+
+    return 0;
+    // qw_texture *test = qw_texture::from(nullptr);
+    // wlr_texture_update_from_buffer(*test, nullptr, nullptr);
+    // bool ok = test->update_from_buffer(nullptr, nullptr);
+    // delete test;
+
+    // qw_backend *backend = nullptr;
 
     wlr_log_init(WLR_DEBUG, NULL);
     QGuiApplication app(argc, argv);

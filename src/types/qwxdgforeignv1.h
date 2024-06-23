@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Dingyuan Zhang <zhangdingyuan@uniontech.com>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "qwglobal.h"
+#include "qw_global.h"
 #include <qwxdgforeignregistry.h>
 
 struct wlr_xdg_foreign_v1;

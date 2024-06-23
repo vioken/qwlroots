@@ -148,8 +148,8 @@ set(SOURCES
 )
 
 set(HEADERS
-    qwglobal.h
-    qwobject.h
+    qw_global.h
+    qw_object.h
     qw_backend.h
     qwdisplay.h
     render/qwrenderer.h

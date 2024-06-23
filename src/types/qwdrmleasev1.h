@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qwglobal.h>
+#include <qw_global.h>
 #include <QObject>
 
 struct wlr_drm_lease_v1_manager;
