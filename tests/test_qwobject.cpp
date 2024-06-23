@@ -3,7 +3,7 @@
 
 #include <QtTest>
 
-#include "qwglobal.h"
+#include "qw_global.h"
 
 class testQWObject : public QObject
 {

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "qwglobal.h"
+#include "qw_global.h"
 #include "util/qwsignalconnector.h"
 
 QW_BEGIN_NAMESPACE

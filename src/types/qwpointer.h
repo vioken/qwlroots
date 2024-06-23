@@ -4,7 +4,7 @@
 #pragma once
 
 #include <qwpointerinterface.h>
-#include <qwglobal.h>
+#include <qw_global.h>
 #include <qwinputdevice.h>
 #include <QObject>
 

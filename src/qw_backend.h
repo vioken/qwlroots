@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwobject.h>
+#include <qw_global.h>
+#include <qw_object.h>
 #include <qw_backend_interface.h>
 
 #include <QObject>

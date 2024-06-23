@@ -5,7 +5,7 @@
 
 // WARNING: This file is not part of the QWlroots API.
 
-#include "qwglobal.h"
+#include "qw_global.h"
 #include "private/qwglobal_p.h"
 
 #include <QObject>

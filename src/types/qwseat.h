@@ -4,7 +4,7 @@
 #pragma once
 
 #include <cstdint>
-#include <qwglobal.h>
+#include <qw_global.h>
 #include <QObject>
 #include <wayland-server-protocol.h>
 

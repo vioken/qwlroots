@@ -4,7 +4,7 @@
 #include "qwxdgforeignregistry.h"
 #include "private/qwglobal_p.h"
 
-#include <qwglobal.h>
+#include <qw_global.h>
 #include <qwxdgforeignregistry_p.h>
 #include <qwdisplay.h>
 
