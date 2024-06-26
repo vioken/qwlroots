@@ -141,7 +141,7 @@ protected:
         };
 
         if constexpr (has_destroy) {
-            m_handleImpl.destroy = destroy;
+            m_handleImpl->destroy = destroy;
         }
     }
 
