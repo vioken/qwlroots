@@ -142,6 +142,11 @@ private:
 #define QW_CLASS_OBJECT(wlr_type_suffix) \
 qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
+#define QW_OBJECT \
+protected: \
+using qw_object::qw_object; \
+friend class qw_object;
+
 #define QW_SIGNAL(name, ...) \
 Q_SIGNALS: \
     void notify_##name(__VA_ARGS__); \

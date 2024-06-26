@@ -70,17 +70,10 @@ protected:
 
 class QW_CLASS_OBJECT(backend)
 {
+    QW_OBJECT
     Q_OBJECT
 
 public:
-    // template<class Interface, typename... Args>
-    // inline static typename std::enable_if<std::is_base_of<QWInterface, Interface>::value, QWBackend*>::type
-    // create(Args&&... args) {
-    //     Interface *i = new Interface();
-    //     i->QWInterface::template init<Interface>(std::forward<Args>(args)...);
-    //     return new DeriveType(i->handle(), true, nullptr);
-    // }
-
     static DeriveType *create(HandleType *handle) {
         // if (wlr_backend_is_multi(handle))
 //             return new QWMultiBackend(handle, isOwner, parent);
@@ -103,15 +96,34 @@ public:
     QW_FUNC_MEMBER(backend, auto_create)
     QW_FUNC_MEMBER(backend, get_drm_fd)
 
+    QW_FUNC_STATIC(backend, is_multi)
+
     QW_SIGNAL(new_output, wlr_output*)
     QW_SIGNAL(new_input, wlr_input_device*)
 
 protected:
-    using qw_object::qw_object;
+    QW_FUNC_MEMBER(backend, destroy)
+};
+
+class qw_multi_backend : public qw_backend
+{
+    Q_OBJECT
+
+public:
+    QW_FUNC_MEMBER(multi_backend, add)
+    QW_FUNC_MEMBER(multi_backend, remove)
+    QW_FUNC_MEMBER(multi_backend, is_empty)
+    QW_FUNC_MEMBER(multi_backend, for_each_backend)
+
+    QW_FUNC_STATIC(multi_backend, create)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
+
 };
 
 using wlr_multi_backend_iterator_func_t = void (*)(struct wlr_backend *backend, void *data);
-
 class QW_EXPORT QWMultiBackend : public QWBackend
 {
     Q_OBJECT
