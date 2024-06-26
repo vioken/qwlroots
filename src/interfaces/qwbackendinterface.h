@@ -56,6 +56,10 @@ template<typename Derive>
 class QW_CLASS_INTERFACE(backend)
 {
 public:
+    qw_backend_interface() {
+        wlr_backend_init(impl());
+    }
+
     ~qw_backend_interface() override {
         wlr_backend_finish(handle());
     }
