@@ -6,6 +6,8 @@
 #include <qwconfig.h>
 #include <QtCore/qglobal.h>
 
+#include <concepts>
+
 #define QW_NAMESPACE QWLRoots
 
 #define QW_BEGIN_NAMESPACE namespace QW_NAMESPACE {
@@ -40,6 +42,16 @@
     #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() { std::abort(); };
 #else
     #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() = delete;
+#endif
+
+#ifdef QT_NO_DEBUG
+#define QW_ALWAYS_INLINE Q_ALWAYS_INLINE
+#else
+#define QW_ALWAYS_INLINE
+#endif
+
+#ifndef WLR_USE_UNSTABLE
+#define WLR_USE_UNSTABLE
 #endif
 
 #include <QScopedPointer>
@@ -115,5 +127,51 @@ protected:
 
     QW_DECLARE_PRIVATE(QWWrapObject)
 };
+
+template<typename Handle, typename Derive>
+class qw_reinterpret_cast {
+public:
+    typedef Handle HandleType;
+    typedef Derive DeriveType;
+
+    QW_ALWAYS_INLINE Handle *handle() const {
+        return reinterpret_cast<Handle*>(const_cast<Derive*>(static_cast<const Derive*>(this)));
+    }
+
+    QW_ALWAYS_INLINE static Derive *from(Handle *handle) {
+        return reinterpret_cast<Derive*>(handle);
+    }
+
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
+
+    QW_ALWAYS_INLINE void operator delete(qw_reinterpret_cast *p, std::destroying_delete_t) {
+        if constexpr (std::is_same<decltype(static_cast<Derive*>(p)->destroy()), void>::value) {
+            static_cast<Derive*>(p)->Derive::destroy();
+        } else {
+            static_assert(false, "Can't destroy.");
+        }
+    }
+
+private:
+    qw_reinterpret_cast() = delete;
+    QW_DISALLOW_DESTRUCTOR(qw_reinterpret_cast)
+};
+
+#define QW_CLASS_REINTERPRET_CAST(wlr_type_suffix) \
+qw_##wlr_type_suffix : public qw_reinterpret_cast<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
+
+#define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE auto wlr_func_suffix(Args &&... args) { \
+    return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
+}
+
+#define QW_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE static auto wlr_func_suffix(Args &&... args) { \
+    return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+}
 
 QW_END_NAMESPACE

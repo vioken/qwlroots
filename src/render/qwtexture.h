@@ -5,15 +5,17 @@
 
 #include <qwglobal.h>
 
-struct pixman_region32;
-struct wlr_texture;
-struct wlr_dmabuf_attributes;
+extern "C" {
+#include <wlr/render/wlr_texture.h>
+}
 
 QW_BEGIN_NAMESPACE
 
 class QWRenderer;
 class QWDmabufAttributes;
 class QWBuffer;
+
+// TODO: remove
 class QW_EXPORT QWTexture
 {
 public:
@@ -32,6 +34,17 @@ public:
     static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
 
     bool update(QWBuffer *buffer, pixman_region32 *damage);
+};
+
+class QW_CLASS_REINTERPRET_CAST(texture)
+{
+public:
+    QW_FUNC_STATIC(texture, from_pixels)
+    QW_FUNC_STATIC(texture, from_dmabuf)
+    QW_FUNC_STATIC(texture, from_buffer)
+
+    QW_FUNC_MEMBER(texture, update_from_buffer)
+    QW_FUNC_MEMBER(texture, destroy)
 };
 
 QW_END_NAMESPACE
