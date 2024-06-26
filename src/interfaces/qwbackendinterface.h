@@ -5,10 +5,6 @@
 
 #include <qwinterface.h>
 
-#include <functional>
-#include <type_traits>
-#include <utility>
-
 extern "C" {
 #include <wlr/backend.h>
 #include <wlr/backend/multi.h>

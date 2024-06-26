@@ -7,7 +7,6 @@
 #include <qwsignalconnector.h>
 
 #include <QHash>
-#include <functional>
 
 QW_BEGIN_NAMESPACE
 
