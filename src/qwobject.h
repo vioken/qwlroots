@@ -147,6 +147,7 @@ protected: \
 using qw_object::qw_object; \
 friend class qw_object;
 
+//.+sc.connect\(&handle->events.([^,]+),.+ QW_SIGNAL($1, arguments?)
 #define QW_SIGNAL(name, ...) \
 Q_SIGNALS: \
     void notify_##name(__VA_ARGS__); \
