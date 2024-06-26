@@ -24,6 +24,7 @@
 #include <qwinputdevice.h>
 #include <qwkeyboard.h>
 #include <qwpointer.h>
+#include <qwbackendinterface.h>
 
 #define WLR_USE_UNSTABLE
 extern "C" {
@@ -642,6 +643,21 @@ public:
     A c = this;
 };
 
+class TTT : public qw_backend_interface<TTT> {
+public:
+    bool start() {
+        return false;
+    }
+
+    int get_drm_fd() {
+        return 1;
+    }
+
+    int get_buffer_caps() {
+        return 1;
+    }
+};
+
 int main(int argc, char **argv)
 {
     auto s = sizeof(Test);
@@ -658,6 +674,7 @@ int main(int argc, char **argv)
     // delete test;
 
     // qw_backend *backend = nullptr;
+    TTT ttt;
 
     wlr_log_init(WLR_DEBUG, NULL);
     QGuiApplication app(argc, argv);
