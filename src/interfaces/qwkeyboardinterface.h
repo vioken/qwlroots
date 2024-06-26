@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_interface.h>
+#include <qwinterface.h>
 
 struct wlr_keyboard;
 struct wlr_keyboard_impl;

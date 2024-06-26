@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <qwinputdevice.h>
 #include <qwkeyboardinterface.h>
 #include <QObject>

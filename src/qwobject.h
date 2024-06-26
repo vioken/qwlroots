@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <qwsignalconnector.h>
 
 #include <QHash>

@@ -5,7 +5,7 @@
 
 #include <qwbufferinterface.h>
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <QObject>
 #include <type_traits>
 

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 
 extern "C" {
 #include <wlr/render/wlr_texture.h>

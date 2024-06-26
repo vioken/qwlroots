@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_interface.h>
+#include <qwinterface.h>
 #include <QPoint>
 
 struct wlr_output;

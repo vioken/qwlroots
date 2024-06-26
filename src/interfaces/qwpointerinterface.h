@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_interface.h>
+#include <qwinterface.h>
 
 struct wlr_pointer;
 struct wlr_pointer_impl;

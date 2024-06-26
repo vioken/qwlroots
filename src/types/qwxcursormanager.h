@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 
 struct wlr_xcursor_manager;
 struct wlr_xcursor;

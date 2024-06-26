@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <QObject>
 
 typedef uint32_t zwp_tablet_pad_v2_button_state_t;

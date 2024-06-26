@@ -4,7 +4,7 @@
 #pragma once
 
 #include <memory>
-#include <qw_global.h>
+#include <qwglobal.h>
 
 struct wlr_damage_ring;
 struct pixman_region32;

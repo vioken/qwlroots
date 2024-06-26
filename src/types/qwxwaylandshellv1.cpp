@@ -3,7 +3,7 @@
 
 #include "qwxwaylandshellv1.h"
 
-#include "qw_global.h"
+#include "qwglobal.h"
 #include "qwdisplay.h"
 #include "qwcompositor.h"
 #include <private/qwglobal_p.h>

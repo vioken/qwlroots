@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_interface.h>
+#include <qwinterface.h>
 
 struct wlr_tablet_pad;
 struct wlr_tablet_pad_impl;

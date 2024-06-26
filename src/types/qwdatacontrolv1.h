@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <QObject>
 
 struct wlr_data_control_manager_v1;

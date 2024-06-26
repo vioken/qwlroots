@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <QObject>
 
 struct wlr_cursor_shape_manager_v1;
