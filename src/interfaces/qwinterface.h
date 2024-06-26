@@ -158,6 +158,7 @@ protected:
 qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl>
 
 #define QW_INTERFACE(name) \
+private: \
 template <typename I, typename II> \
 struct qw_interface_##name { \
     static_assert(std::is_base_of<qw_interface, I>::value, "Please inherit the qw_foo_interface calss."); \
