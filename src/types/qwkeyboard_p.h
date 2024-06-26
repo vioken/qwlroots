@@ -5,7 +5,7 @@
 
 // WARNING: This file is not part of the QWlroots API.
 
-#include "qw_global.h"
+#include "qwglobal.h"
 #include "qwinputdevice_p.h"
 #include "util/qwsignalconnector.h"
 

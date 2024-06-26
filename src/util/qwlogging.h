@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <stdio.h>
 
 QW_BEGIN_NAMESPACE

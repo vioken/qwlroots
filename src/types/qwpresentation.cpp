@@ -5,7 +5,7 @@
 #include "qwdisplay.h"
 #include "qwoutput.h"
 #include "qwcompositor.h"
-#include "qw_backend.h"
+#include "qwbackend.h"
 #include "private/qwglobal_p.h"
 
 #include <QHash>

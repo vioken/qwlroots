@@ -7,7 +7,7 @@
 #include <QRect>
 #include <QLoggingCategory>
 
-#include <qw_backend.h>
+#include <qwbackend.h>
 #include <qwdisplay.h>
 #include <qwrenderer.h>
 #include <qwallocator.h>
@@ -42,7 +42,7 @@ extern "C" {
 #include <wayland-server.h>
 }
 
-#include <qw_texture.h>
+#include <qwtexture.h>
 
 QW_USE_NAMESPACE
 

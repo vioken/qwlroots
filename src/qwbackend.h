@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include <qw_global.h>
-#include <qw_object.h>
-#include <qw_backend_interface.h>
+#include <qwglobal.h>
+#include <qwobject.h>
+#include <qwbackendinterface.h>
 
 #include <QObject>
 #include <type_traits>

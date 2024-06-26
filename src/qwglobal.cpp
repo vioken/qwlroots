@@ -1,7 +1,7 @@
 // Copyright (C) 2022 JiDe Zhang <zccrs@live.com>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "qw_global.h"
+#include "qwglobal.h"
 #include "private/qwglobal_p.h"
 
 #include <QHash>

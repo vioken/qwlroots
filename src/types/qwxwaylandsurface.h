@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <qw_global.h>
+#include <qwglobal.h>
 #include <QObject>
 
 typedef uint32_t wlr_xwayland_icccm_input_model_t;

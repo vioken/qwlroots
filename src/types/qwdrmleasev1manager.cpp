@@ -3,7 +3,7 @@
 
 #include "qwdrmleasev1.h"
 #include "qwdisplay.h"
-#include "qw_backend.h"
+#include "qwbackend.h"
 #include "qwoutput.h"
 #include "private/qwglobal_p.h"
 
