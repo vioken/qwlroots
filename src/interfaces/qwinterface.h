@@ -92,9 +92,6 @@ public:
 protected:
     template <typename I, I i, typename II, II ii>
     struct qw_interface_binder {
-        typedef I interface_type;
-        typedef II impl_type;
-
         template<typename T>
         struct caller {};
 
@@ -104,15 +101,14 @@ protected:
             // typedef Args... arguments;
 
             static Ret call(HandleType *handle, Args &&... args) {
-                return (static_cast<_handle*>(handle)->interface->*i)(std::forward<Args>(args)...);
+                return (static_cast<_handle*>(handle)->interface->*ii)(std::forward<Args>(args)...);
             }
         };
 
-        typedef caller<I> callback;
-        typedef typename callback::return_type return_type;
+        typedef caller<II> callback;
 
         static inline void bind(qw_interface *self) {
-            self->m_handleImpl->*ii = callback::call;
+            self->m_handleImpl->*i = callback::call;
         }
 
         qw_interface_binder(qw_interface *self) {
@@ -121,8 +117,8 @@ protected:
     };
 
     template <typename I, typename II>
-    void bind_interface(I impl, II i) {
-        qw_interface_binder<I, impl, II, i>::bind(this);
+    void bind_interface(I i, II impl) {
+        qw_interface_binder<I, i, II, impl>::bind(this);
     }
 
     static void destroy(Handle *handle) {
@@ -133,7 +129,7 @@ protected:
 
     qw_interface()
         : m_handleImpl(new Impl)
-        , m_handle(calloc(1, sizeof(_handle)))
+        , m_handle(reinterpret_cast<_handle*>(calloc(1, sizeof(_handle))))
     {
         static_cast<_handle*>(m_handle)->interface = this;
         constexpr bool has_destroy = requires(const Impl &i) {
@@ -161,12 +157,11 @@ qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wl
 private: \
 template <typename I, typename II> \
 struct qw_interface_##name { \
-    static_assert(std::is_base_of<qw_interface, I>::value, "Please inherit the qw_foo_interface calss."); \
     qw_interface_##name(qw_interface *self) { \
-        constexpr bool has_impl = requires(const I &i) { \
+        constexpr bool has_impl = requires(const II &i) { \
             &i.name; \
         }; \
-        constexpr bool has_interface = requires(const II &i) { \
+        constexpr bool has_interface = requires(const I &i) { \
             &i.name; \
         }; \
         if constexpr (has_impl) { \
@@ -180,6 +175,6 @@ struct qw_interface_##name { \
         } \
     } \
 }; \
-qw_interface_##name<Derive, ImplType> _interface_##name = this;
+qw_interface_##name<ImplType, Derive> _interface_##name = this;
 
 QW_END_NAMESPACE

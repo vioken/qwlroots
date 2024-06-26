@@ -123,6 +123,12 @@ protected:
         sc.invalidate();
     }
 
+    template <typename S, typename SS>
+    void bind_signal(S wl_signal, SS qt_signal) {
+        auto obj = static_cast<QtPrivate::FunctionPointer<SS>::Object*>(this);
+        sc.connect(&handle()->events.*wl_signal, obj, qt_signal);
+    }
+
     Handle *m_handle;
     bool isHandleOwner;
     qwl_signal_connector sc;
@@ -139,14 +145,17 @@ qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suf
 Q_SIGNALS: \
     void notify_##name(__VA_ARGS__); \
 private: \
-    struct _signal_##name { \
-        _signal_##name() { \
-            typedef DeriveType Derive; \
-            auto _self = reinterpret_cast<char*>(this) \
-              - reinterpret_cast<char*>(&reinterpret_cast<Derive*>(0)->qw_signal_##name); \
-            Derive *self = reinterpret_cast<Derive*>(_self); \
-            self->sc.connect(&self->handle()->events.name, self, &Derive::notify_##name); \
+template <typename S, typename SS> \
+struct qw_signal_##name { \
+    qw_signal_##name(qw_object *self) { \
+        constexpr bool has_signal = requires(const S &h) { \
+                  h.event.name; \
+        }; \
+        if constexpr (has_signal) { \
+            self->bind_signal(&S::events.name, &SS::name); \
         } \
-    } qw_signal_##name;
+    } \
+}; \
+qw_signal_##name<HandleType, DeriveType> _signal_##name = this;
 
 QW_END_NAMESPACE
