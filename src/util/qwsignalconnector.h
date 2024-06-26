@@ -45,13 +45,13 @@ private:
     QVector<Listener*> listenerList;
 };
 
-class qwl_signal_connector
+class qw_signal_connector
 {
     using SlotFun0 = void (*)(void *obj);
     using SlotFun1 = void (*)(void *obj, void *signalData);
     using SlotFun2 = void (*)(void *obj, void *signalData, void *data);
 
-    struct qwl_signal_listener {
+    struct qw_signal_listener {
         wl_signal *signal;
         wl_listener l;
         void *object;
@@ -64,17 +64,17 @@ class qwl_signal_connector
     };
 
 public:
-    qwl_signal_connector() {
+    qw_signal_connector() {
         listenerList.reserve(1);
     }
 
-    ~qwl_signal_connector() {
+    ~qw_signal_connector() {
         invalidate();
     }
 
 
-    qwl_signal_listener *connect(wl_signal *signal, void *object, SlotFun0 slot) {
-        qwl_signal_listener *l = new qwl_signal_listener;
+    qw_signal_listener *connect(wl_signal *signal, void *object, SlotFun0 slot) {
+        qw_signal_listener *l = new qw_signal_listener;
         listenerList.push_back(l);
 
         l->signal = signal;
@@ -85,8 +85,8 @@ public:
         return l;
     }
 
-    qwl_signal_listener *connect(wl_signal *signal, void *object, SlotFun1 slot) {
-        qwl_signal_listener *l = new qwl_signal_listener;
+    qw_signal_listener *connect(wl_signal *signal, void *object, SlotFun1 slot) {
+        qw_signal_listener *l = new qw_signal_listener;
         listenerList.push_back(l);
 
         l->signal = signal;
@@ -97,9 +97,9 @@ public:
         return l;
     }
 
-    qwl_signal_listener *connect(wl_signal *signal, void *object, SlotFun2 slot, void *data) {
+    qw_signal_listener *connect(wl_signal *signal, void *object, SlotFun2 slot, void *data) {
         Q_ASSERT(data);
-        qwl_signal_listener *l = new qwl_signal_listener;
+        qw_signal_listener *l = new qw_signal_listener;
         listenerList.push_back(l);
 
         l->signal = signal;
@@ -111,40 +111,40 @@ public:
         return l;
     }
     template <typename T>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*)) {
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*)) {
         return connect(signal, object, reinterpret_cast<SlotFun0>(*(void**)(&slot)));
     }
     template <typename T>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*))
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*))
         requires ( !std::is_same_v<void,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun0>(*(void**)(&slot)));
     }
     template <typename T, typename T1>
-    inline qwl_signal_listener *connect_t(wl_signal *signal, T *object, void (*slot)(T*, T1*))
+    inline qw_signal_listener *connect_t(wl_signal *signal, T *object, void (*slot)(T*, T1*))
         requires ( !std::is_same_v<void,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun1>(*(void**)(&slot)));
     }
     template <typename T, typename T1, typename T2, typename T3>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*, T1*, T2*), T3 *data)
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (*slot)(T*, T1*, T2*), T3 *data)
         requires ( !std::is_same_v<void,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun2>(*(void**)(&slot)), data);
     }
     template <typename T, typename TSlot>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)())
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)())
         requires ( std::is_base_of_v<TSlot,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun0>(*(void**)(&slot)));
     }
     template <typename T, typename T1, typename TSlot>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*))
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*))
         requires ( std::is_base_of_v<TSlot,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun1>(*(void**)(&slot)));
     }
     template <typename T, typename T1, typename T2, typename T3, typename TSlot>
-    inline qwl_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*, T2*), T3 *data)
+    inline qw_signal_listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*, T2*), T3 *data)
         requires ( std::is_base_of_v<TSlot,T> ) {
         return connect(signal, object, reinterpret_cast<SlotFun2>(*(void**)(&slot)), data);
     }
-    void disconnect(qwl_signal_listener *l) {
+    void disconnect(qw_signal_listener *l) {
         Q_ASSERT(listenerList.contains(l));
         wl_list_remove(&l->l.link);
         delete l;
@@ -154,7 +154,7 @@ public:
         auto tmpList = listenerList;
         auto begin = tmpList.begin();
         while (begin != tmpList.end()) {
-            qwl_signal_listener *l = *begin;
+            qw_signal_listener *l = *begin;
             ++begin;
 
             if (signal == l->signal)
@@ -166,7 +166,7 @@ public:
         listenerList.clear();
         auto begin = tmpList.begin();
         while (begin != tmpList.end()) {
-            qwl_signal_listener *l = *begin;
+            qw_signal_listener *l = *begin;
             wl_list_remove(&l->l.link);
             ++begin;
             delete l;
@@ -175,21 +175,21 @@ public:
 
 private:
     static void callSlot0(wl_listener *wl_listener, void *) {
-        qwl_signal_listener *listener = wl_container_of(wl_listener, listener, l);
+        qw_signal_listener *listener = wl_container_of(wl_listener, listener, l);
         listener->slot0(listener->object);
     }
 
     static void callSlot1(wl_listener *wl_listener, void *data) {
-        qwl_signal_listener *listener = wl_container_of(wl_listener, listener, l);
+        qw_signal_listener *listener = wl_container_of(wl_listener, listener, l);
         listener->slot1(listener->object, data);
     }
 
     static void callSlot2(wl_listener *wl_listener, void *data) {
-        qwl_signal_listener *listener = wl_container_of(wl_listener, listener, l);
+        qw_signal_listener *listener = wl_container_of(wl_listener, listener, l);
         listener->slot2(listener->object, data, listener->data);
     }
 
-    QVector<qwl_signal_listener*> listenerList;
+    QVector<qw_signal_listener*> listenerList;
 };
 
 QW_END_NAMESPACE
