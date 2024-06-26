@@ -174,4 +174,13 @@ QW_ALWAYS_INLINE static auto wlr_func_suffix(Args &&... args) { \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
 }
 
+// 1. clean functions
+//.+wlr_([a-z]+)_([a-z_]+)\(.+ QW_FUNC_MEMBER($1, $2)
+
+// 2. clean signals
+//.+sc.connect\(&handle->events.([^,]+),.+ QW_SIGNAL($1, arguments?)
+
+// 3. clean cpp files
+//^(?!QW_[A-Z_]+\()(?!#)(?!extern).*\n
+
 QW_END_NAMESPACE
