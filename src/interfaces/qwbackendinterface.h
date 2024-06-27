@@ -57,7 +57,7 @@ class QW_CLASS_INTERFACE(backend)
 {
 public:
     qw_backend_interface() {
-        wlr_backend_init(impl());
+        wlr_backend_init(*this, *this);
     }
 
     ~qw_backend_interface() override {
