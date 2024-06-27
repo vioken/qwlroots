@@ -5,58 +5,20 @@
 
 #include <qwinterface.h>
 
-struct wlr_pointer;
-struct wlr_pointer_impl;
-struct wlr_pointer_motion_event;
-struct wlr_pointer_motion_absolute_event;
-struct wlr_pointer_button_event;
-struct wlr_pointer_axis_event;
-struct wlr_pointer_swipe_begin_event;
-struct wlr_pointer_swipe_update_event;
-struct wlr_pointer_swipe_end_event;
-struct wlr_pointer_pinch_begin_event;
-struct wlr_pointer_pinch_update_event;
-struct wlr_pointer_pinch_end_event;
-struct wlr_pointer_hold_begin_event;
-struct wlr_pointer_hold_end_event;
+extern "C" {
+#include <wlr/interfaces/wlr_pointer.h>
+#include <wayland-server-core.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWPointerInterface : public QWInterface {
-    friend class QWPointer;
+template<typename Derive>
+class QW_CLASS_INTERFACE(pointer)
+{
+    QW_INTERFACE_INIT(pointer)
+
 public:
-    virtual ~QWPointerInterface();
-    virtual const char* name() = 0;
-
-    inline wlr_pointer *handle() const {
-        return QWInterface::handle<wlr_pointer>();
-    }
-    inline wlr_pointer_impl *impl() const {
-        return QWInterface::impl<wlr_pointer_impl>();
-    }
-
-protected:
-    void notifyMotion(wlr_pointer_motion_event *event);
-    void notifyMotionAbsolute(wlr_pointer_motion_absolute_event *event);
-    void notifyButton(wlr_pointer_button_event *event);
-    void notifyAxis(wlr_pointer_axis_event *event);
-    void notifyFrame();
-    void notifySwipeBegin(wlr_pointer_swipe_begin_event *event);
-    void notifySwipeUpdate(wlr_pointer_swipe_update_event *event);
-    void notifySwipeEnd(wlr_pointer_swipe_end_event *event);
-    void notifyPinchBegin(wlr_pointer_pinch_begin_event *event);
-    void notifyPinchUpdate(wlr_pointer_pinch_update_event *event);
-    void notifyPinchEnd(wlr_pointer_pinch_end_event *event);
-    void notifyHoldBegin(wlr_pointer_hold_begin_event *event);
-    void notifyHoldEnd(wlr_pointer_hold_end_event *event);
-
-    template<class T>
-    inline void init(const char* name)
-    {
-        init(getFuncMagicKey<T>(), name);
-    }
-
-    virtual void init(FuncMagicKey funMagicKey, const char* name);
+    QW_INTERFACE(name)
 };
 
 QW_END_NAMESPACE

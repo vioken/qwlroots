@@ -4,6 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
+#include "qwinterface.h"
 #include <qwsignalconnector.h>
 
 #include <QHash>
@@ -79,6 +80,15 @@ public:
         } else {
             static_assert(false, "Can't create a new object by 'from' function");
         }
+    }
+
+    template<class Interface, typename... Args>
+    static QW_ALWAYS_INLINE DeriveType *create(Args&&... args)
+        requires (std::is_base_of_v<qw_interface_basic, Interface>
+                 && std::is_same_v<HandleType, decltype(*(std::declval<Interface>().handle()))>) {
+        Interface *i = new Interface();
+        Interface::template init(*i, *i, std::forward<Args>(args)...);
+        return new DeriveType(i->handle(), true);
     }
 
     QW_ALWAYS_INLINE bool is_valid() const {

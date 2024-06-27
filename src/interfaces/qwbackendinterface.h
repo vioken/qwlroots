@@ -20,50 +20,14 @@ extern "C" {
 #include <wlr/backend/interface.h>
 }
 
-struct wlr_backend;
-struct wlr_backend_impl;
-
 QW_BEGIN_NAMESPACE
-
-class QW_EXPORT QWBackendInterface : public QWInterface
-{
-    friend class QWBackend;
-public:
-    virtual ~QWBackendInterface();
-    virtual bool start() = 0;
-
-    virtual int getDrmFd() const;
-    virtual int getBufferCaps() const;
-
-    inline wlr_backend *handle() const {
-        return QWInterface::handle<wlr_backend>();
-    }
-    inline wlr_backend_impl *impl() const {
-        return QWInterface::impl<wlr_backend_impl>();
-    }
-    static QWBackendInterface *get(wlr_backend *handle);
-
-protected:
-    template<class T>
-    inline void init() {
-        init(getFuncMagicKey<T>(&T::getPresentationClock, &T::getDrmFd, &T::getBufferCaps));
-    }
-
-    virtual void init(FuncMagicKey funMagicKey);
-};
 
 template<typename Derive>
 class QW_CLASS_INTERFACE(backend)
 {
+    QW_INTERFACE_INIT(backend)
+
 public:
-    qw_backend_interface() {
-        wlr_backend_init(*this, *this);
-    }
-
-    ~qw_backend_interface() override {
-        wlr_backend_finish(handle());
-    }
-
     QW_INTERFACE(start)
     QW_INTERFACE(get_drm_fd)
     QW_INTERFACE(get_buffer_caps)
