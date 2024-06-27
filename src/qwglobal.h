@@ -174,6 +174,16 @@ QW_ALWAYS_INLINE static auto wlr_func_suffix(Args &&... args) { \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
 }
 
+#define QW_MAYBE_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE static void wlr_func_suffix(Args &&... args) { \
+    constexpr bool exists = requires() { \
+        wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+    }; \
+    if constexpr (exists) \
+        wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+}
+
 // 1. clean functions
 //.+wlr_([a-z]+)_([a-z_]+)\(.+ QW_FUNC_MEMBER($1, $2)
 

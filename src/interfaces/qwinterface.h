@@ -4,63 +4,13 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
-
-#include <type_traits>
 
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWInterface
-{
-public:
-    template<typename Handle>
-    inline Handle *handle() const {
-        return reinterpret_cast<Handle*>(m_handle);
-    }
-
-    template<typename Impl>
-    inline Impl *impl() const {
-        return reinterpret_cast<Impl*>(m_handleImpl);
-    }
-
-protected:
-#define QW_INIT_INTERFACE_FUNC(funMagicKey, member, value)\
-    .member = (funMagicKey & (1 << virtualFuncIndex(value))) ? nullptr : impl::member
-
-    template <class Derived, typename F>
-    inline static constexpr
-    typename std::enable_if<std::is_base_of<QWInterface, typename QtPrivate::FunctionPointer<F>::Object>::value && std::is_base_of<QWInterface, Derived>::value, bool>::type
-    functionOverrided(F) {
-        using FunInfo = QtPrivate::FunctionPointer<F>;
-        return std::is_same<typename FunInfo::Object, Derived>::value;
-    }
-
-    typedef quint64 FuncMagicKey;
-    template <typename F>
-    static inline uint virtualFuncIndex(F f) {
-        const uint index = (*(quintptr*)&f) / sizeof(quintptr);
-        assert(index < sizeof(FuncMagicKey) * 8);
-        return index;
-    }
-    template <class Derived>
-    static constexpr FuncMagicKey getFuncMagicKey() {
-        return 0;
-    }
-    template <class Derived, typename Head, typename... Tail>
-    static inline FuncMagicKey getFuncMagicKey(Head func, Tail&&... funcs) {
-        constexpr int maxFuncCount = sizeof(FuncMagicKey) * 8;
-        Q_STATIC_ASSERT(sizeof...(funcs) + 1 <= maxFuncCount);
-        // Mark to 1 if the function is not overrided
-        const FuncMagicKey magic = functionOverrided<Derived>(func) ? 0 : (1 << virtualFuncIndex(func));
-        return magic | getFuncMagicKey<Derived>(std::forward<Tail>(funcs)...);
-    }
-
-    void *m_handle = nullptr;
-    void *m_handleImpl = nullptr;
-};
+class qw_interface_basic {};
 
 template<typename Handle, typename Impl>
-class qw_interface
+class qw_interface : public qw_interface_basic
 {
 protected:
     struct _handle : public Handle {
@@ -152,6 +102,16 @@ protected:
 
 #define QW_CLASS_INTERFACE(wlr_type_suffix) \
 qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl>
+
+#define QW_INTERFACE_INIT(wlr_type_suffix) \
+friend class qw_interface; \
+friend class qw_##wlr_type_suffix; \
+private: \
+using qw_interface::qw_interface; \
+QW_FUNC_STATIC(wlr_type_suffix, init) \
+QW_MAYBE_FUNC_STATIC(wlr_type_suffix, finish) \
+public: \
+~qw_##wlr_type_suffix##_interface() { finish(*this); }
 
 #define QW_INTERFACE(name) \
 private: \

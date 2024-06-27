@@ -5,36 +5,20 @@
 
 #include <qwinterface.h>
 
-struct wlr_keyboard;
-struct wlr_keyboard_impl;
-
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWKeyboardInterface : public QWInterface
+extern "C" {
+#include <wlr/interfaces/wlr_keyboard.h>
+}
+
+template<typename Derive>
+class QW_CLASS_INTERFACE(keyboard)
 {
-    friend class QWKeyboard;
+    QW_INTERFACE_INIT(keyboard)
+
 public:
-    virtual ~QWKeyboardInterface();
-
-    virtual const char* name() = 0;
-
-    virtual void ledUpdate(uint32_t leds) const;
-
-    inline wlr_keyboard *handle() const {
-        return QWInterface::handle<wlr_keyboard>();
-    }
-    inline wlr_keyboard_impl *impl() const {
-        return QWInterface::impl<wlr_keyboard_impl>();
-    }
-    static QWKeyboardInterface *get(wlr_keyboard *handle);
-
-protected:
-    template<class T>
-    inline void init() {
-        init(getFuncMagicKey<T>(&T::ledUpdate));
-    }
-
-    virtual void init(FuncMagicKey funMagicKey);
+    QW_INTERFACE(name)
+    QW_INTERFACE(led_update)
 };
 
 QW_END_NAMESPACE

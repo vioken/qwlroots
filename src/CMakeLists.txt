@@ -137,14 +137,6 @@ set(SOURCES
     types/qwsecuritycontextmanagerv1.cpp
     util/qwsignalconnector.cpp
     util/qwlogging.cpp
-    interfaces/qwbackendinterface.cpp
-    interfaces/qwoutputinterface.cpp
-    interfaces/qwkeyboardinterface.cpp
-    interfaces/qwbufferinterface.cpp
-    interfaces/qwrendererinterface.cpp
-    interfaces/qwswitchinterface.cpp
-    interfaces/qwpointerinterface.cpp
-    interfaces/qwtabletpadinterface.cpp
 )
 
 set(HEADERS
