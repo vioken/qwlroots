@@ -5,25 +5,15 @@
 
 #include <qwglobal.h>
 
-struct wlr_idle_notifier_v1;
-
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSeat;
-class QW_EXPORT QWIdleNotifierV1
+class QW_CLASS_REINTERPRET_CAST(idle_notifier_v1)
 {
+    Q_OBJECT
 public:
-    QWIdleNotifierV1() = delete;
-    ~QWIdleNotifierV1() = delete;
-
-    wlr_idle_notifier_v1 *handle() const;
-
-    static QWIdleNotifierV1 *from(wlr_idle_notifier_v1 *handle);
-    static QWIdleNotifierV1 *create(QWDisplay *display);
-
-    void notifyActivity(QWSeat *seat);
-    void setInhibited(bool inhibited);
+    QW_FUNC_STATIC(idle_notifier_v1, create)
+    QW_FUNC_MEMBER(idle_notifier_v1, notify_activity)
+    QW_FUNC_MEMBER(idle_notifier_v1, set_inhibited)
 };
 
 QW_END_NAMESPACE
