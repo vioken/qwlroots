@@ -4,47 +4,24 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
-
-struct wlr_data_control_manager_v1;
-struct wlr_data_control_device_v1;
+#include <qwobject.h>
+extern "C" {
+#include <wlr/types/wlr_data_control_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QW_EXPORT QWDataControlDeviceV1
-{
+class QW_CLASS_REINTERPRET_CAST(data_control_device_v1) {
 public:
-    QWDataControlDeviceV1() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWDataControlDeviceV1)
-
-    void operator delete(QWDataControlDeviceV1 *p, std::destroying_delete_t);
-
-    wlr_data_control_device_v1 *handle() const;
-
-    static QWDataControlDeviceV1 *from(wlr_data_control_device_v1 *handle);
+    QW_FUNC_MEMBER(data_control_device_v1, destroy)
 };
 
-class QWDataControlManagerV1Private;
-class QW_EXPORT QWDataControlManagerV1 : public QWWrapObject
-{
+class QW_CLASS_OBJECT(data_control_manager_v1) {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWDataControlManagerV1)
+    QW_SIGNAL(new_device, wlr_data_control_device_v1*)
 public:
-    inline wlr_data_control_manager_v1 *handle() const {
-        return QWObject::handle<wlr_data_control_manager_v1>();
-    }
-
-    static QWDataControlManagerV1 *get(wlr_data_control_manager_v1 *handle);
-    static QWDataControlManagerV1 *from(wlr_data_control_manager_v1 *handle);
-    static QWDataControlManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newDevice(QWDataControlDeviceV1 *device);
-
-private:
-    QWDataControlManagerV1(wlr_data_control_manager_v1 *handle, bool isOwner);
-    ~QWDataControlManagerV1() = default;
+    QW_FUNC_STATIC(data_control_device_v1, create);
 };
 
 QW_END_NAMESPACE
