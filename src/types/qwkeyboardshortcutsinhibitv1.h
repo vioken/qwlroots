@@ -3,56 +3,34 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_keyboard_shortcuts_inhibitor_v1;
-struct wlr_keyboard_shortcuts_inhibit_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_keyboard_shortcuts_inhibit_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWKeyboardShortcutsInhibitorV1Private;
-class QW_EXPORT QWKeyboardShortcutsInhibitorV1 : public QWWrapObject
+class QW_CLASS_OBJECT(keyboard_shortcuts_inhibitor_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWKeyboardShortcutsInhibitorV1)
+
 public:
-    inline wlr_keyboard_shortcuts_inhibitor_v1 *handle() const {
-        return QWObject::handle<wlr_keyboard_shortcuts_inhibitor_v1>();
-    }
-
-    static QWKeyboardShortcutsInhibitorV1 *get(wlr_keyboard_shortcuts_inhibitor_v1 *handle);
-    static QWKeyboardShortcutsInhibitorV1 *from(wlr_keyboard_shortcuts_inhibitor_v1 *handle);
-
-    void activate();
-    void deactivate();
-
-private:
-    QWKeyboardShortcutsInhibitorV1(wlr_keyboard_shortcuts_inhibitor_v1 *handle, bool isOwner);
-    ~QWKeyboardShortcutsInhibitorV1() = default;
+    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, activate)
+    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, deactivate)
 };
 
-class QWKeyboardShortcutsInhibitManagerV1Private;
-class QW_EXPORT QWKeyboardShortcutsInhibitManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(keyboard_shortcuts_inhibit_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWKeyboardShortcutsInhibitManagerV1)
+
 public:
-    inline wlr_keyboard_shortcuts_inhibit_manager_v1 *handle() const {
-        return QWObject::handle<wlr_keyboard_shortcuts_inhibit_manager_v1>();
-    }
+    QW_SIGNAL(new_inhibitor, qw_keyboard_shortcuts_inhibitor_v1*)
 
-    static QWKeyboardShortcutsInhibitManagerV1 *get(wlr_keyboard_shortcuts_inhibit_manager_v1 *handle);
-    static QWKeyboardShortcutsInhibitManagerV1 *from(wlr_keyboard_shortcuts_inhibit_manager_v1 *handle);
-    static QWKeyboardShortcutsInhibitManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newInhibitor(QWKeyboardShortcutsInhibitorV1 *inhibitor);
-
-private:
-    QWKeyboardShortcutsInhibitManagerV1(wlr_keyboard_shortcuts_inhibit_manager_v1 *handle, bool isOwner);
-    ~QWKeyboardShortcutsInhibitManagerV1() = default;
+public:
+    QW_FUNC_STATIC(keyboard_shortcuts_inhibit_manager_v1, create)
 };
 
 QW_END_NAMESPACE

@@ -3,147 +3,99 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwoutputinterface.h>
+#include <qwobject.h>
 
-#include <QObject>
-#include <type_traits>
-
-struct wlr_output;
-struct wlr_output_mode;
-struct wlr_output_state;
-struct wlr_drm_format_set;
-struct wlr_output_cursor;
-struct wlr_buffer;
-struct wl_resource;
-struct wlr_output_event_present;
-struct wlr_output_event_damage;
-struct wlr_output_event_bind;
-struct wlr_output_event_precommit;
-struct wlr_output_event_commit;
-struct wlr_output_event_request_state;
-struct wlr_output_state;
-struct wlr_swapchain;
-struct wlr_render_pass;
-struct pixman_region32;
-typedef pixman_region32 pixman_region32_t;
-
-typedef uint32_t wl_output_transform_t;
-typedef uint32_t wl_output_subpixel_t;
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_output.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWAllocator;
-class QWRenderer;
-class QWBuffer;
-class QWOutputInterface;
-class QWOutputPrivate;
-class QW_EXPORT QWOutput : public QWWrapObject
+class QW_CLASS_OBJECT(output)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWOutput)
+
 public:
-    ~QWOutput() = default;
-
-    inline wlr_output *handle() const {
-        return QWObject::handle<wlr_output>();
-    }
-
-    static QWOutput *get(wlr_output *handle);
-    static QWOutput *from(wlr_output *handle);
-    static QWOutput *from(wl_resource *resource);
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWOutputInterface, Interface>::value, QWOutput*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWOutputInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWOutput(i->handle(), true);
-    }
+    QW_FUNC_MEMBER(output, destroy)
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    void enable(bool enable);
-    void createGlobal();
-#else
-    void createGlobal(QWDisplay *display);
+    QW_FUNC_MEMBER(output, enable)
 #endif
-    void destroyGlobal();
-    bool initRender(QWAllocator *allocator, QWRenderer *renderer);
-    wlr_output_mode *preferredMode() const;
+    QW_FUNC_MEMBER(output, createGlobal)
+    QW_FUNC_MEMBER(output, destroyGlobal)
+    QW_FUNC_MEMBER(output, init_render)
+    QW_FUNC_MEMBER(output, preferred_mode)
 
 #if WLR_VERSION_MINOR < 18
-    void setMode(wlr_output_mode *mode);
-    void setCustomMode(const QSize &size, int32_t refresh);
-    void setTransform(wl_output_transform_t wl_output_transform);
-    void enableAdaptiveSync(bool enabled);
-    void setRenderFormat(uint32_t format);
-    void setScale(float scale);
-    void setSubpixel(wl_output_subpixel_t wl_output_subpixel);
-    void setDamage(pixman_region32 *damage);
+    QW_FUNC_MEMBER(output, set_mode)
+    QW_FUNC_MEMBER(output, set_custom_mode)
+    QW_FUNC_MEMBER(output, set_transform)
+    QW_FUNC_MEMBER(output, enable_adaptive_sync)
+    QW_FUNC_MEMBER(output, set_render_format)
+    QW_FUNC_MEMBER(output, set_scale)
+    QW_FUNC_MEMBER(output, set_subpixel)
+    QW_FUNC_MEMBER(output, set_damage)
 #endif
-    void setName(const QByteArray &name);
-    void setDescription(const QByteArray &desc);
-    void scheduleDone();
-
-    QSize transformedResolution() const;
-    QSize effectiveResolution() const;
+    QW_FUNC_MEMBER(output, set_name)
+    QW_FUNC_MEMBER(output, set_description)
+    QW_FUNC_MEMBER(output, schedule_done)
+    QW_FUNC_MEMBER(output, transformed_resolution)
+    QW_FUNC_MEMBER(output, effective_resolution)
 
 #if WLR_VERSION_MINOR < 18
-    bool attachRender(int *bufferAge);
-    void attachBuffer(QWBuffer *buffer);
+    QW_FUNC_MEMBER(output, attach_render)
+    QW_FUNC_MEMBER(output, attach_buffer)
 #endif
-    void lockAttachRender(bool lock);
 
-    uint32_t preferredReadFormat() const;
+    QW_FUNC_MEMBER(output, lock_attach_render)
+    QW_FUNC_MEMBER(output, preferred_read_format)
+
 #if WLR_VERSION_MINOR < 18
-    bool test();
-    bool commit();
-    void rollback();
+    QW_FUNC_MEMBER(output, test)
+    QW_FUNC_MEMBER(output, commit)
+    QW_FUNC_MEMBER(output, rollback)
 #endif
-    bool testState(wlr_output_state *state);
-    bool commitState(wlr_output_state *state);
-    static void finishState(wlr_output_state *state);
-    void scheduleFrame();
 
-    size_t getGammaSize() const;
-    void setGamma(size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b);
-    void lockSoftwareCursors(bool lock);
+    QW_FUNC_MEMBER(output, test_state)
+    QW_FUNC_MEMBER(output, commit_state)
+    QW_FUNC_MEMBER(output, finish_state)
+    QW_FUNC_MEMBER(output, schedule_frame)
+    QW_FUNC_MEMBER(output, get_gamma_size)
+    QW_FUNC_MEMBER(output, set_gamma)
+    QW_FUNC_MEMBER(output, lock_software_cursors)
+
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    void renderSoftwareCursors(pixman_region32 *damage);
+    QW_FUNC_MEMBER(output, render_software_cursors)
 #endif
-    const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps);
 
-    void addSoftwareCursorsToRenderPass(wlr_render_pass *render_pass, const pixman_region32_t *damage);
-    bool configurePrimarySwapchain(const wlr_output_state *state, wlr_swapchain **swapchain);
+    QW_FUNC_MEMBER(output, get_primary_formats)
+    QW_FUNC_MEMBER(output, add_software_cursors_to_render_pass)
+    QW_FUNC_MEMBER(output, configure_primary_swapchain)
 
-Q_SIGNALS:
-    void frame();
-    void damage(wlr_output_event_damage *event);
-    void needsFrame();
-    void precommit(wlr_output_event_precommit *event);
-    void commit(wlr_output_event_commit *event);
-    void present(wlr_output_event_present *event);
-    void bind(wlr_output_event_bind *event);
-    void descriptionChanged();
-    void requestState(wlr_output_event_request_state *state);
-
-private:
-    QWOutput(wlr_output *handle, bool isOwner);
+public:
+    QW_SIGNAL(frame)
+    QW_SIGNAL(damage, wlr_output_event_damage*)
+    QW_SIGNAL(needs_frame)
+    QW_SIGNAL(precommit, wlr_output_event_precommit*)
+    QW_SIGNAL(commit, wlr_output_event_commit*)
+    QW_SIGNAL(present, wlr_output_event_present*)
+    QW_SIGNAL(bind, wlr_output_event_bind *)
+    QW_SIGNAL(description)
+    QW_SIGNAL(request_state, wlr_output_event_request_state *)
 };
 
-class QW_EXPORT QWOutputCursor
+class QW_CLASS_REINTERPRET_CAST(output_cursor)
 {
 public:
-    QWOutputCursor() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWOutputCursor)
+    QW_FUNC_STATIC(output_cursor, create)
 
-    void operator delete(QWOutputCursor *p, std::destroying_delete_t);
-    wlr_output_cursor *handle() const;
-
-    static QWOutputCursor *from(wlr_output_cursor *handle);
-    static QWOutputCursor *create(QWOutput *output);
-
-    bool setBuffer(QWBuffer *buffer, const QPoint &hotspot);
-    bool move(const QPointF &pos);
+    QW_FUNC_MEMBER(output_cursor, destroy)
+    QW_FUNC_MEMBER(output_cursor, set_buffer)
+    QW_FUNC_MEMBER(output_cursor, move)
 };
 
 QW_END_NAMESPACE
