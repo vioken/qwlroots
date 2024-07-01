@@ -55,7 +55,6 @@ set(SOURCES
     types/qwbuffer.cpp
     types/qwclientbuffer.cpp
     types/qwcompositor.cpp
-    types/qwexportdmabufmanagerv1.cpp
     types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
     types/qwdatasource.cpp
@@ -117,7 +116,6 @@ set(SOURCES
     types/qwinputpopupsurfacev2.cpp
     types/qwinputmethodmanagerv2.cpp
     types/qwidlenotifyv1.cpp
-    types/qwforeigntoplevelhandlev1.cpp
     types/qwforeigntoplevelmanagerv1.cpp
     types/qwxdgforeignv1.cpp
     types/qwxdgforeignv2.cpp
@@ -125,7 +123,6 @@ set(SOURCES
     types/qwvirtualkeyboardmanagerv1.cpp
     types/qwvirtualpointerv1.cpp
     types/qwgammacontorlv1.cpp
-    types/qwfullscreenshellv1.cpp
     types/qwtabletv2.cpp
     types/qwtabletv2tablet.cpp
     types/qwtabletv2tabletool.cpp
@@ -133,7 +130,6 @@ set(SOURCES
     types/qwtabletmanagerv2.cpp
     types/qwkeyboardshortcutsinhibitv1.cpp
     types/qwkeyboardshortcutsinhibitmanagerv1.cpp
-    types/qwfractionalscalemanagerv1.cpp
     types/qwsecuritycontextmanagerv1.cpp
     util/qwsignalconnector.cpp
     util/qwlogging.cpp

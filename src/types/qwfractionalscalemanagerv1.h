@@ -3,34 +3,22 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_fractional_scale_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_fractional_scale_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSurface;
-class QWFractionalScaleManagerV1Private;
-class QW_EXPORT QWFractionalScaleManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(fractional_scale_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWFractionalScaleManagerV1)
+
 public:
-    inline wlr_fractional_scale_manager_v1 *handle() const {
-        return QWObject::handle<wlr_fractional_scale_manager_v1>();
-    }
-
-    static QWFractionalScaleManagerV1 *get(wlr_fractional_scale_manager_v1 *handle);
-    static QWFractionalScaleManagerV1 *from(wlr_fractional_scale_manager_v1 *handle);
-    static QWFractionalScaleManagerV1 *create(QWDisplay *display, uint32_t version);
-
-    static void notifyScale(QWSurface *surface, double scale);
-
-private:
-    QWFractionalScaleManagerV1(wlr_fractional_scale_manager_v1 *handle, bool isOwner);
-    ~QWFractionalScaleManagerV1() = default;
+    QW_FUNC_STATIC(fractional_scale_v1, notify_scale)
+    QW_FUNC_STATIC(fractional_scale_manager_v1, create)
 };
 
 QW_END_NAMESPACE
