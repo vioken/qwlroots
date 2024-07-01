@@ -3,120 +3,61 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_input_method_keyboard_grab_v2;
-struct wlr_keyboard_modifiers;
-struct wlr_input_method_v2;
-struct wlr_input_popup_surface_v2;
-struct wlr_input_method_manager_v2;
-
+extern "C" {
+#define delete delete_c
+#include <wlr/types/wlr_input_method_v2.h>
+#undef delete
+#include <wlr/util/box.h>
+}
 QW_BEGIN_NAMESPACE
 
-class QWKeyboard;
-class QWSurface;
-class QWDisplay;
-class QWInputMethodV2;
-class QWInputMethodManagerV2Private;
-class QW_EXPORT QWInputMethodManagerV2 : public QWWrapObject
+class QW_CLASS_OBJECT(input_method_manager_v2)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWInputMethodManagerV2)
 public:
-    inline wlr_input_method_manager_v2 *handle() const {
-        return QWObject::handle<wlr_input_method_manager_v2>();
-    }
-
-    static QWInputMethodManagerV2 *get(wlr_input_method_manager_v2 *handle);
-    static QWInputMethodManagerV2 *from(wlr_input_method_manager_v2 *handle);
-    static QWInputMethodManagerV2 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void inputMethod(QWInputMethodV2 *input_method);
-
-private:
-    QWInputMethodManagerV2(wlr_input_method_manager_v2 *handle, bool isOwner);
-    ~QWInputMethodManagerV2() = default;
-};
+    QW_FUNC_STATIC(input_method_manager_v2, create)
+}
 
 
-class QWInputMethodKeyboardGrabV2Private;
-class QW_EXPORT QWInputMethodKeyboardGrabV2 : public QWWrapObject
+class QW_CLASS_OBJECT(input_method_keyboard_grab_v2)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWInputMethodKeyboardGrabV2)
 public:
-    ~QWInputMethodKeyboardGrabV2() = default;
+    QW_FUNC_MEMBER(input_method_keyboard_grab_v2, send_key)
+    QW_FUNC_MEMBER(input_method_keyboard_grab_v2, send_modifiers)
+    QW_FUNC_MEMBER(input_method_keyboard_grab_v2, set_keyboard)
+    QW_FUNC_MEMBER(input_method_keyboard_grab_v2, destroy)
+}
 
-    inline wlr_input_method_keyboard_grab_v2 *handle() const {
-        return QWObject::handle<wlr_input_method_keyboard_grab_v2>();
-    }
-
-    static QWInputMethodKeyboardGrabV2 *get(wlr_input_method_keyboard_grab_v2 *handle);
-    static QWInputMethodKeyboardGrabV2 *from(wlr_input_method_keyboard_grab_v2 *handle);
-
-    void sendKey(uint32_t time, uint32_t key, uint32_t state);
-    void sendModifiers(wlr_keyboard_modifiers *modifiers);
-    void setKeyboard(QWKeyboard *keyboard);
-
-private:
-    QWInputMethodKeyboardGrabV2(wlr_input_method_keyboard_grab_v2 *handle, bool isOwner);
-};
-
-class QWInputPopupSurfaceV2Private;
-class QW_EXPORT QWInputPopupSurfaceV2 : public QWWrapObject
+class QW_CLASS_OBJECT(input_popup_surface_v2)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWInputPopupSurfaceV2)
 public:
-    inline wlr_input_popup_surface_v2 *handle() const {
-        return QWObject::handle<wlr_input_popup_surface_v2>();
-    }
+    QW_FUNC_MEMBER(input_popup_surface_v2, send_text_input_rectangle)
+    QW_FUNC_STATIC(input_popup_surface_v2, try_from_wlr_surface)
+}
 
-    static QWInputPopupSurfaceV2 *get(wlr_input_popup_surface_v2 *handle);
-    static QWInputPopupSurfaceV2 *from(wlr_input_popup_surface_v2 *handle);
-    static QWInputPopupSurfaceV2 *from(QWSurface *handle);
-
-    QWSurface *surface() const;
-
-    void send_text_input_rectangle(const QRect &sbox);
-
-private:
-    QWInputPopupSurfaceV2(wlr_input_popup_surface_v2 *handle, bool isOwner);
-    ~QWInputPopupSurfaceV2() = default;
-};
-
-class QWInputMethodV2Private;
-class QW_EXPORT QWInputMethodV2 : public QWWrapObject
+class QW_CLASS_OBJECT(input_method_v2)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWInputMethodV2)
 public:
-    inline wlr_input_method_v2 *handle() const {
-        return QWObject::handle<wlr_input_method_v2>();
-    }
+    QW_SIGNAL(commit, wlr_input_method_v2*)
+    QW_SIGNAL(new_popup_surface, wlr_input_popup_surface_v2*)
+    QW_SIGNAL(grab_keyboard, wlr_input_method_keyboard_grab_v2*)
 
-    static QWInputMethodV2 *get(wlr_input_method_v2 *handle);
-    static QWInputMethodV2 *from(wlr_input_method_v2 *handle);
-
-    void sendActivate();
-    void sendContentType(uint32_t hint, uint32_t purpose);
-    void sendDeactivate();
-    void sendDone();
-    void sendSurroundingText(const char *text, uint32_t cursor, uint32_t anchor);
-    void sendTextChangeCause(uint32_t cause);
-    void sendUnavailable();
-
-Q_SIGNALS:
-    void commit(QWInputMethodV2 *inputMethod);
-    void newPopupSurface(QWInputPopupSurfaceV2 *surface);
-    void grabKeybord(QWInputMethodKeyboardGrabV2 *keyboardGrab);
-
-private:
-    QWInputMethodV2(wlr_input_method_v2 *handle, bool isOwner);
-    ~QWInputMethodV2() = default;
-};
-
+public:
+    QW_FUNC_MEMBER(input_method_v2, send_activate)
+    QW_FUNC_MEMBER(input_method_v2, send_content_type)
+    QW_FUNC_MEMBER(input_method_v2, send_deactivate)
+    QW_FUNC_MEMBER(input_method_v2, send_done)
+    QW_FUNC_MEMBER(input_method_v2, send_surrounding_text)
+    QW_FUNC_MEMBER(input_method_v2, send_text_change_cause)
+    QW_FUNC_MEMBER(input_method_v2, send_unavailable)
+}
 QW_END_NAMESPACE
-

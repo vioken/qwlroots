@@ -3,68 +3,37 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_presentation;
-struct wlr_presentation_feedback;
-struct wlr_presentation_event;
-struct wlr_output_event_present;
+extern "C" {
+#include <wlr/types/wlr_presentation_time.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWOutput;
-class QWDisplay;
-class QWBackend;
-class QWPresentationFeedback;
-class QWPresentationPrivate;
-class QW_EXPORT QWPresentation : public QWWrapObject
+
+class QW_CLASS_OBJECT(presentation)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPresentation)
 public:
-    inline wlr_presentation *handle() const {
-        return QWObject::handle<wlr_presentation>();
-    }
-
-    static QWPresentation *create(QWDisplay *display, QWBackend *backend);
-    static QWPresentation *get(wlr_presentation *handle);
-    static QWPresentation *from(wlr_presentation *handle);
-
-    QWPresentationFeedback *surfaceSampled(QWSurface *surface) const;
-
-    void surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output);
-    void surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output);
-
-private:
-    QWPresentation(wlr_presentation *handle, bool isOwner);
-    ~QWPresentation() = default;
+    QW_FUNC_MEMBER(presentation, surface_sampled)
+    QW_FUNC_MEMBER(presentation, surface_textured_on_output)
+    QW_FUNC_MEMBER(presentation, surface_scanned_on_output)
+    QW_FUNC_STATIC(presentation, create)
 };
 
-class QW_EXPORT QWPresentationEvent {
+class QW_CLASS_REINTERPRET_CAST(presentation_event)
+{
 public:
-    QWPresentationEvent() = delete;
-    ~QWPresentationEvent() = delete;
-
-    wlr_presentation_event *handle() const;
-
-    static QWPresentationEvent* from(wlr_presentation_event *event);
-    static void fromOutput(wlr_presentation_event *handle, const wlr_output_event_present *outputEvent);
+    QW_FUNC_MEMBER(presentation_event, from_output)
 };
 
-class QW_EXPORT QWPresentationFeedback {
+class QW_CLASS_REINTERPRET_CAST(presentation_feedback)
+{
 public:
-    QWPresentationFeedback() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWPresentationFeedback)
-
-    void operator delete(QWPresentationFeedback *p, std::destroying_delete_t);
-
-    wlr_presentation_feedback *handle() const;
-
-    static QWPresentationFeedback* from(wlr_presentation_feedback *handle);
-
-    void sendPresented(QWPresentationEvent *event);
-};
+    QW_FUNC_MEMBER(presentation_event, send_presented)
+    QW_FUNC_MEMBER(presentation_event, destroy)
+}
 
 QW_END_NAMESPACE
