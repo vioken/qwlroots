@@ -3,32 +3,19 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
+extern "C" {
+#include <wlr/types/wlr_primary_selection_v1.h>
+}
 
-struct wlr_primary_selection_v1_device_manager;
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWPrimarySelectionV1DeviceManagerPrivate;
-class QW_EXPORT QWPrimarySelectionV1DeviceManager : public QWWrapObject
+class QW_CLASS_OBJECT(primary_selection_v1_device_manager)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPrimarySelectionV1DeviceManager)
 public:
-    inline wlr_primary_selection_v1_device_manager *handle() const {
-        return QWObject::handle<wlr_primary_selection_v1_device_manager>();
-    }
-
-    static QWPrimarySelectionV1DeviceManager *get(wlr_primary_selection_v1_device_manager *handle);
-    static QWPrimarySelectionV1DeviceManager *from(wlr_primary_selection_v1_device_manager *handle);
-    static QWPrimarySelectionV1DeviceManager *create(QWDisplay *display);
-
-private:
-    QWPrimarySelectionV1DeviceManager(wlr_primary_selection_v1_device_manager *handle, bool isOwner);
-    ~QWPrimarySelectionV1DeviceManager() = default;
+    QW_FUNC_STATIC(primary_selection_v1_device_manager, create)
 };
-
 QW_END_NAMESPACE
-

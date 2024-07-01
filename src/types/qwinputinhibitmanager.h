@@ -3,35 +3,26 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_input_inhibit_manager;
+extern "C" {
+#include <wlr/types/wlr_input_inhibitor.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWInputInhibitManagerPrivate;
-class QW_EXPORT QWInputInhibitManager : public QWWrapObject
+class QW_CLASS_OBJECT(input_inhibit_manager)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWInputInhibitManager)
+
 public:
-    inline wlr_input_inhibit_manager *handle() const {
-        return QWObject::handle<wlr_input_inhibit_manager>();
-    }
+    QW_SIGNAL(activate)
+    QW_SIGNAL(deactivate)
 
-    static QWInputInhibitManager *get(wlr_input_inhibit_manager *handle);
-    static QWInputInhibitManager *from(wlr_input_inhibit_manager *handle);
-    static QWInputInhibitManager *create(QWDisplay *display);
+public:
+    QW_FUNC_STATIC(input_inhibit_manager, create)
+}
 
-Q_SIGNALS:
-    void activate();
-    void deactivate();
-
-private:
-    QWInputInhibitManager(wlr_input_inhibit_manager *handle, bool isOwner);
-    ~QWInputInhibitManager() = default;
-};
 
 QW_END_NAMESPACE
