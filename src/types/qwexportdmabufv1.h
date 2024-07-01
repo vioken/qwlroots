@@ -3,31 +3,21 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_export_dmabuf_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_export_dmabuf_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWExportDmabufManagerV1Private;
-class QW_EXPORT QWExportDmabufManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(export_dmabuf_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWExportDmabufManagerV1)
+
 public:
-    inline wlr_export_dmabuf_manager_v1 *handle() const {
-        return QWObject::handle<wlr_export_dmabuf_manager_v1>();
-    }
-
-    static QWExportDmabufManagerV1 *get(wlr_export_dmabuf_manager_v1 *handle);
-    static QWExportDmabufManagerV1 *from(wlr_export_dmabuf_manager_v1 *handle);
-    static QWExportDmabufManagerV1 *create(QWDisplay *display);
-
-private:
-    QWExportDmabufManagerV1(wlr_export_dmabuf_manager_v1 *handle, bool isOwner);
-    ~QWExportDmabufManagerV1() = default;
+    QW_FUNC_STATIC(export_dmabuf_manager_v1, create)
 };
 
 QW_END_NAMESPACE

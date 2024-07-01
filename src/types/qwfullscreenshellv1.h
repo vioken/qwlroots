@@ -3,35 +3,24 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_fullscreen_shell_v1;
-struct wlr_fullscreen_shell_v1_present_surface_event;
+extern "C" {
+#include <wlr/types/wlr_fullscreen_shell_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWFullScreenShellV1Private;
-class QW_EXPORT QWFullScreenShellV1 : public QWWrapObject
+class QW_CLASS_OBJECT(fullscreen_shell_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWFullScreenShellV1)
+
 public:
-    inline wlr_fullscreen_shell_v1 *handle() const {
-        return QWObject::handle<wlr_fullscreen_shell_v1>();
-    }
+    QW_SIGNAL(present_surface, wlr_fullscreen_shell_v1_present_surface_event*)
 
-    static QWFullScreenShellV1 *get(wlr_fullscreen_shell_v1 *handle);
-    static QWFullScreenShellV1 *from(wlr_fullscreen_shell_v1 *handle);
-    static QWFullScreenShellV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void presentSurface(wlr_fullscreen_shell_v1_present_surface_event *event);
-
-private:
-    QWFullScreenShellV1(wlr_fullscreen_shell_v1 *handle, bool isOwner);
-    ~QWFullScreenShellV1() = default;
+public:
+    QW_FUNC_STATIC(fullscreen_shell_v1, create)
 };
 
 QW_END_NAMESPACE
