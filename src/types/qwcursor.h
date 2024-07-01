@@ -3,103 +3,66 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_cursor;
-struct wlr_pointer_motion_event;
-struct wlr_pointer_motion_absolute_event;
-struct wlr_pointer_button_event;
-struct wlr_pointer_axis_event;
-struct wlr_pointer_swipe_begin_event;
-struct wlr_pointer_swipe_update_event;
-struct wlr_pointer_swipe_end_event;
-struct wlr_pointer_pinch_begin_event;
-struct wlr_pointer_pinch_update_event;
-struct wlr_pointer_pinch_end_event;
-struct wlr_pointer_hold_begin_event;
-struct wlr_pointer_hold_end_event;
-struct wlr_touch_up_event;
-struct wlr_touch_down_event;
-struct wlr_touch_motion_event;
-struct wlr_touch_cancel_event;
-struct wlr_tablet_tool_axis_event;
-struct wlr_tablet_tool_proximity_event;
-struct wlr_tablet_tool_tip_event;
-struct wlr_tablet_tool_button;
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_cursor.h>
+#undef static
+#include <wlr/util/box.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWOutputLayout;
-class QWCursorPrivate;
-class QWInputDevice;
-class QWOutput;
-class QWBuffer;
-class QWXCursorManager;
-
-class QW_EXPORT QWCursor : public QWWrapObject
+class QW_CLASS_OBJECT(cursor)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWCursor)
+
 public:
-    explicit QWCursor(QObject *parent = nullptr);
-    ~QWCursor() = default;
+    QW_SIGNAL(motion, wlr_pointer_motion_event *)
+    QW_SIGNAL(motion_absolute, wlr_pointer_motion_absolute_event *)
+    QW_SIGNAL(button, wlr_pointer_button_event *)
+    QW_SIGNAL(axis, wlr_pointer_axis_event *)
+    QW_SIGNAL(frame)
+    QW_SIGNAL(swipe_begin, wlr_pointer_swipe_begin_event *)
+    QW_SIGNAL(swipe_update, wlr_pointer_swipe_update_event *)
+    QW_SIGNAL(swipe_end, wlr_pointer_swipe_end_event *)
+    QW_SIGNAL(pinch_begin, wlr_pointer_pinch_begin_event *)
+    QW_SIGNAL(pinch_update, wlr_pointer_pinch_update_event *)
+    QW_SIGNAL(pinch_end, wlr_pointer_pinch_end_event *)
+    QW_SIGNAL(hold_begin, wlr_pointer_hold_begin_event *)
+    QW_SIGNAL(hold_end, wlr_pointer_hold_end_event *)
+    QW_SIGNAL(touch_up, wlr_touch_up_event *)
+    QW_SIGNAL(touch_down, wlr_touch_down_event *)
+    QW_SIGNAL(touch_motion, wlr_touch_motion_event *)
+    QW_SIGNAL(touch_cancel, wlr_touch_cancel_event *)
+    QW_SIGNAL(touch_frame)
+    QW_SIGNAL(tablet_tool_axis, wlr_tablet_tool_axis_event *)
+    QW_SIGNAL(tablet_tool_proximity, wlr_tablet_tool_proximity_event *)
+    QW_SIGNAL(tablet_tool_tip, wlr_tablet_tool_tip_event *)
+    QW_SIGNAL(tablet_tool_button, wlr_tablet_tool_button *)
 
-    inline wlr_cursor *handle() const {
-        return QWObject::handle<wlr_cursor>();
-    }
-
-    static QWCursor *get(wlr_cursor *handle);
-    static QWCursor *from(wlr_cursor *handle);
-
-    bool warp(QWInputDevice *dev, const QPointF &pos);
-    void warpClosest(QWInputDevice *dev, const QPointF &pos);
-    void warpAbsolute(QWInputDevice *dev, const QPointF &pos);
-    void move(QWInputDevice *dev, const QPointF &deltaPos);
-
-    void setBuffer(QWBuffer *buffer, const QPoint &hotspot, float scale);
-    void setXCursor(QWXCursorManager *manager, const char *name);
-    void unsetImage();
-    void setSurface(QWSurface *surface, const QPoint &hotspot);
-
-    void attachInputDevice(QWInputDevice *dev);
-    void detachInputDevice(QWInputDevice *dev);
-    void attachOutputLayout(QWOutputLayout *layout);
-    void mapToOutput(QWOutput *output);
-    void mapInputToOutput(QWInputDevice *dev, QWOutput *output);
-    void mapToRegion(const QRect &box);
-    void mapInputToRegion(QWInputDevice *dev, const QRect &box);
-
-    QPointF absoluteToLayoutCoords(QWInputDevice *dev, const QPointF &pos) const;
-    QPointF position() const;
-
-Q_SIGNALS:
-    void motion(wlr_pointer_motion_event *event);
-    void motionAbsolute(wlr_pointer_motion_absolute_event *event);
-    void button(wlr_pointer_button_event *event);
-    void axis(wlr_pointer_axis_event *event);
-    void frame();
-    void swipeBegin(wlr_pointer_swipe_begin_event *event);
-    void swipeUpdate(wlr_pointer_swipe_update_event *event);
-    void swipeEnd(wlr_pointer_swipe_end_event *event);
-    void pinchBegin(wlr_pointer_pinch_begin_event *event);
-    void pinchUpdate(wlr_pointer_pinch_update_event *event);
-    void pinchEnd(wlr_pointer_pinch_end_event *event);
-    void holdBegin(wlr_pointer_hold_begin_event *event);
-    void holdEnd(wlr_pointer_hold_end_event *event);
-    void touchUp(wlr_touch_up_event *event);
-    void touchDown(wlr_touch_down_event *event);
-    void touchMotion(wlr_touch_motion_event *event);
-    void touchCancel(wlr_touch_cancel_event *event);
-    void touchFrame();
-    void tabletToolAxis(wlr_tablet_tool_axis_event *event);
-    void tabletToolProximity(wlr_tablet_tool_proximity_event *event);
-    void tabletToolTip(wlr_tablet_tool_tip_event *event);
-    void tabletToolButton(wlr_tablet_tool_button *event);
-
-private:
-    QWCursor(wlr_cursor *handle, bool isOwner, QObject *parent);
+public:
+    QW_FUNC_MEMBER(cursor, create)
+    QW_FUNC_MEMBER(cursor, warp)
+    QW_FUNC_MEMBER(cursor, warp_closest)
+    QW_FUNC_MEMBER(cursor, warp_absolute)
+    QW_FUNC_MEMBER(cursor, move)
+    QW_FUNC_MEMBER(cursor, set_buffer)
+    QW_FUNC_MEMBER(cursor, set_xcursor)
+    QW_FUNC_MEMBER(cursor, unset_image)
+    QW_FUNC_MEMBER(cursor, set_surface)
+    QW_FUNC_MEMBER(cursor, attach_input_device)
+    QW_FUNC_MEMBER(cursor, detach_input_device)
+    QW_FUNC_MEMBER(cursor, attach_output_layout)
+    QW_FUNC_MEMBER(cursor, map_to_output)
+    QW_FUNC_MEMBER(cursor, map_input_to_output)
+    QW_FUNC_MEMBER(cursor, map_to_region)
+    QW_FUNC_MEMBER(cursor, map_input_to_region)
+    QW_FUNC_MEMBER(cursor, absolute_to_layout_coords)
+    QW_FUNC_MEMBER(cursor, destroy)
 };
 
 QW_END_NAMESPACE
