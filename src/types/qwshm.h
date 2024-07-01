@@ -3,25 +3,16 @@
 
 #pragma once
 
-#include <qwglobal.h>
+#include <qwobject.h>
 
-struct wlr_shm;
-struct wl_display;
+extern "C" {
+#include <wlr/types/wlr_shm.h>
+}
 
 QW_BEGIN_NAMESPACE
-
-class QWRenderer;
-class QW_EXPORT QWShm
+class QW_CLASS_REINTERPRET_CAST(shm)
 {
-public:
-    QWShm() = delete;
-    ~QWShm() = delete;
-
-    wlr_shm *handle() const;
-
-    static QWShm *from(wlr_shm *handle);
-    static QWShm *create(wl_display *display, uint32_t version, const uint32_t *formats, size_t formatsLen);
-    static QWShm *create(wl_display *display, uint32_t version, QWRenderer *renderer);
+    QW_FUNC_STATIC(shm, create)
+    QW_FUNC_STATIC(shm, create_with_renderer)
 };
-
 QW_END_NAMESPACE
