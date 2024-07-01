@@ -8,38 +8,4 @@
 #include <QHash>
 #include <QRectF>
 #include <QPointF>
-extern "C" {
-#include <math.h>
-#define static
-#include <wlr/types/wlr_compositor.h>
-#undef static
-QW_SIGNAL(new_surface, arguments?)
-QW_FUNC_MEMBER(compositor, create)
-QW_SIGNAL(client_commit, arguments?)
-QW_SIGNAL(commit, arguments?)
-QW_SIGNAL(new_subsurface, arguments?)
-#if WLR_VERSION_MINOR < 18
-QW_SIGNAL(precommit, arguments?)
-#endif
-QW_SIGNAL(map, arguments?)
-QW_SIGNAL(unmap, arguments?)
-QW_FUNC_MEMBER(surface, from_resource)
-QW_FUNC_MEMBER(surface, for_each_surface)
-QW_FUNC_MEMBER(surface, get_buffer_source_box)
-QW_FUNC_MEMBER(surface, get_effective_damage)
-QW_FUNC_MEMBER(surface, get_extends)
-QW_FUNC_MEMBER(surface, get_root_surface)
-QW_FUNC_MEMBER(surface, get_texture)
-QW_FUNC_MEMBER(surface, has_buffer)
-QW_FUNC_MEMBER(surface, lock_pending)
-QW_FUNC_MEMBER(surface, point_accepts_input)
-QW_FUNC_MEMBER(surface, send_enter)
-QW_FUNC_MEMBER(surface, send_frame_done)
-QW_FUNC_MEMBER(surface, send_leave)
-QW_FUNC_MEMBER(surface, surface_at)
-QW_FUNC_MEMBER(surface, unlock_cached)
-QW_FUNC_MEMBER(surface, set_preferred_buffer_scale)
-QW_FUNC_MEMBER(surface, set_preferred_buffer_transform)
-QW_FUNC_MEMBER(surface, set_role)
-QW_FUNC_MEMBER(surface, map)
-QW_FUNC_MEMBER(surface, unmap)
+

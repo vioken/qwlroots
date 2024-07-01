@@ -3,82 +3,37 @@
 
 #pragma once
 
-#include <qwbufferinterface.h>
+#include <qwobject.h>
 
-#include <qwglobal.h>
-#include <QObject>
-#include <type_traits>
-
-struct wlr_buffer;
-struct wlr_dmabuf_attributes;
-struct wlr_shm_attributes;
-struct wlr_client_buffer;
-struct wl_resource;
-struct pixman_region32;
-struct wlr_client_buffer;
-struct wlr_renderer;
-typedef pixman_region32 pixman_region32_t;
+extern "C" {
+#include <wlr/types/wlr_buffer.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWRenderer;
-class QWBufferPrivate;
-class QW_EXPORT QWBuffer : public QWWrapObject
+class QW_CLASS_OBJECT(buffer)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWBuffer)
+
 public:
-    ~QWBuffer() = default;
+    QW_SIGNAL(release)
 
-    inline wlr_buffer *handle() const {
-        return QWObject::handle<wlr_buffer>();
-    }
-
-    static QWBuffer *get(wlr_buffer *handle);
-    static QWBuffer *from(wlr_buffer *handle);
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<class QWBufferInterface, Interface>::value, QWBuffer*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        return create(i, std::forward<Args>(args)...);
-    }
-
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<class QWBufferInterface, Interface>::value, QWBuffer*>::type
-    create(Interface *i, Args&&... args) {
-        i->QWBufferInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWBuffer(i->handle(), true);
-    }
-
-    static QWBuffer *from(wl_resource *resource);
-
-    void drop();
-    void lock();
-    void unlock();
-
-    bool getDmabuf(wlr_dmabuf_attributes *attribs) const;
-    bool getShm(wlr_shm_attributes *attribs) const;
-
-    void beginDataPtrAccess(uint32_t flags, void **data, uint32_t *format, size_t *stride);
-    void endDataPtrAccess();
-
-Q_SIGNALS:
-    void release();
-
-private:
-    QWBuffer(wlr_buffer *handle, bool isOwner);
+public:
+    QW_FUNC_MEMBER(buffer, try_from_resource)
+    QW_FUNC_MEMBER(buffer, drop)
+    QW_FUNC_MEMBER(buffer, lock)
+    QW_FUNC_MEMBER(buffer, unlock)
+    QW_FUNC_MEMBER(buffer, get_dmabuf)
+    QW_FUNC_MEMBER(buffer, get_shm)
+    QW_FUNC_MEMBER(buffer, begin_data_ptr_access)
+    QW_FUNC_MEMBER(buffer, end_data_ptr_access)
 };
 
-class QW_EXPORT QWClientBuffer
+class QW_CLASS_REINTERPRET_CAST(client_buffer)
 {
 public:
-    QWClientBuffer() = delete;
-    ~QWClientBuffer() = delete;
-
-    wlr_client_buffer *handle() const;
-
-    static QWClientBuffer *from(wlr_client_buffer *handle);
-    static QWClientBuffer *get(QWBuffer *buffer);
+    QW_FUNC_STATIC(client_buffer, get)
 };
 
 QW_END_NAMESPACE

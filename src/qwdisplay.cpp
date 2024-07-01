@@ -4,11 +4,6 @@
 #include "qwdisplay.h"
 #include "private/qwglobal_p.h"
 
-#include <QAbstractEventDispatcher>
-#include <QSocketNotifier>
-#include <QThread>
-#include <wayland-server.h>
-
 QW_BEGIN_NAMESPACE
 
 class QWDisplayPrivate : public QWWrapObjectPrivate

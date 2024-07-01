@@ -4,25 +4,50 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <stdio.h>
+
+extern "C" {
+#include <wlr/util/log.h>
+}
+
+#include <QDebug>
+#include <QLoggingCategory>
 
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWLog {
+class qw_log {
+#ifdef QT_DEBUG
+    static Q_LOGGING_CATEGORY(lcQWLog, "wlroots", QtDebugMsg)
+#else
+    static Q_LOGGING_CATEGORY(lcQWLog, "wlroots", QtInfoMsg)
+#endif
+
+    void default_log_callback(wlr_log_importance verbosity, const char *fmt, va_list args)
+    {
+        switch((int)verbosity) {
+        case WLR_ERROR :
+            qCCritical(lcQWLog) << QString::vasprintf(fmt, args);
+            break;
+
+        case WLR_INFO :
+            qCInfo(lcQWLog) << QString::vasprintf(fmt, args);
+            break;
+
+        case WLR_DEBUG :
+            qCDebug(lcQWLog) << QString::vasprintf(fmt, args);
+            break;
+
+        default:
+            break;
+        }
+    }
+
 public:
-    enum Importance {
-        QWL_SILENT = 0,
-        QWL_ERROR = 1,
-        QWL_INFO = 2,
-        QWL_DEBUG = 3,
-        QWL_LOG_IMPORTANCE_LAST,
-    };
-
-    typedef void (*qwl_log_func_t)(enum Importance importance,
-                                   const char *fmt, va_list args);
-
-    static void init(Importance importance = QWL_DEBUG);
-    static void init(Importance importance, qwl_log_func_t callback);
+    QW_ALWAYS_INLINE static void init(wlr_log_importance verbosity = WLR_DEBUG) {
+        init(verbosity, default_log_callback);
+    }
+    QW_ALWAYS_INLINE static void init(wlr_log_importance verbosity, wlr_log_func_t callback) {
+        wlr_log_init(verbosity, callback);
+    }
 };
 
 QW_END_NAMESPACE

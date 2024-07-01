@@ -11,31 +11,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWRenderer;
-class QWDmabufAttributes;
-class QWBuffer;
-
-// TODO: remove
-class QW_EXPORT QWTexture
-{
-public:
-    QWTexture() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWTexture)
-
-    void operator delete(QWTexture *p, std::destroying_delete_t);
-
-    wlr_texture *handle() const;
-
-    static QWTexture *from(wlr_texture *handle);
-
-    static QWTexture *fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t stride,
-                                 uint32_t width, uint32_t height, const void *data);
-    static QWTexture *fromDmabuf(QWRenderer *renderer, wlr_dmabuf_attributes *attribs);
-    static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
-
-    bool update(QWBuffer *buffer, pixman_region32 *damage);
-};
-
 class QW_CLASS_REINTERPRET_CAST(texture)
 {
 public:
