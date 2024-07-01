@@ -3,54 +3,26 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-
-struct wlr_idle_inhibit_manager_v1;
-struct wlr_idle_inhibitor_v1;
+#include <qwobject.h>
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWIdleInhibitorV1;
-class QWIdleInhibitManagerV1Private;
-class QW_EXPORT QWIdleInhibitManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(idle_inhibit_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWIdleInhibitManagerV1)
 public:
-    inline wlr_idle_inhibit_manager_v1 *handle() const {
-        return QWObject::handle<wlr_idle_inhibit_manager_v1>();
-    }
+    QW_SIGNAL(newInhibitor, QWIdleInhibitorV1*)
 
-    static QWIdleInhibitManagerV1 *get(wlr_idle_inhibit_manager_v1 *handle);
-    static QWIdleInhibitManagerV1 *from(wlr_idle_inhibit_manager_v1 *handle);
-    static QWIdleInhibitManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newInhibitor(QWIdleInhibitorV1 *inhibitor);
-
-private:
-    QWIdleInhibitManagerV1(wlr_idle_inhibit_manager_v1 *handle, bool isOwner);
-    ~QWIdleInhibitManagerV1() = default;
+public:
+    QW_FUNC_STATIC(idle_inhibit_manager_v1, create)
 };
 
 class QWIdleInhibitorV1Private;
-class QW_EXPORT QWIdleInhibitorV1 : public QWWrapObject
+class QW_CLASS_OBJECT(idle_inhibitor_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWIdleInhibitorV1)
-public:
-    inline wlr_idle_inhibitor_v1 *handle() const {
-        return QWObject::handle<wlr_idle_inhibitor_v1>();
-    }
-
-    static QWIdleInhibitorV1 *get(wlr_idle_inhibitor_v1 *handle);
-    static QWIdleInhibitorV1 *from(wlr_idle_inhibitor_v1 *handle);
-
-private:
-    QWIdleInhibitorV1(wlr_idle_inhibitor_v1 *handle, bool isOwner);
-    ~QWIdleInhibitorV1() = default;
 };
 
 QW_END_NAMESPACE
