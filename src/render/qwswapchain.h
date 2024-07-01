@@ -5,28 +5,19 @@
 
 #include <qwglobal.h>
 
-struct wlr_swapchain;
-struct wlr_drm_format;
-class QSize;
+extern "C" {
+#include <wlr/render/swapchain.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWAllocator;
-class QWBuffer;
-class QW_EXPORT QWSwapchain {
+class QW_CLASS_REINTERPRET_CAST(swapchain)
+{
 public:
-    QWSwapchain() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWSwapchain)
-
-    void operator delete(QWSwapchain *p, std::destroying_delete_t);
-
-    static QWSwapchain *create(QWAllocator *alloc, QSize size, const wlr_drm_format *format);
-    static QWSwapchain *from(wlr_swapchain* swapchain);
-
-    wlr_swapchain* handle() const;
-
-    QWBuffer *acquire(int *age);
-    void setBufferSubmitted(QWBuffer *buffer);
+    QW_FUNC_MEMBER(swapchain, destroy)
+    QW_FUNC_MEMBER(swapchain, create)
+    QW_FUNC_MEMBER(swapchain, acquire)
+    QW_FUNC_MEMBER(swapchain, set_buffer_submitted)
 };
 
 QW_END_NAMESPACE

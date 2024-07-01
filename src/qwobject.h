@@ -166,6 +166,7 @@ struct qw_signal_##name { \
         self->bind_signal(&decltype(self->handle()->events)::name, &DeriveType::notify_##name); \
     } \
 }; \
-qw_signal_##name _signal_##name = this;
+qw_signal_##name _signal_##name = this; \
+
 
 QW_END_NAMESPACE

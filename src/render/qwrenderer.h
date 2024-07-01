@@ -3,11 +3,18 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-#include <QMatrix3x3>
+#include <qwobject.h>
 
-#include <qwrendererinterface.h>
+extern "C" {
+#include <wayland-server-core.h>
+#define static
+#include <wlr/render/wlr_renderer.h>
+#if WLR_VERSION_MINOR >= 18
+#include <wlr/render/pass.h>
+#endif
+#undef static
+#include <wlr/util/box.h>
+}
 
 struct wlr_renderer;
 struct wlr_box;
@@ -18,74 +25,41 @@ struct wlr_render_texture_options;
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWBackend;
-class QWBuffer;
-class QWTexture;
-class QWRendererPrivate;
-class QW_EXPORT QWRenderer : public QWWrapObject
+class QW_CLASS_OBJECT(renderer)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWRenderer)
+
 public:
-    inline wlr_renderer *handle() const {
-        return QWObject::handle<wlr_renderer>();
-    }
+    QW_SIGNAL(lost)
 
-    static QWRenderer *get(wlr_renderer *handle);
-    static QWRenderer *from(wlr_renderer *handle);
-    static QWRenderer *autoCreate(QWBackend *backend);
-    bool begin(uint32_t width, uint32_t height);
-
-#if WLR_VERSION_MINOR > 17
-    // TODO: use QWRenderPass
-    wlr_render_pass* begin(QWBuffer *buffer, const wlr_buffer_pass_options *options);
-    void end(wlr_render_pass* pass);
-#else // WLR_VERSION_MINOR <= 17
-    bool begin(QWBuffer *buffer);
-    void end();
-#endif
-
-    bool initWlDisplay(QWDisplay *display);
-    bool initWlShm(QWDisplay *display);
+public:
+    QW_FUNC_MEMBER(renderer, autocreate)
+    QW_FUNC_MEMBER(renderer, init_wl_display)
+    QW_FUNC_MEMBER(renderer, init_wl_shm)
+    QW_FUNC_MEMBER(renderer, get_drm_fd)
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    void clear(const float *color);
-    void clear(const QColor &color);
-    void scissor(wlr_box *box);
-    void scissor(const QRect &box);
-    void renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha);
-    void renderTexture(QWTexture *texture, const float *matrix, float alpha);
-    void renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha);
-    void renderRect(const wlr_box *box, const float *color, const float *projection);
-    void renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection);
-    void renderQuad(const float *color, const float *matrix);
-    void renderQuad(const QColor &color, const QMatrix3x3 &matrix);
-    const uint32_t *getShmTextureFormats(size_t *len) const;
-    const wlr_drm_format_set *getDmabufTextureFormats() const;
-    bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
-                    uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
+    QW_FUNC_MEMBER(renderer, begin)
+    QW_FUNC_MEMBER(renderer, end)
+    QW_FUNC_MEMBER(renderer, begin_buffer_pass)
+    QW_FUNC_MEMBER(renderer, begin_with_buffer)
+    QW_FUNC_MEMBER(renderer, clear)
+    QW_FUNC_MEMBER(renderer, scissor)
+    QW_FUNC_MEMBER(render, texture)
+    QW_FUNC_MEMBER(render, texture_with_matrix)
+    QW_FUNC_MEMBER(render, subtexture_with_matrix)
+    QW_FUNC_MEMBER(render, rect)
+    QW_FUNC_MEMBER(render, quad_with_matrix)
+    QW_FUNC_MEMBER(renderer, get_shm_texture_formats)
+    QW_FUNC_MEMBER(renderer, get_dmabuf_texture_formats)
+    QW_FUNC_MEMBER(renderer, read_pixels)
 #else // WLR_VERSION_MINOR >= 18
-    const wlr_drm_format_set *getDmabufTextureFormats(uint32_t buffer_caps) const;
+    QW_FUNC_MEMBER(renderer, get_texture_formats)
 #endif
 
-    int getDrmFd() const;
-
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWRendererInterface, Interface>::value, QWInterface*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWRendererInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWRenderer(i->handle(), true);
-    }
-
-
-Q_SIGNALS:
-    void lost();
-
 private:
-    QWRenderer(wlr_renderer *handle, bool isOwner);
-    ~QWRenderer() = default;
+    QW_FUNC_MEMBER(renderer, destroy)
 };
 
 QW_END_NAMESPACE

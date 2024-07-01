@@ -3,96 +3,64 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wl_display;
-struct wlr_compositor;
-struct wlr_surface;
-struct wlr_surface_state;
-struct wl_resource;
-struct wlr_surface_role;
-struct pixman_region32;
-typedef pixman_region32 pixman_region32_t;
-typedef uint32_t wl_output_transform_t;
-
-using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_compositor.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWRenderer;
-class QWTexture;
-class QWOutput;
-class QWSurface;
-class QWCompositorPrivate;
-class QW_EXPORT QWCompositor : public QWWrapObject
+class QW_CLASS_OBJECT(compositor)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWCompositor)
+
 public:
-    inline wlr_compositor *handle() const {
-        return QWObject::handle<wlr_compositor>();
-    }
+    QW_SIGNAL(new_surface, wlr_surface*)
 
-    static QWCompositor *get(wlr_compositor *handle);
-    static QWCompositor *from(wlr_compositor *handle);
-    static QWCompositor *create(QWDisplay *display, QWRenderer *renderer, uint32_t version);
-
-Q_SIGNALS:
-    void newSurface(QWSurface *surface);
-
-private:
-    QWCompositor(wlr_compositor *handle, bool isOwner);
-    ~QWCompositor() = default;
+    QW_FUNC_STATIC(compositor, create)
 };
 
-class QWSubsurface;
-class QWSurfacePrivate;
-class QW_EXPORT QWSurface : public QWWrapObject
+class QW_CLASS_OBJECT(surface)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSurface)
+
 public:
-    inline wlr_surface *handle() const {
-        return QWObject::handle<wlr_surface>();
-    }
+    QW_SIGNAL(client_commit)
+    QW_SIGNAL(commit)
+    QW_SIGNAL(new_subsurface, wlr_subsurface*)
+#if WLR_VERSION_MINOR < 18
+    QW_SIGNAL(precommit, wlr_surface_state*)
+#endif
+    QW_SIGNAL(map)
+    QW_SIGNAL(unmap)
 
-    static QWSurface *get(wlr_surface *handle);
-    static QWSurface *from(wlr_surface *handle);
-    static QWSurface *from(wl_resource *resource);
-
-    void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-    QRectF getBufferSourceBox() const;
-    void getEffectiveDamage(pixman_region32_t *damage) const;
-    QRect getExtends() const;
-    QWSurface *getRootSurface() const;
-    QWTexture *getTexture() const;
-    bool hasBuffer() const;
-    uint32_t lockPending();
-    bool pointAcceptsInput(const QPointF& pos) const;
-    void sendEnter(QWOutput *output);
-    void sendFrameDone(const timespec *when);
-    void sendLeave(QWOutput *output);
-    QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    void unlockCached(uint32_t seq);
-    void setPreferredBufferScale(int32_t scale);
-    void setPreferredBufferTransform(wl_output_transform_t transform);
-    void setRole(const wlr_surface_role *role, wl_resource *errorResource, uint32_t errorCode);
-    void map();
-    void unmap();
-
-Q_SIGNALS:
-    void clientCommit();
-    void commit();
-    void newSubsurface(QWSubsurface *surface);
-    void mapped();
-    void unmapped();
-    void precommit(const wlr_surface_state *state);
-
-private:
-    QWSurface(wlr_surface *handle, bool isOwner);
-    ~QWSurface() = default;
+public:
+    QW_FUNC_MEMBER(surface, from_resource)
+    QW_FUNC_MEMBER(surface, for_each_surface)
+    QW_FUNC_MEMBER(surface, get_buffer_source_box)
+    QW_FUNC_MEMBER(surface, get_effective_damage)
+    QW_FUNC_MEMBER(surface, get_extends)
+    QW_FUNC_MEMBER(surface, get_root_surface)
+    QW_FUNC_MEMBER(surface, get_texture)
+    QW_FUNC_MEMBER(surface, has_buffer)
+    QW_FUNC_MEMBER(surface, lock_pending)
+    QW_FUNC_MEMBER(surface, point_accepts_input)
+    QW_FUNC_MEMBER(surface, send_enter)
+    QW_FUNC_MEMBER(surface, send_frame_done)
+    QW_FUNC_MEMBER(surface, send_leave)
+    QW_FUNC_MEMBER(surface, surface_at)
+    QW_FUNC_MEMBER(surface, unlock_cached)
+    QW_FUNC_MEMBER(surface, set_preferred_buffer_scale)
+    QW_FUNC_MEMBER(surface, set_preferred_buffer_transform)
+    QW_FUNC_MEMBER(surface, set_role)
+    QW_FUNC_MEMBER(surface, map)
+    QW_FUNC_MEMBER(surface, unmap)
 };
 
 QW_END_NAMESPACE
