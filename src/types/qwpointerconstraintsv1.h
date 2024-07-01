@@ -3,66 +3,38 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_pointer_constraint_v1;
-struct wlr_pointer_constraints_v1;
+extern "C" {
+#include <wlr/types/wlr_pointer_constraints_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWPointerConstraintV1Private;
-class QW_EXPORT QWPointerConstraintV1 : public QWWrapObject
+class QW_CLASS_OBJECT(pointer_constraint_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPointerConstraintV1)
 
-    friend class QWPointerConstraintsV1;
 public:
-    inline wlr_pointer_constraint_v1 *handle() const {
-        return QWObject::handle<wlr_pointer_constraint_v1>();
-    }
+    QW_SIGNAL(set_region)
 
-    static QWPointerConstraintV1 *get(wlr_pointer_constraint_v1 *handle);
-    static QWPointerConstraintV1 *from(wlr_pointer_constraint_v1 *handle);
-
-    void sendActivated();
-    void sendDeactivated();
-
-Q_SIGNALS:
-    void setRegion();
-
-private:
-    QWPointerConstraintV1(wlr_pointer_constraint_v1 *handle, bool isOwner);
-    ~QWPointerConstraintV1() = default;
+public:
+    QW_FUNC_MEMBER(pointer_constraint_v1, send_activated)
+    QW_FUNC_MEMBER(pointer_constraint_v1, send_deactivated)
 };
 
-class QWSeat;
-class QWDisplay;
-class QWSurface;
-class QWPointerConstraintsV1Private;
-class QW_EXPORT QWPointerConstraintsV1 : public QWWrapObject
+class QW_CLASS_OBJECT(pointer_constraints_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPointerConstraintsV1)
+
 public:
-    inline wlr_pointer_constraints_v1 *handle() const {
-        return QWObject::handle<wlr_pointer_constraints_v1>();
-    }
+    QW_SIGNAL(new_constraint, wlr_pointer_constraint_v1 *)
 
-    static QWPointerConstraintsV1 *get(wlr_pointer_constraints_v1 *handle);
-    static QWPointerConstraintsV1 *from(wlr_pointer_constraints_v1 *handle);
-    static QWPointerConstraintsV1 *create(QWDisplay *display);
-
-    QWPointerConstraintV1* constraintForSurface(QWSurface *surface, QWSeat *seat);
-
-Q_SIGNALS:
-    void newConstraint(QWPointerConstraintV1 *);
-
-private:
-    QWPointerConstraintsV1(wlr_pointer_constraints_v1 *handle, bool isOwner);
-    ~QWPointerConstraintsV1() = default;
+public:
+    QW_FUNC_STATIC(pointer_constraints_v1, create)
+    QW_FUNC_MEMBER(pointer_constraints_v1, constraint_for_surface)
 };
 
 QW_END_NAMESPACE
-
