@@ -4,64 +4,34 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_drm_lease_v1_manager;
-struct wlr_drm_lease_request_v1;
-struct wlr_drm_lease_v1;
+extern "C" {
+#include <wlr/types/wlr_drm_lease_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWBackend;
-class QWOutput;
-
-class QW_EXPORT QWDrmLeaseV1
-{
+class QW_CLASS_REINTERPRET_CAST(drm_lease_v1) {
 public:
-    QWDrmLeaseV1() = delete;
-    ~QWDrmLeaseV1() = delete;
-
-    wlr_drm_lease_v1 *handle() const;
-
-    static QWDrmLeaseV1 *from(wlr_drm_lease_v1 *handle);
+    QW_FUNC_MEMBER(drm_lease_v1, revoke);
 };
 
-class QW_EXPORT QWDrmLeaseRequestV1
-{
+class QW_CLASS_REINTERPRET_CAST(drm_lease_request_v1) {
 public:
-    QWDrmLeaseRequestV1() = delete;
-    ~QWDrmLeaseRequestV1() = delete;
-
-    wlr_drm_lease_request_v1 *handle() const;
-
-    static QWDrmLeaseRequestV1 *from(wlr_drm_lease_request_v1 *handle);
-
-    QWDrmLeaseV1* grant();
-    void reject();
+    QW_FUNC_MEMBER(drm_lease_request_v1, grant);
+    QW_FUNC_MEMBER(drm_lease_request_v1, reject);
 };
 
-class QWDrmLeaseV1ManagerPrivate;
-class QW_EXPORT QWDrmLeaseV1Manager : public QWWrapObject
-{
+class QW_CLASS_OBJECT(drm_lease_v1_manager) {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWDrmLeaseV1Manager)
+    QW_SIGNAL(request, wlr_drm_lease_request_v1*)
+
 public:
-    ~QWDrmLeaseV1Manager() = default;
-    explicit QWDrmLeaseV1Manager(wlr_drm_lease_v1_manager *handle, bool isOwner, QWDisplay *parent);
-
-    inline wlr_drm_lease_v1_manager *handle() const {
-        return QWObject::handle<wlr_drm_lease_v1_manager>();
-    }
-
-    static QWDrmLeaseV1Manager *get(wlr_drm_lease_v1_manager *handle);
-    static QWDrmLeaseV1Manager *create(QWDisplay *display, QWBackend *backend);
-
-    bool offerOutput(QWOutput *output);
-    void withdrawOutput(QWOutput *output);
-
-Q_SIGNALS:
-    void request(QWDrmLeaseRequestV1 *request);
+    QW_FUNC_STATIC(drm_lease_v1_manager, create);
+    QW_FUNC_MEMBER(drm_lease_v1_manager, offer_output);
+    QW_FUNC_MEMBER(drm_lease_v1_manager, withdraw_output);
 };
 
 QW_END_NAMESPACE

@@ -3,37 +3,24 @@
 
 #pragma once
 
-#include <memory>
 #include <qwglobal.h>
 
-struct wlr_damage_ring;
-struct pixman_region32;
-typedef pixman_region32 pixman_region32_t;
-
-QT_BEGIN_NAMESPACE
-class QRect;
-class QSize;
-QT_END_NAMESPACE
+extern "C" {
+#include <wlr/types/wlr_damage_ring.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWDamageRing
-{
+class QW_CLASS_REINTERPRET_CAST(damage_ring) {
 public:
-    explicit QWDamageRing();
-    ~QWDamageRing();
-
-    wlr_damage_ring *handle() const;
-
-    bool add(pixman_region32_t *damage);
-    bool addBox(const QRect &box);
-    void addWhole();
-    void rotate();
-    void getBufferDamage(int bufferAge, pixman_region32_t *damage) const;
-    void setBounds(const QSize &bounds);
-
-private:
-    std::unique_ptr<wlr_damage_ring> m_handle;
+    QW_FUNC_MEMBER(damage_ring, init)
+    QW_FUNC_MEMBER(damage_ring, finish)
+    QW_FUNC_MEMBER(damage_ring, add)
+    QW_FUNC_MEMBER(damage_ring, add_box)
+    QW_FUNC_MEMBER(damage_ring, add_whole)
+    QW_FUNC_MEMBER(damage_ring, rotate)
+    QW_FUNC_MEMBER(damage_ring, get_buffer_damage)
+    QW_FUNC_MEMBER(damage_ring, set_bounds)
 };
 
 QW_END_NAMESPACE
