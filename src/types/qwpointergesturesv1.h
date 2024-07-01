@@ -3,41 +3,29 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_pointer_gestures_v1;
+extern "C" {
+#include <wlr/types/wlr_pointer_gestures_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSeat;
-class QWPointerGesturesV1Private;
-class QW_EXPORT QWPointerGesturesV1 : public QWWrapObject
+class QW_CLASS_OBJECT(pointer_gestures_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPointerGesturesV1)
+
 public:
-    inline wlr_pointer_gestures_v1 *handle() const {
-        return QWObject::handle<wlr_pointer_gestures_v1>();
-    }
-
-    static QWPointerGesturesV1 *get(wlr_pointer_gestures_v1 *handle);
-    static QWPointerGesturesV1 *from(wlr_pointer_gestures_v1 *handle);
-    static QWPointerGesturesV1 *create(QWDisplay *display);
-
-    void sendSwipeBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendSwipeUpdate(QWSeat *seat, uint32_t time_msec, const QPointF &pos);
-    void sendSwipeEnd(QWSeat *seat, uint32_t time_msec,bool cancelled);
-    void sendPinchBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendPinchUpdate(QWSeat *seat, uint32_t time_msec, const QPointF &pos, double scale, double rotation);
-    void sendPinchEnd(QWSeat *seat, uint32_t time_msec,bool cancelled);
-    void sendHoldBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendHoldEnd(QWSeat *seat, uint32_t time_msec, bool cancelled);
-
-private:
-    QWPointerGesturesV1(wlr_pointer_gestures_v1 *handle, bool isOwner);
-    ~QWPointerGesturesV1() = default;
+    QW_FUNC_STATIC(pointer_gestures_v1, create)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_begin)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_update)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_end)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_begin)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_update)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_end)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_hold_begin)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_hold_end)
 };
 
 QW_END_NAMESPACE
