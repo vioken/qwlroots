@@ -78,7 +78,6 @@ public:
 protected:
     using qw_backend::qw_backend;
     friend class qw_backend;
-
 };
 
 class qw_drm_backend : public qw_backend
@@ -101,6 +100,10 @@ public:
     QW_FUNC_STATIC(drm, create_lease)
     QW_FUNC_STATIC(drm, lease_terminate)
     QW_FUNC_STATIC(drm, lease_terminate)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
 };
 
 class qw_wayland_backend : public qw_backend
@@ -119,6 +122,10 @@ public:
 
     QW_FUNC_STATIC(wl, output_set_title)
     QW_FUNC_STATIC(wl, output_get_surface)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
 };
 
 #ifdef WLR_HAVE_X11_BACKEND
@@ -135,6 +142,10 @@ public:
 
     QW_FUNC_MEMBER(x11, output_create)
     QW_FUNC_MEMBER(x11, output_set_title)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
 };
 #endif
 
@@ -149,6 +160,10 @@ public:
     // TODO:move to qw_output qw_input_device
     // QW_FUNC_MEMBER(input_device, is_libinput)
     // QW_FUNC_MEMBER(output, is_libinput)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
 };
 
 class qw_headless_backend : public qw_backend
@@ -161,6 +176,10 @@ public:
     // TODO:move to qw_output qw_input_device
     // QW_FUNC_MEMBER(input_device, is_headless)
     // QW_FUNC_MEMBER(output, is_headless)
+
+protected:
+    using qw_backend::qw_backend;
+    friend class qw_backend;
 };
 
 QW_END_NAMESPACE
