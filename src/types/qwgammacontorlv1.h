@@ -3,55 +3,19 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-
-struct wlr_output_state;
-struct wlr_gamma_control_v1;
-struct wlr_gamma_control_manager_v1;
-struct wlr_gamma_control_manager_v1_set_gamma_event;
+#include<qwobject.h>
 
 QW_BEGIN_NAMESPACE
 
-class QWOutput;
-class QWDisplay;
-class QWGammaControlManagerV1Private;
-
-class QW_EXPORT QWGammaControl
+class QW_CLASS_OBJECT(gamma_control_manager_v1)
 {
-public:
-    QWGammaControl() = delete;
-    ~QWGammaControl() = delete;
-
-    wlr_gamma_control_v1 *handle() const;
-
-    static QWGammaControl *from(wlr_gamma_control_v1 *handle);
-
-    void sendFailedAndDestroy();
-    bool gammaControlApply(struct wlr_output_state *output_state);
-};
-
-class QW_EXPORT QWGammaControlManagerV1 : public QWWrapObject
-{
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWGammaControlManagerV1)
 public:
-    inline wlr_gamma_control_manager_v1 *handle() const {
-        return QWObject::handle<wlr_gamma_control_manager_v1>();
-    }
+    QW_SIGNAL(gammaChanged, wlr_gamma_control_manager_v1_set_gamma_event*)
 
-    static QWGammaControlManagerV1 *get(wlr_gamma_control_manager_v1 *handle);
-    static QWGammaControlManagerV1 *from(wlr_gamma_control_manager_v1 *handle);
-    static QWGammaControlManagerV1 *create(QWDisplay *display);
-
-    QWGammaControl *getControl(QWOutput *output);
-
-Q_SIGNALS:
-    void gammaChanged(wlr_gamma_control_manager_v1_set_gamma_event *event);
-
-private:
-    QWGammaControlManagerV1(wlr_gamma_control_manager_v1 *handle, bool isOwner);
-    ~QWGammaControlManagerV1() = default;
+public:
+    QW_FUNC_STATIC(gamma_control_manager_v1, create)
 };
 
 QW_END_NAMESPACE
