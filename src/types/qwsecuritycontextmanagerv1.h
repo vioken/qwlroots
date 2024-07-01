@@ -3,36 +3,19 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wl_client;
-
-struct wlr_security_context_v1_state;
-struct wlr_security_context_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_security_context_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
-
-class QWDisplay;
-class QWSecurityContextManagerV1Private;
-class QW_EXPORT QWSecurityContextManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(security_context_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSecurityContextManagerV1)
 public:
-    inline wlr_security_context_manager_v1 *handle() const {
-        return QWObject::handle<wlr_security_context_manager_v1>();
-    }
-
-    static QWSecurityContextManagerV1 *get(wlr_security_context_manager_v1 *handle);
-    static QWSecurityContextManagerV1 *from(wlr_security_context_manager_v1 *handle);
-    static QWSecurityContextManagerV1 *create(QWDisplay *display);
-
-    static const wlr_security_context_v1_state *lookupClient(QWSecurityContextManagerV1 *manager, wl_client *client);
-
-private:
-    QWSecurityContextManagerV1(wlr_security_context_manager_v1 *handle, bool isOwner);
-    ~QWSecurityContextManagerV1() = default;
+    QW_FUNC_STATIC(security_context_manager_v1, create)
+    QW_FUNC_MEMBER(security_context_manager_v1, lookup_client)
 };
-
 QW_END_NAMESPACE
