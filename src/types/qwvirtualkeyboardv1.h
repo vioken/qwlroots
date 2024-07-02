@@ -3,55 +3,31 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwkeyboard.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_virtual_keyboard_manager_v1;
-struct wlr_virtual_keyboard_v1;
+extern "C" {
+#include <wlr/types/wlr_virtual_keyboard_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWInputDevice;
-class QWVirtualKeyboardV1Private;
-class QW_EXPORT QWVirtualKeyboardV1: public QWKeyboard
+class QW_CLASS_OBJECT(virtual_keyboard_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
 public:
-    inline wlr_virtual_keyboard_v1 *handle() const {
-        return QWObject::handle<wlr_virtual_keyboard_v1>();
-    }
+    QW_SIGNAL(new_virtual_keyboard, wlr_virtual_keyboard_v1*)
 
-    static QWVirtualKeyboardV1 *get(wlr_virtual_keyboard_v1 *handle);
-    static QWVirtualKeyboardV1 *from(wlr_virtual_keyboard_v1 *handle);
-    static QWVirtualKeyboardV1 *fromInputDevice(QWInputDevice *inputDevice);
-
-private:
-    ~QWVirtualKeyboardV1() override = default;
-    QWVirtualKeyboardV1(wlr_virtual_keyboard_v1 *handle, bool isOwner);
+public:
+    QW_FUNC_STATIC(virtual_keyboard_manager_v1, create)
 };
 
-class QWDisplay;
-class QWVirtualKeyboardManagerV1Private;
-class QW_EXPORT QWVirtualKeyboardManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(virtual_keyboard_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWVirtualKeyboardManagerV1)
 public:
-    inline wlr_virtual_keyboard_manager_v1 *handle() const {
-        return QWObject::handle<wlr_virtual_keyboard_manager_v1>();
-    }
-
-    static QWVirtualKeyboardManagerV1 *get(wlr_virtual_keyboard_manager_v1 *handle);
-    static QWVirtualKeyboardManagerV1 *from(wlr_virtual_keyboard_manager_v1 *handle);
-    static QWVirtualKeyboardManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newVirtualKeyboard(QWVirtualKeyboardV1 *);
-
-private:
-    QWVirtualKeyboardManagerV1(wlr_virtual_keyboard_manager_v1 *handle, bool isOwner);
-    ~QWVirtualKeyboardManagerV1() = default;
+    QW_FUNC_STATIC(input_device, get_virtual_keyboard)
 };
 
 QW_END_NAMESPACE

@@ -3,57 +3,26 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwinputdevice.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_tablet;
-struct wlr_tablet_tool;
+extern "C" {
+#include <wlr/types/wlr_tablet_tool.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletPrivate;
-
-class QW_EXPORT QWTablet : public QWInputDevice
+class QW_CLASS_OBJECT(tablet)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTablet)
 public:
-    inline wlr_tablet *handle() const {
-        return QWObject::handle<wlr_tablet>();
-    }
+    QW_SIGNAL(axis, wlr_tablet_tool_axis_event*)
+    QW_SIGNAL(proximity, wlr_tablet_tool_proximity_event*)
+    QW_SIGNAL(tip, wlr_tablet_tool_tip_event*)
+    QW_SIGNAL(button, wlr_tablet_tool_button_event*)
 
-    static QWTablet *get(wlr_tablet *handle);
-    static QWTablet *from(wlr_tablet *handle);
-    static QWTablet *fromInputDevice(wlr_input_device *input_device);
-
-Q_SIGNALS:
-    void axis();
-    void proximity();
-    void tip();
-    void button();
-
-private:
-    ~QWTablet() override = default;
-    QWTablet(wlr_tablet *handle, bool isOwner);
-};
-
-class QWTabletToolPrivate;
-class QW_EXPORT QWTabletTool : public QWWrapObject
-{
-    Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletTool)
 public:
-    inline wlr_tablet_tool *handle() const {
-        return QWObject::handle<wlr_tablet_tool>();
-    }
-
-    static QWTabletTool *get(wlr_tablet_tool *handle);
-    static QWTabletTool *from(wlr_tablet_tool *handle);
-
-private:
-    QWTabletTool(wlr_tablet_tool *handle, bool isOwner);
-    ~QWTabletTool() = default;
+    QW_FUNC_STATIC(tablet, from_input_device)
 };
 
 QW_END_NAMESPACE

@@ -3,48 +3,27 @@
 
 #pragma once
 
-#include <qwtabletpadinterface.h>
-#include <qwglobal.h>
-#include <qwinputdevice.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_tablet_pad;
-struct wlr_tablet_tool;
+extern "C" {
+#include <wlr/types/wlr_tablet_pad.h>
+#include <wlr/types/wlr_tablet_tool.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWTabletPadPrivate;
-
-class QW_EXPORT QWTabletPad : public QWInputDevice
+class QW_CLASS_OBJECT(tablet_pad)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletPad)
 public:
-    inline wlr_tablet_pad *handle() const {
-        return QWObject::handle<wlr_tablet_pad>();
-    }
+    QW_SIGNAL(button, wlr_tablet_pad_button_event*)
+    QW_SIGNAL(ring, wlr_tablet_pad_ring_event*)
+    QW_SIGNAL(strip, wlr_tablet_pad_strip_event*)
+    QW_SIGNAL(attach_tablet, wlr_tablet_tool*)
 
-    static QWTabletPad *get(wlr_tablet_pad *handle);
-    static QWTabletPad *from(wlr_tablet_pad *handle);
-    static QWTabletPad *fromInputDevice(wlr_input_device *input_device);
-
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWTabletPadInterface, Interface>::value, QWTabletPad*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWTabletPadInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWTabletPad(i->handle(), true);
-    }
-
-Q_SIGNALS:
-    void button();
-    void ring();
-    void strip();
-    void attachTablet(wlr_tablet_tool *table);
-
-private:
-    ~QWTabletPad() override = default;
-    QWTabletPad(wlr_tablet_pad *handle, bool isOwner);
+public:
+    QW_FUNC_STATIC(tablet_pad, from_input_device)
 };
 
 QW_END_NAMESPACE
