@@ -55,7 +55,6 @@ set(SOURCES
     types/qwbuffer.cpp
     types/qwclientbuffer.cpp
     types/qwcompositor.cpp
-    types/qwsubcompositor.cpp
     types/qwdatadevice.cpp
     types/qwdatasource.cpp
     types/qwdrag.cpp
@@ -70,32 +69,25 @@ set(SOURCES
     types/qwscene.cpp
     types/qwseat.cpp
     types/qwprimaryselection.cpp
-    types/qwswitch.cpp
     types/qwxdgshell.cpp
     types/qwcursor.cpp
     types/qwxcursormanager.cpp
     types/qwinputdevice.cpp
-    types/qwtouch.cpp
     types/qwkeyboard.cpp
     types/qwpointer.cpp
-    types/qwtablet.cpp
     types/qwtablettool.cpp
-    types/qwtabletpad.cpp
     types/qwoutput.cpp
     types/qwxdgdecorationmanagerv1.cpp
     types/qwidleinhibitv1.cpp
     types/qwinputinhibitmanager.cpp
     types/qwkeyboardgroup.cpp
     types/qwpresentation.cpp
-    types/qwviewporter.cpp
     types/qwxdgforeignregistry.cpp
     types/qwxdgoutputv1.cpp
     types/qwxdgactivationv1.cpp
     types/qwxdgactivationtokenv1.cpp
-    types/qwtextinputv3.cpp
     types/qwtextinputmanagerv3.cpp
     types/qwtabletmanagerv2.cpp
-    types/qwsinglepixelbufferv1.cpp
     types/qwsessionlockv1.cpp
     types/qwsessionlockmanagerv1.cpp
     types/qwsessionlocksurfacev1.cpp
@@ -119,11 +111,9 @@ set(SOURCES
     types/qwforeigntoplevelmanagerv1.cpp
     types/qwxdgforeignv1.cpp
     types/qwxdgforeignv2.cpp
-    types/qwvirtualkeyboardv1.cpp
     types/qwvirtualkeyboardmanagerv1.cpp
     types/qwvirtualpointerv1.cpp
     types/qwgammacontorlv1.cpp
-    types/qwtabletv2.cpp
     types/qwtabletv2tablet.cpp
     types/qwtabletv2tabletool.cpp
     types/qwtabletv2tablepad.cpp

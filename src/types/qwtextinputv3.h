@@ -3,68 +3,41 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_text_input_v3;
-struct wlr_text_input_v3;
-struct wlr_text_input_manager_v3;
+extern "C" {
+#include <wlr/types/wlr_text_input_v3.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWDisplay;
-class QWTextInputManagerV3;
-class QWTextInputV3Private;
-class QW_EXPORT QWTextInputV3 : public QWWrapObject
+class QW_CLASS_OBJECT(text_input_v3)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTextInputV3)
 public:
-    inline wlr_text_input_v3 *handle() const {
-        return QWObject::handle<wlr_text_input_v3>();
-    }
+    QW_SIGNAL(enable, wlr_text_input_v3*)
+    QW_SIGNAL(commit, wlr_text_input_v3*)
+    QW_SIGNAL(disable, wlr_text_input_v3*)
 
-    static QWTextInputV3 *get(wlr_text_input_v3 *handle);
-    static QWTextInputV3 *from(wlr_text_input_v3 *handle);
-
-    void sendEnter(QWSurface *wlr_surface);
-    void sendLeave();
-    void sendPreeditString(const char *text, int32_t cursor_begin, int32_t cursor_end);
-    void sendCommitString(const char *text);
-    void sendDeleteSurroundingText(uint32_t before_length, uint32_t after_length);
-    void sendDone();
-
-Q_SIGNALS:
-    void enable(QWTextInputV3 *);
-    void commit(QWTextInputV3 *);
-    void disable(QWTextInputV3 *);
-
-private:
-    QWTextInputV3(wlr_text_input_v3 *handle, bool isOwner);
-    ~QWTextInputV3() = default;
+public:
+    QW_FUNC_STATIC(text_input_manager_v3, create)
+    QW_FUNC_MEMBER(text_input_v3, send_leave)
+    QW_FUNC_MEMBER(text_input_v3, send_preedit_string)
+    QW_FUNC_MEMBER(text_input_v3, send_commit_string)
+    QW_FUNC_MEMBER(text_input_v3, send_delete_surrounding_text)
+    QW_FUNC_MEMBER(text_input_v3, send_done)
 };
 
-class QWTextInputManagerV3Private;
-class QW_EXPORT QWTextInputManagerV3 : public QWWrapObject
+class QW_CLASS_OBJECT(text_input_manager_v3)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTextInputManagerV3)
 public:
-    inline wlr_text_input_manager_v3 *handle() const {
-        return QWObject::handle<wlr_text_input_manager_v3>();
-    }
+    QW_SIGNAL(text_input, wlr_text_input_v3*)
 
-    static QWTextInputManagerV3 *get(wlr_text_input_manager_v3 *handle);
-    static QWTextInputManagerV3 *from(wlr_text_input_manager_v3 *handle);
-    static QWTextInputManagerV3 *create(QWDisplay *wl_display);
-
-Q_SIGNALS:
-    void textInput(QWTextInputV3 *);
-
-private:
-    QWTextInputManagerV3(wlr_text_input_manager_v3 *handle, bool isOwner);
-    ~QWTextInputManagerV3() = default;
+public:
+    QW_FUNC_STATIC(text_input_manager_v3, create)
 };
 
 QW_END_NAMESPACE

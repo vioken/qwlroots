@@ -3,43 +3,27 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwinputdevice.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_touch;
-struct wlr_touch_down_event;
-struct wlr_touch_up_event;
-struct wlr_touch_motion_event;
-struct wlr_touch_cancel_event;
+extern "C" {
+#include <wlr/types/wlr_touch.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWTouchPrivate;
-
-class QW_EXPORT QWTouch : public QWInputDevice
+class QW_CLASS_OBJECT(touch)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTouch)
 public:
-    inline wlr_touch *handle() const {
-        return QWObject::handle<wlr_touch>();
-    }
+    QW_SIGNAL(down, wlr_touch_down_event*)
+    QW_SIGNAL(up, wlr_touch_up_event*)
+    QW_SIGNAL(motion, wlr_touch_motion_event*)
+    QW_SIGNAL(cancel, wlr_touch_cancel_event*)
+    QW_SIGNAL(frame, void*)
 
-    static QWTouch *get(wlr_touch *handle);
-    static QWTouch *from(wlr_touch *handle);
-    static QWTouch *fromInputDevice(wlr_input_device *input_device);
-
-Q_SIGNALS:
-    void down(wlr_touch_down_event *event);
-    void up(wlr_touch_up_event *event);
-    void motion(wlr_touch_motion_event *event);
-    void cancel(wlr_touch_cancel_event *event);
-    void frame();
-
-private:
-    ~QWTouch() override = default;
-    QWTouch(wlr_touch *handle, bool isOwner);
+public:
+    QW_FUNC_STATIC(touch, from_input_device)
 };
 
 QW_END_NAMESPACE

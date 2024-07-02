@@ -4,42 +4,23 @@
 #ifndef QWSWITCH_H
 #define QWSWITCH_H
 
-#include <qwinputdevice.h>
-#include <qwswitchinterface.h>
+#include <qwobject.h>
 
-struct wlr_switch;
-struct wlr_input_device;
+extern "C" {
+#include <wlr/types/wlr_switch.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSwitchPrivate;
-class QW_EXPORT QWSwitch : public QWInputDevice
+class QW_CLASS_OBJECT(switch)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSwitch)
 public:
-    inline wlr_switch *handle() const {
-        return QWObject::handle<wlr_switch>();
-    }
+    QW_SIGNAL(toggle, wlr_switch_toggle_event*)
 
-    static QWSwitch *get(wlr_switch *handle);
-    static QWSwitch *from(wlr_switch *handle);
-    static QWSwitch *fromInputDevice(wlr_input_device *inputDevice);
-
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWSwitchInterface, Interface>::value, QWSwitch*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWSwitchInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWSwitch(i->handle(), true);
-    }
-
-Q_SIGNALS:
-    void toggle();
-
-private:
-    QWSwitch(wlr_switch *handle, bool isOwner = false);
-    ~QWSwitch() override = default;
+public:
+    QW_FUNC_STATIC(switch, from_input_device)
 };
 
 QW_END_NAMESPACE

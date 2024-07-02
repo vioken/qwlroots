@@ -4,22 +4,16 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
 
-struct wlr_single_pixel_buffer_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_single_pixel_buffer_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QW_EXPORT QWSinglePixelBufferManagerV1
-{
+class QW_CLASS_REINTERPRET_CAST(single_pixel_buffer_manager_v1) {
 public:
-    QWSinglePixelBufferManagerV1() = delete;
-    ~QWSinglePixelBufferManagerV1() = delete;
-
-    wlr_single_pixel_buffer_manager_v1 *handle() const;
-    static QWSinglePixelBufferManagerV1 *from(wlr_single_pixel_buffer_manager_v1 *handle);
-    static QWSinglePixelBufferManagerV1 *create(QWDisplay *display);
+    QW_FUNC_STATIC(single_pixel_buffer_manager_v1, create)
 };
 
 QW_END_NAMESPACE
