@@ -3,61 +3,30 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-
-struct wlr_xdg_decoration_manager_v1;
-struct wlr_xdg_toplevel_decoration_v1;
-
-typedef uint32_t wlr_xdg_toplevel_decoration_v1_mode_t;
+#include <qwobject.h>
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWXdgToplevelDecorationV1;
-class QWXdgDecorationManagerV1Private;
-class QW_EXPORT QWXdgDecorationManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_decoration_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgDecorationManagerV1)
 public:
-    inline wlr_xdg_decoration_manager_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_decoration_manager_v1>();
-    }
+    QW_FUNC_STATIC(xdg_decoration_manager_v1, create)
 
-    static QWXdgDecorationManagerV1 *get(wlr_xdg_decoration_manager_v1 *handle);
-    static QWXdgDecorationManagerV1 *from(wlr_xdg_decoration_manager_v1 *handle);
-    static QWXdgDecorationManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newToplevelDecoration(QWXdgToplevelDecorationV1 *decorat);
-
-private:
-    QWXdgDecorationManagerV1(wlr_xdg_decoration_manager_v1 *handle, bool isOwner);
-    ~QWXdgDecorationManagerV1() = default;
+public:
+    QW_SIGNAL(new_toplevel_decoration, qw_xdg_toplevel_decoration_v1*)
 };
 
-class QWXdgToplevelDecorationV1Private;
-class QW_EXPORT QWXdgToplevelDecorationV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgToplevelDecorationV1)
 public:
-    inline wlr_xdg_toplevel_decoration_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_toplevel_decoration_v1>();
-    }
+    QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode)
 
-    static QWXdgToplevelDecorationV1 *get(wlr_xdg_toplevel_decoration_v1 *handle);
-    static QWXdgToplevelDecorationV1 *from(wlr_xdg_toplevel_decoration_v1 *handle);
-
-    void setMode(wlr_xdg_toplevel_decoration_v1_mode_t mode);
-
-Q_SIGNALS:
-    void requestMode();
-
-private:
-    QWXdgToplevelDecorationV1(wlr_xdg_toplevel_decoration_v1 *handle, bool isOwner);
-    ~QWXdgToplevelDecorationV1() = default;
+public:
+    QW_SIGNAL(request_mode)
 };
 
 QW_END_NAMESPACE
