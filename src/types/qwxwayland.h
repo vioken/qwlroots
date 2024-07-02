@@ -3,46 +3,32 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-QT_BEGIN_NAMESPACE
-class QImage;
-class QPoint;
-QT_END_NAMESPACE
-
-struct wlr_xwayland;
-struct wlr_xwayland_surface;
-struct wlr_xwayland_remove_startup_info_event;
+extern "C" {
+#include <math.h>
+#define class _class
+#include <wlr/xwayland/xwayland.h>
+#undef class
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWCompositor;
-class QWSeat;
-class QWXWaylandServer;
-class QWXWaylandShellV1;
-class QWXWaylandPrivate;
-class QW_EXPORT QWXWayland : public QWWrapObject
+class QW_CLASS_OBJECT(xwayland)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXWayland)
+
 public:
-    static QWXWayland *create(QWDisplay *display, QWCompositor *compositor, bool lazy);
-    static QWXWayland *get(wlr_xwayland *handle);
-    wlr_xwayland *handle() const;
+    QW_SIGNAL(ready)
+    QW_SIGNAL(new_surface, wlr_xwayland_surface *)
+    QW_SIGNAL(remove_startup_info, wlr_xwayland_remove_startup_info_event *)
 
-    void setCursor(const QImage &image, const QPoint &hotspot);
-    void setSeat(QWSeat *seat);
+public:
+    QW_FUNC_STATIC(xwayland, create)
 
-Q_SIGNALS:
-    void ready();
-    void newSurface(wlr_xwayland_surface *surface);
-    void removeStartupInfo(wlr_xwayland_remove_startup_info_event *event);
-
-private:
-    explicit QWXWayland(wlr_xwayland *handle, QWXWaylandServer *parent);
-    ~QWXWayland() = default;
+    QW_FUNC_MEMBER(xwayland, set_cursor)
+    QW_FUNC_MEMBER(xwayland, set_seat)
 };
 
 QW_END_NAMESPACE
