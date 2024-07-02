@@ -3,35 +3,19 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-
-struct wlr_virtual_pointer_manager_v1;
-struct wlr_virtual_pointer_v1_new_pointer_event;
+#include <qwobject.h>
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWVirtualPointerManagerV1Private;
-class QW_EXPORT QWVirtualPointerManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWVirtualPointerManagerV1)
 public:
-    inline wlr_virtual_pointer_manager_v1 *handle() const {
-        return QWObject::handle<wlr_virtual_pointer_manager_v1>();
-    }
+    QW_SIGNAL(newVirtualPointer, wlr_virtual_pointer_v1_new_pointer_event*)
 
-    static QWVirtualPointerManagerV1 *get(wlr_virtual_pointer_manager_v1 *handle);
-    static QWVirtualPointerManagerV1 *from(wlr_virtual_pointer_manager_v1 *handle);
-    static QWVirtualPointerManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void newVirtualPointer(wlr_virtual_pointer_v1_new_pointer_event *);
-
-private:
-    QWVirtualPointerManagerV1(wlr_virtual_pointer_manager_v1 *handle, bool isOwner);
-    ~QWVirtualPointerManagerV1() = default;
+public:
+    QW_FUNC_STATIC(virtual_pointer_manager_v1, create)
 };
 
 QW_END_NAMESPACE

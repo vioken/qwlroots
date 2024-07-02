@@ -11,21 +11,13 @@ struct wlr_xcursor;
 QW_BEGIN_NAMESPACE
 
 class QWCursor;
-class QW_EXPORT QWXCursorManager
+class QW_CLASS_REINTERPRET_CAST(xcursor_manage)
 {
 public:
-    QWXCursorManager() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWXCursorManager)
-
-    void operator delete(QWXCursorManager *p, std::destroying_delete_t);
-
-    wlr_xcursor_manager *handle() const;
-
-    static QWXCursorManager *from(wlr_xcursor_manager *handle);
-    static QWXCursorManager *create(const char *name, uint32_t size);
-
-    bool load(float scale);
-    wlr_xcursor *getXCursor(const char *name, float scale) const;
+    QW_FUNC_STATIC(xcursor_manage, create)
+    QW_FUNC_MEMBER(xcursor_manage, destroy)
+    QW_FUNC_MEMBER(xcursor_manage, load)
+    QW_FUNC_MEMBER(xcursor_manage, get_xcursor)
 };
 
 QW_END_NAMESPACE

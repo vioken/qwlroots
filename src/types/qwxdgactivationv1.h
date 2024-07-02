@@ -3,61 +3,30 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-
-struct wlr_xdg_activation_v1;
-struct wlr_xdg_activation_token_v1;
-struct wlr_xdg_activation_v1_request_activate_event;
+#include <qwobject.h>
 
 QW_BEGIN_NAMESPACE
-class QWXdgActivationTokenV1Private;
-class QW_EXPORT QWXdgActivationTokenV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_activation_token_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgActivationTokenV1)
 public:
-    ~QWXdgActivationTokenV1() = default;
-
-    inline wlr_xdg_activation_token_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_activation_token_v1>();
-    }
-
-    static QWXdgActivationTokenV1 *get(wlr_xdg_activation_token_v1 *handle);
-    static QWXdgActivationTokenV1 *from(wlr_xdg_activation_token_v1 *handle);
-
-    const char *getName() const;
-
-private:
-    QWXdgActivationTokenV1(wlr_xdg_activation_token_v1 *handle, bool isOwner);
+    QW_FUNC_MEMBER(xdg_activation_token_v1, get_name)
 };
 
-class QWDisplay;
-class QWXdgActivationV1Private;
-class QW_EXPORT QWXdgActivationV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_activation_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgActivationV1)
 public:
-    inline wlr_xdg_activation_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_activation_v1>();
-    }
+    QW_FUNC_STATIC(xdg_activation_v1, create)
+    QW_FUNC_MEMBER(xdg_activation_v1, create_token)
+    QW_FUNC_MEMBER(xdg_activation_v1, find_token)
+    QW_FUNC_MEMBER(xdg_activation_v1, add_token)
 
-    static QWXdgActivationV1 *get(wlr_xdg_activation_v1 *handle);
-    static QWXdgActivationV1 *from(wlr_xdg_activation_v1 *handle);
-    static QWXdgActivationV1 *create(QWDisplay *display);
-
-    QWXdgActivationTokenV1 *createToken();
-    QWXdgActivationTokenV1 *findToken(const char *token_str) const;
-    QWXdgActivationTokenV1 *addToken(const char *token_str);
-
-Q_SIGNALS:
-    void requestActivate(wlr_xdg_activation_v1_request_activate_event *);
-    void newToken(QWXdgActivationTokenV1 *);
-
-private:
-    QWXdgActivationV1(wlr_xdg_activation_v1 *handle, bool isOwner);
-    ~QWXdgActivationV1() = default;
+public:
+    QW_SIGNAL(request_activate, wlr_xdg_activation_v1_request_activate_event*)
+    QW_SIGNAL(new_token, xdg_activation_token_v1*)
 };
 
 QW_END_NAMESPACE
