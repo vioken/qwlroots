@@ -3,168 +3,94 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_xdg_shell;
-struct wlr_xdg_surface;
-struct wlr_xdg_popup;
-struct wlr_xdg_toplevel;
-struct wlr_xdg_toplevel_move_event;
-struct wlr_xdg_toplevel_resize_event;
-struct wlr_xdg_toplevel_show_window_menu_event;
-struct wlr_xdg_surface_configure;
-struct wlr_surface;
-struct wl_resource;
-
-using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_xdg_shell.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWDisplay;
-class QWXdgShellPrivate;
-class QW_EXPORT QWXdgShell : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_shell)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgShell)
 
-public:
-    static QWXdgShell *create(QWDisplay *display, uint32_t version);
-
-    inline wlr_xdg_shell *handle() const {
-        return QWObject::handle<wlr_xdg_shell>();
-    }
-
-    static QWXdgShell *get(wlr_xdg_shell *handle);
-    static QWXdgShell *from(wlr_xdg_shell *handle);
-
-Q_SIGNALS:
-    void newSurface(wlr_xdg_surface *surface);
+    QW_SIGNAL(new_surface, wlr_xdg_surface*)
 #if WLR_VERSION_MINOR >= 18
-    void newToplevel(wlr_xdg_toplevel *surface);
-    void newPopup(wlr_xdg_popup *surface);
+    QW_SIGNAL(new_toplevel, wlr_xdg_toplevel*)
+    QW_SIGNAL(new_popup, wlr_xdg_popup*)
 #endif
 
-private:
-    QWXdgShell(wlr_xdg_shell *handle, bool isOwner);
-    ~QWXdgShell() = default;
+public:
+    QW_FUNC_STATIC(xdg_shell, create)
 };
 
-class QWXdgPopup;
-class QWXdgToplevel;
-class QWXdgSurfacePrivate;
-class QW_EXPORT QWXdgSurface : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_surface)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgSurface)
+
+    QW_SIGNAL(ping_timeout)
+    QW_SIGNAL(new_popup, wlr_xdg_popup*)
+    QW_SIGNAL(configure, wlr_xdg_surface_configure*)
+    QW_SIGNAL(ack_configure, wlr_xdg_surface_configure*)
 
 public:
-    inline wlr_xdg_surface *handle() const {
-        return QWObject::handle<wlr_xdg_surface>();
-    }
+    QW_FUNC_MEMBER(xdg_surface, surface_at)
+    QW_FUNC_MEMBER(xdg_surface, popup_surface_at)
+    QW_FUNC_MEMBER(xdg_surface, get_geometry)
+    QW_FUNC_MEMBER(xdg_surface, for_each_surface)
+    QW_FUNC_MEMBER(xdg_surface, for_each_popup_surface)
+    QW_FUNC_MEMBER(xdg_surface, schedule_configure)
+};
 
-    static QWXdgSurface *get(wlr_xdg_surface *handle);
-    static QWXdgSurface *from(wl_resource *resource);
-    static QWXdgSurface *from(wlr_surface *surface);
-    static QWXdgSurface *from(QWSurface *surface);
+class QW_CLASS_OBJECT(xdg_popup)
+{
+    QW_OBJECT
+    Q_OBJECT
 
-    QWXdgPopup *toPopup() const;
-    QWXdgToplevel *topToplevel() const;
-    QWSurface *surface() const;
+    QW_SIGNAL(reposition)
 
-    void ping();
-    uint32_t scheduleConfigure();
-
-    QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    QRect getGeometry() const;
-    void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-    void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-
-Q_SIGNALS:
-    void pingTimeout();
-    void newPopup(QWXdgPopup *popup);
-    void configure(wlr_xdg_surface_configure *conf);
-    void ackConfigure(wlr_xdg_surface_configure *conf);
-    void commit();
+public:
+    QW_FUNC_MEMBER(xdg_popup, get_position)
+    QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords)
+    QW_FUNC_MEMBER(xdg_popup, unconstrain_from_box)
 
 protected:
-    QWXdgSurface(QWXdgSurfacePrivate &dd);
-    ~QWXdgSurface() = default;
+    QW_FUNC_STATIC(xdg_popup, destroy)
 };
 
-class QWXdgPopupPrivate;
-class QW_EXPORT QWXdgPopup : public QWXdgSurface
+class QW_CLASS_OBJECT(xdg_toplevel)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgPopup)
+
+    QW_SIGNAL(request_maximize, bool)
+    QW_SIGNAL(request_fullscreen, bool)
+    QW_SIGNAL(request_minimize, bool)
+    QW_SIGNAL(request_move, wlr_xdg_toplevel_move_event *)
+    QW_SIGNAL(request_resize, wlr_xdg_toplevel_resize_event *)
+    QW_SIGNAL(request_show_window_menu, wlr_xdg_toplevel_show_window_menu_event *)
+    QW_SIGNAL(set_parent, wlr_xdg_toplevel *)
+    QW_SIGNAL(set_title, char *)
+    QW_SIGNAL(set_app_id, char *)
 
 public:
-    ~QWXdgPopup() = default;
-
-    wlr_xdg_popup *handle() const;
-
-    static QWXdgPopup *get(wlr_xdg_popup *handle);
-    static QWXdgPopup *from(wlr_xdg_popup *handle);
-    static QWXdgPopup *from(wl_resource *resource);
-
-    QPointF getPosition() const;
-    QPoint getToplevelCoords(const QPoint &popupsPos) const;
-
-    void unconstrainFromBox(const QRect &toplevelSpaceBox);
-
-Q_SIGNALS:
-    void reposition();
-#if WLR_VERSION_MINOR >= 18
-#endif
-
-private:
-    QWXdgPopup(wlr_xdg_popup *handle, bool isOwner);
-};
-
-class QWXdgToplevelPrivate;
-class QW_EXPORT QWXdgToplevel : public QWXdgSurface
-{
-    Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgToplevel)
-
-public:
-    wlr_xdg_toplevel *handle() const;
-
-    static QWXdgToplevel *get(wlr_xdg_toplevel *handle);
-    static QWXdgToplevel *from(wlr_xdg_toplevel *handle);
-    static QWXdgToplevel *from(wl_resource *resource);
-
-    uint32_t setSize(const QSize &size);
-    uint32_t setActivated(bool activated);
-    uint32_t setMaximized(bool maximized);
-    uint32_t setFullscreen(bool fullscreen);
-    uint32_t setResizing(bool resizing);
-    uint32_t setTiled(uint32_t tiledEdges);
-    uint32_t setBounds(const QSize &bounds);
-    uint32_t setWmCapabilities(uint32_t caps);
-
-    void sendClose();
-    bool setParent(QWXdgToplevel *parent);
-
-Q_SIGNALS:
-    void requestMaximize(bool maximize);
-    void requestFullscreen(bool fullscreen);
-    void requestMinimize(bool minimize);
-    void requestMove(wlr_xdg_toplevel_move_event *event);
-    void requestResize(wlr_xdg_toplevel_resize_event *event);
-    void requestShowWindowMenu(wlr_xdg_toplevel_show_window_menu_event *event);
-
-    void parentChanged(QWXdgToplevel *newParent);
-    void titleChanged(char *newTitle);
-    void appidChanged(char *newAppid);
-#if WLR_VERSION_MINOR >= 18
-#endif
-
-private:
-    QWXdgToplevel(wlr_xdg_toplevel *handle, bool isOwner);
-    ~QWXdgToplevel() = default;
+    QW_FUNC_MEMBER(xdg_toplevel, set_size)
+    QW_FUNC_MEMBER(xdg_toplevel, set_activated)
+    QW_FUNC_MEMBER(xdg_toplevel, set_maximized)
+    QW_FUNC_MEMBER(xdg_toplevel, set_fullscreen)
+    QW_FUNC_MEMBER(xdg_toplevel, set_resizing)
+    QW_FUNC_MEMBER(xdg_toplevel, set_tiled)
+    QW_FUNC_MEMBER(xdg_toplevel, set_bounds)
+    QW_FUNC_MEMBER(xdg_toplevel, set_wm_capabilities)
+    QW_FUNC_MEMBER(xdg_toplevel, send_close)
+    QW_FUNC_MEMBER(xdg_toplevel, set_parent)
 };
 
 QW_END_NAMESPACE
+
