@@ -10,9 +10,12 @@ extern "C" {
 }
 
 QW_BEGIN_NAMESPACE
+
 class QW_CLASS_REINTERPRET_CAST(shm)
 {
+public:
     QW_FUNC_STATIC(shm, create)
     QW_FUNC_STATIC(shm, create_with_renderer)
 };
+
 QW_END_NAMESPACE

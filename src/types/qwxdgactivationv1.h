@@ -10,6 +10,7 @@ class QW_CLASS_OBJECT(xdg_activation_token_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_MEMBER(xdg_activation_token_v1, get_name)
 };
@@ -18,15 +19,16 @@ class QW_CLASS_OBJECT(xdg_activation_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
+    QW_SIGNAL(request_activate, wlr_xdg_activation_v1_request_activate_event*)
+    QW_SIGNAL(new_token, xdg_activation_token_v1*)
+
 public:
     QW_FUNC_STATIC(xdg_activation_v1, create)
+
     QW_FUNC_MEMBER(xdg_activation_v1, create_token)
     QW_FUNC_MEMBER(xdg_activation_v1, find_token)
     QW_FUNC_MEMBER(xdg_activation_v1, add_token)
-
-public:
-    QW_SIGNAL(request_activate, wlr_xdg_activation_v1_request_activate_event*)
-    QW_SIGNAL(new_token, xdg_activation_token_v1*)
 };
 
 QW_END_NAMESPACE

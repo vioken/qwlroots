@@ -17,6 +17,7 @@ class QW_CLASS_OBJECT(input_method_manager_v2)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(input_method_manager_v2, create)
 }
@@ -26,10 +27,13 @@ class QW_CLASS_OBJECT(input_method_keyboard_grab_v2)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_MEMBER(input_method_keyboard_grab_v2, send_key)
     QW_FUNC_MEMBER(input_method_keyboard_grab_v2, send_modifiers)
     QW_FUNC_MEMBER(input_method_keyboard_grab_v2, set_keyboard)
+
+protected:
     QW_FUNC_MEMBER(input_method_keyboard_grab_v2, destroy)
 }
 
@@ -37,6 +41,7 @@ class QW_CLASS_OBJECT(input_popup_surface_v2)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_MEMBER(input_popup_surface_v2, send_text_input_rectangle)
     QW_FUNC_STATIC(input_popup_surface_v2, try_from_wlr_surface)
@@ -46,7 +51,7 @@ class QW_CLASS_OBJECT(input_method_v2)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(commit, wlr_input_method_v2*)
     QW_SIGNAL(new_popup_surface, wlr_input_popup_surface_v2*)
     QW_SIGNAL(grab_keyboard, wlr_input_method_keyboard_grab_v2*)

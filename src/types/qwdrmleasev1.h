@@ -12,20 +12,24 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_REINTERPRET_CAST(drm_lease_v1) {
+class QW_CLASS_REINTERPRET_CAST(drm_lease_v1)
+{
 public:
     QW_FUNC_MEMBER(drm_lease_v1, revoke);
 };
 
-class QW_CLASS_REINTERPRET_CAST(drm_lease_request_v1) {
+class QW_CLASS_REINTERPRET_CAST(drm_lease_request_v1)
+{
 public:
     QW_FUNC_MEMBER(drm_lease_request_v1, grant);
     QW_FUNC_MEMBER(drm_lease_request_v1, reject);
 };
 
-class QW_CLASS_OBJECT(drm_lease_v1_manager) {
+class QW_CLASS_OBJECT(drm_lease_v1_manager)
+{
     QW_OBJECT
     Q_OBJECT
+
     QW_SIGNAL(request, wlr_drm_lease_request_v1*)
 
 public:

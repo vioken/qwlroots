@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(cursor_shape_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(request_set_shape, wlr_cursor_shape_manager_v1_request_set_shape_event *)
 
 public:

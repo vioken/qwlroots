@@ -129,7 +129,8 @@ protected:
 };
 
 template<typename Handle, typename Derive>
-class qw_reinterpret_cast {
+class qw_reinterpret_cast
+{
 public:
     typedef Handle HandleType;
     typedef Derive DeriveType;

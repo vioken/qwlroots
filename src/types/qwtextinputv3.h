@@ -15,7 +15,7 @@ class QW_CLASS_OBJECT(text_input_v3)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(enable, wlr_text_input_v3*)
     QW_SIGNAL(commit, wlr_text_input_v3*)
     QW_SIGNAL(disable, wlr_text_input_v3*)
@@ -33,7 +33,7 @@ class QW_CLASS_OBJECT(text_input_manager_v3)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(text_input, wlr_text_input_v3*)
 
 public:

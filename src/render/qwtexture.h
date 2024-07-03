@@ -19,6 +19,8 @@ public:
     QW_FUNC_STATIC(texture, from_buffer)
 
     QW_FUNC_MEMBER(texture, update_from_buffer)
+
+protected:
     QW_FUNC_MEMBER(texture, destroy)
 };
 

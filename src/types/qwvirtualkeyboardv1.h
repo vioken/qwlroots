@@ -15,7 +15,7 @@ class QW_CLASS_OBJECT(virtual_keyboard_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(new_virtual_keyboard, wlr_virtual_keyboard_v1*)
 
 public:
@@ -26,6 +26,7 @@ class QW_CLASS_OBJECT(virtual_keyboard_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(input_device, get_virtual_keyboard)
 };

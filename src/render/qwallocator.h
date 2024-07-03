@@ -17,10 +17,10 @@ class QW_CLASS_OBJECT(allocator)
     Q_OBJECT
 
 public:
-    QW_FUNC_MEMBER(allocator, autocreate)
+    QW_FUNC_STATIC(allocator, autocreate)
     QW_FUNC_MEMBER(allocator, create_buffer)
 
-private:
+protected:
     QW_FUNC_MEMBER(allocator, destroy)
 };
 

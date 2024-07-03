@@ -15,6 +15,7 @@ class QW_CLASS_REINTERPRET_CAST(xcursor_manage)
 {
 public:
     QW_FUNC_STATIC(xcursor_manage, create)
+
     QW_FUNC_MEMBER(xcursor_manage, destroy)
     QW_FUNC_MEMBER(xcursor_manage, load)
     QW_FUNC_MEMBER(xcursor_manage, get_xcursor)

@@ -11,7 +11,8 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_REINTERPRET_CAST(single_pixel_buffer_manager_v1) {
+class QW_CLASS_REINTERPRET_CAST(single_pixel_buffer_manager_v1)
+{
 public:
     QW_FUNC_STATIC(single_pixel_buffer_manager_v1, create)
 };

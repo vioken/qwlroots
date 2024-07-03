@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(fullscreen_shell_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(present_surface, wlr_fullscreen_shell_v1_present_surface_event*)
 
 public:

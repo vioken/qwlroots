@@ -19,9 +19,17 @@ class QW_CLASS_OBJECT(output)
     QW_OBJECT
     Q_OBJECT
 
-public:
-    QW_FUNC_MEMBER(output, destroy)
+    QW_SIGNAL(frame)
+    QW_SIGNAL(damage, wlr_output_event_damage*)
+    QW_SIGNAL(needs_frame)
+    QW_SIGNAL(precommit, wlr_output_event_precommit*)
+    QW_SIGNAL(commit, wlr_output_event_commit*)
+    QW_SIGNAL(present, wlr_output_event_present*)
+    QW_SIGNAL(bind, wlr_output_event_bind*)
+    QW_SIGNAL(description)
+    QW_SIGNAL(request_state, wlr_output_event_request_state*)
 
+public:
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     QW_FUNC_MEMBER(output, enable)
 #endif
@@ -76,16 +84,8 @@ public:
     QW_FUNC_MEMBER(output, add_software_cursors_to_render_pass)
     QW_FUNC_MEMBER(output, configure_primary_swapchain)
 
-public:
-    QW_SIGNAL(frame)
-    QW_SIGNAL(damage, wlr_output_event_damage*)
-    QW_SIGNAL(needs_frame)
-    QW_SIGNAL(precommit, wlr_output_event_precommit*)
-    QW_SIGNAL(commit, wlr_output_event_commit*)
-    QW_SIGNAL(present, wlr_output_event_present*)
-    QW_SIGNAL(bind, wlr_output_event_bind *)
-    QW_SIGNAL(description)
-    QW_SIGNAL(request_state, wlr_output_event_request_state *)
+protected:
+    QW_FUNC_MEMBER(output, destroy)
 };
 
 class QW_CLASS_REINTERPRET_CAST(output_cursor)
@@ -93,9 +93,11 @@ class QW_CLASS_REINTERPRET_CAST(output_cursor)
 public:
     QW_FUNC_STATIC(output_cursor, create)
 
-    QW_FUNC_MEMBER(output_cursor, destroy)
     QW_FUNC_MEMBER(output_cursor, set_buffer)
     QW_FUNC_MEMBER(output_cursor, move)
+
+protected:
+    QW_FUNC_MEMBER(output_cursor, destroy)
 };
 
 QW_END_NAMESPACE

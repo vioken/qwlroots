@@ -13,6 +13,7 @@ class QW_CLASS_OBJECT(relative_pointer_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(relative_pointer_v1, from_resource)
 };
@@ -21,8 +22,10 @@ class QW_CLASS_OBJECT(relative_pointer_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(relative_pointer_manager_v1, create)
+
     QW_FUNC_MEMBER(relative_pointer_manager_v1, send_relative_motion)
 };
 

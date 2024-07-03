@@ -11,22 +11,22 @@ class QW_CLASS_OBJECT(xdg_decoration_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
-    QW_FUNC_STATIC(xdg_decoration_manager_v1, create)
+
+    QW_SIGNAL(new_toplevel_decoration, qw_xdg_toplevel_decoration_v1*)
 
 public:
-    QW_SIGNAL(new_toplevel_decoration, qw_xdg_toplevel_decoration_v1*)
+    QW_FUNC_STATIC(xdg_decoration_manager_v1, create)
 };
 
 class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
-    QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode)
+
+    QW_SIGNAL(request_mode)
 
 public:
-    QW_SIGNAL(request_mode)
+    QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode)
 };
 
 QW_END_NAMESPACE

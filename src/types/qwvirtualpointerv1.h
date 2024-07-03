@@ -11,7 +11,7 @@ class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(newVirtualPointer, wlr_virtual_pointer_v1_new_pointer_event*)
 
 public:

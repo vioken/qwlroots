@@ -30,7 +30,6 @@ class QW_CLASS_OBJECT(renderer)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(lost)
 
 public:
@@ -58,7 +57,7 @@ public:
     QW_FUNC_MEMBER(renderer, get_texture_formats)
 #endif
 
-private:
+protected:
     QW_FUNC_MEMBER(renderer, destroy)
 };
 

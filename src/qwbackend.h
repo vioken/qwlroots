@@ -169,8 +169,10 @@ protected:
 class qw_headless_backend : public qw_backend
 {
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(headless_backend, create)
+
     QW_FUNC_MEMBER(headless, add_output)
 
     // TODO:move to qw_output qw_input_device

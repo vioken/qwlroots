@@ -11,7 +11,8 @@
 QW_BEGIN_NAMESPACE
 
 struct Listener;
-class QW_EXPORT QWSignalConnector {
+class QW_EXPORT QWSignalConnector
+{
 public:
     QWSignalConnector();
     ~QWSignalConnector();

@@ -11,7 +11,7 @@ class QW_CLASS_OBJECT(gamma_control_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(gammaChanged, wlr_gamma_control_manager_v1_set_gamma_event*)
 
 public:

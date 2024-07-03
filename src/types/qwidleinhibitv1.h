@@ -11,14 +11,13 @@ class QW_CLASS_OBJECT(idle_inhibit_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(newInhibitor, QWIdleInhibitorV1*)
 
 public:
     QW_FUNC_STATIC(idle_inhibit_manager_v1, create)
 };
 
-class QWIdleInhibitorV1Private;
 class QW_CLASS_OBJECT(idle_inhibitor_v1)
 {
     QW_OBJECT

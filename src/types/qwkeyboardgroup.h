@@ -3,40 +3,31 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_keyboard_group;
-struct wl_array;
+extern "C" {
+#include <wlr/types/wlr_keyboard_group.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWKeyboard;
-class QWKeyboardGroupPrivate;
-class QW_EXPORT QWKeyboardGroup : public QWWrapObject
+class QW_CLASS_OBJECT(keyboard_group)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWKeyboardGroup)
+
+    QW_SIGNAL(enter, wl_array*)
+    QW_SIGNAL(leave, wl_array*)
+
 public:
-    explicit QWKeyboardGroup(QObject *parent = nullptr);
-    ~QWKeyboardGroup() = default;
+    QW_FUNC_STATIC(keyboard_group, create)
+    QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard)
 
-    inline wlr_keyboard_group *handle() const {
-        return QWObject::handle<wlr_keyboard_group>();
-    }
+    QW_FUNC_MEMBER(keyboard_group, add_keyboard)
+    QW_FUNC_MEMBER(keyboard_group, remove_keyboard)
 
-    static QWKeyboardGroup *get(wlr_keyboard_group *handle);
-    static QWKeyboardGroup *from(wlr_keyboard_group *handle);
-    static QWKeyboardGroup *from(QWKeyboard  *keyboard);
-    void addKeyboard(QWKeyboard *keyboard);
-    void removeKeyboard(QWKeyboard *keyboard);
-
-Q_SIGNALS:
-    void enter(wl_array *keycodes);
-    void leave(wl_array *keycodes);
-
-private:
-    QWKeyboardGroup(wlr_keyboard_group *handle, bool isOwner, QObject *parent = nullptr);
+protected:
+    QW_FUNC_MEMBER(keyboard_group, destroy)
 };
 
 QW_END_NAMESPACE

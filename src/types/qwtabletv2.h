@@ -27,6 +27,7 @@ class QW_CLASS_OBJECT(tablet_v2_tablet)
 
 public:
     QW_FUNC_STATIC(tablet, create)
+
     QW_FUNC_MEMBER(surface, accepts_tablet_v2)
 };
 
@@ -34,11 +35,12 @@ class QW_CLASS_OBJECT(tablet_v2_tablet_tool)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(set_cursor, wlr_tablet_v2_event_cursor*)
 
 public:
     QW_FUNC_STATIC(tablet_tool, create)
+
     QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, proximity_in)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, down)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, motion)
@@ -71,13 +73,14 @@ class QW_CLASS_OBJECT(tablet_v2_tablet_pad)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(button_feedback, wlr_tablet_v2_event_feedback*)
     QW_SIGNAL(strip_feedback, wlr_tablet_v2_event_feedback*)
     QW_SIGNAL(ring_feedback, wlr_tablet_v2_event_feedback*)
 
 public:
     QW_FUNC_STATIC(tablet_pad, create)
+
     QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, enter)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, button)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, strip)

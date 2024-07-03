@@ -28,7 +28,6 @@ class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(request_maximize, wlr_foreign_toplevel_handle_v1_maximized_event*)
     QW_SIGNAL(request_minimize, wlr_foreign_toplevel_handle_v1_minimized_event*)
     QW_SIGNAL(request_activate, wlr_foreign_toplevel_handle_v1_activated_event*)
@@ -38,7 +37,7 @@ public:
 
 public:
     QW_FUNC_STATIC(foreign_toplevel_handle_v1, create)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy)
+
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title)
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id)
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_enter)
@@ -48,6 +47,9 @@ public:
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_activated)
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_fullscreen)
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_parent)
+
+protected:
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy)
 };
 
 QW_END_NAMESPACE

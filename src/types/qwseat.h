@@ -20,7 +20,7 @@ class QW_CLASS_OBJECT(seat)
 {
     QW_OBJECT
     Q_OBJECT
-public:
+
     QW_SIGNAL(pointer_grab_begin)
     QW_SIGNAL(pointer_grab_end)
     QW_SIGNAL(keyboard_grab_begin)
@@ -34,9 +34,10 @@ public:
     QW_SIGNAL(set_primary_selection)
     QW_SIGNAL(request_start_drag, wlr_seat_request_start_drag_event*)
     QW_SIGNAL(start_drag, wlr_drag*)
+
 public:
     QW_FUNC_STATIC(seat, create)
-    QW_FUNC_MEMBER(seat, destroy)
+
     QW_FUNC_MEMBER(seat, client_for_wl_client)
     QW_FUNC_MEMBER(seat, set_keyboard)
     QW_FUNC_MEMBER(seat, get_keyboard)
@@ -91,15 +92,20 @@ public:
     QW_FUNC_MEMBER(seat, validate_pointer_grab_serial)
     QW_FUNC_MEMBER(seat, validate_touch_grab_serial)
     QW_FUNC_MEMBER(surface, accepts_touch)
+
+protected:
+    QW_FUNC_MEMBER(seat, destroy)
 };
 
 class QW_CLASS_OBJECT(seat_client)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_MEMBER(seat_client, next_serial)
     QW_FUNC_MEMBER(seat_client, validate_event_serial)
+
     QW_FUNC_STATIC(seat_client, from_resource)
     QW_FUNC_STATIC(seat_client, from_pointer_resource)
 }

@@ -28,6 +28,7 @@ class QW_EXPORT QWXdgShell : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgShell)
+
 public:
     static QWXdgShell *create(QWDisplay *display, uint32_t version);
 
@@ -57,6 +58,7 @@ class QW_EXPORT QWXdgSurface : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgSurface)
+
 public:
     inline wlr_xdg_surface *handle() const {
         return QWObject::handle<wlr_xdg_surface>();
@@ -97,6 +99,7 @@ class QW_EXPORT QWXdgPopup : public QWXdgSurface
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgPopup)
+
 public:
     ~QWXdgPopup() = default;
 
@@ -125,6 +128,7 @@ class QW_EXPORT QWXdgToplevel : public QWXdgSurface
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWXdgToplevel)
+
 public:
     wlr_xdg_toplevel *handle() const;
 

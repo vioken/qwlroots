@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(xwayland_server)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(start)
     QW_SIGNAL(ready)
 
