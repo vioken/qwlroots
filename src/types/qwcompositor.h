@@ -19,9 +19,9 @@ class QW_CLASS_OBJECT(compositor)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(new_surface, wlr_surface*)
 
+public:
     QW_FUNC_STATIC(compositor, create)
 };
 
@@ -30,7 +30,6 @@ class QW_CLASS_OBJECT(surface)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(client_commit)
     QW_SIGNAL(commit)
     QW_SIGNAL(new_subsurface, wlr_subsurface*)
@@ -41,7 +40,8 @@ public:
     QW_SIGNAL(unmap)
 
 public:
-    QW_FUNC_MEMBER(surface, from_resource)
+    QW_FUNC_STATIC(surface, from_resource)
+
     QW_FUNC_MEMBER(surface, for_each_surface)
     QW_FUNC_MEMBER(surface, get_buffer_source_box)
     QW_FUNC_MEMBER(surface, get_effective_damage)

@@ -18,6 +18,7 @@ class QW_CLASS_OBJECT(pointer_gestures_v1)
 
 public:
     QW_FUNC_STATIC(pointer_gestures_v1, create)
+
     QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_begin)
     QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_update)
     QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_end)

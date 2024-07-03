@@ -12,15 +12,18 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_OBJECT(drm) {
+class QW_CLASS_OBJECT(drm)
+{
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(drm, create)
 };
 
 
-class QW_CLASS_REINTERPRET_CAST(drm_buffer) {
+class QW_CLASS_REINTERPRET_CAST(drm_buffer)
+{
 public:
     QW_FUNC_STATIC(drm_buffer, try_from_resource)
 };

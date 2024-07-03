@@ -14,6 +14,7 @@ class QW_CLASS_OBJECT(screencopy_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(screencopy_manager_v1, create)
 };

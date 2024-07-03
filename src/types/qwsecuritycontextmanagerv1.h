@@ -14,8 +14,10 @@ class QW_CLASS_OBJECT(security_context_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(security_context_manager_v1, create)
+
     QW_FUNC_MEMBER(security_context_manager_v1, lookup_client)
 };
 QW_END_NAMESPACE

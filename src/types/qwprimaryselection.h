@@ -15,11 +15,15 @@ class QW_CLASS_OBJECT(primary_selection_source)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
-    QW_FUNC_MEMBER(primary_selection_source, init)
-    QW_FUNC_MEMBER(primary_selection_source, send)
-    QW_FUNC_MEMBER(primary_selection_source, destroy)
     QW_FUNC_STATIC(seat, request_set_primary_selection)
     QW_FUNC_STATIC(seat, set_primary_selection)
+
+    QW_FUNC_MEMBER(primary_selection_source, init)
+    QW_FUNC_MEMBER(primary_selection_source, send)
+
+protected:
+    QW_FUNC_MEMBER(primary_selection_source, destroy)
 };
 QW_END_NAMESPACE

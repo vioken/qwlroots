@@ -18,6 +18,7 @@ class QW_CLASS_OBJECT(xdg_output_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(xdg_output_manager_v1, create)
 };

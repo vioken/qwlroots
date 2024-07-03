@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(pointer_constraint_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(set_region)
 
 public:
@@ -29,11 +28,11 @@ class QW_CLASS_OBJECT(pointer_constraints_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
-    QW_SIGNAL(new_constraint, wlr_pointer_constraint_v1 *)
+    QW_SIGNAL(new_constraint, wlr_pointer_constraint_v1*)
 
 public:
     QW_FUNC_STATIC(pointer_constraints_v1, create)
+
     QW_FUNC_MEMBER(pointer_constraints_v1, constraint_for_surface)
 };
 

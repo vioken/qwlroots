@@ -16,11 +16,13 @@ class QW_CLASS_OBJECT(presentation)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
+    QW_FUNC_STATIC(presentation, create)
+
     QW_FUNC_MEMBER(presentation, surface_sampled)
     QW_FUNC_MEMBER(presentation, surface_textured_on_output)
     QW_FUNC_MEMBER(presentation, surface_scanned_on_output)
-    QW_FUNC_STATIC(presentation, create)
 };
 
 class QW_CLASS_REINTERPRET_CAST(presentation_event)

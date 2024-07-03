@@ -17,11 +17,11 @@ class QW_CLASS_OBJECT(output_power_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(set_mode, wlr_output_power_v1_set_mode_event*)
 
 public:
     QW_FUNC_STATIC(output_power_manager_v1, create)
+
     QW_FUNC_MEMBER(output_power_manager_v1, send_failed)
     QW_FUNC_MEMBER(output_power_manager_v1, send_succeeded)
 };

@@ -11,8 +11,10 @@ class QW_CLASS_OBJECT(xdg_foreign_registry)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(xdg_foreign_registry, create)
+
     QW_FUNC_MEMBER(xdg_foreign_registry, find_by_handle)
 };
 
@@ -20,6 +22,7 @@ class QW_CLASS_OBJECT(xdg_foreign_exported)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_MEMBER(xdg_foreign_exported, init)
     QW_FUNC_MEMBER(xdg_foreign_exported, finish)

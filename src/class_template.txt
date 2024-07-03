@@ -15,6 +15,7 @@ class QW_EXPORT QWABC : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWABC)
+
 public:
     inline wlr_ABC *handle() const {
         return QWObject::handle<wlr_ABC>();

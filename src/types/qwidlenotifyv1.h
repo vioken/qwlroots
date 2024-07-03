@@ -9,9 +9,9 @@ QW_BEGIN_NAMESPACE
 
 class QW_CLASS_REINTERPRET_CAST(idle_notifier_v1)
 {
-    Q_OBJECT
 public:
     QW_FUNC_STATIC(idle_notifier_v1, create)
+
     QW_FUNC_MEMBER(idle_notifier_v1, notify_activity)
     QW_FUNC_MEMBER(idle_notifier_v1, set_inhibited)
 };

@@ -46,6 +46,7 @@ class QW_EXPORT QWSceneNode : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneNode)
+
 public:
     virtual ~QWSceneNode() override = default;
 
@@ -75,6 +76,7 @@ protected:
 class QW_EXPORT QWSceneTree : public QWSceneNode
 {
     Q_OBJECT
+
 public:
     ~QWSceneTree() override = default;
     explicit QWSceneTree(QWSceneTree *parent);
@@ -97,6 +99,7 @@ class QWOutputLayout;
 class QW_EXPORT QWScene : public QWSceneTree
 {
     Q_OBJECT
+
 public:
     ~QWScene() override = default;
     explicit QWScene(QObject *parent = nullptr);
@@ -122,6 +125,7 @@ class QW_EXPORT QWSceneBuffer : public QWSceneNode
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneBuffer)
+
 public:
     ~QWSceneBuffer() override = default;
     explicit QWSceneBuffer(QWBuffer *buffer, QWSceneTree *parent);
@@ -153,6 +157,7 @@ private:
 class QW_EXPORT QWSceneRect : public QWSceneNode
 {
     Q_OBJECT
+
 public:
     ~QWSceneRect() override = default;
     explicit QWSceneRect(const QSize &size, const QColor &color, QWSceneTree *parent);
@@ -178,6 +183,7 @@ class QW_EXPORT QWSceneOutput : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWSceneOutput)
+
 public:
     ~QWSceneOutput() override = default;
     explicit QWSceneOutput(QWScene *scene, QWOutput *output);

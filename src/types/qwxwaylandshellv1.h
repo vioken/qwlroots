@@ -16,11 +16,11 @@ class QW_CLASS_OBJECT(xwayland_shell_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
-    QW_SIGNAL(new_surface, wlr_xwayland_surface_v1 *)
+    QW_SIGNAL(new_surface, wlr_xwayland_surface_v1*)
 
 public:
     QW_FUNC_STATIC(xwayland_shell_v1, create)
+
     QW_FUNC_MEMBER(xwayland_shell_v1, set_client)
     QW_FUNC_MEMBER(xwayland_shell_v1, surface_from_serial)
 };

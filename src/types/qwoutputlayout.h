@@ -20,10 +20,12 @@ class QW_CLASS_OBJECT(output_layout)
     QW_OBJECT
     Q_OBJECT
 
+    QW_SIGNAL(add, wlr_output_layout_output*)
+    QW_SIGNAL(change, wlr_output_layout_output*)
+
 public:
     QW_FUNC_STATIC(output_layout, create)
 
-    QW_FUNC_MEMBER(output_layout, destroy)
     QW_FUNC_MEMBER(output_layout, output_at)
     QW_FUNC_MEMBER(output_layout, get_center_output)
     QW_FUNC_MEMBER(output_layout, adjacent_output)
@@ -40,9 +42,8 @@ public:
     QW_FUNC_MEMBER(output_layout, closest_point)
     QW_FUNC_MEMBER(output_layout, get_box)
 
-public:
-    QW_SIGNAL(add, wlr_output_layout_output *)
-    QW_SIGNAL(change, wlr_output_layout_output *)
+protected:
+    QW_FUNC_MEMBER(output_layout, destroy)
 };
 
 QW_END_NAMESPACE

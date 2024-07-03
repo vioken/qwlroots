@@ -21,8 +21,9 @@ public:
 
 class qw_xdg_exported_v2 : public qw_xdg_foreign_exported
 {
-    QW_OBJECT
     Q_OBJECT
+    using qw_xdg_foreign_exported::qw_xdg_foreign_exported;
+    friend class qw_object;
 
 public:
     QW_FUNC_STATIC(xdg_exported_v2, create)

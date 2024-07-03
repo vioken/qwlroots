@@ -14,7 +14,8 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class qw_log {
+class qw_log
+{
 #ifdef QT_DEBUG
     static Q_LOGGING_CATEGORY(lcQWLog, "wlroots", QtDebugMsg)
 #else

@@ -17,6 +17,7 @@ class QW_EXPORT QWIdle : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdle)
+
 public:
     inline wlr_idle *handle() const {
         return QWObject::handle<wlr_idle>();
@@ -42,6 +43,7 @@ class QW_EXPORT QWIdleTimeout : public QWWrapObject
 {
     Q_OBJECT
     QW_DECLARE_PRIVATE(QWIdleTimeout)
+
 public:
     ~QWIdleTimeout() = default;
 

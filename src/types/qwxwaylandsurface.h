@@ -21,11 +21,10 @@ class QW_CLASS_OBJECT(xwayland_surface)
     QW_OBJECT
     Q_OBJECT
 
-public:
-    QW_SIGNAL(request_configure, wlr_xwayland_surface_configure_event *)
+    QW_SIGNAL(request_configure, wlr_xwayland_surface_configure_event*)
     QW_SIGNAL(request_move)
-    QW_SIGNAL(request_resize, wlr_xwayland_resize_event *)
-    QW_SIGNAL(request_minimize, wlr_xwayland_minimize_event *)
+    QW_SIGNAL(request_resize, wlr_xwayland_resize_event*)
+    QW_SIGNAL(request_minimize, wlr_xwayland_minimize_event*)
     QW_SIGNAL(request_maximize)
     QW_SIGNAL(request_fullscreen)
     QW_SIGNAL(request_activate)

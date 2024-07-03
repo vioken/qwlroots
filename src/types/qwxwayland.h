@@ -19,10 +19,9 @@ class QW_CLASS_OBJECT(xwayland)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(ready)
-    QW_SIGNAL(new_surface, wlr_xwayland_surface *)
-    QW_SIGNAL(remove_startup_info, wlr_xwayland_remove_startup_info_event *)
+    QW_SIGNAL(new_surface, wlr_xwayland_surface*)
+    QW_SIGNAL(remove_startup_info, wlr_xwayland_remove_startup_info_event*)
 
 public:
     QW_FUNC_STATIC(xwayland, create)

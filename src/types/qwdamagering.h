@@ -11,7 +11,8 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_REINTERPRET_CAST(damage_ring) {
+class QW_CLASS_REINTERPRET_CAST(damage_ring)
+{
 public:
     QW_FUNC_MEMBER(damage_ring, init)
     QW_FUNC_MEMBER(damage_ring, finish)

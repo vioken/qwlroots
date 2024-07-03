@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(buffer)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(release)
 
 public:

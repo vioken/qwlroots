@@ -15,6 +15,7 @@ class QW_CLASS_OBJECT(primary_selection_v1_device_manager)
 {
     QW_OBJECT
     Q_OBJECT
+
 public:
     QW_FUNC_STATIC(primary_selection_v1_device_manager, create)
 };

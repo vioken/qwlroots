@@ -26,7 +26,6 @@ class QW_CLASS_OBJECT(keyboard_shortcuts_inhibit_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(new_inhibitor, qw_keyboard_shortcuts_inhibitor_v1*)
 
 public:

@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(input_inhibit_manager)
     QW_OBJECT
     Q_OBJECT
 
-public:
     QW_SIGNAL(activate)
     QW_SIGNAL(deactivate)
 
