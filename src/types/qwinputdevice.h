@@ -7,6 +7,12 @@
 
 extern "C" {
 #include <wlr/types/wlr_input_device.h>
+#include <wlr/types/wlr_keyboard.h>
+#include <wlr/types/wlr_pointer.h>
+#include <wlr/types/wlr_tablet_pad.h>
+#include <wlr/types/wlr_tablet_tool.h>
+#include <wlr/types/wlr_touch.h>
+#include <wlr/types/wlr_switch.h>
 }
 
 QW_BEGIN_NAMESPACE
@@ -26,28 +32,97 @@ public:
     static qw_input_device *from(wlr_input_device *handle);
 };
 
+#define QW_INPUT_DEVICE(name) \
+typedef qw##name DeriveType; \
+public: \
+    QW_ALWAYS_INLINE wlr_##name *handle() const { \
+        return from_input_device(qw_input_device::handle()); \
+    } \
+    QW_ALWAYS_INLINE operator wlr_##name* () const { \
+        return handle(); \
+    } \
+    QW_FUNC_STATIC(name, from_input_device) \
+protected: \
+using qw_input_device::qw_input_device; \
+private: \
+friend class qw_input_device;
+
 class qw_keyboard : public qw_input_device
 {
     Q_OBJECT
+    QW_INPUT_DEVICE(keyboard)
 
-    typedef qw_input_device DeriveType;
-
-public:
     QW_SIGNAL(key, wlr_keyboard_key_event*)
     QW_SIGNAL(modifiers)
     QW_SIGNAL(keymap)
     QW_SIGNAL(repeat_info)
 
 public:
-    QW_FUNC_STATIC(keyboard, from_input_device)
-
     QW_FUNC_MEMBER(keyboard, get_modifiers)
     QW_FUNC_MEMBER(keyboard, set_keymap)
     QW_FUNC_MEMBER(keyboard, set_repeat_info)
+};
 
-protected:
-    using qw_input_device::qw_input_device;
-    friend class qw_input_device;
+class qw_pointer : public qw_input_device
+{
+    Q_OBJECT
+    QW_INPUT_DEVICE(pointer)
+
+    QW_SIGNAL(motion, wlr_pointer_motion_event*)
+    QW_SIGNAL(motion_absolute, wlr_pointer_motion_absolute_event*)
+    QW_SIGNAL(button, wlr_pointer_button_event*)
+    QW_SIGNAL(axis, wlr_pointer_axis_event*)
+    QW_SIGNAL(frame)
+    QW_SIGNAL(swipe_begin, wlr_pointer_swipe_begin_event*)
+    QW_SIGNAL(swipe_update, wlr_pointer_swipe_update_event*)
+    QW_SIGNAL(swipe_end, wlr_pointer_swipe_end_event*)
+    QW_SIGNAL(pinch_begin, wlr_pointer_pinch_begin_event*)
+    QW_SIGNAL(pinch_update, wlr_pointer_pinch_update_event*)
+    QW_SIGNAL(pinch_end, wlr_pointer_pinch_end_event*)
+    QW_SIGNAL(hold_begin, wlr_pointer_hold_begin_event*)
+    QW_SIGNAL(hold_end, wlr_pointer_hold_end_event*)
+};
+
+class qw_tablet : public qw_input_device
+{
+    Q_OBJECT
+    QW_INPUT_DEVICE(tablet)
+
+    QW_SIGNAL(axis, wlr_tablet_tool_axis_event*)
+    QW_SIGNAL(proximity, wlr_tablet_tool_proximity_event*)
+    QW_SIGNAL(tip, wlr_tablet_tool_tip_event*)
+    QW_SIGNAL(button, wlr_tablet_tool_button_event*)
+};
+
+class qw_tablet_pad : public qw_input_device
+{
+    Q_OBJECT
+    QW_INPUT_DEVICE(tablet_pad)
+
+    QW_SIGNAL(button, wlr_tablet_pad_button_event*)
+    QW_SIGNAL(ring, wlr_tablet_pad_ring_event*)
+    QW_SIGNAL(strip, wlr_tablet_pad_strip_event*)
+    QW_SIGNAL(attach_tablet, wlr_tablet_tool*)
+};
+
+class qw_switch : public qw_input_device
+{
+    Q_OBJECT
+    QW_INPUT_DEVICE(switch)
+
+    QW_SIGNAL(toggle, wlr_switch_toggle_event*)
+};
+
+class qw_touch : public qw_input_device
+{
+    Q_OBJECT
+    QW_INPUT_DEVICE(touch)
+
+    QW_SIGNAL(down, wlr_touch_down_event*)
+    QW_SIGNAL(up, wlr_touch_up_event*)
+    QW_SIGNAL(motion, wlr_touch_motion_event*)
+    QW_SIGNAL(cancel, wlr_touch_cancel_event*)
+    QW_SIGNAL(frame, void*)
 };
 
 qw_input_device *qw_input_device::from(wlr_input_device *handle) {
