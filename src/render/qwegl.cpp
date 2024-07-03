@@ -1,3 +1,0 @@
-#include "qwegl.h"
-
-

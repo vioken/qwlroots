@@ -10,42 +10,6 @@
 
 QW_BEGIN_NAMESPACE
 
-struct Listener;
-class QW_EXPORT QWSignalConnector
-{
-public:
-    QWSignalConnector();
-    ~QWSignalConnector();
-
-    using SlotFun0 = void (*)(void *obj);
-    Listener *connect(wl_signal *signal, void *object, SlotFun0 slot);
-    using SlotFun1 = void (*)(void *obj, void *signalData);
-    Listener *connect(wl_signal *signal, void *object, SlotFun1 slot);
-    using SlotFun2 = void (*)(void *obj, void *signalData, void *data);
-    Listener *connect(wl_signal *signal, void *object, SlotFun2 slot, void *data);
-    template <typename T, typename TSlot>
-    inline Listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)())
-        requires ( std::is_base_of_v<TSlot,T> ) {
-        return connect(signal, object, reinterpret_cast<SlotFun0>(*(void**)(&slot)));
-    }
-    template <typename T, typename T1, typename TSlot>
-    inline Listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*))
-        requires ( std::is_base_of_v<TSlot,T> ) {
-        return connect(signal, object, reinterpret_cast<SlotFun1>(*(void**)(&slot)));
-    }
-    template <typename T, typename T1, typename T2, typename T3, typename TSlot>
-    inline Listener *connect(wl_signal *signal, T *object, void (TSlot::*slot)(T1*, T2*), T3 *data)
-        requires ( std::is_base_of_v<TSlot,T> ) {
-        return connect(signal, object, reinterpret_cast<SlotFun2>(*(void**)(&slot)), data);
-    }
-    void disconnect(Listener *l);
-    void disconnect(wl_signal *signal);
-    void invalidate();
-
-private:
-    QVector<Listener*> listenerList;
-};
-
 class qw_signal_connector
 {
     using SlotFun0 = void (*)(void *obj);
