@@ -11,15 +11,16 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_OBJECT(cursor_shape_v1)
+class QW_CLASS_OBJECT(cursor_shape_manager_v1)
 {
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(request_set_shape, wlr_cursor_shape_manager_v1_request_set_shape_event *)
+    QW_SIGNAL(request_set_shape, wlr_cursor_shape_manager_v1_request_set_shape_event*)
 
 public:
-    QW_FUNC_STATIC(cursor_shape_v1, create)
+    QW_FUNC_STATIC(cursor_shape_manager_v1, create)
+    QW_FUNC_STATIC(cursor_shape_v1, name)
 };
 
 QW_END_NAMESPACE

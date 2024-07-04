@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(session_lock_surface_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(session_lock_surface_v1, try_create)
+    QW_FUNC_STATIC(session_lock_surface_v1, try_from_wlr_surface)
 
     QW_FUNC_MEMBER(session_lock_surface_v1, configure)
 };
