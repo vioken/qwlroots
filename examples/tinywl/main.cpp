@@ -25,29 +25,9 @@
 #include <qwkeyboard.h>
 #include <qwpointer.h>
 #include <qwbackendinterface.h>
-
-#define WLR_USE_UNSTABLE
-extern "C" {
-// avoid replace static
-#include <wayland-server-core.h>
-#define static
-#include <wlr/util/log.h>
-#include <wlr/util/edges.h>
-#include <wlr/types/wlr_keyboard.h>
-#include <wlr/types/wlr_seat.h>
-#include <wlr/types/wlr_output.h>
-#include <wlr/types/wlr_xdg_shell.h>
-#include <wlr/types/wlr_scene.h>
-#include <wlr/types/wlr_data_device.h>
-#undef static
-#include <wayland-server.h>
-}
-
 #include <qwtexture.h>
 
-QW_USE_NAMESPACE
-
-class TinywlServer : public QObject
+/*class TinywlServer : public QObject
 {
     Q_OBJECT
 public:
@@ -445,7 +425,7 @@ void TinywlServer::onKeyboardModifiers()
 void TinywlServer::onKeyboardKey(wlr_keyboard_key_event *event)
 {
     QWKeyboard *keyboard = qobject_cast<QWKeyboard*>(QObject::sender());
-    /* Translate libinput keycode -> xkbcommon */
+    // Translate libinput keycode -> xkbcommon
     uint32_t keycode = event->keycode + 8;
     const xkb_keysym_t *syms;
     int nsyms = xkb_state_key_get_syms(keyboard->handle()->xkb_state, keycode, &syms);
@@ -630,52 +610,8 @@ bool TinywlServer::handleKeybinding(xkb_keysym_t sym)
     return true;
 }
 
-class Test {
-public:
-    struct A {
-        A(Test *t) {
-            qDebug() << this << t;
-        }
-    };
-
-    A a = this;
-    A b = this;
-    A c = this;
-};
-
-class TTT : public qw_backend_interface<TTT> {
-public:
-    bool start() {
-        return false;
-    }
-
-    int get_drm_fd() {
-        return 1;
-    }
-
-    int get_buffer_caps() {
-        return 1;
-    }
-};
-
 int main(int argc, char **argv)
 {
-    auto s = sizeof(Test);
-    auto sa = sizeof(Test::A);
-    qDebug() << sizeof(Test) << sizeof(Test::A) << sizeof(int);
-
-    Test test;
-    qDebug() << &test << &test.a << &test.c;
-
-    return 0;
-    // qw_texture *test = qw_texture::from(nullptr);
-    // wlr_texture_update_from_buffer(*test, nullptr, nullptr);
-    // bool ok = test->update_from_buffer(nullptr, nullptr);
-    // delete test;
-
-    // qw_backend *backend = nullptr;
-    TTT ttt;
-
     wlr_log_init(WLR_DEBUG, NULL);
     QGuiApplication app(argc, argv);
 
@@ -702,4 +638,9 @@ int main(int argc, char **argv)
     return app.exec();
 }
 
-#include "main.moc"
+#include "main.moc"*/
+
+int main(int argc, char **argv)
+{
+    return 0;
+}
