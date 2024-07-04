@@ -3,7 +3,7 @@
 
 #include <QtTest>
 
-#include "qwglobal.h"
+#include "qwdisplay.h"
 
 class testQWObject : public QObject
 {
@@ -16,7 +16,7 @@ private Q_SLOTS:
     void testcase();
 
 private:
-    QWLRoots::QWObject* nullObject;
+    qw_display* nullObject;
 };
 
 testQWObject::testQWObject()
@@ -25,7 +25,7 @@ testQWObject::testQWObject()
 }
 
 void testQWObject::testcase() {
-    QCOMPARE(nullObject->isValid(), false);
+    QCOMPARE(nullObject->is_valid(), false);
 }
 
 QTEST_APPLESS_MAIN(testQWObject)

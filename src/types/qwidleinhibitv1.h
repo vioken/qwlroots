@@ -5,6 +5,10 @@
 
 #include <qwobject.h>
 
+extern "C" {
+#include <wlr/types/wlr_idle_inhibit_v1.h>
+}
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(idle_inhibit_manager_v1)
@@ -12,7 +16,7 @@ class QW_CLASS_OBJECT(idle_inhibit_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(newInhibitor, QWIdleInhibitorV1*)
+    QW_SIGNAL(new_inhibitor, wlr_idle_inhibitor_v1*)
 
 public:
     QW_FUNC_STATIC(idle_inhibit_manager_v1, create)

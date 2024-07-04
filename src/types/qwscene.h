@@ -75,7 +75,7 @@ class qw_scene : public qw_scene_tree
 
 public:
     QW_ALWAYS_INLINE wlr_scene *handle() const {
-       struct wlr_scene *handle = wl_container_of(qw_scene_tree::handle(), handle, tree);
+       wlr_scene *handle = wl_container_of(qw_scene_tree::handle(), handle, tree);
        return handle;
     }
     QW_ALWAYS_INLINE operator wlr_scene* () const {
@@ -135,11 +135,11 @@ class qw_scene_buffer : public qw_scene_node
     Q_OBJECT
     QW_SCENE_NODE(scene_buffer)
 
-    QW_SIGNAL(outputs_update, wlr_scene_outputs_update_event *)
-    QW_SIGNAL(output_enter, wlr_scene_output *)
-    QW_SIGNAL(output_leave, wlr_scene_output *)
-    QW_SIGNAL(output_sample, wlr_scene_output_sample_event *)
-    QW_SIGNAL(frame_done, timespec *)
+    QW_SIGNAL(outputs_update, wlr_scene_outputs_update_event*)
+    QW_SIGNAL(output_enter, wlr_scene_output*)
+    QW_SIGNAL(output_leave, wlr_scene_output*)
+    QW_SIGNAL(output_sample, wlr_scene_output_sample_event*)
+    QW_SIGNAL(frame_done, timespec*)
 
 public:
     QW_FUNC_STATIC(scene_buffer, create)

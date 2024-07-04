@@ -5,6 +5,10 @@
 
 #include <qwobject.h>
 
+extern "C" {
+#include <wlr/types/wlr_virtual_pointer_v1.h>
+}
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
@@ -12,7 +16,7 @@ class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(newVirtualPointer, wlr_virtual_pointer_v1_new_pointer_event*)
+    QW_SIGNAL(new_virtual_pointer, wlr_virtual_pointer_v1_new_pointer_event*)
 
 public:
     QW_FUNC_STATIC(virtual_pointer_manager_v1, create)

@@ -108,5 +108,6 @@ public:
 
     QW_FUNC_STATIC(seat_client, from_resource)
     QW_FUNC_STATIC(seat_client, from_pointer_resource)
-}
+};
+
 QW_END_NAMESPACE

@@ -12,6 +12,9 @@ extern "C" {
 #undef static
 }
 
+struct wlr_subsurface;
+struct wlr_surface_state;
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(compositor)
