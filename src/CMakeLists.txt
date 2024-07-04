@@ -172,7 +172,11 @@ if (WLR_PROTOCOLS_FOUND)
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
 endif ()
 
-add_library(${TARGET} INTERFACE)
+add_library(${TARGET}
+    STATIC
+    ${SOURCES}
+    ${HEADERS}
+)
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
 
 set_target_properties(${TARGET}
@@ -188,7 +192,7 @@ set(QT_LIBRAIES
     Qt${QT_VERSION_MAJOR}::Gui)
 
 target_link_libraries(${TARGET}
-    INTERFACE
+    PUBLIC
     ${QT_LIBRAIES}
     PkgConfig::WLROOTS
     PkgConfig::WAYLAND_SERVER
@@ -201,14 +205,22 @@ target_link_libraries(${TARGET}
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 target_include_directories(${TARGET}
-    INTERFACE
-        ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
+    PRIVATE
+    ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
+)
+
+target_include_directories(${TARGET}
+    PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generate>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/render>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/types>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/interfaces>
+)
+
+target_include_directories(${TARGET}
+    INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}>
 )
 

@@ -5,6 +5,7 @@
 
 #include <qwconfig.h>
 #include <QtCore/qglobal.h>
+#include <qobjectdefs.h>
 
 #include <concepts>
 
@@ -17,16 +18,6 @@
 #define QW_BEGIN_NAMESPACE
 #define QW_END_NAMESPACE
 #define QW_USE_NAMESPACE
-#endif
-
-#if defined(QW_STATIC_LIB)
-#  define QW_EXPORT
-#else
-#if defined(QW_LIBRARY)
-#  define QW_EXPORT Q_DECL_EXPORT
-#else
-#  define QW_EXPORT Q_DECL_IMPORT
-#endif
 #endif
 
 #define QW_DECLARE_PRIVATE(Class) Q_DECLARE_PRIVATE_D(qGetPtrHelper(qw_d_ptr), Class)
@@ -60,6 +51,13 @@
 #endif
 
 QW_BEGIN_NAMESPACE
+
+namespace qw {
+    template<typename Func>
+    typename QtPrivate::FunctionPointer<Func>::ReturnType cfunc_return_type(Func);
+
+#define QW_CFUNC_RETURN_TYPE(func) decltype(qw::cfunc_return_type(func))
+}
 
 template<typename Handle, typename Derive>
 class qw_reinterpret_cast
@@ -98,13 +96,15 @@ qw_##wlr_type_suffix : public qw_reinterpret_cast<wlr_##wlr_type_suffix, qw_##wl
 
 #define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix) \
 template<typename ...Args> \
-QW_ALWAYS_INLINE auto wlr_func_suffix(Args &&... args) { \
+QW_ALWAYS_INLINE QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix) \
+wlr_func_suffix(Args &&... args) { \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
 }
 
 #define QW_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
 template<typename ...Args> \
-QW_ALWAYS_INLINE static auto wlr_func_suffix(Args &&... args) { \
+QW_ALWAYS_INLINE static QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix) \
+wlr_func_suffix(Args &&... args) { \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
 }
 

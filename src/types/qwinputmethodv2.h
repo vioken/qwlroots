@@ -20,8 +20,7 @@ class QW_CLASS_OBJECT(input_method_manager_v2)
 
 public:
     QW_FUNC_STATIC(input_method_manager_v2, create)
-}
-
+};
 
 class QW_CLASS_OBJECT(input_method_keyboard_grab_v2)
 {
@@ -35,7 +34,7 @@ public:
 
 protected:
     QW_FUNC_MEMBER(input_method_keyboard_grab_v2, destroy)
-}
+};
 
 class QW_CLASS_OBJECT(input_popup_surface_v2)
 {
@@ -45,7 +44,7 @@ class QW_CLASS_OBJECT(input_popup_surface_v2)
 public:
     QW_FUNC_MEMBER(input_popup_surface_v2, send_text_input_rectangle)
     QW_FUNC_STATIC(input_popup_surface_v2, try_from_wlr_surface)
-}
+};
 
 class QW_CLASS_OBJECT(input_method_v2)
 {
@@ -64,5 +63,6 @@ public:
     QW_FUNC_MEMBER(input_method_v2, send_surrounding_text)
     QW_FUNC_MEMBER(input_method_v2, send_text_change_cause)
     QW_FUNC_MEMBER(input_method_v2, send_unavailable)
-}
+};
+
 QW_END_NAMESPACE

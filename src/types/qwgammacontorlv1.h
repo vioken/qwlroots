@@ -5,6 +5,10 @@
 
 #include<qwobject.h>
 
+extern "C" {
+#include <wlr/types/wlr_gamma_control_v1.h>
+}
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(gamma_control_manager_v1)
@@ -12,7 +16,7 @@ class QW_CLASS_OBJECT(gamma_control_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(gammaChanged, wlr_gamma_control_manager_v1_set_gamma_event*)
+    QW_SIGNAL(set_gamma, wlr_gamma_control_manager_v1_set_gamma_event*)
 
 public:
     QW_FUNC_STATIC(gamma_control_manager_v1, create)

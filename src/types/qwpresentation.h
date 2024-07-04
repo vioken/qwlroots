@@ -36,6 +36,6 @@ class QW_CLASS_REINTERPRET_CAST(presentation_feedback)
 public:
     QW_FUNC_MEMBER(presentation_event, send_presented)
     QW_FUNC_MEMBER(presentation_event, destroy)
-}
+};
 
 QW_END_NAMESPACE

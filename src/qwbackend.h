@@ -27,32 +27,17 @@ class QW_CLASS_OBJECT(backend)
     Q_OBJECT
 
 public:
-    static DeriveType *create(HandleType *handle) {
-        if (is_multi(handle))
-            return new qw_multi_backend(handle, false);
-#ifdef WLR_HAVE_X11_BACKEND
-        if (is_x11(handle))
-            return new qw_x11_backend(handle, false);
-#endif
-        if (is_drm(handle))
-            return new qw_drm_backend(handle, false);
-        if (is_headless(handle))
-            return new qw_headless_backend(handle, false);
-        if (is_libinput(handle))
-            return new qw_libinput_backend(handle, false);
-        if (is_wl(handle))
-            return new qw_wayland_backend(handle, false);
+    static DeriveType *create(HandleType *handle);
 
-        return new DeriveType(handle, false);
-    }
-
-    QW_FUNC_MEMBER(backend, auto_create)
+    QW_FUNC_MEMBER(backend, autocreate)
     QW_FUNC_MEMBER(backend, get_drm_fd)
 
     QW_FUNC_STATIC(backend, is_multi)
     QW_FUNC_STATIC(backend, is_drm)
     QW_FUNC_STATIC(backend, is_wl)
+#ifdef WLR_HAVE_X11_BACKEND
     QW_FUNC_STATIC(backend, is_x11)
+#endif
     QW_FUNC_STATIC(backend, is_libinput)
     QW_FUNC_STATIC(backend, is_headless)
 
@@ -70,8 +55,8 @@ class qw_multi_backend : public qw_backend
 public:
     QW_FUNC_MEMBER(multi_backend, add)
     QW_FUNC_MEMBER(multi_backend, remove)
-    QW_FUNC_MEMBER(multi_backend, is_empty)
-    QW_FUNC_MEMBER(multi_backend, for_each_backend)
+    QW_FUNC_MEMBER(multi, is_empty)
+    QW_FUNC_MEMBER(multi, for_each_backend)
 
     QW_FUNC_STATIC(multi_backend, create)
 
@@ -98,7 +83,6 @@ public:
     QW_FUNC_STATIC(drm, connector_get_panel_orientation)
     QW_FUNC_STATIC(drm, mode_get_info)
     QW_FUNC_STATIC(drm, create_lease)
-    QW_FUNC_STATIC(drm, lease_terminate)
     QW_FUNC_STATIC(drm, lease_terminate)
 
 protected:
@@ -183,5 +167,24 @@ protected:
     using qw_backend::qw_backend;
     friend class qw_backend;
 };
+
+qw_backend *qw_backend::create(HandleType *handle) {
+    if (is_multi(handle))
+        return new qw_multi_backend(handle, false);
+#ifdef WLR_HAVE_X11_BACKEND
+    if (is_x11(handle))
+        return new qw_x11_backend(handle, false);
+#endif
+    if (is_drm(handle))
+        return new qw_drm_backend(handle, false);
+    if (is_headless(handle))
+        return new qw_headless_backend(handle, false);
+    if (is_libinput(handle))
+        return new qw_libinput_backend(handle, false);
+    if (is_wl(handle))
+        return new qw_wayland_backend(handle, false);
+
+    return new DeriveType(handle, false);
+}
 
 QW_END_NAMESPACE

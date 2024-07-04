@@ -162,7 +162,7 @@ Q_SIGNALS: \
     void notify_##name(__VA_ARGS__); \
 private: \
 struct qw_signal_##name { \
-    qw_signal_##name(qw_object *self) { \
+    qw_signal_##name(DeriveType *self) { \
         self->bind_signal(&decltype(self->handle()->events)::name, &DeriveType::notify_##name); \
     } \
 }; \

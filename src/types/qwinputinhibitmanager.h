@@ -21,7 +21,6 @@ class QW_CLASS_OBJECT(input_inhibit_manager)
 
 public:
     QW_FUNC_STATIC(input_inhibit_manager, create)
-}
-
+};
 
 QW_END_NAMESPACE

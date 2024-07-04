@@ -10,6 +10,9 @@ extern "C" {
 #define static
 #include <wlr/types/wlr_cursor.h>
 #undef static
+#include <wlr/types/wlr_pointer.h>
+#include <wlr/types/wlr_touch.h>
+#include <wlr/types/wlr_tablet_tool.h>
 #include <wlr/util/box.h>
 }
 
@@ -41,7 +44,7 @@ class QW_CLASS_OBJECT(cursor)
     QW_SIGNAL(tablet_tool_axis, wlr_tablet_tool_axis_event*)
     QW_SIGNAL(tablet_tool_proximity, wlr_tablet_tool_proximity_event*)
     QW_SIGNAL(tablet_tool_tip, wlr_tablet_tool_tip_event*)
-    QW_SIGNAL(tablet_tool_button, wlr_tablet_tool_button*)
+    QW_SIGNAL(tablet_tool_button, wlr_tablet_tool_button_event*)
 
 public:
     QW_FUNC_STATIC(cursor, create)

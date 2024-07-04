@@ -26,7 +26,8 @@ public:
     template<typename T>
     QW_ALWAYS_INLINE static std::enable_if<std::is_base_of<qw_input_device, T>::value, qw_input_device*>::type
     from(wlr_input_device *handle) {
-        return new T(T::from_input_device(handle), false);
+        Q_ASSERT(T::from_input_device(handle));
+        return new T(handle, false);
     }
 
     static qw_input_device *from(wlr_input_device *handle);
@@ -122,7 +123,7 @@ class qw_touch : public qw_input_device
     QW_SIGNAL(up, wlr_touch_up_event*)
     QW_SIGNAL(motion, wlr_touch_motion_event*)
     QW_SIGNAL(cancel, wlr_touch_cancel_event*)
-    QW_SIGNAL(frame, void*)
+    QW_SIGNAL(frame)
 };
 
 qw_input_device *qw_input_device::from(wlr_input_device *handle) {

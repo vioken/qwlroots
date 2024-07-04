@@ -69,15 +69,15 @@ class QW_CLASS_OBJECT(xdg_toplevel)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(request_maximize, bool)
-    QW_SIGNAL(request_fullscreen, bool)
-    QW_SIGNAL(request_minimize, bool)
-    QW_SIGNAL(request_move, wlr_xdg_toplevel_move_event *)
-    QW_SIGNAL(request_resize, wlr_xdg_toplevel_resize_event *)
-    QW_SIGNAL(request_show_window_menu, wlr_xdg_toplevel_show_window_menu_event *)
-    QW_SIGNAL(set_parent, wlr_xdg_toplevel *)
-    QW_SIGNAL(set_title, char *)
-    QW_SIGNAL(set_app_id, char *)
+    QW_SIGNAL(request_maximize)
+    QW_SIGNAL(request_fullscreen)
+    QW_SIGNAL(request_minimize)
+    QW_SIGNAL(request_move, wlr_xdg_toplevel_move_event*)
+    QW_SIGNAL(request_resize, wlr_xdg_toplevel_resize_event*)
+    QW_SIGNAL(request_show_window_menu, wlr_xdg_toplevel_show_window_menu_event*)
+    QW_SIGNAL(set_parent, wlr_xdg_toplevel*)
+    QW_SIGNAL(set_title, char*)
+    QW_SIGNAL(set_app_id, char*)
 
 public:
     QW_FUNC_MEMBER(xdg_toplevel, set_size)

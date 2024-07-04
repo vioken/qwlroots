@@ -7,4 +7,5 @@ Name: ${name}
 Description:
 Version: ${CMAKE_PROJECT_VERSION}
 Requires: ${depends}
+Libs: -l${library}
 Cflags: -I${include_dir}

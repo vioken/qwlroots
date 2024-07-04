@@ -5,6 +5,10 @@
 
 #include <qwobject.h>
 
+extern "C" {
+#include <wlr/types/wlr_xdg_activation_v1.h>
+}
+
 QW_BEGIN_NAMESPACE
 class QW_CLASS_OBJECT(xdg_activation_token_v1)
 {
@@ -21,7 +25,7 @@ class QW_CLASS_OBJECT(xdg_activation_v1)
     Q_OBJECT
 
     QW_SIGNAL(request_activate, wlr_xdg_activation_v1_request_activate_event*)
-    QW_SIGNAL(new_token, xdg_activation_token_v1*)
+    QW_SIGNAL(new_token, wlr_xdg_activation_token_v1*)
 
 public:
     QW_FUNC_STATIC(xdg_activation_v1, create)
