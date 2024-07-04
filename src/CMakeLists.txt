@@ -23,6 +23,9 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
+pkg_search_module(WAYLAND_PROTOCOLS REQUIRED IMPORTED_TARGET wayland-protocols)
+pkg_search_module(WLR_PROTOCOLS IMPORTED_TARGET wlr-protocols)
+pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 
 pkg_get_variable(WLR_HAVE_DRM_BACKEND ${wlr} have_drm_backend)
 pkg_get_variable(WLR_HAVE_X11_BACKEND ${wlr} have_x11_backend)
@@ -38,7 +41,6 @@ configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in generate/qwconfig.h
 
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
-pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 ws_generate(server wayland-protocols unstable/fullscreen-shell/fullscreen-shell-unstable-v1.xml fullscreen-shell-unstable-v1-protocol)
 ws_generate(server wayland-protocols unstable/tablet/tablet-unstable-v2.xml tablet-unstable-v2-protocol)
@@ -159,7 +161,6 @@ if (WLR_HAVE_XWAYLAND)
     )
 endif()
 
-pkg_search_module(WLR_PROTOCOLS wlr-protocols)
 if (WLR_PROTOCOLS_FOUND)
     ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
     ws_generate(server wlr-protocols unstable/wlr-output-power-management-unstable-v1.xml wlr-output-power-management-unstable-v1-protocol)
@@ -192,6 +193,9 @@ target_link_libraries(${TARGET}
     PkgConfig::WLROOTS
     PkgConfig::WAYLAND_SERVER
     PkgConfig::PIXMAN
+    PkgConfig::WAYLAND_PROTOCOLS
+    PkgConfig::WLR_PROTOCOLS
+    PkgConfig::XKBCOMMON
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -226,7 +230,7 @@ install(TARGETS ${TARGET}
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
 add_cmake_module(${CMAKE_NAME} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
 add_pkgconfig_module(${TARGET} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET}
-    "wlroots = ${WLROOTS_VERSION}, pixman-1, Qt${QT_VERSION_MAJOR}Gui"
+    "wlroots = ${WLROOTS_VERSION}, pixman-1, wayland-protocols, wlr-protocols, xkbcommon, Qt${QT_VERSION_MAJOR}Gui"
 )
 
 install(FILES
