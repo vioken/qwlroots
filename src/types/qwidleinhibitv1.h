@@ -22,11 +22,5 @@ public:
     QW_FUNC_STATIC(idle_inhibit_v1, create)
 };
 
-class QW_CLASS_OBJECT(idle_inhibitor_v1)
-{
-    QW_OBJECT
-    Q_OBJECT
-};
-
 QW_END_NAMESPACE
 

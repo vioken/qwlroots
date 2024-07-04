@@ -1,9 +1,10 @@
-// Copyright (C) 2023 rewine <luhongxu@deepin.org>.
+// Copyright (C) 2024 UnionTech Software Technology Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #pragma once
 
-#include<qwobject.h>
+#include <qwglobal.h>
+#include <qwobject.h>
 
 extern "C" {
 #include <wlr/types/wlr_gamma_control_v1.h>
@@ -16,11 +17,8 @@ class QW_CLASS_OBJECT(gamma_control_manager_v1)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(set_gamma, wlr_gamma_control_manager_v1_set_gamma_event*)
-
 public:
     QW_FUNC_STATIC(gamma_control_manager_v1, create)
-
     QW_FUNC_MEMBER(gamma_control_manager_v1, get_control)
 };
 

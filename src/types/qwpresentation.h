@@ -11,7 +11,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-
 class QW_CLASS_OBJECT(presentation)
 {
     QW_OBJECT
