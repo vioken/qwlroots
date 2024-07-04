@@ -24,7 +24,6 @@ class QW_CLASS_OBJECT(layer_surface_v1)
     QW_SIGNAL(new_popup, xdg_popup*)
 
 public:
-    QW_FUNC_STATIC(layer_surface_v1, create)
     QW_FUNC_STATIC(layer_surface_v1, try_from_wlr_surface)
 
     QW_FUNC_MEMBER(layer_surface_v1, for_each_surface)

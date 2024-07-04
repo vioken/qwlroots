@@ -25,7 +25,8 @@ public:
     template<typename T>
     QW_ALWAYS_INLINE static std::enable_if<std::is_base_of<qw_scene_node, T>::value, qw_scene_node*>::type
     from(wlr_scene_node *handle) {
-        return new T(T::from_node(handle), false);
+        Q_ASSERT(T::from_node(handle));
+        return new T(handle, false);
     }
 
     static qw_scene_node *from(wlr_scene_node *handle);
@@ -113,7 +114,7 @@ public:
 class QW_CLASS_REINTERPRET_CAST(scene_layer_surface_v1)
 {
 public:
-    QW_FUNC_STATIC(layer_surface_v1, create)
+    QW_FUNC_STATIC(scene_layer_surface_v1, create)
 
     QW_FUNC_MEMBER(scene_layer_surface_v1, configure)
 };
@@ -158,7 +159,6 @@ public:
 class qw_scene_output : public qw_scene_node
 {
     Q_OBJECT
-    QW_SCENE_NODE(scene_output)
 
 public:
     QW_FUNC_STATIC(scene_output, create)

@@ -5,6 +5,10 @@
 
 #include <qwobject.h>
 
+extern "C" {
+#include <wlr/types/wlr_xdg_foreign_registry.h>
+}
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(xdg_foreign_registry)

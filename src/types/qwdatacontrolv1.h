@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <qwglobal.h>
 #include <qwobject.h>
+
 extern "C" {
 #include <wlr/types/wlr_data_control_v1.h>
 }
@@ -25,7 +25,7 @@ class QW_CLASS_OBJECT(data_control_manager_v1)
     QW_SIGNAL(new_device, wlr_data_control_device_v1*)
 
 public:
-    QW_FUNC_STATIC(data_control_device_v1, create);
+    QW_FUNC_STATIC(data_control_manager_v1, create);
 };
 
 QW_END_NAMESPACE
