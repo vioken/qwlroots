@@ -5,6 +5,10 @@
 
 #include <qwglobal.h>
 
+extern "C" {
+#include <wlr/types/wlr_idle_notify_v1.h>
+}
+
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_REINTERPRET_CAST(idle_notifier_v1)
