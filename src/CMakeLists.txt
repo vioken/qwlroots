@@ -83,7 +83,6 @@ set(HEADERS
     types/qwkeyboardgroup.h
     types/qwpresentation.h
     types/qwxdgforeignregistry.h
-    types/qwxdgforeignregistry_p.h
     types/qwxdgforeignv1.h
     types/qwxdgforeignv2.h
     types/qwviewporter.h
@@ -172,19 +171,8 @@ if (WLR_PROTOCOLS_FOUND)
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
 endif ()
 
-add_library(${TARGET}
-    SHARED
-    ${HEADERS}
-)
-
+add_library(${TARGET} INTERFACE)
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
-
-target_compile_definitions(${TARGET}
-PRIVATE
-    QW_LIBRARY
-    WLR_USE_UNSTABLE
-    QT_NO_SIGNALS_SLOTS_KEYWORDS
-)
 
 set_target_properties(${TARGET}
     PROPERTIES
@@ -199,7 +187,7 @@ set(QT_LIBRAIES
     Qt${QT_VERSION_MAJOR}::Gui)
 
 target_link_libraries(${TARGET}
-    PRIVATE
+    INTERFACE
     ${QT_LIBRAIES}
     PkgConfig::WLROOTS
     PkgConfig::WAYLAND_SERVER
@@ -209,22 +197,14 @@ target_link_libraries(${TARGET}
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 target_include_directories(${TARGET}
-    PRIVATE
-    ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
-)
-
-target_include_directories(${TARGET}
-    PUBLIC
+    INTERFACE
+        ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generate>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/render>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/types>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/util>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/interfaces>
-)
-
-target_include_directories(${TARGET}
-    INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}>
 )
 
@@ -246,7 +226,7 @@ install(TARGETS ${TARGET}
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
 add_cmake_module(${CMAKE_NAME} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
 add_pkgconfig_module(${TARGET} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET}
-    "wlroots = ${WLROOTS_VERSION}, Qt${QT_VERSION_MAJOR}Gui"
+    "wlroots = ${WLROOTS_VERSION}, pixman-1, Qt${QT_VERSION_MAJOR}Gui"
 )
 
 install(FILES
