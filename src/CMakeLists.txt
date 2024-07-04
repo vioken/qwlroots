@@ -111,6 +111,8 @@ set(HEADERS
     types/qwkeyboardshortcutsinhibitv1.h
     types/qwfractionalscalemanagerv1.h
     types/qwsecuritycontextmanagerv1.h
+    types/qwoutputlayer.h
+    types/qwtearingcontrolv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
     interfaces/qwinterface.h
