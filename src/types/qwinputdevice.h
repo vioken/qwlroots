@@ -33,7 +33,7 @@ public:
 };
 
 #define QW_INPUT_DEVICE(name) \
-typedef qw##name DeriveType; \
+typedef qw_##name DeriveType; \
 public: \
     QW_ALWAYS_INLINE wlr_##name *handle() const { \
         return from_input_device(qw_input_device::handle()); \
