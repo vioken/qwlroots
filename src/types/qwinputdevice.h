@@ -30,7 +30,7 @@ public:
         return new T(handle, false);
     }
 
-    static qw_input_device *from(wlr_input_device *handle);
+    inline static qw_input_device *create(HandleType *handle);
 };
 
 #define QW_INPUT_DEVICE(name) \
@@ -126,7 +126,7 @@ class qw_touch : public qw_input_device
     QW_SIGNAL(frame)
 };
 
-qw_input_device *qw_input_device::from(wlr_input_device *handle) {
+qw_input_device *qw_input_device::create(HandleType *handle) {
     if (auto o = get(handle))
         return o;
 

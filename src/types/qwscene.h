@@ -29,7 +29,7 @@ public:
         return new T(handle, false);
     }
 
-    static qw_scene_node *from(wlr_scene_node *handle);
+    inline static qw_scene_node *create(HandleType *handle);
 
     QW_FUNC_MEMBER(scene_node, set_enabled)
     QW_FUNC_MEMBER(scene_node, set_position)
@@ -174,7 +174,7 @@ protected:
     QW_FUNC_MEMBER(scene_output, destroy)
 };
 
-qw_scene_node *qw_scene_node::from(wlr_scene_node *handle) {
+qw_scene_node *qw_scene_node::create(HandleType *handle) {
     if (auto o = get(handle))
         return o;
 
