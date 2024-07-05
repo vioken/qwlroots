@@ -8,13 +8,13 @@ Files: .github/* .obs/*.yml garnix.yaml
 Copyright: None
 License: CC0-1.0
 
-# gitignore
-Files: .gitignore 
+# Project file
+Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in .gitignore
 Copyright: None
 License: CC0-1.0
 
-# Project file
-Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in
+# Simple header files, only used to include qwinputdevice.h
+Files: */qwkeyboard.h */qwpointer.h */qwswitch.h */qwtablet.h */qwtabletpad.h */qwtouch.h
 Copyright: None
 License: CC0-1.0
 
