@@ -34,6 +34,7 @@ class QW_CLASS_OBJECT(drm_lease_v1_manager)
 
 public:
     QW_FUNC_STATIC(drm_lease_v1_manager, create);
+
     QW_FUNC_MEMBER(drm_lease_v1_manager, offer_output);
     QW_FUNC_MEMBER(drm_lease_v1_manager, withdraw_output);
 };

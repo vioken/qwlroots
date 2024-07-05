@@ -54,8 +54,8 @@ public:
     QW_FUNC_MEMBER(xwayland_surface, set_maximized)
     QW_FUNC_MEMBER(xwayland_surface, set_fullscreen)
     QW_FUNC_MEMBER(xwayland_surface, ping)
-    QW_FUNC_MEMBER(xwayland_surface, icccm_input_model)
-    QW_FUNC_MEMBER(xwayland_surface, xwayland_or_surface_wants_focus)
+    QW_FUNC_MEMBER(xwayland, icccm_input_model)
+    QW_FUNC_MEMBER(xwayland_or_surface, wants_focus)
 };
 
 QW_END_NAMESPACE
