@@ -5,20 +5,21 @@
 
 #include <qwglobal.h>
 
-struct wlr_xcursor_manager;
-struct wlr_xcursor;
+extern "C" {
+#include <wlr/types/wlr_xcursor_manager.h>
+}
 
 QW_BEGIN_NAMESPACE
 
 class QWCursor;
-class QW_CLASS_REINTERPRET_CAST(xcursor_manage)
+class QW_CLASS_REINTERPRET_CAST(xcursor_manager)
 {
 public:
-    QW_FUNC_STATIC(xcursor_manage, create)
+    QW_FUNC_STATIC(xcursor_manager, create)
 
-    QW_FUNC_MEMBER(xcursor_manage, destroy)
-    QW_FUNC_MEMBER(xcursor_manage, load)
-    QW_FUNC_MEMBER(xcursor_manage, get_xcursor)
+    QW_FUNC_MEMBER(xcursor_manager, destroy)
+    QW_FUNC_MEMBER(xcursor_manager, load)
+    QW_FUNC_MEMBER(xcursor_manager, get_xcursor)
 };
 
 QW_END_NAMESPACE

@@ -74,8 +74,6 @@ public:
     // TODO:move to qw_output
     // QW_FUNC_STATIC(output, is_drm)
 
-    QW_FUNC_MEMBER(drm_backend, get_drm_fd)
-    QW_FUNC_MEMBER(drm_backend, get_renderer)
     QW_FUNC_MEMBER(drm_backend, get_non_master_fd)
 
     QW_FUNC_STATIC(drm, connector_get_id)
