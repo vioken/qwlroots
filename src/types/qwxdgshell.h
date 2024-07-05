@@ -40,6 +40,8 @@ class QW_CLASS_OBJECT(xdg_surface)
     QW_SIGNAL(ack_configure, wlr_xdg_surface_configure*)
 
 public:
+    QW_FUNC_STATIC(xdg_surface, from_resource)
+
     QW_FUNC_MEMBER(xdg_surface, surface_at)
     QW_FUNC_MEMBER(xdg_surface, popup_surface_at)
     QW_FUNC_MEMBER(xdg_surface, get_geometry)
@@ -56,12 +58,14 @@ class QW_CLASS_OBJECT(xdg_popup)
     QW_SIGNAL(reposition)
 
 public:
+    QW_FUNC_STATIC(xdg_popup, from_resource)
+
     QW_FUNC_MEMBER(xdg_popup, get_position)
     QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords)
     QW_FUNC_MEMBER(xdg_popup, unconstrain_from_box)
 
 protected:
-    QW_FUNC_STATIC(xdg_popup, destroy)
+    QW_FUNC_MEMBER(xdg_popup, destroy)
 };
 
 class QW_CLASS_OBJECT(xdg_toplevel)
@@ -80,6 +84,8 @@ class QW_CLASS_OBJECT(xdg_toplevel)
     QW_SIGNAL(set_app_id, char*)
 
 public:
+    QW_FUNC_STATIC(xdg_toplevel, from_resource)
+
     QW_FUNC_MEMBER(xdg_toplevel, set_size)
     QW_FUNC_MEMBER(xdg_toplevel, set_activated)
     QW_FUNC_MEMBER(xdg_toplevel, set_maximized)

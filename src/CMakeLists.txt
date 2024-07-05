@@ -139,6 +139,12 @@ ws_generate(
     staging/cursor-shape/cursor-shape-v1.xml
     cursor-shape-v1-protocol
 )
+ws_generate(
+    server
+    wayland-protocols
+    staging/tearing-control/tearing-control-v1.xml
+    tearing-control-v1-protocol
+)
 
 list(APPEND HEADERS
     render/qwswapchain.h

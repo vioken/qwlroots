@@ -27,7 +27,7 @@ class QW_CLASS_OBJECT(backend)
     Q_OBJECT
 
 public:
-    static DeriveType *create(HandleType *handle);
+    static inline DeriveType *create(HandleType *handle);
 
     QW_FUNC_MEMBER(backend, autocreate)
     QW_FUNC_MEMBER(backend, get_drm_fd)

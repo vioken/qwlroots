@@ -9,23 +9,23 @@
 
 #include <qwbackend.h>
 #include <qwdisplay.h>
-// #include <qwrenderer.h>
-// #include <qwallocator.h>
-// #include <qwcompositor.h>
-// #include <qwsubcompositor.h>
-// #include <qwdatadevice.h>
-// #include <qwoutputlayout.h>
-// #include <qwoutput.h>
-// #include <qwscene.h>
-// #include <qwseat.h>
-// #include <qwxdgshell.h>
-// #include <qwcursor.h>
-// #include <qwxcursormanager.h>
-// #include <qwinputdevice.h>
-// #include <qwkeyboard.h>
-// #include <qwpointer.h>
-// #include <qwbackendinterface.h>
-// #include <qwtexture.h>
+#include <qwrenderer.h>
+#include <qwallocator.h>
+#include <qwcompositor.h>
+#include <qwsubcompositor.h>
+#include <qwdatadevice.h>
+#include <qwoutputlayout.h>
+#include <qwoutput.h>
+#include <qwscene.h>
+#include <qwseat.h>
+#include <qwxdgshell.h>
+#include <qwcursor.h>
+#include <qwxcursormanager.h>
+#include <qwinputdevice.h>
+#include <qwkeyboard.h>
+#include <qwpointer.h>
+#include <qwbackendinterface.h>
+#include <qwtexture.h>
 
 /*class TinywlServer : public QObject
 {
