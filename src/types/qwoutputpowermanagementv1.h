@@ -4,7 +4,6 @@
 #pragma once
 
 #include <qwobject.h>
-#include <qtmetamacros.h>
 
 extern "C" {
 #include <wlr/types/wlr_output_power_management_v1.h>
