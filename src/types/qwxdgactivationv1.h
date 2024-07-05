@@ -16,7 +16,12 @@ class QW_CLASS_OBJECT(xdg_activation_token_v1)
     Q_OBJECT
 
 public:
+    QW_FUNC_STATIC(xdg_activation_token_v1, create)
+
     QW_FUNC_MEMBER(xdg_activation_token_v1, get_name)
+
+protected:
+    QW_FUNC_MEMBER(xdg_activation_token_v1, destroy)
 };
 
 class QW_CLASS_OBJECT(xdg_activation_v1)
@@ -30,7 +35,6 @@ class QW_CLASS_OBJECT(xdg_activation_v1)
 public:
     QW_FUNC_STATIC(xdg_activation_v1, create)
 
-    QW_FUNC_MEMBER(xdg_activation_v1, create_token)
     QW_FUNC_MEMBER(xdg_activation_v1, find_token)
     QW_FUNC_MEMBER(xdg_activation_v1, add_token)
 };

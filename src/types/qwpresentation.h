@@ -21,7 +21,7 @@ public:
 
     QW_FUNC_MEMBER(presentation, surface_sampled)
     QW_FUNC_MEMBER(presentation, surface_textured_on_output)
-    QW_FUNC_MEMBER(presentation, surface_scanned_on_output)
+    QW_FUNC_MEMBER(presentation, surface_scanned_out_on_output)
 };
 
 class QW_CLASS_REINTERPRET_CAST(presentation_event)
@@ -33,8 +33,8 @@ public:
 class QW_CLASS_REINTERPRET_CAST(presentation_feedback)
 {
 public:
-    QW_FUNC_MEMBER(presentation_event, send_presented)
-    QW_FUNC_MEMBER(presentation_event, destroy)
+    QW_FUNC_MEMBER(presentation_feedback, send_presented)
+    QW_FUNC_MEMBER(presentation_feedback, destroy)
 };
 
 QW_END_NAMESPACE

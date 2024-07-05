@@ -33,8 +33,8 @@ public:
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     QW_FUNC_MEMBER(output, enable)
 #endif
-    QW_FUNC_MEMBER(output, createGlobal)
-    QW_FUNC_MEMBER(output, destroyGlobal)
+    QW_FUNC_MEMBER(output, create_global)
+    QW_FUNC_MEMBER(output, destroy_global)
     QW_FUNC_MEMBER(output, init_render)
     QW_FUNC_MEMBER(output, preferred_mode)
 
@@ -70,7 +70,7 @@ public:
 
     QW_FUNC_MEMBER(output, test_state)
     QW_FUNC_MEMBER(output, commit_state)
-    QW_FUNC_MEMBER(output, finish_state)
+
     QW_FUNC_MEMBER(output, schedule_frame)
     QW_FUNC_MEMBER(output, get_gamma_size)
     QW_FUNC_MEMBER(output, set_gamma)
@@ -98,6 +98,25 @@ public:
 
 protected:
     QW_FUNC_MEMBER(output_cursor, destroy)
+};
+
+class QW_CLASS_REINTERPRET_CAST(output_state)
+{
+public:
+    QW_FUNC_MEMBER(output_state, init)
+    QW_FUNC_MEMBER(output_state, finish)
+    QW_FUNC_MEMBER(output_state, set_enabled)
+    QW_FUNC_MEMBER(output_state, set_mode)
+    QW_FUNC_MEMBER(output_state, set_scale)
+    QW_FUNC_MEMBER(output_state, set_transform)
+    QW_FUNC_MEMBER(output_state, set_adaptive_sync_enabled)
+    QW_FUNC_MEMBER(output_state, set_render_format)
+    QW_FUNC_MEMBER(output_state, set_subpixel)
+    QW_FUNC_MEMBER(output_state, set_buffer)
+    QW_FUNC_MEMBER(output_state, set_gamma_lut)
+    QW_FUNC_MEMBER(output_state, set_damage)
+    QW_FUNC_MEMBER(output_state, set_layers)
+    QW_FUNC_MEMBER(output_state, copy)
 };
 
 QW_END_NAMESPACE

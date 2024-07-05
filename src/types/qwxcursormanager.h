@@ -11,7 +11,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QWCursor;
 class QW_CLASS_REINTERPRET_CAST(xcursor_manager)
 {
 public:

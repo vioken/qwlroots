@@ -13,7 +13,6 @@ extern "C" {
 #include <wlr/util/box.h>
 }
 
-
 QW_BEGIN_NAMESPACE
 
 class QW_CLASS_OBJECT(scene_node)

@@ -26,6 +26,7 @@ class QW_CLASS_OBJECT(output_layout)
 public:
     QW_FUNC_STATIC(output_layout, create)
 
+    QW_FUNC_MEMBER(output_layout, get)
     QW_FUNC_MEMBER(output_layout, output_at)
     QW_FUNC_MEMBER(output_layout, get_center_output)
     QW_FUNC_MEMBER(output_layout, adjacent_output)
@@ -33,7 +34,6 @@ public:
 
     QW_FUNC_MEMBER(output_layout, add)
     QW_FUNC_MEMBER(output_layout, add_auto)
-    QW_FUNC_MEMBER(output_layout, move)
     QW_FUNC_MEMBER(output_layout, remove)
 
     QW_FUNC_MEMBER(output_layout, output_coords)
