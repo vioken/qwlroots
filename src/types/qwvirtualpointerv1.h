@@ -19,6 +19,7 @@ class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
     QW_SIGNAL(new_virtual_pointer, wlr_virtual_pointer_v1_new_pointer_event*)
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(virtual_pointer_manager_v1, create)
 };
 

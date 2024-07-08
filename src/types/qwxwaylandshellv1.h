@@ -19,9 +19,12 @@ class QW_CLASS_OBJECT(xwayland_shell_v1)
     QW_SIGNAL(new_surface, wlr_xwayland_surface_v1*)
 
 public:
+    // wl_display *display, uint32_t version
     QW_FUNC_STATIC(xwayland_shell_v1, create)
 
+    // wl_client *client
     QW_FUNC_MEMBER(xwayland_shell_v1, set_client)
+    // uint64_t serial
     QW_FUNC_MEMBER(xwayland_shell_v1, surface_from_serial)
 };
 

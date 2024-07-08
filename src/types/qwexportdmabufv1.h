@@ -17,6 +17,7 @@ class QW_CLASS_OBJECT(export_dmabuf_manager_v1)
     Q_OBJECT
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(export_dmabuf_manager_v1, create)
 };
 

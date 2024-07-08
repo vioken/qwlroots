@@ -20,13 +20,18 @@ class QW_CLASS_OBJECT(keyboard_group)
     QW_SIGNAL(leave, wl_array*)
 
 public:
+    // void
     QW_FUNC_STATIC(keyboard_group, create)
+    // wlr_keyboard *keyboard
     QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard)
 
+    // wlr_keyboard *keyboard
     QW_FUNC_MEMBER(keyboard_group, add_keyboard)
+    // wlr_keyboard *keyboard
     QW_FUNC_MEMBER(keyboard_group, remove_keyboard)
 
 protected:
+    // Empty parameters
     QW_FUNC_MEMBER(keyboard_group, destroy)
 };
 

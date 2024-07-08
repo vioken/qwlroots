@@ -59,8 +59,11 @@ class qw_keyboard : public qw_input_device
     QW_SIGNAL(repeat_info)
 
 public:
+    // Empty parameters
     QW_FUNC_MEMBER(keyboard, get_modifiers)
+    // xkb_keymap *keymap
     QW_FUNC_MEMBER(keyboard, set_keymap)
+    // int32_t rate_hz, int32_t delay_ms
     QW_FUNC_MEMBER(keyboard, set_repeat_info)
 };
 

@@ -14,10 +14,14 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(xcursor_manager)
 {
 public:
+    // const char *name, uint32_t size
     QW_FUNC_STATIC(xcursor_manager, create)
 
+    // Empty parameters
     QW_FUNC_MEMBER(xcursor_manager, destroy)
+    // float scale
     QW_FUNC_MEMBER(xcursor_manager, load)
+    // const char *name, float scale
     QW_FUNC_MEMBER(xcursor_manager, get_xcursor)
 };
 

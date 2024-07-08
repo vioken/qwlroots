@@ -17,6 +17,7 @@ class QW_CLASS_OBJECT(primary_selection_v1_device_manager)
     Q_OBJECT
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(primary_selection_v1_device_manager, create)
 };
 QW_END_NAMESPACE

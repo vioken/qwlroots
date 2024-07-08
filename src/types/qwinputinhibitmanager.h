@@ -20,6 +20,7 @@ class QW_CLASS_OBJECT(input_inhibit_manager)
     QW_SIGNAL(deactivate)
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(input_inhibit_manager, create)
 };
 

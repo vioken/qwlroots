@@ -17,8 +17,10 @@ class QW_CLASS_OBJECT(session_lock_surface_v1)
     Q_OBJECT
 
 public:
+    // wlr_surface *surface
     QW_FUNC_STATIC(session_lock_surface_v1, try_from_wlr_surface)
 
+    // uint32_t width, uint32_t height
     QW_FUNC_MEMBER(session_lock_surface_v1, configure)
 };
 
@@ -31,6 +33,7 @@ class QW_CLASS_OBJECT(session_lock_v1)
     QW_SIGNAL(unlock)
 
 public:
+    // Empty parameters
     QW_FUNC_MEMBER(session_lock_v1, send_locked)
 };
 
@@ -42,6 +45,7 @@ class QW_CLASS_OBJECT(session_lock_manager_v1)
     QW_SIGNAL(new_lock, wlr_session_lock_v1*)
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(session_lock_manager_v1, create)
 };
 

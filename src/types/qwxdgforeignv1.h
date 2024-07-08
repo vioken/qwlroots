@@ -17,6 +17,7 @@ class QW_CLASS_OBJECT(xdg_foreign_v1)
     Q_OBJECT
 
 public:
+    // wl_display *display, wlr_xdg_foreign_registry *registry
     QW_FUNC_STATIC(xdg_foreign_v1, create)
 };
 

@@ -18,6 +18,7 @@ class QW_CLASS_OBJECT(drm)
     Q_OBJECT
 
 public:
+    // wl_display *display, wlr_renderer *renderer
     QW_FUNC_STATIC(drm, create)
 };
 
@@ -25,6 +26,7 @@ public:
 class QW_CLASS_REINTERPRET_CAST(drm_buffer)
 {
 public:
+    // wl_resource *resource
     QW_FUNC_STATIC(drm_buffer, try_from_resource)
 };
 

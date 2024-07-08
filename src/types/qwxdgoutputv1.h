@@ -20,6 +20,7 @@ class QW_CLASS_OBJECT(xdg_output_manager_v1)
     Q_OBJECT
 
 public:
+    // wl_display *display, wlr_output_layout *layout
     QW_FUNC_STATIC(xdg_output_manager_v1, create)
 };
 

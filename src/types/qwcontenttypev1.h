@@ -17,8 +17,10 @@ class QW_CLASS_OBJECT(content_type_manager_v1)
     Q_OBJECT
 
 public:
+    // wl_display *display, uint32_t version
     QW_FUNC_STATIC(content_type_manager_v1, create)
 
+    // wlr_surface *surface
     QW_FUNC_MEMBER(surface, get_content_type_v1)
 };
 

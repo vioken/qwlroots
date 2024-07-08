@@ -19,9 +19,11 @@ class QW_CLASS_OBJECT(output_layer)
     QW_SIGNAL(feedback, wlr_output_layer_feedback_event*)
 
 public:
+    // wlr_output *output
     QW_FUNC_STATIC(output_layer, create)
 
 protected:
+    // Empty parameters
     QW_FUNC_MEMBER(output_layer, destroy)
 };
 

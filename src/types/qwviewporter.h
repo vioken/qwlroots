@@ -17,6 +17,7 @@ class QW_CLASS_OBJECT(viewporter)
     Q_OBJECT
 
 public:
+    // wl_display *display
     QW_FUNC_STATIC(viewporter, create)
 };
 

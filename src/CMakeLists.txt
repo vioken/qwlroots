@@ -157,7 +157,7 @@ if(WLR_HAVE_XWAYLAND)
     )
 endif()
 if (${WLROOTS_VERSION_MINOR} GREATER_EQUAL 18)
-    list(APPEND HEADERS types/qwidle.h)
+
 else()
     list(APPEND HEADERS types/qwinputinhibitmanager.h)
 endif()
