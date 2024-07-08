@@ -28,7 +28,7 @@ public:
 
     QW_FUNC_MEMBER(layer_surface_v1, for_each_surface)
     QW_FUNC_MEMBER(layer_surface_v1, for_each_popup_surface)
-    QW_FUNC_MEMBER(layer_surface_v1, at)
+    QW_FUNC_MEMBER(layer_surface_v1, surface_at)
     QW_FUNC_MEMBER(layer_surface_v1, popup_surface_at)
 
 protected:

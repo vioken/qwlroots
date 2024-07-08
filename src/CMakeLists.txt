@@ -81,7 +81,6 @@ set(HEADERS
     types/qwoutput.h
     types/qwxdgdecorationmanagerv1.h
     types/qwidleinhibitv1.h
-    types/qwinputinhibitmanager.h
     types/qwkeyboardgroup.h
     types/qwpresentation.h
     types/qwxdgforeignregistry.h
@@ -158,7 +157,9 @@ if(WLR_HAVE_XWAYLAND)
     )
 endif()
 if (${WLROOTS_VERSION_MINOR} GREATER_EQUAL 18)
-    list(REMOVE_ITEM HEADERS types/qwinputinhibitmanager.h)
+    list(APPEND HEADERS types/qwidle.h)
+else()
+    list(APPEND HEADERS types/qwinputinhibitmanager.h)
 endif()
 
 if (WLR_HAVE_XWAYLAND)

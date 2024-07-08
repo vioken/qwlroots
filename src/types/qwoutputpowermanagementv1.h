@@ -20,9 +20,6 @@ class QW_CLASS_OBJECT(output_power_manager_v1)
 
 public:
     QW_FUNC_STATIC(output_power_manager_v1, create)
-
-    QW_FUNC_MEMBER(output_power_manager_v1, send_failed)
-    QW_FUNC_MEMBER(output_power_manager_v1, send_succeeded)
 };
 
 QW_END_NAMESPACE

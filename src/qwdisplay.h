@@ -20,20 +20,20 @@ class qw_display : public qw_object<wl_display, qw_display>
     using qw_object::qw_object;
     friend class qw_object;
 
-#undef QW_FUNC_MEMBER
-#define QW_FUNC_MEMBER(wl_type_suffix, wl_func_suffix) \
+#define QW_DISPLAY_FUNC_MEMBER(wl_func_suffix) \
     template<typename ...Args> \
-        QW_ALWAYS_INLINE auto wl_func_suffix(Args &&... args) { \
-            return wl_##wl_type_suffix##_##wl_func_suffix(*this, std::forward<Args>(args)...); \
+    QW_ALWAYS_INLINE QW_CFUNC_RETURN_TYPE(wl_display##_##wl_func_suffix) \
+    wl_func_suffix(Args &&... args) { \
+        return wl_display##_##wl_func_suffix(*this, std::forward<Args>(args)...); \
     }
 
 public:
-    QW_FUNC_MEMBER(display, add_socket)
-    QW_FUNC_MEMBER(display, socket_fd)
-    QW_FUNC_MEMBER(display, socket_auto)
-    QW_FUNC_MEMBER(display, run)
-    QW_FUNC_MEMBER(display, terminate)
-    QW_FUNC_MEMBER(display, get_event_loop)
+    QW_DISPLAY_FUNC_MEMBER(add_socket)
+    QW_DISPLAY_FUNC_MEMBER(add_socket_fd)
+    QW_DISPLAY_FUNC_MEMBER(add_socket_auto)
+    QW_DISPLAY_FUNC_MEMBER(run)
+    QW_DISPLAY_FUNC_MEMBER(terminate)
+    QW_DISPLAY_FUNC_MEMBER(get_event_loop)
 
     wl_event_loop *eventLoop() const;
 

@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(content_type_manager_v1)
 public:
     QW_FUNC_STATIC(content_type_manager_v1, create)
 
-    QW_FUNC_MEMBER(content_type_manager_v1, get_surface_content_type)
+    QW_FUNC_MEMBER(surface, get_content_type_v1)
 };
 
 QW_END_NAMESPACE

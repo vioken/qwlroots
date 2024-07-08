@@ -3,64 +3,40 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_idle;
-struct wlr_idle_timeout;
+extern "C" {
+#include <wlr/types/wlr_idle.h>
+}
 
 QW_BEGIN_NAMESPACE
-class QWSeat;
-class QWDisplay;
-class QWIdlePrivate;
-class QW_EXPORT QWIdle : public QWWrapObject
+
+class QW_CLASS_OBJECT(idle)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWIdle)
+
+    QW_SIGNAL(activity_notify)
 
 public:
-    inline wlr_idle *handle() const {
-        return QWObject::handle<wlr_idle>();
-    }
+    QW_FUNC_STATIC(idle, create)
 
-    static QWIdle *get(wlr_idle *handle);
-    static QWIdle *from(wlr_idle *handle);
-    static QWIdle *create(QWDisplay *display);
-
-    void notifyActivity(QWSeat *seat);
-    void setEnabled(QWSeat *seat, bool enabled);
-
-Q_SIGNALS:
-    void activityNotify();
-
-private:
-    QWIdle(wlr_idle *handle, bool isOwner);
-    ~QWIdle() = default;
+    QW_FUNC_MEMBER(idle, notify_activity)
+    QW_FUNC_MEMBER(idle, set_enabled)
 };
 
-class QWIdleTimeoutPrivate;
-class QW_EXPORT QWIdleTimeout : public QWWrapObject
+class QW_CLASS_OBJECT(idle_timeout)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWIdleTimeout)
+
+    QW_SIGNAL(idle)
+    QW_SIGNAL(resume)
 
 public:
-    ~QWIdleTimeout() = default;
+    QW_FUNC_STATIC(idle_timeout, create)
 
-    inline wlr_idle_timeout *handle() const {
-        return QWObject::handle<wlr_idle_timeout>();
-    }
-
-    static QWIdleTimeout *get(wlr_idle_timeout *handle);
-    static QWIdleTimeout *from(wlr_idle_timeout *handle);
-    static QWIdleTimeout *create(QWIdle *idle, QWSeat *seat, uint32_t timeout);
-
-Q_SIGNALS:
-    void idle();
-    void resume();
-
-private:
-    QWIdleTimeout(wlr_idle_timeout *handle, bool isOwner);
+    QW_FUNC_MEMBER(idle_timeout, destroy)
 };
 
 QW_END_NAMESPACE
