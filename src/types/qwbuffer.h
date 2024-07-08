@@ -19,8 +19,9 @@ class QW_CLASS_OBJECT(buffer)
     QW_SIGNAL(release)
 
 public:
-    // Empty parameters
-    QW_FUNC_MEMBER(buffer, try_from_resource)
+    // wl_resource *resource
+    QW_FUNC_STATIC(buffer, try_from_resource)
+
     // Empty parameters
     QW_FUNC_MEMBER(buffer, drop)
     // Empty parameters
