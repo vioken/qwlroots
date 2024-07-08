@@ -138,7 +138,7 @@ qw_input_device *qw_input_device::create(HandleType *handle) {
         return from<qw_keyboard>(handle);
     case WLR_INPUT_DEVICE_POINTER:
         return from<qw_pointer>(handle);
-#if WLR_ERSION_MINOR > 17
+#if WLR_VERSION_MINOR > 17
     case WLR_INPUT_DEVICE_TABLET:
 #else
     case WLR_INPUT_DEVICE_TABLET_TOOL:
