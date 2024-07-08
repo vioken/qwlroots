@@ -15,8 +15,11 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(egl)
 {
 public:
+    // EGLContext context
     QW_FUNC_MEMBER(egl, create_with_context)
+    // Empty parameters
     QW_FUNC_MEMBER(egl, get_display)
+    // Empty parameters
     QW_FUNC_MEMBER(egl, get_context)
 };
 
