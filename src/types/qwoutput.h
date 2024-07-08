@@ -77,12 +77,12 @@ public:
     QW_FUNC_MEMBER(output, attach_render)
     // wlr_buffer *buffer
     QW_FUNC_MEMBER(output, attach_buffer)
+    // Empty parameters
+    QW_FUNC_MEMBER(output, preferred_read_format)
 #endif
 
     // bool lock
     QW_FUNC_MEMBER(output, lock_attach_render)
-    // Empty parameters
-    QW_FUNC_MEMBER(output, preferred_read_format)
 
 #if WLR_VERSION_MINOR < 18
     // Empty parameters
@@ -91,6 +91,8 @@ public:
     QW_FUNC_MEMBER(output, commit)
     // Empty parameters
     QW_FUNC_MEMBER(output, rollback)
+    // size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b
+    QW_FUNC_MEMBER(output, set_gamma)
 #endif
 
     // const wlr_output_state *state
@@ -102,8 +104,6 @@ public:
     QW_FUNC_MEMBER(output, schedule_frame)
     // Empty parameters
     QW_FUNC_MEMBER(output, get_gamma_size)
-    // size_t size, const uint16_t *r, const uint16_t *g, const uint16_t *b
-    QW_FUNC_MEMBER(output, set_gamma)
     // bool lock
     QW_FUNC_MEMBER(output, lock_software_cursors)
 
