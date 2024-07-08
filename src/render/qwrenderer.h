@@ -33,7 +33,8 @@ class QW_CLASS_OBJECT(renderer)
     QW_SIGNAL(lost)
 
 public:
-    QW_FUNC_MEMBER(renderer, autocreate)
+    QW_FUNC_STATIC(renderer, autocreate)
+
     QW_FUNC_MEMBER(renderer, init_wl_display)
     QW_FUNC_MEMBER(renderer, init_wl_shm)
     QW_FUNC_MEMBER(renderer, get_drm_fd)

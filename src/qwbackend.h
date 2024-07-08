@@ -26,11 +26,13 @@ class QW_CLASS_OBJECT(backend)
     QW_OBJECT
     Q_OBJECT
 
+    QW_SIGNAL(new_output, wlr_output*)
+    QW_SIGNAL(new_input, wlr_input_device*)
+
 public:
     static inline DeriveType *create(HandleType *handle);
 
-    QW_FUNC_MEMBER(backend, autocreate)
-    QW_FUNC_MEMBER(backend, get_drm_fd)
+    QW_FUNC_STATIC(backend, autocreate)
 
     QW_FUNC_STATIC(backend, is_multi)
     QW_FUNC_STATIC(backend, is_drm)
@@ -41,8 +43,7 @@ public:
     QW_FUNC_STATIC(backend, is_libinput)
     QW_FUNC_STATIC(backend, is_headless)
 
-    QW_SIGNAL(new_output, wlr_output*)
-    QW_SIGNAL(new_input, wlr_input_device*)
+    QW_FUNC_MEMBER(backend, get_drm_fd)
 
 protected:
     QW_FUNC_MEMBER(backend, destroy)

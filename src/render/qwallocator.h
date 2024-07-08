@@ -18,6 +18,7 @@ class QW_CLASS_OBJECT(allocator)
 
 public:
     QW_FUNC_STATIC(allocator, autocreate)
+
     QW_FUNC_MEMBER(allocator, create_buffer)
 
 protected:
