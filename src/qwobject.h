@@ -4,7 +4,7 @@
 #pragma once
 
 #include <qwglobal.h>
-#include "qwinterface.h"
+#include <qwinterface.h>
 #include <qwsignalconnector.h>
 
 #include <QHash>
