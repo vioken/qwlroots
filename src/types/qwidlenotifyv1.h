@@ -14,12 +14,9 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(idle_notifier_v1)
 {
 public:
-    // wl_display *display
     QW_FUNC_STATIC(idle_notifier_v1, create)
 
-    // wlr_seat *seat
     QW_FUNC_MEMBER(idle_notifier_v1, notify_activity)
-    // bool inhibited
     QW_FUNC_MEMBER(idle_notifier_v1, set_inhibited)
 };
 

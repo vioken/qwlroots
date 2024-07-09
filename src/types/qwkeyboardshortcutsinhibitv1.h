@@ -17,9 +17,7 @@ class QW_CLASS_OBJECT(keyboard_shortcuts_inhibitor_v1)
     Q_OBJECT
 
 public:
-    // Empty parameters
     QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, activate)
-    // Empty parameters
     QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, deactivate)
 };
 
@@ -31,7 +29,6 @@ class QW_CLASS_OBJECT(keyboard_shortcuts_inhibit_manager_v1)
     QW_SIGNAL(new_inhibitor, qw_keyboard_shortcuts_inhibitor_v1*)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(keyboard_shortcuts_inhibit_v1, create)
 };
 

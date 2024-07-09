@@ -43,30 +43,18 @@ class QW_CLASS_OBJECT(xwayland_surface)
     QW_SIGNAL(dissociate)
 
 public:
-    // wlr_surface *surface
     QW_FUNC_STATIC(xwayland_surface, try_from_wlr_surface)
 
-    // bool activated
     QW_FUNC_MEMBER(xwayland_surface, activate)
-    // wlr_xwayland_surface *sibling, enum xcb_stack_mode_t mode
     QW_FUNC_MEMBER(xwayland_surface, restack)
-    // int16_t x, int16_t y, uint16_t width, uint16_t height
     QW_FUNC_MEMBER(xwayland_surface, configure)
-    // Empty parameters
     QW_FUNC_MEMBER(xwayland_surface, close)
-    // bool withdrawn
     QW_FUNC_MEMBER(xwayland_surface, set_withdrawn)
-    // bool minimized
     QW_FUNC_MEMBER(xwayland_surface, set_minimized)
-    // bool maximized
     QW_FUNC_MEMBER(xwayland_surface, set_maximized)
-    // bool fullscreen
     QW_FUNC_MEMBER(xwayland_surface, set_fullscreen)
-    // Empty parameters
     QW_FUNC_MEMBER(xwayland_surface, ping)
-    // Empty parameters
     QW_FUNC_MEMBER(xwayland, icccm_input_model)
-    // Empty parameters
     QW_FUNC_MEMBER(xwayland_or_surface, wants_focus)
 };
 

@@ -20,7 +20,6 @@ class QW_CLASS_OBJECT(foreign_toplevel_manager_v1)
     Q_OBJECT
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(foreign_toplevel_manager_v1, create)
 };
 
@@ -37,30 +36,19 @@ class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
     QW_SIGNAL(set_rectangle, wlr_foreign_toplevel_handle_v1_set_rectangle_event*)
 
 public:
-    // wlr_foreign_toplevel_manager_v1 *manager
     QW_FUNC_STATIC(foreign_toplevel_handle_v1, create)
 
-    // const char *title
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title)
-    // const char *app_id
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id)
-    // wlr_output *output
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_enter)
-    // wlr_output *output
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_leave)
-    // bool maximized
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_maximized)
-    // bool minimized
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_minimized)
-    // bool activated
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_activated)
-    // bool fullscreen
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_fullscreen)
-    // wlr_foreign_toplevel_handle_v1 *parent
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_parent)
 
 protected:
-    // Empty parameters
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy)
 };
 

@@ -16,7 +16,6 @@ class QW_CLASS_OBJECT(screencopy_manager_v1)
     Q_OBJECT
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(screencopy_manager_v1, create)
 };
 QW_END_NAMESPACE

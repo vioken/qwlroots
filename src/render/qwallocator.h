@@ -17,14 +17,11 @@ class QW_CLASS_OBJECT(allocator)
     Q_OBJECT
 
 public:
-    // wlr_backend *backend, wlr_renderer *renderer
     QW_FUNC_STATIC(allocator, autocreate)
 
-    // int width, int height, const wlr_drm_format *format
     QW_FUNC_MEMBER(allocator, create_buffer)
 
 protected:
-    // Empty parameters
     QW_FUNC_MEMBER(allocator, destroy)
 };
 

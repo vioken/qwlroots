@@ -19,7 +19,6 @@ class QW_CLASS_OBJECT(xdg_decoration_manager_v1)
     QW_SIGNAL(new_toplevel_decoration, wlr_xdg_toplevel_decoration_v1*)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(xdg_decoration_manager_v1, create)
 };
 
@@ -31,7 +30,6 @@ class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)
     QW_SIGNAL(request_mode)
 
 public:
-    // enum wlr_xdg_toplevel_decoration_v1_mode mode
     QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode)
 };
 

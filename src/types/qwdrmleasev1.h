@@ -15,16 +15,13 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(drm_lease_v1)
 {
 public:
-    // Empty parameters
     QW_FUNC_MEMBER(drm_lease_v1, revoke);
 };
 
 class QW_CLASS_REINTERPRET_CAST(drm_lease_request_v1)
 {
 public:
-    // Empty parameters
     QW_FUNC_MEMBER(drm_lease_request_v1, grant);
-    // Empty parameters
     QW_FUNC_MEMBER(drm_lease_request_v1, reject);
 };
 
@@ -36,12 +33,9 @@ class QW_CLASS_OBJECT(drm_lease_v1_manager)
     QW_SIGNAL(request, wlr_drm_lease_request_v1*)
 
 public:
-    // wl_display *display, wlr_backend *backend
     QW_FUNC_STATIC(drm_lease_v1_manager, create);
 
-    // wlr_output *output
     QW_FUNC_MEMBER(drm_lease_v1_manager, offer_output);
-    // wlr_output *output
     QW_FUNC_MEMBER(drm_lease_v1_manager, withdraw_output);
 };
 

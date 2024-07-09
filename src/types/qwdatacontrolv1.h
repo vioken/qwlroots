@@ -14,7 +14,6 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(data_control_device_v1)
 {
 public:
-    // Empty parameters
     QW_FUNC_MEMBER(data_control_device_v1, destroy)
 };
 
@@ -26,7 +25,6 @@ class QW_CLASS_OBJECT(data_control_manager_v1)
     QW_SIGNAL(new_device, wlr_data_control_device_v1*)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(data_control_manager_v1, create);
 };
 

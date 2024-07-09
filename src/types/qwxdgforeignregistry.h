@@ -17,10 +17,8 @@ class QW_CLASS_OBJECT(xdg_foreign_registry)
     Q_OBJECT
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(xdg_foreign_registry, create)
 
-    // const char *handle
     QW_FUNC_MEMBER(xdg_foreign_registry, find_by_handle)
 };
 
@@ -30,9 +28,7 @@ class QW_CLASS_OBJECT(xdg_foreign_exported)
     Q_OBJECT
 
 public:
-    // wlr_xdg_foreign_registry *registry
     QW_FUNC_MEMBER(xdg_foreign_exported, init)
-    // Empty parameters
     QW_FUNC_MEMBER(xdg_foreign_exported, finish)
 };
 

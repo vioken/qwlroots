@@ -19,7 +19,6 @@ class QW_CLASS_OBJECT(fullscreen_shell_v1)
     QW_SIGNAL(present_surface, wlr_fullscreen_shell_v1_present_surface_event*)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(fullscreen_shell_v1, create)
 };
 

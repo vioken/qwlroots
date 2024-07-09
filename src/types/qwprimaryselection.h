@@ -17,18 +17,13 @@ class QW_CLASS_OBJECT(primary_selection_source)
     Q_OBJECT
 
 public:
-    // wlr_seat *seat, wlr_seat_client *client, wlr_primary_selection_source *source, uint32_t serial
     QW_FUNC_STATIC(seat, request_set_primary_selection)
-    // wlr_seat *seat, wlr_primary_selection_source *source, uint32_t serial
     QW_FUNC_STATIC(seat, set_primary_selection)
 
-    // const wlr_primary_selection_source_impl *impl
     QW_FUNC_MEMBER(primary_selection_source, init)
-    // const char *mime_type, int fd
     QW_FUNC_MEMBER(primary_selection_source, send)
 
 protected:
-    // Empty parameters
     QW_FUNC_MEMBER(primary_selection_source, destroy)
 };
 QW_END_NAMESPACE

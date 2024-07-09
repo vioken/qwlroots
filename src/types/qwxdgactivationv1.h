@@ -16,14 +16,11 @@ class QW_CLASS_OBJECT(xdg_activation_token_v1)
     Q_OBJECT
 
 public:
-    // wlr_xdg_activation_v1 *activation
     QW_FUNC_STATIC(xdg_activation_token_v1, create)
 
-    // Empty parameters
     QW_FUNC_MEMBER(xdg_activation_token_v1, get_name)
 
 protected:
-    // Empty parameters
     QW_FUNC_MEMBER(xdg_activation_token_v1, destroy)
 };
 
@@ -36,12 +33,9 @@ class QW_CLASS_OBJECT(xdg_activation_v1)
     QW_SIGNAL(new_token, wlr_xdg_activation_token_v1*)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(xdg_activation_v1, create)
 
-    // const char *token_str
     QW_FUNC_MEMBER(xdg_activation_v1, find_token)
-    // const char *token_str
     QW_FUNC_MEMBER(xdg_activation_v1, add_token)
 };
 

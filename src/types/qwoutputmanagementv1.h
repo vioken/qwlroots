@@ -17,19 +17,15 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(output_configuration_v1)
 {
 public:
-    // void
     QW_FUNC_STATIC(output_configuration_v1, create)
 
-    // Empty parameters
     QW_FUNC_MEMBER(output_configuration_v1, send_failed)
-    // Empty parameters
     QW_FUNC_MEMBER(output_configuration_v1, send_succeeded)
 };
 
 class QW_CLASS_REINTERPRET_CAST(output_configuration_head_v1)
 {
 public:
-    // wlr_output_configuration_v1 *config, wlr_output *output
     QW_FUNC_STATIC(output_configuration_head_v1, create)
 };
 
@@ -42,9 +38,7 @@ class QW_CLASS_OBJECT(output_manager_v1)
     QW_SIGNAL(test, wlr_output_configuration_v1 *)
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(output_manager_v1, create)
-    // wlr_output_configuration_v1 *config
     QW_FUNC_MEMBER(output_manager_v1, set_configuration)
 };
 

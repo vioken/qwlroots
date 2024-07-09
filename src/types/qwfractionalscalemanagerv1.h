@@ -17,9 +17,7 @@ class QW_CLASS_OBJECT(fractional_scale_manager_v1)
     Q_OBJECT
 
 public:
-    // wlr_surface *surface, double scale
     QW_FUNC_STATIC(fractional_scale_v1, notify_scale)
-    // wl_display *display, uint32_t version
     QW_FUNC_STATIC(fractional_scale_manager_v1, create)
 };
 

@@ -47,44 +47,26 @@ class QW_CLASS_OBJECT(cursor)
     QW_SIGNAL(tablet_tool_button, wlr_tablet_tool_button_event*)
 
 public:
-    // void
     QW_FUNC_STATIC(cursor, create)
 
-    // wlr_input_device *dev, double lx, double ly
     QW_FUNC_MEMBER(cursor, warp)
-    // wlr_input_device *dev, double x, double y
     QW_FUNC_MEMBER(cursor, warp_closest)
-    // wlr_input_device *dev, double x, double y
     QW_FUNC_MEMBER(cursor, warp_absolute)
-    // wlr_input_device *dev, double delta_x, double delta_y
     QW_FUNC_MEMBER(cursor, move)
-    // wlr_buffer *buffer, int32_t hotspot_x, int32_t hotspot_y, float scale
     QW_FUNC_MEMBER(cursor, set_buffer)
-    // wlr_xcursor_manager *manager, const char *name
     QW_FUNC_MEMBER(cursor, set_xcursor)
-    // Empty parameters
     QW_FUNC_MEMBER(cursor, unset_image)
-    // wlr_surface *surface, int32_t hotspot_x, int32_t hotspot_y
     QW_FUNC_MEMBER(cursor, set_surface)
-    // wlr_input_device *dev
     QW_FUNC_MEMBER(cursor, attach_input_device)
-    // wlr_input_device *dev
     QW_FUNC_MEMBER(cursor, detach_input_device)
-    // wlr_output_layout *l
     QW_FUNC_MEMBER(cursor, attach_output_layout)
-    // wlr_output *output
     QW_FUNC_MEMBER(cursor, map_to_output)
-    // wlr_input_device *dev, wlr_output *output
     QW_FUNC_MEMBER(cursor, map_input_to_output)
-    // const wlr_box *box
     QW_FUNC_MEMBER(cursor, map_to_region)
-    // wlr_input_device *dev, const wlr_box *box
     QW_FUNC_MEMBER(cursor, map_input_to_region)
-    // wlr_input_device *dev, double x, double y, double *lx, double *ly
     QW_FUNC_MEMBER(cursor, absolute_to_layout_coords)
 
 protected:
-    // Empty parameters
     QW_FUNC_MEMBER(cursor, destroy)
 };
 

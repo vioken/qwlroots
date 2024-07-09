@@ -14,9 +14,7 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(shm)
 {
 public:
-    // wl_display *display, uint32_t version, const uint32_t *formats, size_t formats_len
     QW_FUNC_STATIC(shm, create)
-    // wl_display *display, uint32_t version, wlr_renderer *renderer
     QW_FUNC_STATIC(shm, create_with_renderer)
 };
 

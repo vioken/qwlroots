@@ -19,10 +19,8 @@ class QW_CLASS_OBJECT(tearing_control_manager_v1)
     QW_SIGNAL(new_object, wlr_tearing_control_v1*)
 
 public:
-    // wl_display *display, uint32_t version
     QW_FUNC_STATIC(tearing_control_manager_v1, create)
 
-    // wlr_surface *surface
     QW_FUNC_MEMBER(tearing_control_manager_v1, surface_hint_from_surface)
 };
 

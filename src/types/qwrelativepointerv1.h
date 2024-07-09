@@ -15,7 +15,6 @@ class QW_CLASS_OBJECT(relative_pointer_v1)
     Q_OBJECT
 
 public:
-    // wl_resource *resource
     QW_FUNC_STATIC(relative_pointer_v1, from_resource)
 };
 
@@ -25,10 +24,8 @@ class QW_CLASS_OBJECT(relative_pointer_manager_v1)
     Q_OBJECT
 
 public:
-    // wl_display *display
     QW_FUNC_STATIC(relative_pointer_manager_v1, create)
 
-    // wlr_seat *seat, uint64_t time_usec, double dx, double dy, double dx_unaccel, double dy_unaccel
     QW_FUNC_MEMBER(relative_pointer_manager_v1, send_relative_motion)
 };
 
