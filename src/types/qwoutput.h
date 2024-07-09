@@ -91,7 +91,7 @@ protected:
 class QW_CLASS_REINTERPRET_CAST(output_cursor)
 {
 public:
-    QW_FUNC_STATIC(output_cursor, create, wlr_output_cursor *, wlr_output *output)
+    QW_FUNC_STATIC(output_cursor, create, qw_output_cursor *, wlr_output *output)
 
     QW_FUNC_MEMBER(output_cursor, set_buffer, bool, wlr_buffer *buffer, int32_t hotspot_x, int32_t hotspot_y)
     QW_FUNC_MEMBER(output_cursor, move, bool, double x, double y)

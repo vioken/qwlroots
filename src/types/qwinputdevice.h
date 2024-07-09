@@ -23,26 +23,26 @@ class QW_CLASS_OBJECT(input_device)
     Q_OBJECT
 
 public:
-    template<typename T>
-    QW_ALWAYS_INLINE static std::enable_if<std::is_base_of<qw_input_device, T>::value, qw_input_device*>::type
-    from(wlr_input_device *handle) {
-        Q_ASSERT(T::from_input_device(handle));
-        return new T(handle, false);
-    }
-
     inline static qw_input_device *create(HandleType *handle);
 };
 
 #define QW_INPUT_DEVICE(name) \
 typedef qw_##name DeriveType; \
+typedef wlr_##name HandleType; \
 public: \
+    QW_FUNC_STATIC(name, from_input_device, qw_##name*, wlr_input_device*) \
     QW_ALWAYS_INLINE wlr_##name *handle() const { \
-        return from_input_device(qw_input_device::handle()); \
+        return from_input_device(qw_input_device::handle())->handle(); \
     } \
-    QW_ALWAYS_INLINE operator wlr_##name* () const { \
+    QW_ALWAYS_INLINE operator wlr_##name *() const { \
         return handle(); \
     } \
-    QW_FUNC_STATIC(name, from_input_device, wlr_##name*, wlr_input_device*) \
+    QW_ALWAYS_INLINE static qw_##name *from(wlr_input_device *handle) { \
+        return qobject_cast<qw_##name *>(qw_input_device::from(handle)); \
+    } \
+    QW_ALWAYS_INLINE static qw_##name *from(wlr_##name *handle) { \
+        return from(&handle->base); \
+    } \
 protected: \
 using qw_input_device::qw_input_device; \
 private: \
@@ -132,21 +132,21 @@ qw_input_device *qw_input_device::create(HandleType *handle) {
 
     switch (handle->type) {
     case WLR_INPUT_DEVICE_KEYBOARD:
-        return from<qw_keyboard>(handle);
+        return new qw_keyboard(handle, false);
     case WLR_INPUT_DEVICE_POINTER:
-        return from<qw_pointer>(handle);
+        return new qw_pointer(handle, false);
 #if WLR_VERSION_MINOR > 17
     case WLR_INPUT_DEVICE_TABLET:
 #else
     case WLR_INPUT_DEVICE_TABLET_TOOL:
 #endif
-        return from<qw_tablet>(handle);
+        return new qw_tablet(handle, false);
     case WLR_INPUT_DEVICE_TABLET_PAD:
-        return from<qw_tablet_pad>(handle);
+        return new qw_tablet_pad(handle, false);
     case WLR_INPUT_DEVICE_SWITCH:
-        return from<qw_switch>(handle);
+        return new qw_switch(handle, false);
     case WLR_INPUT_DEVICE_TOUCH:
-        return from<qw_touch>(handle);
+        return new qw_touch(handle, false);
     default:
         // Here is not reachable
         qCritical("Unknow input device type!");

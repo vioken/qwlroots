@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(presentation)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(presentation, create, wlr_presentation *, wl_display *display, wlr_backend *backend)
+    QW_FUNC_STATIC(presentation, create, qw_presentation *, wl_display *display, wlr_backend *backend)
 
     QW_FUNC_MEMBER(presentation, surface_sampled, wlr_presentation_feedback *, wlr_surface *surface)
     QW_FUNC_MEMBER(presentation, surface_textured_on_output, void, wlr_surface *surface, wlr_output *output)

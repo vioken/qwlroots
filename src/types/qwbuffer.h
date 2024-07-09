@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(buffer)
     QW_SIGNAL(release)
 
 public:
-    QW_FUNC_STATIC(buffer, try_from_resource, wlr_buffer *, wl_resource *resource)
+    QW_FUNC_STATIC(buffer, try_from_resource, qw_buffer *, wl_resource *resource)
 
     QW_FUNC_MEMBER(buffer, drop, void)
     QW_FUNC_MEMBER(buffer, lock, wlr_buffer *)
@@ -33,7 +33,7 @@ public:
 class QW_CLASS_REINTERPRET_CAST(client_buffer)
 {
 public:
-    QW_FUNC_STATIC(client_buffer, get, wlr_client_buffer *, wlr_buffer *buffer)
+    QW_FUNC_STATIC(client_buffer, get, qw_client_buffer *, wlr_buffer *buffer)
 };
 
 QW_END_NAMESPACE

@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(tablet_manager_v2)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(tablet_v2, create, wlr_tablet_manager_v2 *, wl_display *display)
+    QW_FUNC_STATIC(tablet_v2, create, qw_tablet_manager_v2 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(tablet_v2_tablet)
@@ -26,7 +26,7 @@ class QW_CLASS_OBJECT(tablet_v2_tablet)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(tablet, create, wlr_tablet_v2_tablet *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
+    QW_FUNC_STATIC(tablet, create, qw_tablet_v2_tablet *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
 
     QW_FUNC_MEMBER(surface, accepts_tablet_v2, bool, wlr_surface *surface)
 };
@@ -39,7 +39,7 @@ class QW_CLASS_OBJECT(tablet_v2_tablet_tool)
     QW_SIGNAL(set_cursor, wlr_tablet_v2_event_cursor*)
 
 public:
-    QW_FUNC_STATIC(tablet_tool, create, wlr_tablet_v2_tablet_tool *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_tablet_tool *wlr_tool)
+    QW_FUNC_STATIC(tablet_tool, create, qw_tablet_v2_tablet_tool *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_tablet_tool *wlr_tool)
 
     QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, proximity_in, void, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, down, void)
@@ -79,7 +79,7 @@ class QW_CLASS_OBJECT(tablet_v2_tablet_pad)
     QW_SIGNAL(ring_feedback, wlr_tablet_v2_event_feedback*)
 
 public:
-    QW_FUNC_STATIC(tablet_pad, create, wlr_tablet_v2_tablet_pad *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
+    QW_FUNC_STATIC(tablet_pad, create, qw_tablet_v2_tablet_pad *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
 
     QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, enter, uint32_t, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
     QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, button, void, size_t button, uint32_t time, enum zwp_tablet_pad_v2_button_state state)

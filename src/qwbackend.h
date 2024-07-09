@@ -32,7 +32,7 @@ class QW_CLASS_OBJECT(backend)
 public:
     static inline DeriveType *create(HandleType *handle);
 
-    QW_FUNC_STATIC(backend, autocreate, wlr_backend *, wl_display *display, wlr_session **session_ptr)
+    QW_FUNC_STATIC(backend, autocreate, qw_backend *, wl_display *display, wlr_session **session_ptr)
 
     QW_FUNC_STATIC(backend, is_multi, bool, wlr_backend *backend)
     QW_FUNC_STATIC(backend, is_drm, bool, wlr_backend *backend)
@@ -59,7 +59,7 @@ public:
     QW_FUNC_MEMBER(multi, is_empty, bool)
     QW_FUNC_MEMBER(multi, for_each_backend, void, void (*callback)(wlr_backend *backend, void *data), void *data)
 
-    QW_FUNC_STATIC(multi_backend, create, wlr_backend *, wl_display *display)
+    QW_FUNC_STATIC(multi_backend, create, qw_multi_backend *, wl_display *display)
 
 protected:
     using qw_backend::qw_backend;
@@ -71,7 +71,7 @@ class qw_drm_backend : public qw_backend
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(drm_backend, create, wlr_backend *, wl_display *display, wlr_session *session, wlr_device *dev, wlr_backend *parent)
+    QW_FUNC_STATIC(drm_backend, create, qw_drm_backend *, wl_display *display, wlr_session *session, wlr_device *dev, wlr_backend *parent)
     // TODO:move to qw_output
     // QW_FUNC_STATIC(output, is_drm)
 
@@ -94,7 +94,7 @@ class qw_wayland_backend : public qw_backend
     Q_OBJECT
 
 public:
-    QW_FUNC_MEMBER(wl_backend, create, wlr_backend *, wl_display *remote_display)
+    QW_FUNC_MEMBER(wl_backend, create, qw_backend *, wl_display *remote_display)
     QW_FUNC_MEMBER(wl_backend, get_remote_display, wl_display *)
     QW_FUNC_MEMBER(wl, output_create, wlr_output *)
     QW_FUNC_MEMBER(wl, output_create_from_surface, wlr_output *, wl_surface *surface)
@@ -117,7 +117,7 @@ class qw_x11_backend : public qw_backend
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(x11_backend, create, wlr_backend *, wl_display *display, const char *x11_display)
+    QW_FUNC_STATIC(x11_backend, create, qw_x11_backend *, wl_display *display, const char *x11_display)
 
     // TODO:move to qw_output qw_input_device
     // QW_FUNC_MEMBER(input_device, is_x11)
@@ -137,7 +137,7 @@ class qw_libinput_backend : public qw_backend
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(libinput_backend, create, wlr_backend *, wl_display *display, wlr_session *session)
+    QW_FUNC_STATIC(libinput_backend, create, qw_libinput_backend *, wl_display *display, wlr_session *session)
     QW_FUNC_STATIC(libinput, get_device_handle, libinput_device *, wlr_input_device *dev)
 
     // TODO:move to qw_output qw_input_device
@@ -154,7 +154,7 @@ class qw_headless_backend : public qw_backend
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(headless_backend, create, wlr_backend *, wl_display *display)
+    QW_FUNC_STATIC(headless_backend, create, qw_headless_backend *, wl_display *display)
 
     QW_FUNC_MEMBER(headless, add_output, wlr_output *, unsigned int width, unsigned int height)
 

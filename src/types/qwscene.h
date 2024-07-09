@@ -21,13 +21,6 @@ class QW_CLASS_OBJECT(scene_node)
     Q_OBJECT
 
 public:
-    template<typename T>
-    QW_ALWAYS_INLINE static std::enable_if<std::is_base_of<qw_scene_node, T>::value, qw_scene_node*>::type
-    from(wlr_scene_node *handle) {
-        Q_ASSERT(T::from_node(handle));
-        return new T(handle, false);
-    }
-
     inline static qw_scene_node *create(HandleType *handle);
 
     QW_FUNC_MEMBER(scene_node, set_enabled, void, bool enabled)
@@ -40,6 +33,7 @@ public:
     QW_FUNC_MEMBER(scene_node, coords, bool, int *lx, int *ly)
     QW_FUNC_MEMBER(scene_node, for_each_buffer, void, wlr_scene_buffer_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(scene_node, at, wlr_scene_node *, double lx, double ly, double *nx, double *ny)
+    QW_FUNC_MEMBER(scene, subsurface_tree_set_clip, void, wlr_box *clip)
 
 protected:
     QW_FUNC_MEMBER(scene_node, destroy, void)
@@ -48,13 +42,13 @@ protected:
 #define QW_SCENE_NODE(name) \
 typedef qw_##name DeriveType; \
 public: \
+    QW_FUNC_STATIC(name, from_node, wlr_##name*, wlr_scene_node*) \
     QW_ALWAYS_INLINE wlr_##name *handle() const { \
         return from_node(qw_scene_node::handle()); \
     } \
     QW_ALWAYS_INLINE operator wlr_##name* () const { \
         return handle(); \
     } \
-    QW_FUNC_STATIC(name, from_node, wlr_##name*, wlr_scene_node*) \
 protected: \
 using qw_scene_node::qw_scene_node; \
 private: \
@@ -66,12 +60,16 @@ class qw_scene_tree : public qw_scene_node
     QW_SCENE_NODE(scene_tree)
 
 public:
-    QW_FUNC_STATIC(scene_tree, create, wlr_scene_tree *, wlr_scene_tree *parent)
+    QW_FUNC_STATIC(scene_tree, create, qw_scene_tree *, wlr_scene_tree *parent)
+    QW_FUNC_STATIC(scene, subsurface_tree_create, qw_scene_tree *, wlr_scene_tree *parent, wlr_surface *surface)
+    QW_FUNC_STATIC(scene, xdg_surface_create, qw_scene_tree *, wlr_scene_tree *parent, wlr_xdg_surface *xdg_surface)
+    QW_FUNC_STATIC(scene, drag_icon_create, qw_scene_tree *, wlr_scene_tree *parent, wlr_drag_icon *drag_icon)
 };
 
 class qw_scene : public qw_scene_tree
 {
     Q_OBJECT
+    typedef qw_scene DeriveType;
 
 public:
     QW_ALWAYS_INLINE wlr_scene *handle() const {
@@ -82,25 +80,12 @@ public:
         return handle();
     }
 
-    QW_FUNC_STATIC(scene_tree, create, wlr_scene_tree *, wlr_scene_tree *parent)
-    QW_FUNC_STATIC(scene, subsurface_tree_create, wlr_scene_tree *, wlr_scene_tree *parent, wlr_surface *surface)
-    QW_FUNC_STATIC(scene, subsurface_tree_set_clip, void, wlr_scene_node *node, wlr_box *clip)
-    QW_FUNC_STATIC(scene, xdg_surface_create, wlr_scene_tree *, wlr_scene_tree *parent, wlr_xdg_surface *xdg_surface)
-    QW_FUNC_STATIC(scene, drag_icon_create, wlr_scene_tree *, wlr_scene_tree *parent, wlr_drag_icon *drag_icon)
-
 #if WLR_VERSION_MINOR<18
     QW_FUNC_MEMBER(scene, set_presentation, void, wlr_presentation *presentation)
 #endif
     QW_FUNC_MEMBER(scene, set_linux_dmabuf_v1, void, wlr_linux_dmabuf_v1 *linux_dmabuf_v1)
     QW_FUNC_MEMBER(scene, get_scene_output, wlr_scene_output *, wlr_output *output)
     QW_FUNC_MEMBER(scene, attach_output_layout, wlr_scene_output_layout *, wlr_output_layout *output_layout)
-};
-
-class qw_scene_surface
-{
-public:
-    QW_FUNC_STATIC(scene_surface, create, wlr_scene_surface *, wlr_scene_tree *parent, wlr_surface *surface)
-    QW_FUNC_STATIC(scene_surface, try_from_buffer, wlr_scene_surface *, wlr_scene_buffer *scene_buffer)
 };
 
 class qw_scene_timer
@@ -113,7 +98,7 @@ public:
 class QW_CLASS_REINTERPRET_CAST(scene_layer_surface_v1)
 {
 public:
-    QW_FUNC_STATIC(scene_layer_surface_v1, create, wlr_scene_layer_surface_v1 *, wlr_scene_tree *parent, wlr_layer_surface_v1 *layer_surface)
+    QW_FUNC_STATIC(scene_layer_surface_v1, create, qw_scene_layer_surface_v1 *, wlr_scene_tree *parent, wlr_layer_surface_v1 *layer_surface)
 
     QW_FUNC_MEMBER(scene_layer_surface_v1, configure, void, const wlr_box *full_area, wlr_box *usable_area)
 };
@@ -124,7 +109,7 @@ class qw_scene_rect : public qw_scene_node
     QW_SCENE_NODE(scene_rect)
 
 public:
-    QW_FUNC_STATIC(scene_rect, create, wlr_scene_rect *, wlr_scene_tree *parent, int width, int height, const float color[4])
+    QW_FUNC_STATIC(scene_rect, create, qw_scene_rect *, wlr_scene_tree *parent, int width, int height, const float color[4])
 
     QW_FUNC_MEMBER(scene_rect, set_size, void, int width, int height)
     QW_FUNC_MEMBER(scene_rect, set_color, void, const float color[4])
@@ -142,7 +127,7 @@ class qw_scene_buffer : public qw_scene_node
     QW_SIGNAL(frame_done, timespec*)
 
 public:
-    QW_FUNC_STATIC(scene_buffer, create, wlr_scene_buffer *, wlr_scene_tree *parent, wlr_buffer *buffer)
+    QW_FUNC_STATIC(scene_buffer, create, qw_scene_buffer *, wlr_scene_tree *parent, wlr_buffer *buffer)
 
     QW_FUNC_MEMBER(scene_buffer, set_buffer, void, wlr_buffer *buffer)
     QW_FUNC_MEMBER(scene_buffer, set_buffer_with_damage, void, wlr_buffer *buffer, const pixman_region32_t *region)
@@ -155,12 +140,21 @@ public:
     QW_FUNC_MEMBER(scene_buffer, send_frame_done, void, timespec *now)
 };
 
+class qw_scene_surface : public qw_scene_buffer
+{
+    typedef qw_scene_surface DeriveType;
+
+public:
+    QW_FUNC_STATIC(scene_surface, create, qw_scene_surface *, wlr_scene_tree *parent, wlr_surface *surface)
+    QW_FUNC_STATIC(scene_surface, try_from_buffer, wlr_scene_surface *, wlr_scene_buffer *scene_buffer)
+};
+
 class qw_scene_output : public qw_scene_node
 {
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(scene_output, create, wlr_scene_output *, wlr_scene *scene, wlr_output *output)
+    QW_FUNC_STATIC(scene_output, create, qw_scene_output *, wlr_scene *scene, wlr_output *output)
     QW_FUNC_STATIC(scene_output, layout_add_output, void, wlr_scene_output_layout *sol, wlr_output_layout_output *lo, wlr_scene_output *so)
 
     QW_FUNC_MEMBER(scene_output, set_position, void, int lx, int ly)
@@ -179,11 +173,11 @@ qw_scene_node *qw_scene_node::create(HandleType *handle) {
 
     switch (handle->type) {
     case WLR_SCENE_NODE_RECT:
-        return from<qw_scene_rect>(handle);
+        return new qw_scene_rect(handle, false);
     case WLR_SCENE_NODE_TREE:
-        return from<qw_scene_tree>(handle);
+        return new qw_scene_tree(handle, false);
     case WLR_SCENE_NODE_BUFFER:
-        return from<qw_scene_buffer>(handle);
+        return new qw_scene_buffer(handle, false);
     default:
         // Here is not reachable
         qCritical("Unknow input device type!");

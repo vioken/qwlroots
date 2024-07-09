@@ -19,8 +19,15 @@ static QHash<void*, QObject*> &map() {
 }
 }
 
+class qw_object_basic : public QObject {
+    Q_OBJECT
+
+Q_SIGNALS:
+    void before_destroy();
+};
+
 template<typename Handle, typename Derive>
-class qw_object : public QObject
+class qw_object : public qw_object_basic
 {
 public:
     typedef Handle HandleType;
@@ -46,10 +53,12 @@ public:
     }
 
     ~qw_object() {
+        if (!m_handle)
+            return;
         Q_ASSERT(qw::map().contains((void*)m_handle));
         qw::map().remove((void*)m_handle);
 
-        if (m_handle && isHandleOwner) {
+        if (isHandleOwner) {
             constexpr bool has_destroy = requires(const Derive& t) {
                 t.destroy();
             };
@@ -71,10 +80,10 @@ public:
         if (auto o = get(handle))
             return o;
 
-        if constexpr (std::is_same<decltype(Derive::create(handle)), Derive*>::value) {
+        if constexpr (std::is_same_v<decltype(Derive::create(handle)), Derive*>) {
             return Derive::create(handle);
         } else {
-            static_assert(false, "Can't create a new object by 'from' function");
+            return new Derive(handle, false);
         }
     }
 
@@ -99,6 +108,10 @@ public:
         if (!is_valid())
             return nullptr;
 
+        return m_handle;
+    }
+
+    QW_ALWAYS_INLINE Handle *operator -> () const {
         return m_handle;
     }
 
@@ -128,19 +141,14 @@ public:
         sc.connect(&(obj->handle()->events.*s), obj, qt_signal);
     }
 
-Q_SIGNALS:
-    void beforeDestroy();
-
 protected:
-    inline void pre_destroy() {
-        Q_ASSERT(m_handle);
-        Q_EMIT beforeDestroy();
-
-        sc.invalidate();
-    }
-
     inline void on_destroy() {
-        pre_destroy();
+        Q_ASSERT(m_handle);
+        Q_ASSERT(qw::map().contains((void*)m_handle));
+
+        Q_EMIT before_destroy();
+        sc.invalidate();
+        qw::map().remove((void*)m_handle);
         m_handle = nullptr;
         delete this;
     }

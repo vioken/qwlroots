@@ -20,7 +20,7 @@ class QW_CLASS_OBJECT(xwayland_server)
     QW_SIGNAL(ready)
 
 public:
-    QW_FUNC_STATIC(xwayland_server, create, wlr_xwayland_server *, wl_display *display, wlr_xwayland_server_options *options)
+    QW_FUNC_STATIC(xwayland_server, create, qw_xwayland_server *, wl_display *display, wlr_xwayland_server_options *options)
 };
 
 QW_END_NAMESPACE

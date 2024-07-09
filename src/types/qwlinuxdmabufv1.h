@@ -24,7 +24,7 @@ class QW_CLASS_OBJECT(linux_dmabuf_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(linux_dmabuf_v1, create, wlr_linux_dmabuf_v1 *, wl_display *display, uint32_t version, const wlr_linux_dmabuf_feedback_v1 *default_feedback)
+    QW_FUNC_STATIC(linux_dmabuf_v1, create, qw_linux_dmabuf_v1 *, wl_display *display, uint32_t version, const wlr_linux_dmabuf_feedback_v1 *default_feedback)
 };
 
 QW_END_NAMESPACE

@@ -20,8 +20,8 @@ class QW_CLASS_OBJECT(keyboard_group)
     QW_SIGNAL(leave, wl_array*)
 
 public:
-    QW_FUNC_STATIC(keyboard_group, create, wlr_keyboard_group *, void)
-    QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard, wlr_keyboard_group *, wlr_keyboard *keyboard)
+    QW_FUNC_STATIC(keyboard_group, create, qw_keyboard_group *, void)
+    QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard, qw_keyboard_group *, wlr_keyboard *keyboard)
 
     QW_FUNC_MEMBER(keyboard_group, add_keyboard, bool, wlr_keyboard *keyboard)
     QW_FUNC_MEMBER(keyboard_group, remove_keyboard, void, wlr_keyboard *keyboard)

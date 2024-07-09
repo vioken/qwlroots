@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(subcompositor)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(subcompositor, create, wlr_subcompositor *, wl_display *display)
+    QW_FUNC_STATIC(subcompositor, create, qw_subcompositor *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(subsurface)
@@ -26,7 +26,7 @@ class QW_CLASS_OBJECT(subsurface)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(subsurface, try_from_wlr_surface, wlr_subsurface *, wlr_surface *surface)
+    QW_FUNC_STATIC(subsurface, try_from_wlr_surface, qw_subsurface *, wlr_surface *surface)
 };
 
 QW_END_NAMESPACE

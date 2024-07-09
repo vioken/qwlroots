@@ -47,7 +47,7 @@ class QW_CLASS_OBJECT(cursor)
     QW_SIGNAL(tablet_tool_button, wlr_tablet_tool_button_event*)
 
 public:
-    QW_FUNC_STATIC(cursor, create, wlr_cursor *, void)
+    QW_FUNC_STATIC(cursor, create, qw_cursor *, void)
 
     QW_FUNC_MEMBER(cursor, warp, bool, wlr_input_device *dev, double lx, double ly)
     QW_FUNC_MEMBER(cursor, warp_closest, void, wlr_input_device *dev, double x, double y)
