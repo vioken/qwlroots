@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(idle_inhibit_manager_v1)
     QW_SIGNAL(new_inhibitor, wlr_idle_inhibitor_v1*)
 
 public:
-    QW_FUNC_STATIC(idle_inhibit_v1, create)
+    QW_FUNC_STATIC(idle_inhibit_v1, create, wlr_idle_inhibit_manager_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE

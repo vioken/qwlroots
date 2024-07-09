@@ -19,15 +19,15 @@ class QW_CLASS_OBJECT(data_source)
     Q_OBJECT
 
 public:
-    QW_FUNC_MEMBER(data_source, init)
-    QW_FUNC_MEMBER(data_source, accept)
-    QW_FUNC_MEMBER(data_source, send)
-    QW_FUNC_MEMBER(data_source, dnd_action)
-    QW_FUNC_MEMBER(data_source, dnd_drop)
-    QW_FUNC_MEMBER(data_source, dnd_finish)
+    QW_FUNC_MEMBER(data_source, init, void, const wlr_data_source_impl *impl)
+    QW_FUNC_MEMBER(data_source, accept, void, uint32_t serial, const char *mime_type)
+    QW_FUNC_MEMBER(data_source, send, void, const char *mime_type, int32_t fd)
+    QW_FUNC_MEMBER(data_source, dnd_action, void, enum wl_data_device_manager_dnd_action action)
+    QW_FUNC_MEMBER(data_source, dnd_drop, void)
+    QW_FUNC_MEMBER(data_source, dnd_finish, void)
 
 protected:
-    QW_FUNC_MEMBER(data_source, destroy)
+    QW_FUNC_MEMBER(data_source, destroy, void)
 };
 
 class QW_CLASS_OBJECT(data_device_manager)
@@ -36,7 +36,7 @@ class QW_CLASS_OBJECT(data_device_manager)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(data_device_manager, create)
+    QW_FUNC_STATIC(data_device_manager, create, wlr_data_device_manager *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(drag)
@@ -49,9 +49,9 @@ class QW_CLASS_OBJECT(drag)
     QW_SIGNAL(drop, wlr_drag_drop_event*)
 
 public:
-    QW_FUNC_STATIC(drag, create);
-    QW_FUNC_STATIC(seat, request_start_drag)
-    QW_FUNC_STATIC(seat, start_drag);
+    QW_FUNC_STATIC(drag, create, wlr_drag *, wlr_seat_client *seat_client, wlr_data_source *source, wlr_surface *icon_surface);
+    QW_FUNC_STATIC(seat, request_start_drag, void, wlr_seat *seat, wlr_drag *drag, wlr_surface *origin, uint32_t serial)
+    QW_FUNC_STATIC(seat, start_drag, void, wlr_seat *seat, wlr_drag *drag, uint32_t serial);
 };
 
 QW_END_NAMESPACE

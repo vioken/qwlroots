@@ -17,8 +17,8 @@ class QW_CLASS_OBJECT(fractional_scale_manager_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(fractional_scale_v1, notify_scale)
-    QW_FUNC_STATIC(fractional_scale_manager_v1, create)
+    QW_FUNC_STATIC(fractional_scale_v1, notify_scale, void, wlr_surface *surface, double scale)
+    QW_FUNC_STATIC(fractional_scale_manager_v1, create, wlr_fractional_scale_manager_v1 *, wl_display *display, uint32_t version)
 };
 
 QW_END_NAMESPACE

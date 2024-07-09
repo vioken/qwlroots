@@ -17,9 +17,9 @@ class QW_CLASS_OBJECT(content_type_manager_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(content_type_manager_v1, create)
+    QW_FUNC_STATIC(content_type_manager_v1, create, wlr_content_type_manager_v1 *, wl_display *display, uint32_t version)
 
-    QW_FUNC_MEMBER(surface, get_content_type_v1)
+    QW_FUNC_MEMBER(surface, get_content_type_v1, enum wp_content_type_v1_type, wlr_surface *surface)
 };
 
 QW_END_NAMESPACE

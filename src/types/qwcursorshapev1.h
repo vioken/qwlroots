@@ -19,8 +19,8 @@ class QW_CLASS_OBJECT(cursor_shape_manager_v1)
     QW_SIGNAL(request_set_shape, wlr_cursor_shape_manager_v1_request_set_shape_event*)
 
 public:
-    QW_FUNC_STATIC(cursor_shape_manager_v1, create)
-    QW_FUNC_STATIC(cursor_shape_v1, name)
+    QW_FUNC_STATIC(cursor_shape_manager_v1, create, wlr_cursor_shape_manager_v1 *, wl_display *display, uint32_t version)
+    QW_FUNC_STATIC(cursor_shape_v1, name, const char *, enum wp_cursor_shape_device_v1_shape shape)
 };
 
 QW_END_NAMESPACE

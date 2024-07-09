@@ -43,19 +43,19 @@ class QW_CLASS_OBJECT(xwayland_surface)
     QW_SIGNAL(dissociate)
 
 public:
-    QW_FUNC_STATIC(xwayland_surface, try_from_wlr_surface)
+    QW_FUNC_STATIC(xwayland_surface, try_from_wlr_surface, wlr_xwayland_surface *, wlr_surface *surface)
 
-    QW_FUNC_MEMBER(xwayland_surface, activate)
-    QW_FUNC_MEMBER(xwayland_surface, restack)
-    QW_FUNC_MEMBER(xwayland_surface, configure)
-    QW_FUNC_MEMBER(xwayland_surface, close)
-    QW_FUNC_MEMBER(xwayland_surface, set_withdrawn)
-    QW_FUNC_MEMBER(xwayland_surface, set_minimized)
-    QW_FUNC_MEMBER(xwayland_surface, set_maximized)
-    QW_FUNC_MEMBER(xwayland_surface, set_fullscreen)
-    QW_FUNC_MEMBER(xwayland_surface, ping)
-    QW_FUNC_MEMBER(xwayland, icccm_input_model)
-    QW_FUNC_MEMBER(xwayland_or_surface, wants_focus)
+    QW_FUNC_MEMBER(xwayland_surface, activate, void, bool activated)
+    QW_FUNC_MEMBER(xwayland_surface, restack, void, wlr_xwayland_surface *sibling, enum xcb_stack_mode_t mode)
+    QW_FUNC_MEMBER(xwayland_surface, configure, void, int16_t x, int16_t y, uint16_t width, uint16_t height)
+    QW_FUNC_MEMBER(xwayland_surface, close, void)
+    QW_FUNC_MEMBER(xwayland_surface, set_withdrawn, void, bool withdrawn)
+    QW_FUNC_MEMBER(xwayland_surface, set_minimized, void, bool minimized)
+    QW_FUNC_MEMBER(xwayland_surface, set_maximized, void, bool maximized)
+    QW_FUNC_MEMBER(xwayland_surface, set_fullscreen, void, bool fullscreen)
+    QW_FUNC_MEMBER(xwayland_surface, ping, void)
+    QW_FUNC_MEMBER(xwayland, icccm_input_model, enum wlr_xwayland_icccm_input_model)
+    QW_FUNC_MEMBER(xwayland_or_surface, wants_focus, bool)
 };
 
 QW_END_NAMESPACE

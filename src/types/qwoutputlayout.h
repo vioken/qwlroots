@@ -24,26 +24,26 @@ class QW_CLASS_OBJECT(output_layout)
     QW_SIGNAL(change, wlr_output_layout_output*)
 
 public:
-    QW_FUNC_STATIC(output_layout, create)
+    QW_FUNC_STATIC(output_layout, create, wlr_output_layout *, void)
 
-    QW_FUNC_MEMBER(output_layout, get)
-    QW_FUNC_MEMBER(output_layout, output_at)
-    QW_FUNC_MEMBER(output_layout, get_center_output)
-    QW_FUNC_MEMBER(output_layout, adjacent_output)
-    QW_FUNC_MEMBER(output_layout, farthest_output)
+    QW_FUNC_MEMBER(output_layout, get, wlr_output_layout_output *, wlr_output *reference)
+    QW_FUNC_MEMBER(output_layout, output_at, wlr_output *, double lx, double ly)
+    QW_FUNC_MEMBER(output_layout, get_center_output, wlr_output *)
+    QW_FUNC_MEMBER(output_layout, adjacent_output, wlr_output *, enum wlr_direction direction, wlr_output *reference, double ref_lx, double ref_ly)
+    QW_FUNC_MEMBER(output_layout, farthest_output, wlr_output *, enum wlr_direction direction, wlr_output *reference, double ref_lx, double ref_ly)
 
-    QW_FUNC_MEMBER(output_layout, add)
-    QW_FUNC_MEMBER(output_layout, add_auto)
-    QW_FUNC_MEMBER(output_layout, remove)
+    QW_FUNC_MEMBER(output_layout, add, wlr_output_layout_output *, wlr_output *output, int lx, int ly)
+    QW_FUNC_MEMBER(output_layout, add_auto, wlr_output_layout_output *, wlr_output *output)
+    QW_FUNC_MEMBER(output_layout, remove, void, wlr_output *output)
 
-    QW_FUNC_MEMBER(output_layout, output_coords)
-    QW_FUNC_MEMBER(output_layout, contains_point)
-    QW_FUNC_MEMBER(output_layout, intersects)
-    QW_FUNC_MEMBER(output_layout, closest_point)
-    QW_FUNC_MEMBER(output_layout, get_box)
+    QW_FUNC_MEMBER(output_layout, output_coords, void, wlr_output *reference, double *lx, double *ly)
+    QW_FUNC_MEMBER(output_layout, contains_point, bool, wlr_output *reference, int lx, int ly)
+    QW_FUNC_MEMBER(output_layout, intersects, bool, wlr_output *reference, const wlr_box *target_lbox)
+    QW_FUNC_MEMBER(output_layout, closest_point, void, wlr_output *reference, double lx, double ly, double *dest_lx, double *dest_ly)
+    QW_FUNC_MEMBER(output_layout, get_box, void, wlr_output *reference, wlr_box *dest_box)
 
 protected:
-    QW_FUNC_MEMBER(output_layout, destroy)
+    QW_FUNC_MEMBER(output_layout, destroy, void)
 };
 
 QW_END_NAMESPACE

@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(xdg_decoration_manager_v1)
     QW_SIGNAL(new_toplevel_decoration, wlr_xdg_toplevel_decoration_v1*)
 
 public:
-    QW_FUNC_STATIC(xdg_decoration_manager_v1, create)
+    QW_FUNC_STATIC(xdg_decoration_manager_v1, create, wlr_xdg_decoration_manager_v1 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)
@@ -30,7 +30,7 @@ class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)
     QW_SIGNAL(request_mode)
 
 public:
-    QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode)
+    QW_FUNC_MEMBER(xdg_toplevel_decoration_v1, set_mode, uint32_t, enum wlr_xdg_toplevel_decoration_v1_mode mode)
 };
 
 QW_END_NAMESPACE

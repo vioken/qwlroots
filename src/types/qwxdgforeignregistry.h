@@ -17,9 +17,9 @@ class QW_CLASS_OBJECT(xdg_foreign_registry)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(xdg_foreign_registry, create)
+    QW_FUNC_STATIC(xdg_foreign_registry, create, wlr_xdg_foreign_registry *, wl_display *display)
 
-    QW_FUNC_MEMBER(xdg_foreign_registry, find_by_handle)
+    QW_FUNC_MEMBER(xdg_foreign_registry, find_by_handle, wlr_xdg_foreign_exported *, const char *handle)
 };
 
 class QW_CLASS_OBJECT(xdg_foreign_exported)
@@ -28,8 +28,8 @@ class QW_CLASS_OBJECT(xdg_foreign_exported)
     Q_OBJECT
 
 public:
-    QW_FUNC_MEMBER(xdg_foreign_exported, init)
-    QW_FUNC_MEMBER(xdg_foreign_exported, finish)
+    QW_FUNC_MEMBER(xdg_foreign_exported, init, bool, wlr_xdg_foreign_registry *registry)
+    QW_FUNC_MEMBER(xdg_foreign_exported, finish, void)
 };
 
 QW_END_NAMESPACE

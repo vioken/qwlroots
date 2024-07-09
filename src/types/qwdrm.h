@@ -18,14 +18,14 @@ class QW_CLASS_OBJECT(drm)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(drm, create)
+    QW_FUNC_STATIC(drm, create, wlr_drm *, wl_display *display, wlr_renderer *renderer)
 };
 
 
 class QW_CLASS_REINTERPRET_CAST(drm_buffer)
 {
 public:
-    QW_FUNC_STATIC(drm_buffer, try_from_resource)
+    QW_FUNC_STATIC(drm_buffer, try_from_resource, wlr_drm_buffer *, wl_resource *resource)
 };
 
 QW_END_NAMESPACE

@@ -16,12 +16,13 @@ class QW_CLASS_OBJECT(xdg_activation_token_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(xdg_activation_token_v1, create)
+    QW_FUNC_STATIC(xdg_activation_token_v1, create, wlr_xdg_activation_token_v1 *, wlr_xdg_activation_v1 *activation)
 
-    QW_FUNC_MEMBER(xdg_activation_token_v1, get_name)
+    QW_FUNC_MEMBER(xdg_activation_token_v1, get_name, Get a string suitable for exporting to launched clients
+const char *)
 
 protected:
-    QW_FUNC_MEMBER(xdg_activation_token_v1, destroy)
+    QW_FUNC_MEMBER(xdg_activation_token_v1, destroy, void)
 };
 
 class QW_CLASS_OBJECT(xdg_activation_v1)
@@ -33,10 +34,11 @@ class QW_CLASS_OBJECT(xdg_activation_v1)
     QW_SIGNAL(new_token, wlr_xdg_activation_token_v1*)
 
 public:
-    QW_FUNC_STATIC(xdg_activation_v1, create)
+    QW_FUNC_STATIC(xdg_activation_v1, create, wlr_xdg_activation_v1 *, wl_display *display)
 
-    QW_FUNC_MEMBER(xdg_activation_v1, find_token)
-    QW_FUNC_MEMBER(xdg_activation_v1, add_token)
+    QW_FUNC_MEMBER(xdg_activation_v1, find_token, wlr_xdg_activation_token_v1 *, const char *token_str)
+    QW_FUNC_MEMBER(xdg_activation_v1, add_token, Add a token to the pool of known tokens
+wlr_xdg_activation_token_v1 *, const char *token_str)
 };
 
 QW_END_NAMESPACE

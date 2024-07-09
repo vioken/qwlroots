@@ -26,7 +26,7 @@ class QW_CLASS_OBJECT(xdg_shell)
 #endif
 
 public:
-    QW_FUNC_STATIC(xdg_shell, create)
+    QW_FUNC_STATIC(xdg_shell, create, wlr_xdg_shell *, wl_display *display, uint32_t version)
 };
 
 class QW_CLASS_OBJECT(xdg_surface)
@@ -40,14 +40,14 @@ class QW_CLASS_OBJECT(xdg_surface)
     QW_SIGNAL(ack_configure, wlr_xdg_surface_configure*)
 
 public:
-    QW_FUNC_STATIC(xdg_surface, from_resource)
+    QW_FUNC_STATIC(xdg_surface, from_resource, wlr_xdg_surface *, wl_resource *resource)
 
-    QW_FUNC_MEMBER(xdg_surface, surface_at)
-    QW_FUNC_MEMBER(xdg_surface, popup_surface_at)
-    QW_FUNC_MEMBER(xdg_surface, get_geometry)
-    QW_FUNC_MEMBER(xdg_surface, for_each_surface)
-    QW_FUNC_MEMBER(xdg_surface, for_each_popup_surface)
-    QW_FUNC_MEMBER(xdg_surface, schedule_configure)
+    QW_FUNC_MEMBER(xdg_surface, surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
+    QW_FUNC_MEMBER(xdg_surface, popup_surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
+    QW_FUNC_MEMBER(xdg_surface, get_geometry, void, wlr_box *box)
+    QW_FUNC_MEMBER(xdg_surface, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
+    QW_FUNC_MEMBER(xdg_surface, for_each_popup_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
+    QW_FUNC_MEMBER(xdg_surface, schedule_configure, uint32_t)
 };
 
 class QW_CLASS_OBJECT(xdg_popup)
@@ -58,14 +58,14 @@ class QW_CLASS_OBJECT(xdg_popup)
     QW_SIGNAL(reposition)
 
 public:
-    QW_FUNC_STATIC(xdg_popup, from_resource)
+    QW_FUNC_STATIC(xdg_popup, from_resource, wlr_xdg_popup *, wl_resource *resource)
 
-    QW_FUNC_MEMBER(xdg_popup, get_position)
-    QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords)
-    QW_FUNC_MEMBER(xdg_popup, unconstrain_from_box)
+    QW_FUNC_MEMBER(xdg_popup, get_position, void, double *popup_sx, double *popup_sy)
+    QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords, void, int popup_sx, int popup_sy, int *toplevel_sx, int *toplevel_sy)
+    QW_FUNC_MEMBER(xdg_popup, unconstrain_from_box, void, const wlr_box *toplevel_space_box)
 
 protected:
-    QW_FUNC_MEMBER(xdg_popup, destroy)
+    QW_FUNC_MEMBER(xdg_popup, destroy, void)
 };
 
 class QW_CLASS_OBJECT(xdg_toplevel)
@@ -84,18 +84,18 @@ class QW_CLASS_OBJECT(xdg_toplevel)
     QW_SIGNAL(set_app_id, char*)
 
 public:
-    QW_FUNC_STATIC(xdg_toplevel, from_resource)
+    QW_FUNC_STATIC(xdg_toplevel, from_resource, wlr_xdg_toplevel *, wl_resource *resource)
 
-    QW_FUNC_MEMBER(xdg_toplevel, set_size)
-    QW_FUNC_MEMBER(xdg_toplevel, set_activated)
-    QW_FUNC_MEMBER(xdg_toplevel, set_maximized)
-    QW_FUNC_MEMBER(xdg_toplevel, set_fullscreen)
-    QW_FUNC_MEMBER(xdg_toplevel, set_resizing)
-    QW_FUNC_MEMBER(xdg_toplevel, set_tiled)
-    QW_FUNC_MEMBER(xdg_toplevel, set_bounds)
-    QW_FUNC_MEMBER(xdg_toplevel, set_wm_capabilities)
-    QW_FUNC_MEMBER(xdg_toplevel, send_close)
-    QW_FUNC_MEMBER(xdg_toplevel, set_parent)
+    QW_FUNC_MEMBER(xdg_toplevel, set_size, uint32_t, int32_t width, int32_t height)
+    QW_FUNC_MEMBER(xdg_toplevel, set_activated, uint32_t, bool activated)
+    QW_FUNC_MEMBER(xdg_toplevel, set_maximized, uint32_t, bool maximized)
+    QW_FUNC_MEMBER(xdg_toplevel, set_fullscreen, uint32_t, bool fullscreen)
+    QW_FUNC_MEMBER(xdg_toplevel, set_resizing, uint32_t, bool resizing)
+    QW_FUNC_MEMBER(xdg_toplevel, set_tiled, uint32_t, uint32_t tiled_edges)
+    QW_FUNC_MEMBER(xdg_toplevel, set_bounds, uint32_t, int32_t width, int32_t height)
+    QW_FUNC_MEMBER(xdg_toplevel, set_wm_capabilities, uint32_t, uint32_t caps)
+    QW_FUNC_MEMBER(xdg_toplevel, send_close, void)
+    QW_FUNC_MEMBER(xdg_toplevel, set_parent, bool, wlr_xdg_toplevel *parent)
 };
 
 QW_END_NAMESPACE

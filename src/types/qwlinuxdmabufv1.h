@@ -14,8 +14,8 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(linux_dmabuf_feedback_v1)
 {
 public:
-    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, finish)
-    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, init_with_options)
+    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, finish, void)
+    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, init_with_options, bool, const wlr_linux_dmabuf_feedback_v1_init_options *options)
 };
 
 class QW_CLASS_OBJECT(linux_dmabuf_v1)
@@ -24,7 +24,7 @@ class QW_CLASS_OBJECT(linux_dmabuf_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(linux_dmabuf_v1, create)
+    QW_FUNC_STATIC(linux_dmabuf_v1, create, wlr_linux_dmabuf_v1 *, wl_display *display, uint32_t version, const wlr_linux_dmabuf_feedback_v1 *default_feedback)
 };
 
 QW_END_NAMESPACE

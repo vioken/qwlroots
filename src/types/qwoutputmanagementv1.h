@@ -17,16 +17,16 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(output_configuration_v1)
 {
 public:
-    QW_FUNC_STATIC(output_configuration_v1, create)
+    QW_FUNC_STATIC(output_configuration_v1, create, wlr_output_configuration_v1 *, void)
 
-    QW_FUNC_MEMBER(output_configuration_v1, send_failed)
-    QW_FUNC_MEMBER(output_configuration_v1, send_succeeded)
+    QW_FUNC_MEMBER(output_configuration_v1, send_failed, void)
+    QW_FUNC_MEMBER(output_configuration_v1, send_succeeded, void)
 };
 
 class QW_CLASS_REINTERPRET_CAST(output_configuration_head_v1)
 {
 public:
-    QW_FUNC_STATIC(output_configuration_head_v1, create)
+    QW_FUNC_STATIC(output_configuration_head_v1, create, wlr_output_configuration_head_v1 *, wlr_output_configuration_v1 *config, wlr_output *output)
 };
 
 class QW_CLASS_OBJECT(output_manager_v1)
@@ -38,8 +38,8 @@ class QW_CLASS_OBJECT(output_manager_v1)
     QW_SIGNAL(test, wlr_output_configuration_v1 *)
 
 public:
-    QW_FUNC_STATIC(output_manager_v1, create)
-    QW_FUNC_MEMBER(output_manager_v1, set_configuration)
+    QW_FUNC_STATIC(output_manager_v1, create, wlr_output_manager_v1 *, wl_display *display)
+    QW_FUNC_MEMBER(output_manager_v1, set_configuration, void, wlr_output_configuration_v1 *config)
 };
 
 QW_END_NAMESPACE

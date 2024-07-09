@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(virtual_keyboard_manager_v1)
     QW_SIGNAL(new_virtual_keyboard, wlr_virtual_keyboard_v1*)
 
 public:
-    QW_FUNC_STATIC(virtual_keyboard_manager_v1, create)
+    QW_FUNC_STATIC(virtual_keyboard_manager_v1, create, wlr_virtual_keyboard_manager_v1*, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(virtual_keyboard_v1)
@@ -28,7 +28,7 @@ class QW_CLASS_OBJECT(virtual_keyboard_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(input_device, get_virtual_keyboard)
+    QW_FUNC_STATIC(input_device, get_virtual_keyboard, wlr_virtual_keyboard_v1 *, wlr_input_device *wlr_dev)
 };
 
 QW_END_NAMESPACE

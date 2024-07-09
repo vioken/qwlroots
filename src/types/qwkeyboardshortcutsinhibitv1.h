@@ -17,8 +17,8 @@ class QW_CLASS_OBJECT(keyboard_shortcuts_inhibitor_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, activate)
-    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, deactivate)
+    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, activate, void)
+    QW_FUNC_MEMBER(keyboard_shortcuts_inhibitor_v1, deactivate, void)
 };
 
 class QW_CLASS_OBJECT(keyboard_shortcuts_inhibit_manager_v1)
@@ -29,7 +29,7 @@ class QW_CLASS_OBJECT(keyboard_shortcuts_inhibit_manager_v1)
     QW_SIGNAL(new_inhibitor, qw_keyboard_shortcuts_inhibitor_v1*)
 
 public:
-    QW_FUNC_STATIC(keyboard_shortcuts_inhibit_v1, create)
+    QW_FUNC_STATIC(keyboard_shortcuts_inhibit_v1, create, wlr_keyboard_shortcuts_inhibit_manager_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE

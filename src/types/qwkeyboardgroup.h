@@ -20,14 +20,14 @@ class QW_CLASS_OBJECT(keyboard_group)
     QW_SIGNAL(leave, wl_array*)
 
 public:
-    QW_FUNC_STATIC(keyboard_group, create)
-    QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard)
+    QW_FUNC_STATIC(keyboard_group, create, wlr_keyboard_group *, void)
+    QW_FUNC_STATIC(keyboard_group, from_wlr_keyboard, wlr_keyboard_group *, wlr_keyboard *keyboard)
 
-    QW_FUNC_MEMBER(keyboard_group, add_keyboard)
-    QW_FUNC_MEMBER(keyboard_group, remove_keyboard)
+    QW_FUNC_MEMBER(keyboard_group, add_keyboard, bool, wlr_keyboard *keyboard)
+    QW_FUNC_MEMBER(keyboard_group, remove_keyboard, void, wlr_keyboard *keyboard)
 
 protected:
-    QW_FUNC_MEMBER(keyboard_group, destroy)
+    QW_FUNC_MEMBER(keyboard_group, destroy, void)
 };
 
 QW_END_NAMESPACE

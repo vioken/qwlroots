@@ -19,8 +19,8 @@ class QW_CLASS_OBJECT(pointer_constraint_v1)
     QW_SIGNAL(set_region)
 
 public:
-    QW_FUNC_MEMBER(pointer_constraint_v1, send_activated)
-    QW_FUNC_MEMBER(pointer_constraint_v1, send_deactivated)
+    QW_FUNC_MEMBER(pointer_constraint_v1, send_activated, void)
+    QW_FUNC_MEMBER(pointer_constraint_v1, send_deactivated, void)
 };
 
 class QW_CLASS_OBJECT(pointer_constraints_v1)
@@ -31,9 +31,9 @@ class QW_CLASS_OBJECT(pointer_constraints_v1)
     QW_SIGNAL(new_constraint, wlr_pointer_constraint_v1*)
 
 public:
-    QW_FUNC_STATIC(pointer_constraints_v1, create)
+    QW_FUNC_STATIC(pointer_constraints_v1, create, wlr_pointer_constraints_v1 *, wl_display *display)
 
-    QW_FUNC_MEMBER(pointer_constraints_v1, constraint_for_surface)
+    QW_FUNC_MEMBER(pointer_constraints_v1, constraint_for_surface, wlr_pointer_constraint_v1 *, wlr_surface *surface, wlr_seat *seat)
 };
 
 QW_END_NAMESPACE

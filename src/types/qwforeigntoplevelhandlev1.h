@@ -20,7 +20,7 @@ class QW_CLASS_OBJECT(foreign_toplevel_manager_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(foreign_toplevel_manager_v1, create)
+    QW_FUNC_STATIC(foreign_toplevel_manager_v1, create, wlr_foreign_toplevel_manager_v1 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
@@ -36,20 +36,20 @@ class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
     QW_SIGNAL(set_rectangle, wlr_foreign_toplevel_handle_v1_set_rectangle_event*)
 
 public:
-    QW_FUNC_STATIC(foreign_toplevel_handle_v1, create)
+    QW_FUNC_STATIC(foreign_toplevel_handle_v1, create, wlr_foreign_toplevel_handle_v1 *, wlr_foreign_toplevel_manager_v1 *manager)
 
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_enter)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_leave)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_maximized)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_minimized)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_activated)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_fullscreen)
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_parent)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title, void, const char *title)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id, void, const char *app_id)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_enter, void, wlr_output *output)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_leave, void, wlr_output *output)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_maximized, void, bool maximized)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_minimized, void, bool minimized)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_activated, void, bool activated)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_fullscreen, void, bool fullscreen)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_parent, void, wlr_foreign_toplevel_handle_v1 *parent)
 
 protected:
-    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy, void)
 };
 
 QW_END_NAMESPACE

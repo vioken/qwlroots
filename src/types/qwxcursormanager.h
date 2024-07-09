@@ -14,11 +14,11 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(xcursor_manager)
 {
 public:
-    QW_FUNC_STATIC(xcursor_manager, create)
+    QW_FUNC_STATIC(xcursor_manager, create, wlr_xcursor_manager *, const char *name, uint32_t size)
 
-    QW_FUNC_MEMBER(xcursor_manager, destroy)
-    QW_FUNC_MEMBER(xcursor_manager, load)
-    QW_FUNC_MEMBER(xcursor_manager, get_xcursor)
+    QW_FUNC_MEMBER(xcursor_manager, destroy, void)
+    QW_FUNC_MEMBER(xcursor_manager, load, bool, float scale)
+    QW_FUNC_MEMBER(xcursor_manager, get_xcursor, wlr_xcursor *, const char *name, float scale)
 };
 
 QW_END_NAMESPACE
