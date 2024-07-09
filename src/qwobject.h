@@ -37,15 +37,11 @@ public:
         qw::map().insert((void*)(h), this);
 
         constexpr bool has_destroy_signal = requires(const Handle& h) {
-            h.events->destroy;
+            h.events.destroy;
         };
 
         if constexpr (has_destroy_signal) {
-            sc.connect(&h->events->destroy, this, [] (qw_object *self) {
-                self->pre_destroy();
-                self->m_handle = nullptr;
-                delete self;
-            });
+            sc.connect(&h->events.destroy, this, &qw_object::on_destroy);
         }
     }
 
@@ -141,6 +137,12 @@ protected:
         Q_EMIT beforeDestroy();
 
         sc.invalidate();
+    }
+
+    inline void on_destroy() {
+        pre_destroy();
+        m_handle = nullptr;
+        delete this;
     }
 
     Handle *m_handle;
