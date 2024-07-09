@@ -22,8 +22,7 @@ class QW_CLASS_OBJECT(text_input_v3)
 
 public:
     QW_FUNC_STATIC(text_input_manager_v3, create, wlr_text_input_manager_v3 *, wl_display *wl_display)
-    QW_FUNC_MEMBER(text_input_v3, send_leave, Sends leave to the currently focused surface and clears it
-void)
+    QW_FUNC_MEMBER(text_input_v3, send_leave, void)
     QW_FUNC_MEMBER(text_input_v3, send_preedit_string, void, const char *text, int32_t cursor_begin, int32_t cursor_end)
     QW_FUNC_MEMBER(text_input_v3, send_commit_string, void, const char *text)
     QW_FUNC_MEMBER(text_input_v3, send_delete_surrounding_text, void, uint32_t before_length, uint32_t after_length)

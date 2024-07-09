@@ -8,6 +8,7 @@
 #include <qobjectdefs.h>
 
 #include <concepts>
+#include <type_traits>
 
 #ifdef QW_NAMESPACE
 #define QW_BEGIN_NAMESPACE namespace QW_NAMESPACE {
@@ -94,17 +95,21 @@ private:
 #define QW_CLASS_REINTERPRET_CAST(wlr_type_suffix) \
 qw_##wlr_type_suffix : public qw_reinterpret_cast<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
-#define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix) \
+#define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
 template<typename ...Args> \
-QW_ALWAYS_INLINE QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix) \
-wlr_func_suffix(Args &&... args) { \
+QW_ALWAYS_INLINE ret_type \
+wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+{ \
+    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), decltype(*this), Args...>, ""); \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
 }
 
-#define QW_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
+#define QW_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
 template<typename ...Args> \
-QW_ALWAYS_INLINE static QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix) \
-wlr_func_suffix(Args &&... args) { \
+QW_ALWAYS_INLINE static ret_type \
+wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+{ \
+    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), Args...>, ""); \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
 }
 

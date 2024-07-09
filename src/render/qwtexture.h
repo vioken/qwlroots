@@ -14,14 +14,14 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(texture)
 {
 public:
-    QW_FUNC_STATIC(texture, from_pixels)
-    QW_FUNC_STATIC(texture, from_dmabuf)
-    QW_FUNC_STATIC(texture, from_buffer)
+    QW_FUNC_STATIC(texture, from_pixels, wlr_texture *, wlr_renderer *renderer, uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height, const void *data)
+    QW_FUNC_STATIC(texture, from_dmabuf, wlr_texture *, wlr_renderer *renderer, wlr_dmabuf_attributes *attribs)
+    QW_FUNC_STATIC(texture, from_buffer, wlr_texture *, wlr_renderer *renderer, wlr_buffer *buffer)
 
-    QW_FUNC_MEMBER(texture, update_from_buffer)
+    QW_FUNC_MEMBER(texture, update_from_buffer, bool, wlr_buffer *buffer, const pixman_region32_t *damage)
 
 protected:
-    QW_FUNC_MEMBER(texture, destroy)
+    QW_FUNC_MEMBER(texture, destroy, void)
 };
 
 QW_END_NAMESPACE

@@ -42,7 +42,7 @@ public: \
     QW_ALWAYS_INLINE operator wlr_##name* () const { \
         return handle(); \
     } \
-    QW_FUNC_STATIC(name, from_input_device) \
+    QW_FUNC_STATIC(name, from_input_device, wlr_##name*, wlr_input_device*) \
 protected: \
 using qw_input_device::qw_input_device; \
 private: \

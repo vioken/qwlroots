@@ -54,7 +54,7 @@ public: \
     QW_ALWAYS_INLINE operator wlr_##name* () const { \
         return handle(); \
     } \
-    QW_FUNC_STATIC(name, from_node) \
+    QW_FUNC_STATIC(name, from_node, wlr_##name*, wlr_scene_node*) \
 protected: \
 using qw_scene_node::qw_scene_node; \
 private: \

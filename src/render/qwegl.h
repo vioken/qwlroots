@@ -15,9 +15,9 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(egl)
 {
 public:
-    QW_FUNC_MEMBER(egl, create_with_context)
-    QW_FUNC_MEMBER(egl, get_display)
-    QW_FUNC_MEMBER(egl, get_context)
+    QW_FUNC_MEMBER(egl, create_with_context, wlr_egl *, EGLContext context)
+    QW_FUNC_MEMBER(egl, get_display, EGLDisplay)
+    QW_FUNC_MEMBER(egl, get_context, EGLContext)
 };
 
 QW_END_NAMESPACE
