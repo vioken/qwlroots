@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(gamma_control_manager_v1)
     QW_SIGNAL(set_gamma, wlr_gamma_control_manager_v1_set_gamma_event*)
 
 public:
-    QW_FUNC_STATIC(gamma_control_manager_v1, create, wlr_gamma_control_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(gamma_control_manager_v1, create, qw_gamma_control_manager_v1 *, wl_display *display)
 
     QW_FUNC_MEMBER(gamma_control_manager_v1, get_control, wlr_gamma_control_v1 *, wlr_output *output)
 };

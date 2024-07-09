@@ -20,7 +20,7 @@ class QW_CLASS_OBJECT(foreign_toplevel_manager_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(foreign_toplevel_manager_v1, create, wlr_foreign_toplevel_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(foreign_toplevel_manager_v1, create, qw_foreign_toplevel_manager_v1 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
@@ -36,7 +36,7 @@ class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
     QW_SIGNAL(set_rectangle, wlr_foreign_toplevel_handle_v1_set_rectangle_event*)
 
 public:
-    QW_FUNC_STATIC(foreign_toplevel_handle_v1, create, wlr_foreign_toplevel_handle_v1 *, wlr_foreign_toplevel_manager_v1 *manager)
+    QW_FUNC_STATIC(foreign_toplevel_handle_v1, create, qw_foreign_toplevel_handle_v1 *, wlr_foreign_toplevel_manager_v1 *manager)
 
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title, void, const char *title)
     QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id, void, const char *app_id)

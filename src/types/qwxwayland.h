@@ -24,7 +24,7 @@ class QW_CLASS_OBJECT(xwayland)
     QW_SIGNAL(remove_startup_info, wlr_xwayland_remove_startup_info_event*)
 
 public:
-    QW_FUNC_STATIC(xwayland, create, wlr_xwayland *, wl_display *wl_display, wlr_compositor *compositor, bool lazy)
+    QW_FUNC_STATIC(xwayland, create, qw_xwayland *, wl_display *wl_display, wlr_compositor *compositor, bool lazy)
 
     QW_FUNC_MEMBER(xwayland, set_cursor, void, uint8_t *pixels, uint32_t stride, uint32_t width, uint32_t height, int32_t hotspot_x, int32_t hotspot_y)
     QW_FUNC_MEMBER(xwayland, set_seat, void, wlr_seat *seat)

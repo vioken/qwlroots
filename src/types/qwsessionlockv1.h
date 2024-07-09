@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(session_lock_surface_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(session_lock_surface_v1, try_from_wlr_surface, wlr_session_lock_surface_v1 *, wlr_surface *surface)
+    QW_FUNC_STATIC(session_lock_surface_v1, try_from_wlr_surface, qw_session_lock_surface_v1 *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(session_lock_surface_v1, configure, uint32_t, uint32_t width, uint32_t height)
 };
@@ -42,7 +42,7 @@ class QW_CLASS_OBJECT(session_lock_manager_v1)
     QW_SIGNAL(new_lock, wlr_session_lock_v1*)
 
 public:
-    QW_FUNC_STATIC(session_lock_manager_v1, create, wlr_session_lock_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(session_lock_manager_v1, create, qw_session_lock_manager_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE

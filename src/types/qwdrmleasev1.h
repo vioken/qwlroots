@@ -33,7 +33,7 @@ class QW_CLASS_OBJECT(drm_lease_v1_manager)
     QW_SIGNAL(request, wlr_drm_lease_request_v1*)
 
 public:
-    QW_FUNC_STATIC(drm_lease_v1_manager, create, wlr_drm_lease_v1_manager *, wl_display *display, wlr_backend *backend);
+    QW_FUNC_STATIC(drm_lease_v1_manager, create, qw_drm_lease_v1_manager *, wl_display *display, wlr_backend *backend);
 
     QW_FUNC_MEMBER(drm_lease_v1_manager, offer_output, bool, wlr_output *output);
     QW_FUNC_MEMBER(drm_lease_v1_manager, withdraw_output, void, wlr_output *output);

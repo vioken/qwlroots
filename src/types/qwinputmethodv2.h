@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(input_method_manager_v2)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(input_method_manager_v2, create, wlr_input_method_manager_v2 *, wl_display *display)
+    QW_FUNC_STATIC(input_method_manager_v2, create, qw_input_method_manager_v2 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(input_method_keyboard_grab_v2)
@@ -43,7 +43,7 @@ class QW_CLASS_OBJECT(input_popup_surface_v2)
 
 public:
     QW_FUNC_MEMBER(input_popup_surface_v2, send_text_input_rectangle, void, wlr_box *sbox)
-    QW_FUNC_STATIC(input_popup_surface_v2, try_from_wlr_surface, wlr_input_popup_surface_v2 *, wlr_surface *surface)
+    QW_FUNC_STATIC(input_popup_surface_v2, try_from_wlr_surface, qw_input_popup_surface_v2 *, wlr_surface *surface)
 };
 
 class QW_CLASS_OBJECT(input_method_v2)

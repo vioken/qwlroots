@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(pointer_gestures_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(pointer_gestures_v1, create, wlr_pointer_gestures_v1 *, wl_display *display)
+    QW_FUNC_STATIC(pointer_gestures_v1, create, qw_pointer_gestures_v1 *, wl_display *display)
 
     QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_begin, void, wlr_seat *seat, uint32_t time_msec, uint32_t fingers)
     QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_update, void, wlr_seat *seat, uint32_t time_msec, double dx, double dy)

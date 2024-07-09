@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(viewporter)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(viewporter, create, wlr_viewporter *, wl_display *display)
+    QW_FUNC_STATIC(viewporter, create, qw_viewporter *, wl_display *display)
 };
 
 QW_END_NAMESPACE

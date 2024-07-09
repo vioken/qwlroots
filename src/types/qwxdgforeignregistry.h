@@ -17,7 +17,7 @@ class QW_CLASS_OBJECT(xdg_foreign_registry)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(xdg_foreign_registry, create, wlr_xdg_foreign_registry *, wl_display *display)
+    QW_FUNC_STATIC(xdg_foreign_registry, create, qw_xdg_foreign_registry *, wl_display *display)
 
     QW_FUNC_MEMBER(xdg_foreign_registry, find_by_handle, wlr_xdg_foreign_exported *, const char *handle)
 };

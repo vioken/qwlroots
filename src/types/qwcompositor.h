@@ -25,7 +25,7 @@ class QW_CLASS_OBJECT(compositor)
     QW_SIGNAL(new_surface, wlr_surface*)
 
 public:
-    QW_FUNC_STATIC(compositor, create, wlr_compositor *, wl_display *display, uint32_t version, wlr_renderer *renderer)
+    QW_FUNC_STATIC(compositor, create, qw_compositor *, wl_display *display, uint32_t version, wlr_renderer *renderer)
 };
 
 class QW_CLASS_OBJECT(surface)
@@ -43,7 +43,7 @@ class QW_CLASS_OBJECT(surface)
     QW_SIGNAL(unmap)
 
 public:
-    QW_FUNC_STATIC(surface, from_resource, wlr_surface *, wl_resource *resource)
+    QW_FUNC_STATIC(surface, from_resource, qw_surface *, wl_resource *resource)
 
     QW_FUNC_MEMBER(surface, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(surface, get_buffer_source_box, void, wlr_fbox *box)

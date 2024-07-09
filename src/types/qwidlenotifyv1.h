@@ -14,7 +14,7 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(idle_notifier_v1)
 {
 public:
-    QW_FUNC_STATIC(idle_notifier_v1, create, wlr_idle_notifier_v1 *, wl_display *display)
+    QW_FUNC_STATIC(idle_notifier_v1, create, qw_idle_notifier_v1 *, wl_display *display)
 
     QW_FUNC_MEMBER(idle_notifier_v1, notify_activity, void, wlr_seat *seat)
     QW_FUNC_MEMBER(idle_notifier_v1, set_inhibited, void, bool inhibited)

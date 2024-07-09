@@ -43,7 +43,7 @@ class QW_CLASS_OBJECT(xwayland_surface)
     QW_SIGNAL(dissociate)
 
 public:
-    QW_FUNC_STATIC(xwayland_surface, try_from_wlr_surface, wlr_xwayland_surface *, wlr_surface *surface)
+    QW_FUNC_STATIC(xwayland_surface, try_from_wlr_surface, qw_xwayland_surface *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(xwayland_surface, activate, void, bool activated)
     QW_FUNC_MEMBER(xwayland_surface, restack, void, wlr_xwayland_surface *sibling, enum xcb_stack_mode_t mode)

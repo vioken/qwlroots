@@ -24,7 +24,7 @@ class QW_CLASS_OBJECT(layer_surface_v1)
     QW_SIGNAL(new_popup, xdg_popup*)
 
 public:
-    QW_FUNC_STATIC(layer_surface_v1, try_from_wlr_surface, wlr_layer_surface_v1 *, wlr_surface *surface)
+    QW_FUNC_STATIC(layer_surface_v1, try_from_wlr_surface, qw_layer_surface_v1 *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(layer_surface_v1, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(layer_surface_v1, for_each_popup_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
@@ -43,7 +43,7 @@ class QW_CLASS_OBJECT(layer_shell_v1)
     QW_SIGNAL(new_surface, qw_layer_surface_v1 *surface)
 
 public:
-    QW_FUNC_STATIC(layer_shell_v1, create, wlr_layer_shell_v1 *, wl_display *display, uint32_t version)
+    QW_FUNC_STATIC(layer_shell_v1, create, qw_layer_shell_v1 *, wl_display *display, uint32_t version)
 };
 
 QW_END_NAMESPACE

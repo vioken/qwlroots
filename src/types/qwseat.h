@@ -36,7 +36,7 @@ class QW_CLASS_OBJECT(seat)
     QW_SIGNAL(start_drag, wlr_drag*)
 
 public:
-    QW_FUNC_STATIC(seat, create, wlr_seat *, wl_display *display, const char *name)
+    QW_FUNC_STATIC(seat, create, qw_seat *, wl_display *display, const char *name)
 
     QW_FUNC_MEMBER(seat, client_for_wl_client, wlr_seat_client *, wl_client *wl_client)
     QW_FUNC_MEMBER(seat, set_keyboard, void, wlr_keyboard *keyboard)
@@ -106,8 +106,8 @@ public:
     QW_FUNC_MEMBER(seat_client, next_serial, uint32_t)
     QW_FUNC_MEMBER(seat_client, validate_event_serial, bool, uint32_t serial)
 
-    QW_FUNC_STATIC(seat_client, from_resource, wlr_seat_client *, wl_resource *resource)
-    QW_FUNC_STATIC(seat_client, from_pointer_resource, wlr_seat_client *, wl_resource *resource)
+    QW_FUNC_STATIC(seat_client, from_resource, qw_seat_client *, wl_resource *resource)
+    QW_FUNC_STATIC(seat_client, from_pointer_resource, qw_seat_client *, wl_resource *resource)
 };
 
 QW_END_NAMESPACE

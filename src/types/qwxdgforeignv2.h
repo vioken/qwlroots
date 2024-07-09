@@ -16,7 +16,7 @@ class QW_CLASS_OBJECT(xdg_foreign_v2)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(xdg_foreign_v2, create, wlr_xdg_foreign_v2 *, wl_display *display, wlr_xdg_foreign_registry *registry)
+    QW_FUNC_STATIC(xdg_foreign_v2, create, qw_xdg_foreign_v2 *, wl_display *display, wlr_xdg_foreign_registry *registry)
 };
 
 class qw_xdg_exported_v2 : public qw_xdg_foreign_exported

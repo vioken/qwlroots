@@ -16,7 +16,7 @@ class QW_CLASS_OBJECT(security_context_manager_v1)
     Q_OBJECT
 
 public:
-    QW_FUNC_STATIC(security_context_manager_v1, create, wlr_security_context_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(security_context_manager_v1, create, qw_security_context_manager_v1 *, wl_display *display)
 
     QW_FUNC_MEMBER(security_context_manager_v1, lookup_client, const wlr_security_context_v1_state *, wl_client *client)
 };

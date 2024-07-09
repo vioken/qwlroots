@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(fullscreen_shell_v1)
     QW_SIGNAL(present_surface, wlr_fullscreen_shell_v1_present_surface_event*)
 
 public:
-    QW_FUNC_STATIC(fullscreen_shell_v1, create, wlr_fullscreen_shell_v1 *, wl_display *display)
+    QW_FUNC_STATIC(fullscreen_shell_v1, create, qw_fullscreen_shell_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE

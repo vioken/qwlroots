@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(xdg_decoration_manager_v1)
     QW_SIGNAL(new_toplevel_decoration, wlr_xdg_toplevel_decoration_v1*)
 
 public:
-    QW_FUNC_STATIC(xdg_decoration_manager_v1, create, wlr_xdg_decoration_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(xdg_decoration_manager_v1, create, qw_xdg_decoration_manager_v1 *, wl_display *display)
 };
 
 class QW_CLASS_OBJECT(xdg_toplevel_decoration_v1)

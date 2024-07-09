@@ -19,7 +19,7 @@ class QW_CLASS_OBJECT(output_power_manager_v1)
     QW_SIGNAL(set_mode, wlr_output_power_v1_set_mode_event*)
 
 public:
-    QW_FUNC_STATIC(output_power_manager_v1, create, wlr_output_power_manager_v1 *, wl_display *display)
+    QW_FUNC_STATIC(output_power_manager_v1, create, qw_output_power_manager_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE

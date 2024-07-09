@@ -60,8 +60,10 @@ namespace qw {
 #define QW_CFUNC_RETURN_TYPE(func) decltype(qw::cfunc_return_type(func))
 }
 
+class qw_basic { };
+
 template<typename Handle, typename Derive>
-class qw_reinterpret_cast
+class qw_reinterpret_cast : public qw_basic
 {
 public:
     typedef Handle HandleType;
@@ -110,7 +112,24 @@ QW_ALWAYS_INLINE static ret_type \
 wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
 { \
     static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), Args...>, ""); \
-    return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+    if constexpr (std::is_same_v<QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix), HandleType*>) { \
+        static_assert(std::is_same_v<ret_type, DeriveType*>, ""); \
+        auto *wlr_handle = wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+        if constexpr (std::string_view(#wlr_func_suffix).find("create") != -1) { \
+            if constexpr (std::is_base_of_v<qw_basic, DeriveType>) { \
+                return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+            } else { \
+                return wlr_handle ? new DeriveType(wlr_handle, true) : nullptr; \
+            } \
+        } \
+        else if constexpr (std::string_view(#wlr_func_suffix).find("from") != -1) { \
+            return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+        } else { \
+            static_assert(false, "return wlroots native type, but is not 'create' nor 'from' func!"); \
+        } \
+    } else { \
+        return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+    } \
 }
 
 #define QW_MAYBE_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
