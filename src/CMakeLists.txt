@@ -23,8 +23,8 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
-pkg_search_module(WAYLAND_PROTOCOLS REQUIRED IMPORTED_TARGET wayland-protocols)
-pkg_search_module(WLR_PROTOCOLS IMPORTED_TARGET wlr-protocols)
+pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
+pkg_search_module(WLR_PROTOCOLS wlr-protocols)
 pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 
 pkg_get_variable(WLR_HAVE_DRM_BACKEND ${wlr} have_drm_backend)
@@ -201,8 +201,6 @@ target_link_libraries(${TARGET}
     PkgConfig::WLROOTS
     PkgConfig::WAYLAND_SERVER
     PkgConfig::PIXMAN
-    PkgConfig::WAYLAND_PROTOCOLS
-    PkgConfig::WLR_PROTOCOLS
     PkgConfig::XKBCOMMON
 )
 
