@@ -41,6 +41,7 @@ class QW_CLASS_OBJECT(xdg_surface)
 
 public:
     QW_FUNC_STATIC(xdg_surface, from_resource, qw_xdg_surface *, wl_resource *resource)
+    QW_FUNC_STATIC(xdg_surface, try_from_wlr_surface, qw_xdg_surface *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(xdg_surface, surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
     QW_FUNC_MEMBER(xdg_surface, popup_surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
@@ -59,6 +60,7 @@ class QW_CLASS_OBJECT(xdg_popup)
 
 public:
     QW_FUNC_STATIC(xdg_popup, from_resource, qw_xdg_popup *, wl_resource *resource)
+    QW_FUNC_STATIC(xdg_popup, try_from_wlr_surface, qw_xdg_popup *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(xdg_popup, get_position, void, double *popup_sx, double *popup_sy)
     QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords, void, int popup_sx, int popup_sy, int *toplevel_sx, int *toplevel_sy)
@@ -85,6 +87,7 @@ class QW_CLASS_OBJECT(xdg_toplevel)
 
 public:
     QW_FUNC_STATIC(xdg_toplevel, from_resource, qw_xdg_toplevel *, wl_resource *resource)
+    QW_FUNC_STATIC(xdg_toplevel, try_from_wlr_surface, qw_xdg_toplevel *, wlr_surface *surface)
 
     QW_FUNC_MEMBER(xdg_toplevel, set_size, uint32_t, int32_t width, int32_t height)
     QW_FUNC_MEMBER(xdg_toplevel, set_activated, uint32_t, bool activated)

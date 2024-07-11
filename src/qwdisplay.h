@@ -30,6 +30,8 @@ class qw_display : public qw_object<wl_display, qw_display>
     }
 
 public:
+    explicit qw_display() : qw_object(wl_display_create(), true) { }
+
     QW_DISPLAY_FUNC_MEMBER(add_socket, int, const char *name)
     QW_DISPLAY_FUNC_MEMBER(add_socket_fd, int, int sock_fd)
     QW_DISPLAY_FUNC_MEMBER(add_socket_auto, const char*)

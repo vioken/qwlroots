@@ -32,7 +32,7 @@ typedef wlr_##name HandleType; \
 public: \
     QW_FUNC_STATIC(name, from_input_device, qw_##name*, wlr_input_device*) \
     QW_ALWAYS_INLINE wlr_##name *handle() const { \
-        return from_input_device(qw_input_device::handle())->handle(); \
+        return reinterpret_cast<wlr_##name *>(qw_input_device::handle()); \
     } \
     QW_ALWAYS_INLINE operator wlr_##name *() const { \
         return handle(); \
