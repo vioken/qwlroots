@@ -43,6 +43,7 @@ public:
     QW_FUNC_STATIC(backend, is_libinput, bool, wlr_backend *backend)
     QW_FUNC_STATIC(backend, is_headless, bool, wlr_backend *backend)
 
+    QW_FUNC_MEMBER(backend, start, bool)
     QW_FUNC_MEMBER(backend, get_drm_fd, int)
 
 protected:

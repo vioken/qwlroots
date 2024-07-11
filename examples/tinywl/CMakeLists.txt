@@ -18,6 +18,8 @@ if(PROJECT_IS_TOP_LEVEL) # if build as a separated project
     endif()
 endif()
 
+ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
+
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
 
 set(SOURCES main.cpp)

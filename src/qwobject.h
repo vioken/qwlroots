@@ -80,7 +80,10 @@ public:
         if (auto o = get(handle))
             return o;
 
-        if constexpr (std::is_same_v<decltype(Derive::create(handle)), Derive*>) {
+        constexpr bool has_create_from_handle = requires(Derive *d, Handle *handle) {
+            d = Derive::create(handle);
+        };
+        if constexpr (has_create_from_handle) {
             return Derive::create(handle);
         } else {
             return new Derive(handle, false);
@@ -105,21 +108,19 @@ public:
     }
 
     QW_ALWAYS_INLINE Handle *handle() const {
-        if (!is_valid())
-            return nullptr;
-
+        Q_ASSERT(is_valid());
         return m_handle;
     }
 
     QW_ALWAYS_INLINE Handle *operator -> () const {
-        return m_handle;
+        return handle();
     }
 
     QW_ALWAYS_INLINE operator Handle* () const {
         return handle();
     }
 
-    QW_ALWAYS_INLINE void setData(void* owner, void* data) {
+    QW_ALWAYS_INLINE void set_data(void* owner, void* data) {
         if (m_data.first && owner) {
             Q_ASSERT(m_data.first == owner);
         }
@@ -128,7 +129,7 @@ public:
     }
 
     template<typename Data>
-    QW_ALWAYS_INLINE Data* getData() const {
+    QW_ALWAYS_INLINE Data* get_data() const {
         return reinterpret_cast<Handle*>(m_data.second);
     }
 

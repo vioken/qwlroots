@@ -39,18 +39,63 @@ protected:
     QW_FUNC_MEMBER(scene_node, destroy, void)
 };
 
+class QW_CLASS_OBJECT(scene_surface)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+public:
+    QW_FUNC_STATIC(scene_surface, create, qw_scene_surface *, wlr_scene_tree *parent, wlr_surface *surface)
+    QW_FUNC_STATIC(scene_surface, try_from_buffer, qw_scene_surface *, wlr_scene_buffer *scene_buffer)
+};
+
+class QW_CLASS_OBJECT(scene_output)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+public:
+    QW_FUNC_STATIC(scene_output, create, qw_scene_output *, wlr_scene *scene, wlr_output *output)
+    QW_FUNC_STATIC(scene_output, layout_add_output, void, wlr_scene_output_layout *sol, wlr_output_layout_output *lo, wlr_scene_output *so)
+
+    QW_FUNC_MEMBER(scene_output, set_position, void, int lx, int ly)
+    QW_FUNC_MEMBER(scene_output, commit, bool, const wlr_scene_output_state_options *options)
+    QW_FUNC_MEMBER(scene_output, build_state, bool, wlr_output_state *state, const wlr_scene_output_state_options *options)
+    QW_FUNC_MEMBER(scene_output, send_frame_done, void, timespec *now)
+    QW_FUNC_MEMBER(scene_output, for_each_buffer, void, wlr_scene_buffer_iterator_func_t iterator, void *user_data)
+
+protected:
+    QW_FUNC_MEMBER(scene_output, destroy, void)
+};
+
+class QW_CLASS_REINTERPRET_CAST(scene_output_layout)
+{
+public:
+    QW_FUNC_MEMBER(scene_output_layout, add_output, void, wlr_output_layout_output *lo, wlr_scene_output *so);
+};
+
 #define QW_SCENE_NODE(name) \
+typedef wlr_##name HandleType; \
 typedef qw_##name DeriveType; \
 public: \
-    QW_FUNC_STATIC(name, from_node, wlr_##name*, wlr_scene_node*) \
+    QW_FUNC_STATIC(name, from_node, qw_##name*, wlr_scene_node*) \
     QW_ALWAYS_INLINE wlr_##name *handle() const { \
-        return from_node(qw_scene_node::handle()); \
+       return wlr_##name##_from_node(qw_scene_node::handle()); \
     } \
     QW_ALWAYS_INLINE operator wlr_##name* () const { \
         return handle(); \
     } \
+    QW_ALWAYS_INLINE static qw_##name *from(wlr_scene_node *handle) { \
+        return qobject_cast<qw_##name *>(qw_scene_node::from(handle)); \
+    } \
+    QW_ALWAYS_INLINE static qw_##name *from(wlr_##name *handle) { \
+        return from(&handle->node); \
+    } \
+    QW_ALWAYS_INLINE HandleType *operator -> () const { \
+        return handle(); \
+    } \
 protected: \
-using qw_scene_node::qw_scene_node; \
+qw_##name(wlr_##name *handle, bool is_own): qw_scene_node(&handle->node, is_own) { };\
 private: \
 friend class qw_scene_node;
 
@@ -69,7 +114,13 @@ public:
 class qw_scene : public qw_scene_tree
 {
     Q_OBJECT
+    typedef wlr_scene HandleType;
     typedef qw_scene DeriveType;
+
+protected:
+    qw_scene(wlr_scene *handle, bool is_own): qw_scene_tree(&handle->tree, is_own) { };\
+private:
+    friend class qw_scene_tree;
 
 public:
     QW_ALWAYS_INLINE wlr_scene *handle() const {
@@ -79,7 +130,11 @@ public:
     QW_ALWAYS_INLINE operator wlr_scene* () const {
         return handle();
     }
+    QW_ALWAYS_INLINE HandleType *operator -> () const {
+        return handle();
+    }
 
+    QW_FUNC_STATIC(scene, create, qw_scene *, void)
 #if WLR_VERSION_MINOR<18
     QW_FUNC_MEMBER(scene, set_presentation, void, wlr_presentation *presentation)
 #endif
@@ -140,47 +195,20 @@ public:
     QW_FUNC_MEMBER(scene_buffer, send_frame_done, void, timespec *now)
 };
 
-class qw_scene_surface : public qw_scene_buffer
-{
-    typedef qw_scene_surface DeriveType;
-
-public:
-    QW_FUNC_STATIC(scene_surface, create, qw_scene_surface *, wlr_scene_tree *parent, wlr_surface *surface)
-    QW_FUNC_STATIC(scene_surface, try_from_buffer, wlr_scene_surface *, wlr_scene_buffer *scene_buffer)
-};
-
-class qw_scene_output : public qw_scene_node
-{
-    Q_OBJECT
-
-public:
-    QW_FUNC_STATIC(scene_output, create, qw_scene_output *, wlr_scene *scene, wlr_output *output)
-    QW_FUNC_STATIC(scene_output, layout_add_output, void, wlr_scene_output_layout *sol, wlr_output_layout_output *lo, wlr_scene_output *so)
-
-    QW_FUNC_MEMBER(scene_output, set_position, void, int lx, int ly)
-    QW_FUNC_MEMBER(scene_output, commit, bool, const wlr_scene_output_state_options *options)
-    QW_FUNC_MEMBER(scene_output, build_state, bool, wlr_output_state *state, const wlr_scene_output_state_options *options)
-    QW_FUNC_MEMBER(scene_output, send_frame_done, void, timespec *now)
-    QW_FUNC_MEMBER(scene_output, for_each_buffer, void, wlr_scene_buffer_iterator_func_t iterator, void *user_data)
-
-protected:
-    QW_FUNC_MEMBER(scene_output, destroy, void)
-};
-
 qw_scene_node *qw_scene_node::create(HandleType *handle) {
     if (auto o = get(handle))
         return o;
 
     switch (handle->type) {
     case WLR_SCENE_NODE_RECT:
-        return new qw_scene_rect(handle, false);
+        return new qw_scene_rect(reinterpret_cast<wlr_scene_rect*>(handle), false);
     case WLR_SCENE_NODE_TREE:
-        return new qw_scene_tree(handle, false);
+        return new qw_scene_tree(reinterpret_cast<wlr_scene_tree*>(handle), false);
     case WLR_SCENE_NODE_BUFFER:
-        return new qw_scene_buffer(handle, false);
+        return new qw_scene_buffer(reinterpret_cast<wlr_scene_buffer*>(handle), false);
     default:
         // Here is not reachable
-        qCritical("Unknow input device type!");
+        qCritical("Unknow scene node type!");
         return nullptr;
     }
 }
