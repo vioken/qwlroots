@@ -114,6 +114,7 @@ set(HEADERS
     types/qwtearingcontrolv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
+    util/qwbox.h
     interfaces/qwinterface.h
     interfaces/qwbackendinterface.h
     interfaces/qwbufferinterface.h
