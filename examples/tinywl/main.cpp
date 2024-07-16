@@ -25,11 +25,8 @@
 #include <qwkeyboard.h>
 #include <qwpointer.h>
 #include <qwtexture.h>
-
-#define WLR_USE_UNSTABLE
-extern "C" {
-#include <wlr/util/log.h>
-}
+#include <qwlogging.h>
+#include <qwbox.h>
 
 class TinywlServer : public QObject
 {
@@ -112,7 +109,7 @@ private:
     QList<View*> views;
     View *grabbedView = nullptr;
     QPointF grabCursorPos;
-    QRectF grabGeoBox;
+    qw_fbox grabGeoBox;
 
     qw_cursor *cursor;
     qw_xcursor_manager *cursorManager;
@@ -508,7 +505,7 @@ void TinywlServer::processCursorMotion(uint32_t time)
         return;
     } else if (cursorState == CursorState::ResizingWindow) {
         const QPointF cursorPos((*cursor)->x, (*cursor)->y);
-        QRectF newGeoBox = grabGeoBox;
+        qw_fbox newGeoBox = grabGeoBox;
         const int minimumSize = 10;
 
         if (resizingEdges & WLR_EDGE_TOP) {
@@ -534,7 +531,7 @@ void TinywlServer::processCursorMotion(uint32_t time)
 
         wlr_box current_geo_box;
         qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->get_geometry(&current_geo_box);
-        auto currentGeoBox = QRect(current_geo_box.x, current_geo_box.y, current_geo_box.width, current_geo_box.height);
+        qw_box currentGeoBox { current_geo_box };
 
         currentGeoBox.moveTopLeft((grabbedView->pos + currentGeoBox.topLeft()).toPoint());
         if (newGeoBox.width() < qMax(minimumSize, minSize.width()) || newGeoBox.width() > maxSize.width()) {
@@ -632,7 +629,7 @@ bool TinywlServer::handleKeybinding(xkb_keysym_t sym)
 
 int main(int argc, char **argv)
 {
-    wlr_log_init(WLR_DEBUG, NULL);
+    qw_log::init();
     QGuiApplication app(argc, argv);
 
     app.setApplicationName("tinywl");

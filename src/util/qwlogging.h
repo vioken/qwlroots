@@ -22,7 +22,7 @@ class qw_log
     static Q_LOGGING_CATEGORY(lcQWLog, "wlroots", QtInfoMsg)
 #endif
 
-    void default_log_callback(wlr_log_importance verbosity, const char *fmt, va_list args)
+    static void default_log_callback(wlr_log_importance verbosity, const char *fmt, va_list args)
     {
         switch((int)verbosity) {
         case WLR_ERROR :
