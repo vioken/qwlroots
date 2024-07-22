@@ -9,7 +9,13 @@ extern "C" {
 #include <math.h>
 #define static
 #include <wlr/types/wlr_output.h>
+#include <wlr/backend/drm.h>
 #undef static
+#include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
+#include <wlr/backend/x11.h>
+#endif
+#include <wlr/backend/headless.h>
 }
 
 QW_BEGIN_NAMESPACE
@@ -30,6 +36,11 @@ class QW_CLASS_OBJECT(output)
     QW_SIGNAL(request_state, wlr_output_event_request_state*)
 
 public:
+    QW_FUNC_MEMBER(output, is_drm, bool)
+    QW_FUNC_MEMBER(output, is_wl, bool)
+    QW_FUNC_MEMBER(output, is_x11, bool)
+    QW_FUNC_MEMBER(output, is_headless, bool)
+
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     QW_FUNC_MEMBER(output, enable, void, bool enable)
 #endif
