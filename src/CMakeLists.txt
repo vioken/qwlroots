@@ -182,6 +182,7 @@ add_library(${TARGET}
     ${SOURCES}
     ${HEADERS}
     qwglobal.cpp
+    qwbackend.cpp
 )
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
 

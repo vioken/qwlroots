@@ -30,9 +30,8 @@ class QW_CLASS_OBJECT(backend)
     QW_SIGNAL(new_input, wlr_input_device*)
 
 public:
-    static inline DeriveType *create(HandleType *handle);
-
-    QW_FUNC_STATIC(backend, autocreate, qw_backend *, wl_display *display, wlr_session **session_ptr)
+    static DeriveType *create(wlr_backend *handle);
+    static qw_backend *autocreate(wl_display *display, wlr_session **session_ptr);
 
     QW_FUNC_MEMBER(backend, is_multi, bool)
     QW_FUNC_MEMBER(backend, is_drm, bool)
@@ -140,24 +139,5 @@ public:
 
     QW_FUNC_MEMBER(headless, add_output, wlr_output *, unsigned int width, unsigned int height)
 };
-
-qw_backend *qw_backend::create(HandleType *handle) {
-    if (wlr_backend_is_multi(handle))
-        return new qw_multi_backend(handle, false);
-#ifdef WLR_HAVE_X11_BACKEND
-    if (wlr_backend_is_x11(handle))
-        return new qw_x11_backend(handle, false);
-#endif
-    if (wlr_backend_is_drm(handle))
-        return new qw_drm_backend(handle, false);
-    if (wlr_backend_is_headless(handle))
-        return new qw_headless_backend(handle, false);
-    if (wlr_backend_is_libinput(handle))
-        return new qw_libinput_backend(handle, false);
-    if (wlr_backend_is_wl(handle))
-        return new qw_wayland_backend(handle, false);
-
-    return new DeriveType(handle, false);
-}
 
 QW_END_NAMESPACE

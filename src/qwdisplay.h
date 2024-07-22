@@ -38,7 +38,6 @@ public:
     QW_DISPLAY_FUNC_MEMBER(run, void)
     QW_DISPLAY_FUNC_MEMBER(terminate, void)
     QW_DISPLAY_FUNC_MEMBER(get_event_loop, wl_event_loop*)
-    QW_DISPLAY_FUNC_MEMBER(destroy, void)
 
     void start(QThread *thread) {
         auto loop = wl_display_get_event_loop(*this);
@@ -57,6 +56,9 @@ public:
         QAbstractEventDispatcher *dispatcher = thread->eventDispatcher();
         connect(dispatcher, &QAbstractEventDispatcher::aboutToBlock, this, processWaylandEvents);
     }
+
+protected:
+    QW_DISPLAY_FUNC_MEMBER(destroy, void)
 };
 
 QW_END_NAMESPACE

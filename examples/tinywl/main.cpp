@@ -128,12 +128,12 @@ TinywlServer::TinywlServer()
         qFatal("failed to create wlr_backend");
 
     // Add output
-//    auto multiBackend = qobject_cast<QWMultiBackend*>(backend);
-//    multiBackend->forEachBackend([] (struct wlr_backend *backend, void *data) {
-//        auto x11 = QWX11Backend::from(backend);
-//        if (x11)
-//            x11->createOutput();
-//    }, nullptr);
+   // auto multiBackend = qobject_cast<qw_multi_backend*>(backend);
+   // multiBackend->for_each_backend([] (struct wlr_backend *backend, void *data) {
+   //     auto x11 = qw_x11_backend::from(backend);
+   //     if (x11)
+   //         x11->output_create();
+   // }, nullptr);
 
     renderer = qw_renderer::autocreate(*backend);
     if (!renderer)
