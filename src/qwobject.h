@@ -13,15 +13,13 @@
 QW_BEGIN_NAMESPACE
 
 namespace qw {
-static QHash<void*, QObject*> &map() {
-    static QHash<void*, QObject*> map;
-    return map;
-}
+QHash<void*, QObject*> &map();
 }
 
 class qw_object_basic : public QObject {
     Q_OBJECT
-
+public:
+    qw_object_basic (QObject *parent): QObject(parent) { }
 Q_SIGNALS:
     void before_destroy();
 };
@@ -33,8 +31,9 @@ public:
     typedef Handle HandleType;
     typedef Derive DeriveType;
 
-    qw_object(Handle *h, bool isOwner)
-        : m_handle(h)
+    qw_object(Handle *h, bool isOwner, QObject *parent=nullptr)
+        : qw_object_basic(parent)
+        , m_handle(h)
         , isHandleOwner(isOwner)
     {
         static_assert(QtPrivate::HasQ_OBJECT_Macro<Derive>::Value,
@@ -59,7 +58,7 @@ public:
         qw::map().remove((void*)m_handle);
 
         if (isHandleOwner) {
-            constexpr bool has_destroy = requires(const Derive& t) {
+            constexpr bool has_destroy = requires(Derive t) {
                 t.destroy();
             };
 
@@ -93,9 +92,16 @@ public:
     template<class Interface, typename... Args>
     static QW_ALWAYS_INLINE DeriveType *create(Args&&... args)
         requires (std::is_base_of_v<qw_interface_basic, Interface>
-                 && std::is_same_v<HandleType, decltype(*(std::declval<Interface>().handle()))>) {
+                 && std::is_same_v<HandleType, std::remove_reference_t<decltype(*(std::declval<Interface>().handle()))>>) {
         Interface *i = new Interface();
-        Interface::template init(*i, *i, std::forward<Args>(args)...);
+        return create(i, std::forward<Args>(args)...);
+    }
+
+    template<class Interface, typename... Args>
+    static QW_ALWAYS_INLINE DeriveType *create(Interface *i, Args&&... args)
+        requires (std::is_base_of_v<qw_interface_basic, Interface>
+                 && std::is_same_v<HandleType, std::remove_reference_t<decltype(*i->handle())>>) {
+        i->init(*i, *i, std::forward<Args>(args)...);
         return new DeriveType(i->handle(), true);
     }
 
@@ -130,7 +136,7 @@ public:
 
     template<typename Data>
     QW_ALWAYS_INLINE Data* get_data() const {
-        return reinterpret_cast<Handle*>(m_data.second);
+        return reinterpret_cast<Data*>(m_data.second);
     }
 
     template <typename S, typename SS>

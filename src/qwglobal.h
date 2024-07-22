@@ -58,6 +58,9 @@ namespace qw {
     typename QtPrivate::FunctionPointer<Func>::ReturnType cfunc_return_type(Func);
 
 #define QW_CFUNC_RETURN_TYPE(func) decltype(qw::cfunc_return_type(func))
+
+    template<typename T>
+    concept Destroyable = requires (T *x) { x->destroy(); };
 }
 
 class qw_basic { };
@@ -68,6 +71,9 @@ class qw_reinterpret_cast : public qw_basic
 public:
     typedef Handle HandleType;
     typedef Derive DeriveType;
+
+    qw_reinterpret_cast() = delete;
+    QW_DISALLOW_DESTRUCTOR(qw_reinterpret_cast)
 
     QW_ALWAYS_INLINE Handle *handle() const {
         return reinterpret_cast<Handle*>(const_cast<Derive*>(static_cast<const Derive*>(this)));
@@ -82,25 +88,55 @@ public:
     }
 
     QW_ALWAYS_INLINE void operator delete(qw_reinterpret_cast *p, std::destroying_delete_t) {
-        if constexpr (std::is_same<decltype(static_cast<Derive*>(p)->destroy()), void>::value) {
+        if constexpr (qw::Destroyable<Derive>) {
             static_cast<Derive*>(p)->Derive::destroy();
         } else {
             static_assert(false, "Can't destroy.");
         }
     }
+};
+
+template<typename Handle, typename Derive>
+class qw_class_box
+{
+public:
+    typedef Handle HandleType;
+    typedef Derive DeriveType;
+
+    qw_class_box() {
+        if constexpr (requires { static_cast<DeriveType*>(this)->init(); }) {
+            static_cast<DeriveType*>(this)->init();
+        } else {
+            Q_ASSERT_X(false, "qw_class_box", "No default constructor.");
+        }
+    }
+
+    ~qw_class_box() {
+        static_cast<DeriveType*>(this)->finish();
+    }
+
+    QW_ALWAYS_INLINE Handle *handle() const {
+        return &m_handle;
+    }
+
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
 
 private:
-    qw_reinterpret_cast() = delete;
-    QW_DISALLOW_DESTRUCTOR(qw_reinterpret_cast)
+    mutable Handle m_handle;
 };
 
 #define QW_CLASS_REINTERPRET_CAST(wlr_type_suffix) \
 qw_##wlr_type_suffix : public qw_reinterpret_cast<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
+#define QW_CLASS_BOX(wlr_type_suffix) \
+qw_##wlr_type_suffix : public qw_class_box<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
+
 #define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
 template<typename ...Args> \
 QW_ALWAYS_INLINE ret_type \
-wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+wlr_func_suffix(Args &&... args) const requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
 { \
     static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), decltype(*this), Args...>, ""); \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
@@ -115,14 +151,14 @@ wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS_
     if constexpr (std::is_same_v<QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix), HandleType*>) { \
         static_assert(std::is_same_v<ret_type, DeriveType*>, ""); \
         auto *wlr_handle = wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
-        if constexpr (std::string_view(#wlr_func_suffix).find("create") != -1) { \
+        if constexpr (std::string_view(#wlr_func_suffix).find("create") != std::string_view::npos) { \
             if constexpr (std::is_base_of_v<qw_basic, DeriveType>) { \
                 return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
             } else { \
                 return wlr_handle ? new DeriveType(wlr_handle, true) : nullptr; \
             } \
         } \
-        else if constexpr (std::string_view(#wlr_func_suffix).find("from") != -1) { \
+        else if constexpr (std::string_view(#wlr_func_suffix).find("from") != std::string_view::npos || std::string_view(#wlr_func_suffix).find("get") != std::string_view::npos) { \
             return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
         } else { \
             static_assert(false, "return wlroots native type, but is not 'create' nor 'from' func!"); \

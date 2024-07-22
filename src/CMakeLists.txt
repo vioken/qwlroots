@@ -181,6 +181,7 @@ add_library(${TARGET}
     STATIC
     ${SOURCES}
     ${HEADERS}
+    qwglobal.cpp
 )
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
 

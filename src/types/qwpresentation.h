@@ -34,6 +34,9 @@ class QW_CLASS_REINTERPRET_CAST(presentation_feedback)
 {
 public:
     QW_FUNC_MEMBER(presentation_feedback, send_presented, void, const wlr_presentation_event *event)
+
+private:
+    friend class qw_reinterpret_cast;
     QW_FUNC_MEMBER(presentation_feedback, destroy, void)
 };
 

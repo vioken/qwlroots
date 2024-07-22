@@ -18,6 +18,8 @@ class QW_CLASS_OBJECT(input_method_manager_v2)
     QW_OBJECT
     Q_OBJECT
 
+    QW_SIGNAL(input_method, wlr_input_method_v2*)
+
 public:
     QW_FUNC_STATIC(input_method_manager_v2, create, qw_input_method_manager_v2 *, wl_display *display)
 };

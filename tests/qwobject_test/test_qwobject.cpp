@@ -4,6 +4,7 @@
 #include "qwabc.h"
 
 #include <QtTest>
+#include <qwdisplay.h>
 
 class testQWObject : public QObject
 {
@@ -19,15 +20,15 @@ private Q_SLOTS:
     void cleanupTestCase();
 
 private:
-    wl_display *display;
+    qw_display *display;
     qw_abc* qabc;
     const char *notified_name { nullptr };
     bool qabc_destroyed { false };
 };
 
 void testQWObject::initTestCase() {
-    display = wl_display_create();
-    qabc = qw_abc::create(display);
+    display = new qw_display();
+    qabc = qw_abc::create(*display);
     connect(qabc, &qw_abc::notify_set_name, this, [this](const char *name){
         notified_name = name;
     });
@@ -52,7 +53,7 @@ void testQWObject::testsignal() {
 }
 
 void testQWObject::cleanupTestCase() {
-    wl_display_destroy(display);
+    delete display;
     QCOMPARE(qabc_destroyed, true);
 }
 

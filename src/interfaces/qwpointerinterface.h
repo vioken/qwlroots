@@ -18,6 +18,8 @@ class QW_CLASS_INTERFACE(pointer)
     QW_INTERFACE_INIT(pointer)
 
 public:
+    QW_INTERFACE_FUNC_STATIC(pointer, init, void, wlr_pointer *pointer, const wlr_pointer_impl *impl, const char *name)
+
     QW_INTERFACE(name)
 };
 

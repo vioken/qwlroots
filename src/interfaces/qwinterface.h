@@ -33,6 +33,10 @@ public:
         return impl();
     }
 
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
+
     QW_ALWAYS_INLINE static qw_interface *get(Handle *handle) {
         auto h = static_cast<_handle*>(handle);
         Q_ASSERT(h->interface && h->impl == handle->impl);
@@ -108,7 +112,6 @@ friend class qw_interface; \
 friend class qw_##wlr_type_suffix; \
 private: \
 using qw_interface::qw_interface; \
-QW_FUNC_STATIC(wlr_type_suffix, init) \
 QW_MAYBE_FUNC_STATIC(wlr_type_suffix, finish) \
 public: \
 ~qw_##wlr_type_suffix##_interface() { finish(*this); }
@@ -136,5 +139,14 @@ struct qw_interface_##name { \
     } \
 }; \
 qw_interface_##name<ImplType, Derive> _interface_##name = this;
+
+#define QW_INTERFACE_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
+template<typename ...Args> \
+    QW_ALWAYS_INLINE static ret_type \
+    wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+{ \
+        static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), Args...>, ""); \
+        return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+}
 
 QW_END_NAMESPACE

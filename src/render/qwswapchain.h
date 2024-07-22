@@ -19,7 +19,8 @@ public:
     QW_FUNC_MEMBER(swapchain, acquire, wlr_buffer *, int *age)
     QW_FUNC_MEMBER(swapchain, set_buffer_submitted, void, wlr_buffer *buffer)
 
-protected:
+private:
+    friend class qw_reinterpret_cast;
     QW_FUNC_MEMBER(swapchain, destroy, void)
 };
 
