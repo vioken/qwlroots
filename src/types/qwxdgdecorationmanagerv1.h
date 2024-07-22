@@ -6,7 +6,11 @@
 #include <qwobject.h>
 
 extern "C" {
+// avoid replace static
+#include <wayland-server-core.h>
+#define static
 #include <wlr/types/wlr_xdg_decoration_v1.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE

@@ -21,6 +21,10 @@ public:
 
     QW_FUNC_MEMBER(output_configuration_v1, send_failed, void)
     QW_FUNC_MEMBER(output_configuration_v1, send_succeeded, void)
+
+protected:
+    friend class qw_reinterpret_cast;
+    QW_FUNC_MEMBER(output_configuration_v1, destroy, void)
 };
 
 class QW_CLASS_REINTERPRET_CAST(output_configuration_head_v1)

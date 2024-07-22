@@ -23,6 +23,8 @@ class QW_CLASS_INTERFACE(renderer)
     QW_INTERFACE_INIT(renderer)
 
 public:
+    QW_INTERFACE_FUNC_STATIC(renderer, init, void, wlr_renderer *renderer, const wlr_renderer_impl *impl)
+
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
     QW_INTERFACE(bind_buffer)
     QW_INTERFACE(begin)

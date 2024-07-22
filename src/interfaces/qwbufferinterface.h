@@ -18,6 +18,8 @@ class QW_CLASS_INTERFACE(buffer)
     QW_INTERFACE_INIT(buffer)
 
 public:
+    QW_INTERFACE_FUNC_STATIC(buffer, init, void, wlr_buffer *buffer, const wlr_buffer_impl *impl, int width, int height)
+
     QW_INTERFACE(get_dmabuf)
     QW_INTERFACE(get_shm)
     QW_INTERFACE(begin_data_ptr_access)

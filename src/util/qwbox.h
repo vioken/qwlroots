@@ -21,13 +21,17 @@ public:
     {
     }
 
-    Q_ALWAYS_INLINE wlr_box toWlrBox() {
+    Q_ALWAYS_INLINE static wlr_box toWlrBox(const QRect& box) {
         return wlr_box {
-            .x = x(),
-            .y = y(),
-            .width = width(),
-            .height = height()
+            .x = box.x(),
+            .y = box.y(),
+            .width = box.width(),
+            .height = box.height()
         };
+    }
+
+    Q_ALWAYS_INLINE wlr_box toWlrBox() {
+        return toWlrBox(*this);
     }
 };
 
@@ -39,13 +43,17 @@ public:
     {
     }
 
-    Q_ALWAYS_INLINE wlr_fbox toWlrFBox() {
+    Q_ALWAYS_INLINE static wlr_fbox toWlrFBox(const QRectF& box) {
         return wlr_fbox {
-            .x = x(),
-            .y = y(),
-            .width = width(),
-            .height = height()
+            .x = box.x(),
+            .y = box.y(),
+            .width = box.width(),
+            .height = box.height()
         };
+    }
+
+    Q_ALWAYS_INLINE wlr_fbox toWlrFBox() {
+        return toWlrFBox(*this);
     }
 };
 

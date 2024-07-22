@@ -24,6 +24,7 @@ class QW_CLASS_OBJECT(output_layout)
     QW_SIGNAL(change, wlr_output_layout_output*)
 
 public:
+    qw_output_layout(QObject *parent): qw_object(wlr_output_layout_create(), true, parent) { }
     QW_FUNC_STATIC(output_layout, create, qw_output_layout *, void)
 
     QW_FUNC_MEMBER(output_layout, get, wlr_output_layout_output *, wlr_output *reference)

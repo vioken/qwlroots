@@ -96,15 +96,14 @@ public:
     QW_FUNC_MEMBER(output_cursor, set_buffer, bool, wlr_buffer *buffer, int32_t hotspot_x, int32_t hotspot_y)
     QW_FUNC_MEMBER(output_cursor, move, bool, double x, double y)
 
-protected:
+private:
+    friend class qw_reinterpret_cast;
     QW_FUNC_MEMBER(output_cursor, destroy, void)
 };
 
-class QW_CLASS_REINTERPRET_CAST(output_state)
+class QW_CLASS_BOX(output_state)
 {
 public:
-    QW_FUNC_MEMBER(output_state, init, void)
-    QW_FUNC_MEMBER(output_state, finish, void)
     QW_FUNC_MEMBER(output_state, set_enabled, void, bool enabled)
     QW_FUNC_MEMBER(output_state, set_mode, void, wlr_output_mode *mode)
     QW_FUNC_MEMBER(output_state, set_scale, void, float scale)
@@ -117,6 +116,11 @@ public:
     QW_FUNC_MEMBER(output_state, set_damage, void, const pixman_region32_t *damage)
     QW_FUNC_MEMBER(output_state, set_layers, void, wlr_output_layer_state *layers, size_t layers_len)
     QW_FUNC_MEMBER(output_state, copy, bool, const wlr_output_state *src)
+
+private:
+    friend class qw_class_box;
+    QW_FUNC_MEMBER(output_state, init, void)
+    QW_FUNC_MEMBER(output_state, finish, void)
 };
 
 QW_END_NAMESPACE

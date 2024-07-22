@@ -20,7 +20,8 @@ public:
 
     QW_FUNC_MEMBER(texture, update_from_buffer, bool, wlr_buffer *buffer, const pixman_region32_t *damage)
 
-protected:
+private:
+    friend class qw_reinterpret_cast;
     QW_FUNC_MEMBER(texture, destroy, void)
 };
 

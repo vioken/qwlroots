@@ -11,9 +11,16 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-class QW_CLASS_REINTERPRET_CAST(linux_dmabuf_feedback_v1)
+class QW_CLASS_BOX(linux_dmabuf_feedback_v1)
 {
 public:
+    qw_linux_dmabuf_feedback_v1() = delete;
+    qw_linux_dmabuf_feedback_v1(const wlr_linux_dmabuf_feedback_v1_init_options *options) {
+        init_with_options(options);
+    }
+
+private:
+    friend class qw_class_box;
     QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, finish, void)
     QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, init_with_options, bool, const wlr_linux_dmabuf_feedback_v1_init_options *options)
 };

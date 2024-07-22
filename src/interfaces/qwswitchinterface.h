@@ -18,6 +18,8 @@ class QW_CLASS_INTERFACE(switch)
     QW_INTERFACE_INIT(switch)
 
 public:
+    QW_INTERFACE_FUNC_STATIC(switch, init, void, wlr_switch *switch_device, const wlr_switch_impl *impl, const char *name)
+
     QW_INTERFACE(name)
 };
 

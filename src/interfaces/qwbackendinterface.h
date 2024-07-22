@@ -28,6 +28,8 @@ class QW_CLASS_INTERFACE(backend)
     QW_INTERFACE_INIT(backend)
 
 public:
+    QW_INTERFACE_FUNC_STATIC(backend, init, void, wlr_backend *backend, const wlr_backend_impl *impl)
+
     QW_INTERFACE(start)
     QW_INTERFACE(get_drm_fd)
     QW_INTERFACE(get_buffer_caps)
