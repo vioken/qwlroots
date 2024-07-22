@@ -13,6 +13,15 @@ extern "C" {
 #include <wlr/types/wlr_tablet_tool.h>
 #include <wlr/types/wlr_touch.h>
 #include <wlr/types/wlr_switch.h>
+
+#define static
+#include <wlr/backend/drm.h>
+#undef static
+#include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
+#include <wlr/backend/x11.h>
+#endif
+#include <wlr/backend/libinput.h>
 }
 
 QW_BEGIN_NAMESPACE
@@ -24,6 +33,10 @@ class QW_CLASS_OBJECT(input_device)
 
 public:
     inline static qw_input_device *create(HandleType *handle);
+
+    QW_FUNC_MEMBER(input_device, is_wl, bool)
+    QW_FUNC_MEMBER(input_device, is_x11, bool)
+    QW_FUNC_MEMBER(input_device, is_libinput, bool)
 };
 
 #define QW_INPUT_DEVICE(name) \
