@@ -16,8 +16,6 @@ if(PROJECT_IS_TOP_LEVEL) # if build as a separated project
     else()
         find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
     endif()
-else()
-    ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
 endif()
 
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
