@@ -114,7 +114,11 @@ private: \
 using qw_interface::qw_interface; \
 QW_MAYBE_FUNC_STATIC(wlr_type_suffix, finish) \
 public: \
-~qw_##wlr_type_suffix##_interface() { finish(*this); }
+~qw_##wlr_type_suffix##_interface() { finish(*this); } \
+template<typename ...Args> \
+QW_ALWAYS_INLINE void init(Args &&... args) { \
+    wlr_##wlr_type_suffix##_##init(*this, *this, std::forward<Args>(args)...); \
+}
 
 #define QW_INTERFACE(name) \
 private: \

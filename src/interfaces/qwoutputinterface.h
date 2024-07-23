@@ -20,10 +20,6 @@ class QW_CLASS_INTERFACE(output)
     QW_INTERFACE_INIT(output)
 
 public:
-    QW_INTERFACE_FUNC_STATIC(output, init, void, wlr_output *output, wlr_backend *backend,
-                             const wlr_output_impl *impl, wl_display *display,
-                             const wlr_output_state *state)
-
     QW_INTERFACE(set_cursor)
     QW_INTERFACE(move_cursor)
     QW_INTERFACE(test)

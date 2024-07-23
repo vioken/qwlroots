@@ -109,7 +109,7 @@ private:
     QList<View*> views;
     View *grabbedView = nullptr;
     QPointF grabCursorPos;
-    qw_fbox grabGeoBox;
+    QRectF grabGeoBox;
 
     qw_cursor *cursor;
     qw_xcursor_manager *cursorManager;
@@ -505,7 +505,7 @@ void TinywlServer::processCursorMotion(uint32_t time)
         return;
     } else if (cursorState == CursorState::ResizingWindow) {
         const QPointF cursorPos((*cursor)->x, (*cursor)->y);
-        qw_fbox newGeoBox = grabGeoBox;
+        QRectF newGeoBox = grabGeoBox;
         const int minimumSize = 10;
 
         if (resizingEdges & WLR_EDGE_TOP) {
@@ -531,7 +531,7 @@ void TinywlServer::processCursorMotion(uint32_t time)
 
         wlr_box current_geo_box;
         qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->get_geometry(&current_geo_box);
-        qw_box currentGeoBox { current_geo_box };
+        auto currentGeoBox = qw_box(current_geo_box).toQRect();
 
         currentGeoBox.moveTopLeft((grabbedView->pos + currentGeoBox.topLeft()).toPoint());
         if (newGeoBox.width() < qMax(minimumSize, minSize.width()) || newGeoBox.width() > maxSize.width()) {

@@ -17,8 +17,6 @@ class QW_CLASS_INTERFACE(keyboard)
     QW_INTERFACE_INIT(keyboard)
 
 public:
-    QW_INTERFACE_FUNC_STATIC(keyboard, init, void,  wlr_keyboard *keyboard, const wlr_keyboard_impl *impl, const char *name)
-
     QW_INTERFACE(name)
     QW_INTERFACE(led_update)
 };

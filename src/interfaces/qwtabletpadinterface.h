@@ -18,8 +18,6 @@ class QW_CLASS_INTERFACE(tablet_pad)
     QW_INTERFACE_INIT(tablet_pad)
 
 public:
-    QW_INTERFACE_FUNC_STATIC(tablet_pad, init, void, wlr_tablet_pad *pad, const wlr_tablet_pad_impl *impl, const char *name)
-
     QW_INTERFACE(name)
 };
 
