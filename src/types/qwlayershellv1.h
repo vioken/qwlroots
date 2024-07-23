@@ -3,75 +3,48 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwconfig.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_layer_surface_v1;
-struct wlr_layer_shell_v1;
-struct wl_resource;
-struct wlr_surface;
-
-using wlr_surface_iterator_func_t = void (*)(wlr_surface *surface, int sx, int sy, void *data);
+extern "C" {
+#include <math.h>
+#define namespace scope
+#define static
+#include <wlr/types/wlr_layer_shell_v1.h>
+#undef namespace
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSurface;
-class QWLayerSurfaceV1;
-class QWLayerShellV1Private;
-class QWXdgPopup;
-class QW_EXPORT QWLayerShellV1 : public QWWrapObject
+class QW_CLASS_OBJECT(layer_surface_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWLayerShellV1)
+
+    QW_SIGNAL(new_popup, xdg_popup*)
+
 public:
-    static QWLayerShellV1 *create(QWDisplay *display, uint32_t version);
-    inline wlr_layer_shell_v1 *handle() const {
-        return QWObject::handle<wlr_layer_shell_v1>();
-    }
+    QW_FUNC_STATIC(layer_surface_v1, try_from_wlr_surface, qw_layer_surface_v1 *, wlr_surface *surface)
 
-    static QWLayerShellV1 *get(wlr_layer_shell_v1 *handle);
-    static QWLayerShellV1 *from(wlr_layer_shell_v1 *handle);
+    QW_FUNC_MEMBER(layer_surface_v1, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
+    QW_FUNC_MEMBER(layer_surface_v1, for_each_popup_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
+    QW_FUNC_MEMBER(layer_surface_v1, surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
+    QW_FUNC_MEMBER(layer_surface_v1, popup_surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
+    QW_FUNC_MEMBER(layer_surface_v1, configure, uint32_t, uint32_t width, uint32_t height);
 
-Q_SIGNALS:
-    void newSurface(QWLayerSurfaceV1 *surface);
-
-private:
-    QWLayerShellV1(wlr_layer_shell_v1 *handle, bool isOwner);
-    ~QWLayerShellV1() = default;
+protected:
+    QW_FUNC_MEMBER(layer_surface_v1, destroy, void)
 };
 
-class QWLayerSurfaceV1Private;
-class QW_EXPORT QWLayerSurfaceV1 : public QWWrapObject
+class QW_CLASS_OBJECT(layer_shell_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWLayerSurfaceV1)
+
+    QW_SIGNAL(new_surface, wlr_layer_surface_v1 *surface)
+
 public:
-    static QWLayerShellV1 *create(QWDisplay *display);
-    inline wlr_layer_surface_v1 *handle() const {
-        return QWObject::handle<wlr_layer_surface_v1>();
-    }
-
-    static QWLayerSurfaceV1 *get(wlr_layer_surface_v1 *handle);
-    static QWLayerSurfaceV1 *from(wlr_layer_surface_v1 *handle);
-    static QWLayerSurfaceV1 *from(wl_resource *resource);
-    static QWLayerSurfaceV1 *from(wlr_surface *surface);
-    static QWLayerSurfaceV1 *from(QWSurface *surface);
-
-    uint32_t configure(uint32_t width, uint32_t height);
-    void forEachSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-    QWSurface *surfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    QWSurface *popupSurfaceAt(const QPointF &xpos, QPointF *subPos = nullptr) const;
-    void forEachPopupSurface(wlr_surface_iterator_func_t iterator, void *userData) const;
-    QWSurface *surface() const;
-
-Q_SIGNALS:
-    void newPopup(QWXdgPopup *popup);
-
-private:
-    QWLayerSurfaceV1(wlr_layer_surface_v1 *handle, bool isOwner);
-    ~QWLayerSurfaceV1() = default;
+    QW_FUNC_STATIC(layer_shell_v1, create, qw_layer_shell_v1 *, wl_display *display, uint32_t version)
 };
 
 QW_END_NAMESPACE

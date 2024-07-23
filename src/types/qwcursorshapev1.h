@@ -3,36 +3,25 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_cursor_shape_manager_v1;
-struct wlr_cursor_shape_manager_v1_request_set_shape_event;
+extern "C" {
+#include <wlr/types/wlr_cursor_shape_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWCursorShapeManagerV1Private;
-
-class QW_EXPORT QWCursorShapeManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(cursor_shape_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWCursorShapeManagerV1)
+
+    QW_SIGNAL(request_set_shape, wlr_cursor_shape_manager_v1_request_set_shape_event*)
+
 public:
-    inline wlr_cursor_shape_manager_v1 *handle() const {
-        return QWObject::handle<wlr_cursor_shape_manager_v1>();
-    }
-
-    static QWCursorShapeManagerV1 *get(wlr_cursor_shape_manager_v1 *handle);
-    static QWCursorShapeManagerV1 *from(wlr_cursor_shape_manager_v1 *handle);
-    static QWCursorShapeManagerV1 *create(QWDisplay *display, uint32_t version);
-
-Q_SIGNALS:
-    void requestSetShape(wlr_cursor_shape_manager_v1_request_set_shape_event *event);
-
-private:
-    QWCursorShapeManagerV1(wlr_cursor_shape_manager_v1 *handle, bool isOwner);
-    ~QWCursorShapeManagerV1() = default;
+    QW_FUNC_STATIC(cursor_shape_manager_v1, create, qw_cursor_shape_manager_v1 *, wl_display *display, uint32_t version)
+    QW_FUNC_STATIC(cursor_shape_v1, name, const char *, enum wp_cursor_shape_device_v1_shape shape)
 };
 
 QW_END_NAMESPACE
+

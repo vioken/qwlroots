@@ -3,39 +3,27 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_primary_selection_source_impl;
-struct wlr_primary_selection_source;
-struct wlr_seat_client;
+extern "C" {
+#include <wlr/types/wlr_primary_selection.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSeat;
-class QWPrimarySelectionSourcePrivate;
-class QW_EXPORT QWPrimarySelectionSource : public QWWrapObject
+class QW_CLASS_OBJECT(primary_selection_source)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPrimarySelectionSource)
+
 public:
-    ~QWPrimarySelectionSource() = default;
+    QW_FUNC_STATIC(seat, request_set_primary_selection, void, wlr_seat *seat, wlr_seat_client *client, wlr_primary_selection_source *source, uint32_t serial)
+    QW_FUNC_STATIC(seat, set_primary_selection, void, wlr_seat *seat, wlr_primary_selection_source *source, uint32_t serial)
 
-    inline wlr_primary_selection_source *handle() const {
-        return QWObject::handle<wlr_primary_selection_source>();
-    }
+    QW_FUNC_MEMBER(primary_selection_source, init, void, const wlr_primary_selection_source_impl *impl)
+    QW_FUNC_MEMBER(primary_selection_source, send, void, const char *mime_type, int fd)
 
-    static QWPrimarySelectionSource *get(wlr_primary_selection_source *handle);
-    static QWPrimarySelectionSource *from(wlr_primary_selection_source *handle);
-
-    void init(const wlr_primary_selection_source_impl *impl);
-    void send(const char *mime_type, int fd);
-    void requestSetPrimarySelection(QWSeat *seat, wlr_seat_client *client, uint32_t serial);
-    void setPrimarySelection(QWSeat *seat, uint32_t serial);
-
-private:
-    QWPrimarySelectionSource(wlr_primary_selection_source *handle, bool isOwner);
+protected:
+    QW_FUNC_MEMBER(primary_selection_source, destroy, void)
 };
-
 QW_END_NAMESPACE
-

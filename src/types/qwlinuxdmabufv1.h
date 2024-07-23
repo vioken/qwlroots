@@ -3,49 +3,35 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_linux_dmabuf_v1;
-struct wlr_linux_dmabuf_feedback_v1;
-struct wlr_linux_dmabuf_feedback_v1_init_options;
-struct wlr_dmabuf_v1_buffer;
+extern "C" {
+#include <wlr/types/wlr_linux_dmabuf_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWRenderer;
-class QW_EXPORT QWLinuxDmabufFeedbackV1
+class QW_CLASS_BOX(linux_dmabuf_feedback_v1)
 {
 public:
-    QWLinuxDmabufFeedbackV1() = delete;
-    ~QWLinuxDmabufFeedbackV1() = delete;
-
-    wlr_linux_dmabuf_feedback_v1 *handle() const;
-    static QWLinuxDmabufFeedbackV1 *from(wlr_linux_dmabuf_feedback_v1 *handle);
-
-    void finish();
-    bool initWithOptions(const wlr_linux_dmabuf_feedback_v1_init_options *options);
-};
-
-class QWLinuxDmabufV1Private;
-class QW_EXPORT QWLinuxDmabufV1 : public QWWrapObject
-{
-    Q_OBJECT
-    QW_DECLARE_PRIVATE(QWLinuxDmabufV1)
-public:
-    inline wlr_linux_dmabuf_v1 *handle() const {
-        return QWObject::handle<wlr_linux_dmabuf_v1>();
+    qw_linux_dmabuf_feedback_v1() = delete;
+    qw_linux_dmabuf_feedback_v1(const wlr_linux_dmabuf_feedback_v1_init_options *options) {
+        init_with_options(options);
     }
 
-    static QWLinuxDmabufV1 *get(wlr_linux_dmabuf_v1 *handle);
-    static QWLinuxDmabufV1 *from(wlr_linux_dmabuf_v1 *handle);
-    static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, const QWLinuxDmabufFeedbackV1 *defaultFeedback);
-    static QWLinuxDmabufV1 *create(QWDisplay *display, uint32_t version, QWRenderer *renderer);
-
 private:
-    QWLinuxDmabufV1(wlr_linux_dmabuf_v1 *handle, bool isOwner);
-    ~QWLinuxDmabufV1() = default;
+    friend class qw_class_box;
+    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, finish, void)
+    QW_FUNC_MEMBER(linux_dmabuf_feedback_v1, init_with_options, bool, const wlr_linux_dmabuf_feedback_v1_init_options *options)
+};
+
+class QW_CLASS_OBJECT(linux_dmabuf_v1)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+public:
+    QW_FUNC_STATIC(linux_dmabuf_v1, create, qw_linux_dmabuf_v1 *, wl_display *display, uint32_t version, const wlr_linux_dmabuf_feedback_v1 *default_feedback)
 };
 
 QW_END_NAMESPACE

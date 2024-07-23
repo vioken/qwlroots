@@ -4,79 +4,54 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wl_display;
-struct wlr_data_device_manager;
-struct wlr_data_source;
-struct wlr_drag;
-struct wlr_drag_motion_event;
-struct wlr_drag_drop_event;
+extern "C" {
+#include <wlr/types/wlr_data_device.h>
+}
 
-typedef uint32_t wl_data_device_manager_dnd_action_t;
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QW_EXPORT QWDataSource
+class QW_CLASS_OBJECT(data_source)
 {
+    QW_OBJECT
+    Q_OBJECT
+
 public:
-    QWDataSource() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWDataSource)
+    QW_FUNC_MEMBER(data_source, init, void, const wlr_data_source_impl *impl)
+    QW_FUNC_MEMBER(data_source, accept, void, uint32_t serial, const char *mime_type)
+    QW_FUNC_MEMBER(data_source, send, void, const char *mime_type, int32_t fd)
+    QW_FUNC_MEMBER(data_source, dnd_action, void, enum wl_data_device_manager_dnd_action action)
+    QW_FUNC_MEMBER(data_source, dnd_drop, void)
+    QW_FUNC_MEMBER(data_source, dnd_finish, void)
 
-    void operator delete(QWDataSource *p, std::destroying_delete_t);
-
-    wlr_data_source *handle() const;
-
-    static QWDataSource *from(wlr_data_source *handle);
-
-    void accept(uint32_t serial, const char *mime_type);
-    void dndAction(wl_data_device_manager_dnd_action_t action);
-    void dndDrop();
-    void dndFinish();
-    void send(const char *mime_type, int32_t fd);
+protected:
+    QW_FUNC_MEMBER(data_source, destroy, void)
 };
 
-class QWDataDeviceManagerPrivate;
-class QW_EXPORT QWDataDeviceManager : public QWWrapObject
+class QW_CLASS_OBJECT(data_device_manager)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWDataDeviceManager)
+
 public:
-    inline wlr_data_device_manager *handle() const {
-        return QWObject::handle<wlr_data_device_manager>();
-    }
-
-    static QWDataDeviceManager *get(wlr_data_device_manager *handle);
-    static QWDataDeviceManager *from(wlr_data_device_manager *handle);
-    static QWDataDeviceManager *create(QWDisplay *display);
-
-private:
-    QWDataDeviceManager(wlr_data_device_manager *handle, bool isOwner);
-    ~QWDataDeviceManager() = default;
+    QW_FUNC_STATIC(data_device_manager, create, qw_data_device_manager *, wl_display *display)
 };
 
-class QWDragPrivate;
-class QW_EXPORT QWDrag : public QWWrapObject
+class QW_CLASS_OBJECT(drag)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWDrag)
+
+    QW_SIGNAL(focus)
+    QW_SIGNAL(motion, wlr_drag_motion_event*)
+    QW_SIGNAL(drop, wlr_drag_drop_event*)
+
 public:
-    inline wlr_drag *handle() const {
-        return QWObject::handle<wlr_drag>();
-    }
-
-    static QWDrag *get(wlr_drag *handle);
-    static QWDrag *from(wlr_drag *handle);
-
-Q_SIGNALS:
-    void focus();
-    void motion(wlr_drag_motion_event *event);
-    void drop(wlr_drag_drop_event *event);
-
-private:
-    QWDrag(wlr_drag *handle, bool isOwner);
-    ~QWDrag() = default;
+    QW_FUNC_STATIC(drag, create, qw_drag *, wlr_seat_client *seat_client, wlr_data_source *source, wlr_surface *icon_surface);
+    QW_FUNC_STATIC(seat, request_start_drag, void, wlr_seat *seat, wlr_drag *drag, wlr_surface *origin, uint32_t serial)
+    QW_FUNC_STATIC(seat, start_drag, void, wlr_seat *seat, wlr_drag *drag, uint32_t serial);
 };
 
 QW_END_NAMESPACE

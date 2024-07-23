@@ -5,27 +5,23 @@
 
 #include <qwglobal.h>
 
-struct wlr_xcursor_manager;
-struct wlr_xcursor;
+extern "C" {
+#include <wlr/types/wlr_xcursor_manager.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWCursor;
-class QW_EXPORT QWXCursorManager
+class QW_CLASS_REINTERPRET_CAST(xcursor_manager)
 {
 public:
-    QWXCursorManager() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWXCursorManager)
+    QW_FUNC_STATIC(xcursor_manager, create, qw_xcursor_manager *, const char *name, uint32_t size)
 
-    void operator delete(QWXCursorManager *p, std::destroying_delete_t);
+    QW_FUNC_MEMBER(xcursor_manager, load, bool, float scale)
+    QW_FUNC_MEMBER(xcursor_manager, get_xcursor, wlr_xcursor *, const char *name, float scale)
 
-    wlr_xcursor_manager *handle() const;
-
-    static QWXCursorManager *from(wlr_xcursor_manager *handle);
-    static QWXCursorManager *create(const char *name, uint32_t size);
-
-    bool load(float scale);
-    wlr_xcursor *getXCursor(const char *name, float scale) const;
+private:
+    friend class qw_reinterpret_cast;
+    QW_FUNC_MEMBER(xcursor_manager, destroy, void)
 };
 
 QW_END_NAMESPACE

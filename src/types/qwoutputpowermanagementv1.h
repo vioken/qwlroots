@@ -3,36 +3,23 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_output_power_manager_v1;
-struct wlr_output_power_v1_set_mode_event;
+extern "C" {
+#include <wlr/types/wlr_output_power_management_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWOutputPowerManagerV1Private;
-class QW_EXPORT QWOutputPowerManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(output_power_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWOutputPowerManagerV1)
+
+    QW_SIGNAL(set_mode, wlr_output_power_v1_set_mode_event*)
+
 public:
-    inline wlr_output_power_manager_v1 *handle() const {
-        return QWObject::handle<wlr_output_power_manager_v1>();
-    }
-
-    static QWOutputPowerManagerV1 *get(wlr_output_power_manager_v1 *handle);
-    static QWOutputPowerManagerV1 *from(wlr_output_power_manager_v1 *handle);
-    static QWOutputPowerManagerV1 *create(QWDisplay *display);
-
-Q_SIGNALS:
-    void modeChanged(wlr_output_power_v1_set_mode_event* event);
-
-private:
-    QWOutputPowerManagerV1(wlr_output_power_manager_v1 *handle, bool isOwner);
-    ~QWOutputPowerManagerV1() = default;
+    QW_FUNC_STATIC(output_power_manager_v1, create, qw_output_power_manager_v1 *, wl_display *display)
 };
 
 QW_END_NAMESPACE
-

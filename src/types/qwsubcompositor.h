@@ -3,53 +3,30 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_subcompositor;
-struct wlr_subsurface;
+extern "C" {
+#include <wlr/types/wlr_subcompositor.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWDisplay;
-class QWSubcompositorPrivate;
-class QW_EXPORT QWSubcompositor : public QWWrapObject
+class QW_CLASS_OBJECT(subcompositor)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSubcompositor)
+
 public:
-    inline wlr_subcompositor *handle() const {
-        return QWObject::handle<wlr_subcompositor>();
-    }
-
-    static QWSubcompositor *get(wlr_subcompositor *handle);
-    static QWSubcompositor *from(wlr_subcompositor *handle);
-    static QWSubcompositor *create(QWDisplay *display);
-
-private:
-    QWSubcompositor(wlr_subcompositor *handle, bool isOwner);
-    ~QWSubcompositor() = default;
+    QW_FUNC_STATIC(subcompositor, create, qw_subcompositor *, wl_display *display)
 };
 
-class QWSubsurfacePrivate;
-class QW_EXPORT QWSubsurface : public QWWrapObject
+class QW_CLASS_OBJECT(subsurface)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSubsurface)
 
 public:
-    inline wlr_subsurface *handle() const {
-        return QWObject::handle<wlr_subsurface>();
-    }
-
-    static QWSubsurface *get(wlr_subsurface *handle);
-    static QWSubsurface *from(wlr_subsurface *handle);
-    static QWSubsurface *tryFrom(QWSurface *surface);
-
-private:
-    QWSubsurface(wlr_subsurface *handle, bool isOwner);
-    ~QWSubsurface() = default;
+    QW_FUNC_STATIC(subsurface, try_from_wlr_surface, qw_subsurface *, wlr_surface *surface)
 };
 
 QW_END_NAMESPACE

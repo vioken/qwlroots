@@ -3,55 +3,32 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include<qwobject.h>
 
-struct wlr_output_state;
-struct wlr_gamma_control_v1;
-struct wlr_gamma_control_manager_v1;
-struct wlr_gamma_control_manager_v1_set_gamma_event;
+extern "C" {
+#include <wlr/types/wlr_gamma_control_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWOutput;
-class QWDisplay;
-class QWGammaControlManagerV1Private;
-
-class QW_EXPORT QWGammaControl
+class QW_CLASS_OBJECT(gamma_control_manager_v1)
 {
+    QW_OBJECT
+    Q_OBJECT
+
+    QW_SIGNAL(set_gamma, wlr_gamma_control_manager_v1_set_gamma_event*)
+
 public:
-    QWGammaControl() = delete;
-    ~QWGammaControl() = delete;
+    QW_FUNC_STATIC(gamma_control_manager_v1, create, qw_gamma_control_manager_v1 *, wl_display *display)
 
-    wlr_gamma_control_v1 *handle() const;
-
-    static QWGammaControl *from(wlr_gamma_control_v1 *handle);
-
-    void sendFailedAndDestroy();
-    bool gammaControlApply(struct wlr_output_state *output_state);
+    QW_FUNC_MEMBER(gamma_control_manager_v1, get_control, wlr_gamma_control_v1 *, wlr_output *output)
 };
 
-class QW_EXPORT QWGammaControlManagerV1 : public QWWrapObject
+class QW_CLASS_REINTERPRET_CAST(gamma_control_v1)
 {
-    Q_OBJECT
-    QW_DECLARE_PRIVATE(QWGammaControlManagerV1)
 public:
-    inline wlr_gamma_control_manager_v1 *handle() const {
-        return QWObject::handle<wlr_gamma_control_manager_v1>();
-    }
-
-    static QWGammaControlManagerV1 *get(wlr_gamma_control_manager_v1 *handle);
-    static QWGammaControlManagerV1 *from(wlr_gamma_control_manager_v1 *handle);
-    static QWGammaControlManagerV1 *create(QWDisplay *display);
-
-    QWGammaControl *getControl(QWOutput *output);
-
-Q_SIGNALS:
-    void gammaChanged(wlr_gamma_control_manager_v1_set_gamma_event *event);
-
-private:
-    QWGammaControlManagerV1(wlr_gamma_control_manager_v1 *handle, bool isOwner);
-    ~QWGammaControlManagerV1() = default;
+    QW_FUNC_MEMBER(gamma_control_v1, apply, bool, wlr_output_state *output_state)
+    QW_FUNC_MEMBER(gamma_control_v1, send_failed_and_destroy, void)
 };
 
 QW_END_NAMESPACE

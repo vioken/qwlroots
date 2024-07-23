@@ -3,31 +3,21 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_viewporter;
+extern "C" {
+#include <wlr/types/wlr_viewporter.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWViewPorterPrivate;
-class QW_EXPORT QWViewPorter : public QWWrapObject
+class QW_CLASS_OBJECT(viewporter)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWViewPorter)
+
 public:
-    inline wlr_viewporter *handle() const {
-        return QWObject::handle<wlr_viewporter>();
-    }
-
-    static QWViewPorter *get(wlr_viewporter *handle);
-    static QWViewPorter *from(wlr_viewporter *handle);
-    static QWViewPorter *create(QWDisplay *display);
-
-private:
-    QWViewPorter(wlr_viewporter *handle, bool isOwner);
-    ~QWViewPorter() = default;
+    QW_FUNC_STATIC(viewporter, create, qw_viewporter *, wl_display *display)
 };
 
 QW_END_NAMESPACE

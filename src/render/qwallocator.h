@@ -3,37 +3,26 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_allocator;
-struct wlr_drm_format;
-struct wlr_buffer;
+extern "C" {
+#include <wlr/render/allocator.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWBuffer;
-class QWBackend;
-class QWRenderer;
-class QWAllocatorPrivate;
-class QW_EXPORT QWAllocator : public QWWrapObject
+class QW_CLASS_OBJECT(allocator)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWAllocator)
+
 public:
-    inline wlr_allocator *handle() {
-        return QWObject::handle<wlr_allocator>();
-    }
+    QW_FUNC_STATIC(allocator, autocreate, qw_allocator *, wlr_backend *backend, wlr_renderer *renderer)
 
-    static QWAllocator *autoCreate(QWBackend *backend, QWRenderer *renderer);
-    static QWAllocator *get(wlr_allocator *handle);
-    static QWAllocator *from(wlr_allocator *handle);
+    QW_FUNC_MEMBER(allocator, create_buffer, wlr_buffer *, int width, int height, const wlr_drm_format *format)
 
-    QWBuffer *createBuffer(int width, int height, const wlr_drm_format *format);
-
-private:
-    QWAllocator(wlr_allocator *handle, bool isOwner);
-    ~QWAllocator() = default;
+protected:
+    QW_FUNC_MEMBER(allocator, destroy, void)
 };
 
 QW_END_NAMESPACE

@@ -6,25 +6,18 @@
 #include <qwglobal.h>
 
 extern "C" {
+#include <wlr/render/egl.h>
 #include <EGL/egl.h>
 }
 
-struct wlr_egl;
-
 QW_BEGIN_NAMESPACE
 
-class QW_EXPORT QWEgl {
+class QW_CLASS_REINTERPRET_CAST(egl)
+{
 public:
-    QWEgl() = delete;
-    ~QWEgl() = delete;
-
-    static QWEgl* createWithContext(EGLDisplay display, EGLContext context);
-    static QWEgl* from(wlr_egl* wlr_egl);
-
-    EGLDisplay getDisplay() const;
-    EGLContext getContext() const;
-
-    wlr_egl* handle() const;
+    QW_FUNC_MEMBER(egl, create_with_context, wlr_egl *, EGLContext context)
+    QW_FUNC_MEMBER(egl, get_display, EGLDisplay)
+    QW_FUNC_MEMBER(egl, get_context, EGLContext)
 };
 
 QW_END_NAMESPACE

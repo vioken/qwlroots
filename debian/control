@@ -19,29 +19,18 @@ Homepage: https://github.com/vioken/qwlroots.git
 #Vcs-Git: https://salsa.debian.org/debian/qwlroots.git
 Rules-Requires-Root: no
 
-Package: libqwlroots-dev
+Package: qwlroots
 Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends:
   ${misc:Depends},
-  libqwlroots1 (= ${binary:Version}),
   libwlroots-dev
-Description: Qt and QML bindings for wlroots - development headers
+Replaces: libqwlroots1
+Description: Qt and QML bindings for wlroots
   qwlroots is a binding of wlroots, which provides a Qt style development interface.
  It aims to simplify wlroots API calling methods with Qt, and serve the needs of
  calling wlroots within Qt projects.
  .
- This package contains the development headers.
-
-Package: libqwlroots1
-Architecture: any
-Multi-Arch: same
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Qt and QML bindings for wlroots - shared library
-  qwlroots is a binding of wlroots, which provides a Qt style development interface.
- It aims to simplify wlroots API calling methods with Qt, and serve the needs of
- calling wlroots within Qt projects.
- .
- This package contains the shared library.
+ This package contains the development headers and static library.
 

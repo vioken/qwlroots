@@ -3,70 +3,47 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_output_manager_v1;
-struct wlr_output_configuration_v1;
-struct wlr_output_configuration_head_v1;
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_output_management_v1.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWOutput;
-class QW_EXPORT QWOutputConfigurationV1
+class QW_CLASS_REINTERPRET_CAST(output_configuration_v1)
 {
 public:
-    QWOutputConfigurationV1() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWOutputConfigurationV1)
+    QW_FUNC_STATIC(output_configuration_v1, create, qw_output_configuration_v1 *, void)
 
-    void operator delete(QWOutputConfigurationV1 *p, std::destroying_delete_t);
+    QW_FUNC_MEMBER(output_configuration_v1, send_failed, void)
+    QW_FUNC_MEMBER(output_configuration_v1, send_succeeded, void)
 
-    wlr_output_configuration_v1 *handle() const;
-
-    static QWOutputConfigurationV1 *from(wlr_output_configuration_v1 *handle);
-    static QWOutputConfigurationV1 *create();
-
-    void sendFailed();
-    void sendSucceeded();
+protected:
+    friend class qw_reinterpret_cast;
+    QW_FUNC_MEMBER(output_configuration_v1, destroy, void)
 };
 
-class QW_EXPORT QWOutputConfigurationHeadV1
+class QW_CLASS_REINTERPRET_CAST(output_configuration_head_v1)
 {
 public:
-    QWOutputConfigurationHeadV1() = delete;
-    ~QWOutputConfigurationHeadV1() = delete;
-
-    wlr_output_configuration_head_v1 *handle() const;
-
-    static QWOutputConfigurationHeadV1 *from(wlr_output_configuration_head_v1 *handle);
-    static QWOutputConfigurationHeadV1 *create(QWOutputConfigurationV1 *config, QWOutput *output);
+    QW_FUNC_STATIC(output_configuration_head_v1, create, qw_output_configuration_head_v1 *, wlr_output_configuration_v1 *config, wlr_output *output)
 };
 
-class QWOutputManagerV1Private;
-class QW_EXPORT QWOutputManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(output_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWOutputManagerV1)
+
+    QW_SIGNAL(apply, wlr_output_configuration_v1 *)
+    QW_SIGNAL(test, wlr_output_configuration_v1 *)
+
 public:
-    inline wlr_output_manager_v1 *handle() const {
-        return QWObject::handle<wlr_output_manager_v1>();
-    }
-
-    static QWOutputManagerV1 *get(wlr_output_manager_v1 *handle);
-    static QWOutputManagerV1 *from(wlr_output_manager_v1 *handle);
-    static QWOutputManagerV1 *create(QWDisplay *display);
-
-    void setConfiguration(QWOutputConfigurationV1 *config);
-
-Q_SIGNALS:
-    void apply(QWOutputConfigurationV1 *config);
-    void test(QWOutputConfigurationV1 *config);
-
-private:
-    QWOutputManagerV1(wlr_output_manager_v1 *handle, bool isOwner);
-    ~QWOutputManagerV1() = default;
+    QW_FUNC_STATIC(output_manager_v1, create, qw_output_manager_v1 *, wl_display *display)
+    QW_FUNC_MEMBER(output_manager_v1, set_configuration, void, wlr_output_configuration_v1 *config)
 };
 
 QW_END_NAMESPACE
-

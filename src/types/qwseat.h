@@ -3,145 +3,111 @@
 
 #pragma once
 
-#include <cstdint>
-#include <qwglobal.h>
-#include <QObject>
-#include <wayland-server-protocol.h>
+#include <qwobject.h>
 
-struct wlr_seat;
-struct wlr_seat_pointer_request_set_cursor_event;
-struct wlr_seat_request_set_selection_event;
-struct wlr_seat_request_set_primary_selection_event;
-struct wlr_seat_request_start_drag_event;
-struct wlr_seat_client;
-struct wlr_drag;
-struct wlr_data_source;
-struct wlr_keyboard_modifiers;
-struct wlr_seat_keyboard_grab;
-struct wlr_seat_pointer_grab;
-struct wlr_seat_touch_grab;
-struct wlr_touch_point;
-
-#if WLR_VERSION_MINOR < 18
-typedef uint32_t wlr_axis_orientation_t;
-typedef uint32_t wlr_axis_source_t;
-typedef uint32_t wlr_button_state_t;
-#endif
-
+extern "C" {
+#include <wlr/types/wlr_seat.h>
+#include <wlr/types/wlr_keyboard.h>
+#include <wlr/types/wlr_data_device.h>
+#include <wlr/types/wlr_pointer.h>
+#define static
+#include <wlr/types/wlr_compositor.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
-
-class QWSurface;
-class QWDisplay;
-class QWKeyboard;
-class QWSeatPrivate;
-class QW_EXPORT QWSeat : public QWWrapObject
+class QW_CLASS_OBJECT(seat)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWSeat)
+
+    QW_SIGNAL(pointer_grab_begin)
+    QW_SIGNAL(pointer_grab_end)
+    QW_SIGNAL(keyboard_grab_begin)
+    QW_SIGNAL(keyboard_grab_end)
+    QW_SIGNAL(touch_grab_begin)
+    QW_SIGNAL(touch_grab_end)
+    QW_SIGNAL(request_set_cursor, wlr_seat_pointer_request_set_cursor_event*)
+    QW_SIGNAL(request_set_selection, wlr_seat_request_set_selection_event*)
+    QW_SIGNAL(set_selection)
+    QW_SIGNAL(request_set_primary_selection, wlr_seat_request_set_primary_selection_event*)
+    QW_SIGNAL(set_primary_selection)
+    QW_SIGNAL(request_start_drag, wlr_seat_request_start_drag_event*)
+    QW_SIGNAL(start_drag, wlr_drag*)
+
 public:
-    ~QWSeat() = default;
+    QW_FUNC_STATIC(seat, create, qw_seat *, wl_display *display, const char *name)
 
-    inline wlr_seat *handle() const {
-        return QWObject::handle<wlr_seat>();
-    }
+    QW_FUNC_MEMBER(seat, client_for_wl_client, wlr_seat_client *, wl_client *wl_client)
+    QW_FUNC_MEMBER(seat, set_keyboard, void, wlr_keyboard *keyboard)
+    QW_FUNC_MEMBER(seat, get_keyboard, wlr_keyboard *)
+    QW_FUNC_MEMBER(seat, set_capabilities, void, uint32_t capabilities)
+    QW_FUNC_MEMBER(seat, set_selection, void, wlr_data_source *source, uint32_t serial)
+    QW_FUNC_MEMBER(seat, keyboard_clear_focus, void)
+    QW_FUNC_MEMBER(seat, keyboard_end_grab, void)
+    QW_FUNC_MEMBER(seat, keyboard_enter, void, wlr_surface *surface, const uint32_t keycodes[], size_t num_keycodes, const wlr_keyboard_modifiers *modifiers)
+    QW_FUNC_MEMBER(seat, keyboard_has_grab, bool)
+    QW_FUNC_MEMBER(seat, keyboard_notify_clear_focus, void)
+    QW_FUNC_MEMBER(seat, keyboard_notify_enter, void, wlr_surface *surface, const uint32_t keycodes[], size_t num_keycodes, const wlr_keyboard_modifiers *modifiers)
+    QW_FUNC_MEMBER(seat, keyboard_notify_key, void, uint32_t time_msec, uint32_t key, uint32_t state)
+    QW_FUNC_MEMBER(seat, keyboard_notify_modifiers, void, const wlr_keyboard_modifiers *modifiers)
+    QW_FUNC_MEMBER(seat, keyboard_send_key, void, uint32_t time_msec, uint32_t key, uint32_t state)
+    QW_FUNC_MEMBER(seat, keyboard_send_modifiers, void, const wlr_keyboard_modifiers *modifiers)
+    QW_FUNC_MEMBER(seat, keyboard_start_grab, void, wlr_seat_keyboard_grab *grab)
+    QW_FUNC_MEMBER(seat, pointer_end_grab, void)
+    QW_FUNC_MEMBER(seat, pointer_enter, void, wlr_surface *surface, double sx, double sy)
+    QW_FUNC_MEMBER(seat, pointer_has_grab, bool)
+    QW_FUNC_MEMBER(seat, pointer_notify_axis, void, uint32_t time_msec, enum wlr_axis_orientation orientation, double value, int32_t value_discrete, enum wlr_axis_source source)
+    QW_FUNC_MEMBER(seat, pointer_notify_button, uint32_t, uint32_t time_msec, uint32_t button, enum wlr_button_state state)
+    QW_FUNC_MEMBER(seat, pointer_notify_clear_focus, void)
+    QW_FUNC_MEMBER(seat, pointer_notify_enter, void, wlr_surface *surface, double sx, double sy)
+    QW_FUNC_MEMBER(seat, pointer_notify_frame, void)
+    QW_FUNC_MEMBER(seat, pointer_notify_motion, void, uint32_t time_msec, double sx, double sy)
+    QW_FUNC_MEMBER(seat, pointer_send_axis, void, uint32_t time_msec, enum wlr_axis_orientation orientation, double value, int32_t value_discrete, enum wlr_axis_source source)
+    QW_FUNC_MEMBER(seat, pointer_send_button, uint32_t, uint32_t time_msec, uint32_t button, enum wlr_button_state state)
+    QW_FUNC_MEMBER(seat, pointer_send_frame, void)
+    QW_FUNC_MEMBER(seat, pointer_send_motion, void, uint32_t time_msec, double sx, double sy)
+    QW_FUNC_MEMBER(seat, pointer_start_grab, void, wlr_seat_pointer_grab *grab)
+    QW_FUNC_MEMBER(seat, pointer_surface_has_focus, bool, wlr_surface *surface)
+    QW_FUNC_MEMBER(seat, pointer_warp, void, double sx, double sy)
+    QW_FUNC_MEMBER(seat, pointer_clear_focus, void)
+    QW_FUNC_MEMBER(seat, set_name, void, const char *name)
+    QW_FUNC_MEMBER(seat, touch_end_grab, void)
+    QW_FUNC_MEMBER(seat, touch_get_point, wlr_touch_point *, int32_t touch_id)
+    QW_FUNC_MEMBER(seat, touch_has_grab, bool)
+    QW_FUNC_MEMBER(seat, touch_notify_cancel, void, wlr_surface *surface)
+    QW_FUNC_MEMBER(seat, touch_notify_down, uint32_t, wlr_surface *surface, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+    QW_FUNC_MEMBER(seat, touch_notify_frame, void)
+    QW_FUNC_MEMBER(seat, touch_notify_motion, void, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+    QW_FUNC_MEMBER(seat, touch_notify_up, void, uint32_t time_msec, int32_t touch_id)
+    QW_FUNC_MEMBER(seat, touch_num_points, int)
+    QW_FUNC_MEMBER(seat, touch_point_clear_focus, void, uint32_t time_msec, int32_t touch_id)
+    QW_FUNC_MEMBER(seat, touch_point_focus, void, wlr_surface *surface, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+    QW_FUNC_MEMBER(seat, touch_send_cancel, void, wlr_surface *surface)
+    QW_FUNC_MEMBER(seat, touch_send_down, uint32_t, wlr_surface *surface, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+    QW_FUNC_MEMBER(seat, touch_send_frame, void)
+    QW_FUNC_MEMBER(seat, touch_send_motion, void, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+    QW_FUNC_MEMBER(seat, touch_send_up, void, uint32_t time_msec, int32_t touch_id)
+    QW_FUNC_MEMBER(seat, touch_start_grab, void, wlr_seat_touch_grab *grab)
+    QW_FUNC_MEMBER(seat, validate_pointer_grab_serial, bool, wlr_surface *origin, uint32_t serial)
+    QW_FUNC_MEMBER(seat, validate_touch_grab_serial, bool, wlr_surface *origin, uint32_t serial, wlr_touch_point **point_ptr)
+    QW_FUNC_MEMBER(surface, accepts_touch, bool, wlr_surface *surface)
 
-    static QWSeat *get(wlr_seat *handle);
-    static QWSeat *from(wlr_seat *handle);
-    static QWSeat *create(QWDisplay *display, const char *name);
+protected:
+    QW_FUNC_MEMBER(seat, destroy, void)
+};
 
-    void setKeyboard(QWKeyboard *keyboard);
-    QWKeyboard *getKeyboard() const;
-    void setCapabilities(uint32_t capabilities);
-    void setSelection(wlr_data_source *source, uint32_t serial);
-    void keyboardClearFocus();
-    void keyboardEndGrab();
-    void keyboardEnter(QWSurface *surface, const uint32_t keycodes[], size_t numKeycodes, const wlr_keyboard_modifiers *modifiers);
-    bool keyboardHasGrab() const;
-    void keyboardNotifyClearFocus();
-    void keyboardNotifyEnter(QWSurface *surface, uint32_t keycodes[], size_t numKeycodes, wlr_keyboard_modifiers *modifiers);
-    void keyboardNotifyKey(uint32_t time_msec, uint32_t key, uint32_t state);
-    void keyboardNotifyModifiers(wlr_keyboard_modifiers *modifiers);
-    void keyboardSendKey(uint32_t timeMsec, uint32_t key, uint32_t state);
-    void keyboardSendModifiers(wlr_keyboard_modifiers *modifiers);
-    void keyboardStartGrab(wlr_seat_keyboard_grab *grab);
-    void pointerEndGrab();
-    void pointerEnter(QWSurface *surface, double sx, double sy);
-    bool pointerHasGrab() const;
-#if WLR_VERSION_MINOR > 17
-    void pointerNotifyAxis(uint32_t time_msec, wl_pointer_axis orientation, double value, int32_t value_discrete, wl_pointer_axis_source source,
-        wl_pointer_axis_relative_direction relative_direction = wl_pointer_axis_relative_direction::WL_POINTER_AXIS_RELATIVE_DIRECTION_IDENTICAL);
-    void pointerNotifyButton(uint32_t time_msec, uint32_t button, wl_pointer_button_state state);
-#else
-    void pointerNotifyAxis(uint32_t time_msec, wlr_axis_orientation_t orientation, double value, int32_t value_discrete, wlr_axis_source_t source);
-    void pointerNotifyButton(uint32_t time_msec, uint32_t button, wlr_button_state_t state);
-#endif
-    void pointerNotifyClearFocus();
-    void pointerNotifyEnter(QWSurface *surface, double sx, double sy);
-    void pointerNotifyFrame();
-    void pointerNotifyMotion(uint32_t time_msec, double sx, double sy);
-#if WLR_VERSION_MINOR > 17
-    void pointerSendAxis(uint32_t timeMsec, wl_pointer_axis orientation, double value, int32_t valueDiscrete, wl_pointer_axis_source source,
-        wl_pointer_axis_relative_direction relative_direction = wl_pointer_axis_relative_direction::WL_POINTER_AXIS_RELATIVE_DIRECTION_IDENTICAL);
-    uint32_t pointerSendButton(uint32_t timeMsec, uint32_t button, wl_pointer_button_state state);
-#else
-    void pointerSendAxis(uint32_t timeMsec, wlr_axis_orientation_t orientation, double value, int32_t valueDiscrete, wlr_axis_source_t source);
-    uint32_t pointerSendButton(uint32_t timeMsec, uint32_t button, wlr_button_state_t state);
-#endif
-    void pointerSendFrame();
-    void pointerSendMotion(uint32_t timeMsec, double sx, double sy);
-    void pointerStartGrab(wlr_seat_pointer_grab *grab);
-    bool pointerSurfaceHasFocus(QWSurface *surface) const;
-    void pointerWarp(double sx, double sy);
-    void pointerClearFocus();
-    void setName(const char *name);
-    void touchEndGrab();
-    wlr_touch_point *touchGetPoint(int32_t touchId) const;
-    bool touchHasGrab() const;
+class QW_CLASS_OBJECT(seat_client)
+{
+    QW_OBJECT
+    Q_OBJECT
 
-#if WLR_VERSION_MINOR > 17
-    void touchNotifyCancel(wlr_seat_client *client);
-#else
-    void touchNotifyCancel(QWSurface *surface);
-#endif
-    uint32_t touchNotifyDown(QWSurface *surface, uint32_t timeMsec, int32_t touch_id, double sx, double sy);
-    void touchNotifyFrame();
-    void touchNotifyMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy);
-    void touchNotifyUp(uint32_t timeMsec, int32_t touchId);
-    int touchNumPoints();
-    void touchPointClearFocus(uint32_t timeMsec, int32_t touchId);
-    void touchPointFocus(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy);
-#if WLR_VERSION_MINOR > 17
-    void touchSendCancel(wlr_seat_client *client);
-#else
-    void touchSendCancel(QWSurface *surface);
-#endif
-    uint32_t touchSendDown(QWSurface *surface, uint32_t timeMsec, int32_t touchId, double sx, double sy);
-    void touchSendFrame();
-    void touchSendMotion(uint32_t timeMsec, int32_t touchId, double sx, double sy);
-    void touchSendUp(uint32_t timeMsec, int32_t touchId);
-    void touchStartGrab(wlr_seat_touch_grab *grab);
-    bool validatePointerGrabSerial(QWSurface *origin, uint32_t serial);
-    bool validateTouchGrabSerial(QWSurface *origin, uint32_t serial, wlr_touch_point **pointPtr);
-    bool surfaceAcceptsTouch(QWSurface *surface);
+public:
+    QW_FUNC_MEMBER(seat_client, next_serial, uint32_t)
+    QW_FUNC_MEMBER(seat_client, validate_event_serial, bool, uint32_t serial)
 
-Q_SIGNALS:
-    void pointerGrabBegin();
-    void pointerGrabEnd();
-    void keyboardGrabBegin();
-    void keyboardGrabEnd();
-    void touchGrabBegin();
-    void touchGrabEnd();
-    void requestSetCursor(wlr_seat_pointer_request_set_cursor_event *event);
-    void requestSetSelection(wlr_seat_request_set_selection_event *event);
-    void selectionChanged();
-    void requestSetPrimarySelection(wlr_seat_request_set_primary_selection_event *event);
-    void primarySelectionChanged();
-    void requestStartDrag(wlr_seat_request_start_drag_event *event);
-    void startDrag(wlr_drag *drag);
-
-private:
-    QWSeat(wlr_seat *handle, bool isOwner);
+    QW_FUNC_STATIC(seat_client, from_resource, qw_seat_client *, wl_resource *resource)
+    QW_FUNC_STATIC(seat_client, from_pointer_resource, qw_seat_client *, wl_resource *resource)
 };
 
 QW_END_NAMESPACE

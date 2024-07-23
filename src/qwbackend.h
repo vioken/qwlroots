@@ -3,207 +3,141 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <qwbackendinterface.h>
+#include <qwobject.h>
 
-#include <QObject>
-#include <type_traits>
-
-struct wlr_backend;
-struct wlr_output;
-struct wlr_session;
-struct wlr_device;
-struct wlr_output_mode;
-struct wlr_drm_lease;
-struct wl_display;
-struct wl_event_loop;
-struct wl_seat;
-struct wl_surface;
-struct libinput_device;
-
-typedef struct _drmModeModeInfo drmModeModeInfo;
+extern "C" {
+#include <wlr/backend.h>
+#include <wlr/backend/multi.h>
+#define static
+#include <wlr/backend/drm.h>
+#undef static
+#include <wlr/backend/wayland.h>
+#ifdef WLR_HAVE_X11_BACKEND
+#include <wlr/backend/x11.h>
+#endif
+#include <wlr/backend/libinput.h>
+#include <wlr/backend/headless.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWOutput;
-class QWInputDevice;
-class QWBackendPrivate;
-class QW_EXPORT QWBackend : public QWWrapObject
+class QW_CLASS_OBJECT(backend)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWBackend)
+
+    QW_SIGNAL(new_output, wlr_output*)
+    QW_SIGNAL(new_input, wlr_input_device*)
+
 public:
-    ~QWBackend();
+    static DeriveType *create(wlr_backend *handle);
+    static qw_backend *autocreate(wl_display *display, wlr_session **session_ptr);
 
-    inline wlr_backend *handle() const {
-        return QWObject::handle<wlr_backend>();
-    }
+    QW_FUNC_MEMBER(backend, is_multi, bool)
+    QW_FUNC_MEMBER(backend, is_drm, bool)
+    QW_FUNC_MEMBER(backend, is_wl, bool)
+#ifdef WLR_HAVE_X11_BACKEND
+    QW_FUNC_MEMBER(backend, is_x11, bool)
+#endif
+    QW_FUNC_MEMBER(backend, is_libinput, bool)
+    QW_FUNC_MEMBER(backend, is_headless, bool)
 
-    static QWBackend *get(wlr_backend *handle);
-    static QWBackend *from(wlr_backend *handle);
-    static QWBackend *autoCreate(QWDisplay *display, QObject *parent = nullptr);
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWBackendInterface, Interface>::value, QWBackend*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWBackendInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWBackend(i->handle(), true, nullptr);
-    }
-
-    int drmFd() const;
-
-public Q_SLOTS:
-    bool start();
-
-Q_SIGNALS:
-    void newInput(QWInputDevice *device);
-    void newOutput(QWOutput *output);
+    QW_FUNC_MEMBER(backend, start, bool)
+    QW_FUNC_MEMBER(backend, get_drm_fd, int)
 
 protected:
-    QWBackend(QWBackendPrivate &dd, QObject *parent = nullptr);
-    QWBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+    QW_FUNC_MEMBER(backend, destroy, void)
 };
 
-using wlr_multi_backend_iterator_func_t = void (*)(struct wlr_backend *backend, void *data);
+#define QW_BACKEND(name) \
+public: \
+    QW_ALWAYS_INLINE static qw_##name *from(wlr_backend *handle) { \
+        return qobject_cast<qw_##name *>(qw_backend::from(handle)); \
+    } \
+protected: \
+    using qw_backend::qw_backend; \
+    friend class qw_backend;
 
-class QW_EXPORT QWMultiBackend : public QWBackend
+class qw_multi_backend : public qw_backend
 {
     Q_OBJECT
+    QW_BACKEND(multi_backend)
+
 public:
-    static QWMultiBackend *get(wlr_backend *handle);
-    static QWMultiBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWMultiBackend *create(wl_event_loop *eventloop, QObject *parent = nullptr);
-#else
-    static QWMultiBackend *create(QWDisplay *display, QObject *parent = nullptr);
-#endif
+    QW_FUNC_MEMBER(multi_backend, add, bool, wlr_backend *backend)
+    QW_FUNC_MEMBER(multi_backend, remove, void, wlr_backend *backend)
+    QW_FUNC_MEMBER(multi, is_empty, bool)
+    QW_FUNC_MEMBER(multi, for_each_backend, void, void (*callback)(wlr_backend *backend, void *data), void *data)
 
-    bool add(QWBackend *backend);
-    void remove(QWBackend *backend);
-
-    bool isEmpty() const;
-    void forEachBackend(wlr_multi_backend_iterator_func_t iterator, void *userData);
-
-private:
-    friend class QWBackendPrivate;
-    QWMultiBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+    QW_FUNC_STATIC(multi_backend, create, qw_multi_backend *, wl_display *display)
 };
 
-typedef uint32_t wl_output_transform_t;
-class QW_EXPORT QWDrmBackend : public QWBackend
+class qw_drm_backend : public qw_backend
 {
     Q_OBJECT
+    QW_BACKEND(drm_backend)
+
 public:
-    static QWDrmBackend *get(wlr_backend *handle);
-    static QWDrmBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWDrmBackend *create(wlr_session *session, wlr_device *dev, QWBackend *parent);
-#else
-    static QWDrmBackend *create(QWDisplay *display, wlr_session *session, wlr_device *dev, QWBackend *parent);
-#endif
+    QW_FUNC_STATIC(drm_backend, create, qw_drm_backend *, wl_display *display, wlr_session *session, wlr_device *dev, wlr_backend *parent)
 
-    static bool isDrmOutput(QWOutput *output);
-    static uint32_t connectorGetId(QWOutput *output);
-    static wlr_output_mode *connectorAddMode(QWOutput *output, const drmModeModeInfo *mode);
-    static wl_output_transform_t connectorGetPanelOrientation(QWOutput *output);
+    QW_FUNC_MEMBER(drm_backend, get_non_master_fd, int)
 
-    static wlr_drm_lease *createLease(wlr_output **outputs, size_t outputCount, int *leaseFd);
-    static void terminateLease(wlr_drm_lease *lease);
-
-    int getNonMasterFd() const;
-
-private:
-    friend class QWBackendPrivate;
-    QWDrmBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+    QW_FUNC_STATIC(drm, connector_get_id, uint32_t, wlr_output *output)
+    QW_FUNC_STATIC(drm, connector_add_mode, wlr_output_mode *, wlr_output *output, const drmModeModeInfo *mode)
+    QW_FUNC_STATIC(drm, connector_get_panel_orientation, enum wl_output_transform, wlr_output *output)
+    QW_FUNC_STATIC(drm, mode_get_info, const drmModeModeInfo *, wlr_output_mode *mode)
+    QW_FUNC_STATIC(drm, create_lease, wlr_drm_lease *, wlr_output **outputs, size_t n_outputs, int *lease_fd)
+    QW_FUNC_STATIC(drm, lease_terminate, void, wlr_drm_lease *lease)
 };
 
-class QW_EXPORT QWWaylandBackend : public QWBackend
+class qw_wayland_backend : public qw_backend
 {
     Q_OBJECT
+    QW_BACKEND(wayland_backend)
+
 public:
-    static QWWaylandBackend *get(wlr_backend *handle);
-    static QWWaylandBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWWaylandBackend *create(wl_event_loop *eventloop, wl_display *remote_display, QObject *parent = nullptr);
-#else
-    static QWWaylandBackend *create(QWDisplay *display, wl_display *remote_display, QObject *parent = nullptr);
-#endif
-    wl_display *getRemoteDisplay() const;
-    QWOutput *createOutput();
+    QW_FUNC_MEMBER(wl_backend, create, qw_backend *, wl_display *remote_display)
+    QW_FUNC_MEMBER(wl_backend, get_remote_display, wl_display *)
+    QW_FUNC_MEMBER(wl, output_create, wlr_output *)
+    QW_FUNC_MEMBER(wl, output_create_from_surface, wlr_output *, wl_surface *surface)
 
-    static bool isWaylandInputDevice(QWInputDevice *device);
-
-    static bool isWaylandOutput(QWOutput *output);
-    static void waylandOutputSetTitle(QWOutput *output, const char *title);
-    static wl_surface *waylandOutputGetSurface(QWOutput *output);
-
-private:
-    friend class QWBackendPrivate;
-    QWWaylandBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+    QW_FUNC_STATIC(wl, output_set_title, void, wlr_output *output, const char *title)
+    QW_FUNC_STATIC(wl, output_get_surface, wl_surface *, wlr_output *output)
 };
 
-class QW_EXPORT QWX11Backend : public QWBackend
+#ifdef WLR_HAVE_X11_BACKEND
+class qw_x11_backend : public qw_backend
 {
     Q_OBJECT
+    QW_BACKEND(x11_backend)
+
 public:
-    static QWX11Backend *get(wlr_backend *handle);
-    static QWX11Backend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWX11Backend *create(wl_event_loop *eventloop, const char *x11Display, QObject *parent = nullptr);
-#else
-    static QWX11Backend *create(QWDisplay *display, const char *x11Display, QObject *parent = nullptr);
+    QW_FUNC_STATIC(x11_backend, create, qw_x11_backend *, wl_display *display, const char *x11_display)
+
+    QW_FUNC_MEMBER(x11, output_create, wlr_output *)
+    QW_FUNC_MEMBER(x11, output_set_title, void, const char *title)
+};
 #endif
 
-    QWOutput *createOutput();
+class qw_libinput_backend : public qw_backend
+{
+    Q_OBJECT
+    QW_BACKEND(libinput_backend)
 
-    static bool isX11Output(QWOutput *output);
-    static void x11OutputSetTitle(QWOutput *output, const char *title);
-    static bool isX11InputDevice(QWInputDevice *device);
-
-private:
-    friend class QWBackendPrivate;
-    QWX11Backend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+public:
+    QW_FUNC_STATIC(libinput_backend, create, qw_libinput_backend *, wl_display *display, wlr_session *session)
+    QW_FUNC_STATIC(libinput, get_device_handle, libinput_device *, wlr_input_device *dev)
 };
 
-class QW_EXPORT QWLibinputBackend : public QWBackend
+class qw_headless_backend : public qw_backend
 {
     Q_OBJECT
+    QW_BACKEND(headless_backend)
+
 public:
-    static QWLibinputBackend *get(wlr_backend *handle);
-    static QWLibinputBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWLibinputBackend *create(wlr_session *session, QObject *parent = nullptr);
-#else
-    static QWLibinputBackend *create(QWDisplay *display, wlr_session *session, QObject *parent = nullptr);
-#endif
+    QW_FUNC_STATIC(headless_backend, create, qw_headless_backend *, wl_display *display)
 
-    static bool isLibinputDevice(QWInputDevice *device);
-    static libinput_device *getDeviceHandle(QWInputDevice *dev);
-
-private:
-    friend class QWBackendPrivate;
-    QWLibinputBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
-};
-
-class QW_EXPORT QWHeadlessBackend : public QWBackend
-{
-    Q_OBJECT
-public:
-    static QWHeadlessBackend *get(wlr_backend *handle);
-    static QWHeadlessBackend *from(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
-    static QWHeadlessBackend *create(wl_event_loop *eventloop, QObject *parent = nullptr);
-#else
-    static QWHeadlessBackend *create(QWDisplay *display, QObject *parent = nullptr);
-#endif
-
-    QWOutput *addOutput(unsigned int width, unsigned int height);
-    static bool isHeadlessOutput(QWOutput *output);
-
-private:
-    friend class QWBackendPrivate;
-    QWHeadlessBackend(wlr_backend *handle, bool isOwner, QObject *parent = nullptr);
+    QW_FUNC_MEMBER(headless, add_output, wlr_output *, unsigned int width, unsigned int height)
 };
 
 QW_END_NAMESPACE

@@ -3,37 +3,24 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_xwayland_server;
-struct wlr_xwayland_server_options;
+extern "C" {
+#include <wlr/xwayland/server.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWXWaylandServerPrivate;
-class QW_EXPORT QWXWaylandServer : public QWWrapObject
+class QW_CLASS_OBJECT(xwayland_server)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXWaylandServer)
+
+    QW_SIGNAL(start)
+    QW_SIGNAL(ready)
+
 public:
-    ~QWXWaylandServer() override = default;
-
-    inline wlr_xwayland_server *handle() const {
-        return QWObject::handle<wlr_xwayland_server>();
-    }
-
-    static QWXWaylandServer *get(wlr_xwayland_server *handle);
-    static QWXWaylandServer *from(wlr_xwayland_server *handle);
-    static QWXWaylandServer *create(QWDisplay *display, wlr_xwayland_server_options *options);
-
-Q_SIGNALS:
-    void start();
-    void ready();
-
-private:
-    QWXWaylandServer(wlr_xwayland_server *handle, bool isOwner);
+    QW_FUNC_STATIC(xwayland_server, create, qw_xwayland_server *, wl_display *display, wlr_xwayland_server_options *options)
 };
 
 QW_END_NAMESPACE

@@ -3,68 +3,41 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_presentation;
-struct wlr_presentation_feedback;
-struct wlr_presentation_event;
-struct wlr_output_event_present;
+extern "C" {
+#include <wlr/types/wlr_presentation_time.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWOutput;
-class QWDisplay;
-class QWBackend;
-class QWPresentationFeedback;
-class QWPresentationPrivate;
-class QW_EXPORT QWPresentation : public QWWrapObject
+class QW_CLASS_OBJECT(presentation)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPresentation)
+
 public:
-    inline wlr_presentation *handle() const {
-        return QWObject::handle<wlr_presentation>();
-    }
+    QW_FUNC_STATIC(presentation, create, qw_presentation *, wl_display *display, wlr_backend *backend)
 
-    static QWPresentation *create(QWDisplay *display, QWBackend *backend);
-    static QWPresentation *get(wlr_presentation *handle);
-    static QWPresentation *from(wlr_presentation *handle);
+    QW_FUNC_MEMBER(presentation, surface_sampled, wlr_presentation_feedback *, wlr_surface *surface)
+    QW_FUNC_MEMBER(presentation, surface_textured_on_output, void, wlr_surface *surface, wlr_output *output)
+    QW_FUNC_MEMBER(presentation, surface_scanned_out_on_output, void, wlr_surface *surface, wlr_output *output)
+};
 
-    QWPresentationFeedback *surfaceSampled(QWSurface *surface) const;
+class QW_CLASS_REINTERPRET_CAST(presentation_event)
+{
+public:
+    QW_FUNC_MEMBER(presentation_event, from_output, void, const wlr_output_event_present *output_event)
+};
 
-    void surfaceTexturedOnOutput(QWSurface *surface, QWOutput *output);
-    void surfaceScannedOutOnOutput(QWSurface *surface, QWOutput *output);
+class QW_CLASS_REINTERPRET_CAST(presentation_feedback)
+{
+public:
+    QW_FUNC_MEMBER(presentation_feedback, send_presented, void, const wlr_presentation_event *event)
 
 private:
-    QWPresentation(wlr_presentation *handle, bool isOwner);
-    ~QWPresentation() = default;
-};
-
-class QW_EXPORT QWPresentationEvent {
-public:
-    QWPresentationEvent() = delete;
-    ~QWPresentationEvent() = delete;
-
-    wlr_presentation_event *handle() const;
-
-    static QWPresentationEvent* from(wlr_presentation_event *event);
-    static void fromOutput(wlr_presentation_event *handle, const wlr_output_event_present *outputEvent);
-};
-
-class QW_EXPORT QWPresentationFeedback {
-public:
-    QWPresentationFeedback() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWPresentationFeedback)
-
-    void operator delete(QWPresentationFeedback *p, std::destroying_delete_t);
-
-    wlr_presentation_feedback *handle() const;
-
-    static QWPresentationFeedback* from(wlr_presentation_feedback *handle);
-
-    void sendPresented(QWPresentationEvent *event);
+    friend class qw_reinterpret_cast;
+    QW_FUNC_MEMBER(presentation_feedback, destroy, void)
 };
 
 QW_END_NAMESPACE

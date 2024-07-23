@@ -5,33 +5,24 @@
 
 #include <qwglobal.h>
 
-struct pixman_region32;
-struct wlr_texture;
-struct wlr_dmabuf_attributes;
+extern "C" {
+#include <wlr/render/wlr_texture.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWRenderer;
-class QWDmabufAttributes;
-class QWBuffer;
-class QW_EXPORT QWTexture
+class QW_CLASS_REINTERPRET_CAST(texture)
 {
 public:
-    QWTexture() = delete;
-    QW_DISALLOW_DESTRUCTOR(QWTexture)
+    QW_FUNC_STATIC(texture, from_pixels, qw_texture *, wlr_renderer *renderer, uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height, const void *data)
+    QW_FUNC_STATIC(texture, from_dmabuf, qw_texture *, wlr_renderer *renderer, wlr_dmabuf_attributes *attribs)
+    QW_FUNC_STATIC(texture, from_buffer, qw_texture *, wlr_renderer *renderer, wlr_buffer *buffer)
 
-    void operator delete(QWTexture *p, std::destroying_delete_t);
+    QW_FUNC_MEMBER(texture, update_from_buffer, bool, wlr_buffer *buffer, const pixman_region32_t *damage)
 
-    wlr_texture *handle() const;
-
-    static QWTexture *from(wlr_texture *handle);
-
-    static QWTexture *fromPixels(QWRenderer *renderer, uint32_t fmt, uint32_t stride,
-                                 uint32_t width, uint32_t height, const void *data);
-    static QWTexture *fromDmabuf(QWRenderer *renderer, wlr_dmabuf_attributes *attribs);
-    static QWTexture *fromBuffer(QWRenderer *renderer, QWBuffer *buffer);
-
-    bool update(QWBuffer *buffer, pixman_region32 *damage);
+private:
+    friend class qw_reinterpret_cast;
+    QW_FUNC_MEMBER(texture, destroy, void)
 };
 
 QW_END_NAMESPACE

@@ -4,52 +4,30 @@
 #pragma once
 
 #include <qwinterface.h>
-#include <QPoint>
 
-struct wlr_output;
-struct wlr_output_impl;
-struct wlr_output_state;
-struct wlr_drm_format_set;
+extern "C" {
+#define static
+#include <wlr/types/wlr_output.h>
+#undef static
+#include <wlr/interfaces/wlr_output.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWBackend;
-class QWBuffer;
-class QWOutput;
-class QW_EXPORT QWOutputInterface : public QWInterface
+template<typename Derive>
+class QW_CLASS_INTERFACE(output)
 {
-    friend class QWOutput;
+    QW_INTERFACE_INIT(output)
+
 public:
-    virtual ~QWOutputInterface();
-    virtual bool setCursor(QWBuffer *buffer, const QPoint &hotspot);
-    virtual bool moveCursor(const QPoint &pos);
-    virtual bool test(const wlr_output_state *state) const;
-    virtual bool commit(const wlr_output_state *state) = 0;
-
-    virtual size_t getGammaSize() const;
-    virtual const wlr_drm_format_set *getCursorFormats(uint32_t bufferCaps) const;
-    virtual const wlr_drm_format_set *getPrimaryFormats(uint32_t bufferCaps) const;
-    virtual QPoint getCursorSize() const;
-
-    inline wlr_output *handle() const {
-        return QWInterface::handle<wlr_output>();
-    }
-    inline wlr_output_impl *impl() const {
-        return QWInterface::impl<wlr_output_impl>();
-    }
-    static QWOutputInterface *get(wlr_output *handle);
-
-protected:
-    template<class T>
-    inline void init(QWBackend *backend, QWDisplay *display, wlr_output_state *state) {
-        init(getFuncMagicKey<T>(&T::setCursor, &T::moveCursor, &T::test,
-                                &T::getGammaSize, &T::getCursorFormats,
-                                &T::getPrimaryFormats, &T::getCursorSize),
-             backend, display, state);
-    }
-
-    virtual void init(FuncMagicKey funMagicKey, QWBackend *backend, QWDisplay *display, wlr_output_state *state);
+    QW_INTERFACE(set_cursor)
+    QW_INTERFACE(move_cursor)
+    QW_INTERFACE(test)
+    QW_INTERFACE(commit)
+    QW_INTERFACE(get_gamma_size)
+    QW_INTERFACE(get_cursor_formats)
+    QW_INTERFACE(get_cursor_size)
+    QW_INTERFACE(get_primary_formats)
 };
 
 QW_END_NAMESPACE

@@ -3,41 +3,30 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_pointer_gestures_v1;
+extern "C" {
+#include <wlr/types/wlr_pointer_gestures_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSeat;
-class QWPointerGesturesV1Private;
-class QW_EXPORT QWPointerGesturesV1 : public QWWrapObject
+class QW_CLASS_OBJECT(pointer_gestures_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWPointerGesturesV1)
+
 public:
-    inline wlr_pointer_gestures_v1 *handle() const {
-        return QWObject::handle<wlr_pointer_gestures_v1>();
-    }
+    QW_FUNC_STATIC(pointer_gestures_v1, create, qw_pointer_gestures_v1 *, wl_display *display)
 
-    static QWPointerGesturesV1 *get(wlr_pointer_gestures_v1 *handle);
-    static QWPointerGesturesV1 *from(wlr_pointer_gestures_v1 *handle);
-    static QWPointerGesturesV1 *create(QWDisplay *display);
-
-    void sendSwipeBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendSwipeUpdate(QWSeat *seat, uint32_t time_msec, const QPointF &pos);
-    void sendSwipeEnd(QWSeat *seat, uint32_t time_msec,bool cancelled);
-    void sendPinchBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendPinchUpdate(QWSeat *seat, uint32_t time_msec, const QPointF &pos, double scale, double rotation);
-    void sendPinchEnd(QWSeat *seat, uint32_t time_msec,bool cancelled);
-    void sendHoldBegin(QWSeat *seat, uint32_t time_msec, uint32_t fingers);
-    void sendHoldEnd(QWSeat *seat, uint32_t time_msec, bool cancelled);
-
-private:
-    QWPointerGesturesV1(wlr_pointer_gestures_v1 *handle, bool isOwner);
-    ~QWPointerGesturesV1() = default;
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_begin, void, wlr_seat *seat, uint32_t time_msec, uint32_t fingers)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_update, void, wlr_seat *seat, uint32_t time_msec, double dx, double dy)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_swipe_end, void, wlr_seat *seat, uint32_t time_msec, bool cancelled)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_begin, void, wlr_seat *seat, uint32_t time_msec, uint32_t fingers)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_update, void, wlr_seat *seat, uint32_t time_msec, double dx, double dy, double scale, double rotation)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_pinch_end, void, wlr_seat *seat, uint32_t time_msec, bool cancelled)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_hold_begin, void, wlr_seat *seat, uint32_t time_msec, uint32_t fingers)
+    QW_FUNC_MEMBER(pointer_gestures_v1, send_hold_end, void, wlr_seat *seat, uint32_t time_msec, bool cancelled)
 };
 
 QW_END_NAMESPACE

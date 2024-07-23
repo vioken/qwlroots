@@ -3,46 +3,26 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-QT_BEGIN_NAMESPACE
-
-class QImage;
-class QPoint;
-
-QT_END_NAMESPACE
-
-struct wlr_xwayland_shell_v1;
-struct wl_client;
-struct wlr_xwayland_surface;
+extern "C" {
+#include <wlr/xwayland/shell.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWSurface;
-class QWDisplay;
-class QWXWaylandShellV1Private;
-class QW_EXPORT QWXWaylandShellV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xwayland_shell_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXWaylandShellV1)
+
+    QW_SIGNAL(new_surface, wlr_xwayland_surface_v1*)
 
 public:
-    static QWXWaylandShellV1 *create(QWDisplay *display, uint32_t version);
-    static QWXWaylandShellV1 *get(wlr_xwayland_shell_v1 *handle);
+    QW_FUNC_STATIC(xwayland_shell_v1, create, qw_xwayland_shell_v1 *, wl_display *display, uint32_t version)
 
-    wlr_xwayland_shell_v1 *handle() const;
-
-    void setClient(wl_client *client);
-
-    QWSurface *surfaceFromSerial(uint64_t serial) const;
-
-Q_SIGNALS:
-    void newSurface(wlr_xwayland_surface *surface);
-
-private:
-    explicit QWXWaylandShellV1(wlr_xwayland_shell_v1 *handle, QWDisplay *parent);
-    ~QWXWaylandShellV1() = default;
+    QW_FUNC_MEMBER(xwayland_shell_v1, set_client, void, wl_client *client)
+    QW_FUNC_MEMBER(xwayland_shell_v1, surface_from_serial, wlr_surface *, uint64_t serial)
 };
 
 QW_END_NAMESPACE

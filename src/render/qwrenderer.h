@@ -3,11 +3,18 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
-#include <QMatrix3x3>
+#include <qwobject.h>
 
-#include <qwrendererinterface.h>
+extern "C" {
+#include <wayland-server-core.h>
+#define static
+#include <wlr/render/wlr_renderer.h>
+#if WLR_VERSION_MINOR >= 18
+#include <wlr/render/pass.h>
+#endif
+#undef static
+#include <wlr/util/box.h>
+}
 
 struct wlr_renderer;
 struct wlr_box;
@@ -18,74 +25,41 @@ struct wlr_render_texture_options;
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWBackend;
-class QWBuffer;
-class QWTexture;
-class QWRendererPrivate;
-class QW_EXPORT QWRenderer : public QWWrapObject
+class QW_CLASS_OBJECT(renderer)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWRenderer)
+
+    QW_SIGNAL(lost)
+
 public:
-    inline wlr_renderer *handle() const {
-        return QWObject::handle<wlr_renderer>();
-    }
+    QW_FUNC_STATIC(renderer, autocreate, qw_renderer *, wlr_backend *backend)
 
-    static QWRenderer *get(wlr_renderer *handle);
-    static QWRenderer *from(wlr_renderer *handle);
-    static QWRenderer *autoCreate(QWBackend *backend);
-    bool begin(uint32_t width, uint32_t height);
-
-#if WLR_VERSION_MINOR > 17
-    // TODO: use QWRenderPass
-    wlr_render_pass* begin(QWBuffer *buffer, const wlr_buffer_pass_options *options);
-    void end(wlr_render_pass* pass);
-#else // WLR_VERSION_MINOR <= 17
-    bool begin(QWBuffer *buffer);
-    void end();
-#endif
-
-    bool initWlDisplay(QWDisplay *display);
-    bool initWlShm(QWDisplay *display);
+    QW_FUNC_MEMBER(renderer, init_wl_display, bool, wl_display *wl_display)
+    QW_FUNC_MEMBER(renderer, init_wl_shm, bool, wl_display *wl_display)
+    QW_FUNC_MEMBER(renderer, get_drm_fd, int)
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    void clear(const float *color);
-    void clear(const QColor &color);
-    void scissor(wlr_box *box);
-    void scissor(const QRect &box);
-    void renderTexture(QWTexture *texture, const float *projection, int x, int y, float alpha);
-    void renderTexture(QWTexture *texture, const float *matrix, float alpha);
-    void renderSubtexture(QWTexture *texture, wlr_fbox *fbox, const float *matrix, float alpha);
-    void renderRect(const wlr_box *box, const float *color, const float *projection);
-    void renderRect(const QRect &box, const QColor &color, const QMatrix3x3 &projection);
-    void renderQuad(const float *color, const float *matrix);
-    void renderQuad(const QColor &color, const QMatrix3x3 &matrix);
-    const uint32_t *getShmTextureFormats(size_t *len) const;
-    const wlr_drm_format_set *getDmabufTextureFormats() const;
-    bool readPixels(uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height,
-                    uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data) const;
+    QW_FUNC_MEMBER(renderer, begin, bool, uint32_t width, uint32_t height)
+    QW_FUNC_MEMBER(renderer, end, void)
+    QW_FUNC_MEMBER(renderer, begin_buffer_pass, wlr_render_pass *, wlr_buffer *buffer, const wlr_buffer_pass_options *options)
+    QW_FUNC_MEMBER(renderer, begin_with_buffer, bool, wlr_buffer *buffer)
+    QW_FUNC_MEMBER(renderer, clear, void, const float color[4])
+    QW_FUNC_MEMBER(renderer, scissor, void, wlr_box *box)
+    QW_FUNC_MEMBER(render, texture, bool, wlr_texture *texture, const float projection[9], int x, int y, float alpha)
+    QW_FUNC_MEMBER(render, texture_with_matrix, bool, wlr_texture *texture, const float matrix[9], float alpha)
+    QW_FUNC_MEMBER(render, subtexture_with_matrix, bool, wlr_texture *texture, const wlr_fbox *box, const float matrix[9], float alpha)
+    QW_FUNC_MEMBER(render, rect, void, const wlr_box *box, const float color[4], const float projection[9])
+    QW_FUNC_MEMBER(render, quad_with_matrix, void, const float color[4], const float matrix[9])
+    QW_FUNC_MEMBER(renderer, get_shm_texture_formats, const uint32_t *, size_t *len)
+    QW_FUNC_MEMBER(renderer, get_dmabuf_texture_formats, const wlr_drm_format_set *)
+    QW_FUNC_MEMBER(renderer, read_pixels, bool, uint32_t fmt, uint32_t stride, uint32_t width, uint32_t height, uint32_t src_x, uint32_t src_y, uint32_t dst_x, uint32_t dst_y, void *data)
 #else // WLR_VERSION_MINOR >= 18
-    const wlr_drm_format_set *getDmabufTextureFormats(uint32_t buffer_caps) const;
+    QW_FUNC_MEMBER(renderer, get_texture_formats, const wlr_drm_format_set *, uint32_t buffer_caps)
 #endif
 
-    int getDrmFd() const;
-
-    template<class Interface, typename... Args>
-    inline static typename std::enable_if<std::is_base_of<QWRendererInterface, Interface>::value, QWInterface*>::type
-    create(Args&&... args) {
-        Interface *i = new Interface();
-        i->QWRendererInterface::template init<Interface>(std::forward<Args>(args)...);
-        return new QWRenderer(i->handle(), true);
-    }
-
-
-Q_SIGNALS:
-    void lost();
-
-private:
-    QWRenderer(wlr_renderer *handle, bool isOwner);
-    ~QWRenderer() = default;
+protected:
+    QW_FUNC_MEMBER(renderer, destroy, void)
 };
 
 QW_END_NAMESPACE

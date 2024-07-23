@@ -3,76 +3,53 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_foreign_toplevel_handle_v1;
-struct wlr_foreign_toplevel_handle_v1_maximized_event;
-struct wlr_foreign_toplevel_handle_v1_minimized_event;
-struct wlr_foreign_toplevel_handle_v1_activated_event;
-struct wlr_foreign_toplevel_handle_v1_fullscreen_event;
-struct wlr_foreign_toplevel_handle_v1_set_rectangle_event;
-struct wlr_foreign_toplevel_manager_v1;
+extern "C" {
+#include "math.h"
+#define static
+#include <wlr/types/wlr_foreign_toplevel_management_v1.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWOutput;
-class QWDisplay;
-class QWForeignToplevelManagerV1Private;
-class QW_EXPORT QWForeignToplevelManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(foreign_toplevel_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWForeignToplevelManagerV1)
+
 public:
-    inline wlr_foreign_toplevel_manager_v1 *handle() const {
-        return QWObject::handle<wlr_foreign_toplevel_manager_v1>();
-    }
-
-    static QWForeignToplevelManagerV1 *get(wlr_foreign_toplevel_manager_v1 *handle);
-    static QWForeignToplevelManagerV1 *from(wlr_foreign_toplevel_manager_v1 *handle);
-    static QWForeignToplevelManagerV1 *create(QWDisplay *display);
-
-private:
-    QWForeignToplevelManagerV1(wlr_foreign_toplevel_manager_v1 *handle, bool isOwner);
-    ~QWForeignToplevelManagerV1() = default;
+    QW_FUNC_STATIC(foreign_toplevel_manager_v1, create, qw_foreign_toplevel_manager_v1 *, wl_display *display)
 };
 
-class QWForeignToplevelHandleV1Private;
-class QW_EXPORT QWForeignToplevelHandleV1 : public QWWrapObject
+class QW_CLASS_OBJECT(foreign_toplevel_handle_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWForeignToplevelHandleV1)
+
+    QW_SIGNAL(request_maximize, wlr_foreign_toplevel_handle_v1_maximized_event*)
+    QW_SIGNAL(request_minimize, wlr_foreign_toplevel_handle_v1_minimized_event*)
+    QW_SIGNAL(request_activate, wlr_foreign_toplevel_handle_v1_activated_event*)
+    QW_SIGNAL(request_fullscreen, wlr_foreign_toplevel_handle_v1_fullscreen_event*)
+    QW_SIGNAL(request_close)
+    QW_SIGNAL(set_rectangle, wlr_foreign_toplevel_handle_v1_set_rectangle_event*)
+
 public:
-    ~QWForeignToplevelHandleV1() = default;
+    QW_FUNC_STATIC(foreign_toplevel_handle_v1, create, qw_foreign_toplevel_handle_v1 *, wlr_foreign_toplevel_manager_v1 *manager)
 
-    inline wlr_foreign_toplevel_handle_v1 *handle() const {
-        return QWObject::handle<wlr_foreign_toplevel_handle_v1>();
-    }
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_title, void, const char *title)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_app_id, void, const char *app_id)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_enter, void, wlr_output *output)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, output_leave, void, wlr_output *output)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_maximized, void, bool maximized)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_minimized, void, bool minimized)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_activated, void, bool activated)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_fullscreen, void, bool fullscreen)
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, set_parent, void, wlr_foreign_toplevel_handle_v1 *parent)
 
-    static QWForeignToplevelHandleV1 *get(wlr_foreign_toplevel_handle_v1 *handle);
-    static QWForeignToplevelHandleV1 *from(wlr_foreign_toplevel_handle_v1 *handle);
-    static QWForeignToplevelHandleV1 *create(QWForeignToplevelManagerV1 *manager);
-
-    void outputEnter(QWOutput *output);
-    void outputLeave(QWOutput *output);
-    void setActivated(bool activated);
-    void setAppId(const char *appId);
-    void setFullScreen(bool fullScreen);
-    void setMaximized(bool maximized);
-    void setMinimized(bool minimized);
-    void setParent(QWForeignToplevelHandleV1 *parent);
-    void setTitle(const char *title);
-
-Q_SIGNALS:
-    void requestMaximize(wlr_foreign_toplevel_handle_v1_maximized_event *event);
-    void requestMinimize(wlr_foreign_toplevel_handle_v1_minimized_event *event);
-    void requestActivate(wlr_foreign_toplevel_handle_v1_activated_event *event);
-    void requestFullscreen(wlr_foreign_toplevel_handle_v1_fullscreen_event *event);
-    void requestClose();
-    void rectangleChanged(wlr_foreign_toplevel_handle_v1_set_rectangle_event *event);
-
-private:
-    QWForeignToplevelHandleV1(wlr_foreign_toplevel_handle_v1 *handle, bool isOwner);
+protected:
+    QW_FUNC_MEMBER(foreign_toplevel_handle_v1, destroy, void)
 };
 
 QW_END_NAMESPACE

@@ -3,33 +3,24 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_output_layout;
-struct wlr_xdg_output_manager_v1;
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_xdg_output_v1.h>
+#undef static
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWOutputLayout;
-class QWXdgOutputManagerV1Private;
-class QW_EXPORT QWXdgOutputManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_output_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgOutputManagerV1)
+
 public:
-    inline wlr_xdg_output_manager_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_output_manager_v1>();
-    }
-
-    static QWXdgOutputManagerV1 *get(wlr_xdg_output_manager_v1 *handle);
-    static QWXdgOutputManagerV1 *from(wlr_xdg_output_manager_v1 *handle);
-    static QWXdgOutputManagerV1 *create(QWDisplay *display, QWOutputLayout *layout);
-
-private:
-    QWXdgOutputManagerV1(wlr_xdg_output_manager_v1 *handle, bool isOwner);
-    ~QWXdgOutputManagerV1() override = default;
+    QW_FUNC_STATIC(xdg_output_manager_v1, create, qw_xdg_output_manager_v1 *, wl_display *display, wlr_output_layout *layout)
 };
 
 QW_END_NAMESPACE

@@ -5,39 +5,20 @@
 
 #include <qwinterface.h>
 
-struct wlr_tablet_pad;
-struct wlr_tablet_pad_impl;
-struct wlr_tablet_tool;
+extern "C" {
+#include <wlr/interfaces/wlr_tablet_pad.h>
+#include <wayland-server-core.h>
+}
 
 QW_BEGIN_NAMESPACE
-class QWTabletPad;
-class QW_EXPORT QWTabletPadInterface : public QWInterface {
-    friend class QWTabletPad;
+
+template<typename Derive>
+class QW_CLASS_INTERFACE(tablet_pad)
+{
+    QW_INTERFACE_INIT(tablet_pad)
+
 public:
-    virtual ~QWTabletPadInterface();
-    virtual const char* name() = 0;
-
-    inline wlr_tablet_pad *handle() const {
-        return QWInterface::handle<wlr_tablet_pad>();
-    }
-
-    inline wlr_tablet_pad_impl *impl() const {
-        return QWInterface::impl<wlr_tablet_pad_impl>();
-    }
-
-protected:
-    void notifyButton();
-    void notifyRing();
-    void notifyStrip();
-    void notifyAttachTablet(wlr_tablet_tool *table);
-
-    template<class T>
-    inline void init(const char* name)
-    {
-        init(getFuncMagicKey<T>(), name);
-    }
-
-    virtual void init(FuncMagicKey funMagicKey, const char* name);
+    QW_INTERFACE(name)
 };
 
 QW_END_NAMESPACE

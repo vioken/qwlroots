@@ -3,61 +3,40 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_xdg_activation_v1;
-struct wlr_xdg_activation_token_v1;
-struct wlr_xdg_activation_v1_request_activate_event;
+extern "C" {
+#include <wlr/types/wlr_xdg_activation_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
-class QWXdgActivationTokenV1Private;
-class QW_EXPORT QWXdgActivationTokenV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_activation_token_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgActivationTokenV1)
+
 public:
-    ~QWXdgActivationTokenV1() = default;
+    QW_FUNC_STATIC(xdg_activation_token_v1, create, qw_xdg_activation_token_v1 *, wlr_xdg_activation_v1 *activation)
 
-    inline wlr_xdg_activation_token_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_activation_token_v1>();
-    }
+    QW_FUNC_MEMBER(xdg_activation_token_v1, get_name, const char *)
 
-    static QWXdgActivationTokenV1 *get(wlr_xdg_activation_token_v1 *handle);
-    static QWXdgActivationTokenV1 *from(wlr_xdg_activation_token_v1 *handle);
-
-    const char *getName() const;
-
-private:
-    QWXdgActivationTokenV1(wlr_xdg_activation_token_v1 *handle, bool isOwner);
+protected:
+    QW_FUNC_MEMBER(xdg_activation_token_v1, destroy, void)
 };
 
-class QWDisplay;
-class QWXdgActivationV1Private;
-class QW_EXPORT QWXdgActivationV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_activation_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgActivationV1)
+
+    QW_SIGNAL(request_activate, wlr_xdg_activation_v1_request_activate_event*)
+    QW_SIGNAL(new_token, wlr_xdg_activation_token_v1*)
+
 public:
-    inline wlr_xdg_activation_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_activation_v1>();
-    }
+    QW_FUNC_STATIC(xdg_activation_v1, create, qw_xdg_activation_v1 *, wl_display *display)
 
-    static QWXdgActivationV1 *get(wlr_xdg_activation_v1 *handle);
-    static QWXdgActivationV1 *from(wlr_xdg_activation_v1 *handle);
-    static QWXdgActivationV1 *create(QWDisplay *display);
-
-    QWXdgActivationTokenV1 *createToken();
-    QWXdgActivationTokenV1 *findToken(const char *token_str) const;
-    QWXdgActivationTokenV1 *addToken(const char *token_str);
-
-Q_SIGNALS:
-    void requestActivate(wlr_xdg_activation_v1_request_activate_event *);
-    void newToken(QWXdgActivationTokenV1 *);
-
-private:
-    QWXdgActivationV1(wlr_xdg_activation_v1 *handle, bool isOwner);
-    ~QWXdgActivationV1() = default;
+    QW_FUNC_MEMBER(xdg_activation_v1, find_token, wlr_xdg_activation_token_v1 *, const char *token_str)
+    QW_FUNC_MEMBER(xdg_activation_v1, add_token, wlr_xdg_activation_token_v1 *, const char *token_str)
 };
 
 QW_END_NAMESPACE

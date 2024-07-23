@@ -5,21 +5,20 @@
 
 #include <qwconfig.h>
 #include <QtCore/qglobal.h>
+#include <qobjectdefs.h>
 
-#define QW_NAMESPACE QWLRoots
+#include <concepts>
+#include <type_traits>
 
+#ifdef QW_NAMESPACE
 #define QW_BEGIN_NAMESPACE namespace QW_NAMESPACE {
 #define QW_END_NAMESPACE }
 #define QW_USE_NAMESPACE using namespace QW_NAMESPACE;
-
-#if defined(QW_STATIC_LIB)
-#  define QW_EXPORT
 #else
-#if defined(QW_LIBRARY)
-#  define QW_EXPORT Q_DECL_EXPORT
-#else
-#  define QW_EXPORT Q_DECL_IMPORT
-#endif
+#define QW_NAMESPACE
+#define QW_BEGIN_NAMESPACE
+#define QW_END_NAMESPACE
+#define QW_USE_NAMESPACE
 #endif
 
 #define QW_DECLARE_PRIVATE(Class) Q_DECLARE_PRIVATE_D(qGetPtrHelper(qw_d_ptr), Class)
@@ -42,78 +41,141 @@
     #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() = delete;
 #endif
 
-#include <QScopedPointer>
-#include <QObject>
+#ifdef QT_NO_DEBUG
+#define QW_ALWAYS_INLINE Q_ALWAYS_INLINE
+#else
+#define QW_ALWAYS_INLINE
+#endif
+
+#ifndef WLR_USE_UNSTABLE
+#define WLR_USE_UNSTABLE
+#endif
 
 QW_BEGIN_NAMESPACE
 
-class QWObject;
-class QWObjectPrivate
-{
-public:
-    virtual ~QWObjectPrivate();
+namespace qw {
+    template<typename Func>
+    typename QtPrivate::FunctionPointer<Func>::ReturnType cfunc_return_type(Func);
 
-protected:
-    QWObjectPrivate(void *handle, bool isOwner, QWObject *qq);
-
-    QWObject *q_ptr;
-    void *m_handle;
-    bool isHandleOwner;
-
-    Q_DECLARE_PUBLIC(QWObject)
-};
-
-class QW_EXPORT QWObject
-{
-public:
-    template<typename Handle>
-    inline Handle *handle() const {
-        if (!isValid()) {
-            return nullptr;
-        }
-        return reinterpret_cast<Handle*>(qw_d_ptr->m_handle);
-    }
-
-    virtual ~QWObject();
-    inline bool isValid() const {
-        // NOTE(lxz): Some functions of wlroots allow null pointer parameters. In order to reduce repeated verification code fragments, If this ptr is nullptr, return nullptr.
-        // WARNING(lxz): Check this in the member function, it is UB. Under some compilers it is necessary to use `volatile` to prevent compiler optimizations.
-        //               In the derived class, if the object address is nullptr, the address of this is not necessarily 0x0, it may be 0x01. The correct memory address starting position will not be lower than 0x1000, so it is considered that addresses lower than 0x1000 are nullptr.
-        volatile auto thisPtr = reinterpret_cast<qintptr>(this);
-        return thisPtr > 0x1000 && qw_d_ptr->m_handle;
-    }
-
-    void setData(void* owner, void* data);
+#define QW_CFUNC_RETURN_TYPE(func) decltype(qw::cfunc_return_type(func))
 
     template<typename T>
-    T* getData() const {
-        return reinterpret_cast<T*>(m_data.second);
+    concept Destroyable = requires (T *x) { x->destroy(); };
+}
+
+class qw_basic { };
+
+template<typename Handle, typename Derive>
+class qw_reinterpret_cast : public qw_basic
+{
+public:
+    typedef Handle HandleType;
+    typedef Derive DeriveType;
+
+    qw_reinterpret_cast() = delete;
+    QW_DISALLOW_DESTRUCTOR(qw_reinterpret_cast)
+
+    QW_ALWAYS_INLINE Handle *handle() const {
+        return reinterpret_cast<Handle*>(const_cast<Derive*>(static_cast<const Derive*>(this)));
     }
 
-protected:
-    QWObject(QWObjectPrivate &dd);
-    QScopedPointer<QWObjectPrivate> qw_d_ptr;
+    QW_ALWAYS_INLINE static Derive *from(Handle *handle) {
+        return reinterpret_cast<Derive*>(handle);
+    }
 
-    Q_DISABLE_COPY(QWObject)
-    QW_DECLARE_PRIVATE(QWObject)
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
+
+    QW_ALWAYS_INLINE void operator delete(qw_reinterpret_cast *p, std::destroying_delete_t) {
+        if constexpr (qw::Destroyable<Derive>) {
+            static_cast<Derive*>(p)->Derive::destroy();
+        } else {
+            static_assert(false, "Can't destroy.");
+        }
+    }
+};
+
+template<typename Handle, typename Derive>
+class qw_class_box
+{
+public:
+    typedef Handle HandleType;
+    typedef Derive DeriveType;
+
+    qw_class_box() {
+        if constexpr (requires { static_cast<DeriveType*>(this)->init(); }) {
+            static_cast<DeriveType*>(this)->init();
+        } else {
+            Q_ASSERT_X(false, "qw_class_box", "No default constructor.");
+        }
+    }
+
+    ~qw_class_box() {
+        static_cast<DeriveType*>(this)->finish();
+    }
+
+    QW_ALWAYS_INLINE Handle *handle() const {
+        return &m_handle;
+    }
+
+    QW_ALWAYS_INLINE operator Handle* () const {
+        return handle();
+    }
 
 private:
-    std::pair<void*, void*> m_data; // <owner, data>
+    mutable Handle m_handle;
 };
 
-class QWWrapObjectPrivate;
-class QW_EXPORT QWWrapObject : public QObject, public QWObject
-{
-    Q_OBJECT
+#define QW_CLASS_REINTERPRET_CAST(wlr_type_suffix) \
+qw_##wlr_type_suffix : public qw_reinterpret_cast<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
-Q_SIGNALS:
-    void beforeDestroy();
+#define QW_CLASS_BOX(wlr_type_suffix) \
+qw_##wlr_type_suffix : public qw_class_box<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
-protected:
-    QWWrapObject(QWWrapObjectPrivate &dd, QObject *parent = nullptr);
-    ~QWWrapObject();
+#define QW_FUNC_MEMBER(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE ret_type \
+wlr_func_suffix(Args &&... args) const requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+{ \
+    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), decltype(*this), Args...>, ""); \
+    return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
+}
 
-    QW_DECLARE_PRIVATE(QWWrapObject)
-};
+#define QW_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE static ret_type \
+wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
+{ \
+    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), Args...>, ""); \
+    if constexpr (std::is_same_v<QW_CFUNC_RETURN_TYPE(wlr_##wlr_type_suffix##_##wlr_func_suffix), HandleType*>) { \
+        static_assert(std::is_same_v<ret_type, DeriveType*>, ""); \
+        auto *wlr_handle = wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+        if constexpr (std::string_view(#wlr_func_suffix).find("create") != std::string_view::npos) { \
+            if constexpr (std::is_base_of_v<qw_basic, DeriveType>) { \
+                return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+            } else { \
+                return wlr_handle ? new DeriveType(wlr_handle, true) : nullptr; \
+            } \
+        } \
+        else if constexpr (std::string_view(#wlr_func_suffix).find("from") != std::string_view::npos || std::string_view(#wlr_func_suffix).find("get") != std::string_view::npos) { \
+            return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+        } else { \
+            static_assert(false, "return wlroots native type, but is not 'create' nor 'from' func!"); \
+        } \
+    } else { \
+        return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+    } \
+}
+
+#define QW_MAYBE_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix) \
+template<typename ...Args> \
+QW_ALWAYS_INLINE static void wlr_func_suffix(Args &&... args) { \
+    constexpr bool exists = requires() { \
+        wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+    }; \
+    if constexpr (exists) \
+        wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
+}
 
 QW_END_NAMESPACE

@@ -3,32 +3,19 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_screencopy_manager_v1;
+extern "C" {
+#include <wlr/types/wlr_screencopy_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
-
-class QWDisplay;
-class QWScreenCopyManagerV1Private;
-class QW_EXPORT QWScreenCopyManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(screencopy_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWScreenCopyManagerV1)
+
 public:
-    inline wlr_screencopy_manager_v1 *handle() const {
-        return QWObject::handle<wlr_screencopy_manager_v1>();
-    }
-
-    static QWScreenCopyManagerV1 *get(wlr_screencopy_manager_v1 *handle);
-    static QWScreenCopyManagerV1 *from(wlr_screencopy_manager_v1 *handle);
-    static QWScreenCopyManagerV1 *create(QWDisplay *display);
-
-private:
-    QWScreenCopyManagerV1(wlr_screencopy_manager_v1 *handle, bool isOwner);
-    ~QWScreenCopyManagerV1() = default;
+    QW_FUNC_STATIC(screencopy_manager_v1, create, qw_screencopy_manager_v1 *, wl_display *display)
 };
-
 QW_END_NAMESPACE
-

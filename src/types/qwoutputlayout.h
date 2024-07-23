@@ -3,63 +3,48 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_output_layout;
-struct wlr_output_layout_output;
-
-typedef uint32_t wlr_direction_t;
+extern "C" {
+#include <math.h>
+#define static
+#include <wlr/types/wlr_output_layout.h>
+#undef static
+#include <wlr/util/box.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWOutput;
-class QWRenderer;
-class QWOutputLayoutPrivate;
-class QW_EXPORT QWOutputLayout : public QWWrapObject
+class QW_CLASS_OBJECT(output_layout)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWOutputLayout)
+
+    QW_SIGNAL(add, wlr_output_layout_output*)
+    QW_SIGNAL(change, wlr_output_layout_output*)
+
 public:
-#if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    explicit QWOutputLayout(QObject *parent = nullptr);
-#else
-    explicit QWOutputLayout(QWDisplay *display, QObject *parent = nullptr);
-#endif
-    ~QWOutputLayout() = default;
+    qw_output_layout(QObject *parent): qw_object(wlr_output_layout_create(), true, parent) { }
+    QW_FUNC_STATIC(output_layout, create, qw_output_layout *, void)
 
-    inline wlr_output_layout *handle() const {
-        return QWObject::handle<wlr_output_layout>();
-    }
+    QW_FUNC_MEMBER(output_layout, get, wlr_output_layout_output *, wlr_output *reference)
+    QW_FUNC_MEMBER(output_layout, output_at, wlr_output *, double lx, double ly)
+    QW_FUNC_MEMBER(output_layout, get_center_output, wlr_output *)
+    QW_FUNC_MEMBER(output_layout, adjacent_output, wlr_output *, enum wlr_direction direction, wlr_output *reference, double ref_lx, double ref_ly)
+    QW_FUNC_MEMBER(output_layout, farthest_output, wlr_output *, enum wlr_direction direction, wlr_output *reference, double ref_lx, double ref_ly)
 
-    static QWOutputLayout *get(wlr_output_layout *handle);
-    static QWOutputLayout *from(wlr_output_layout *handle);
+    QW_FUNC_MEMBER(output_layout, add, wlr_output_layout_output *, wlr_output *output, int lx, int ly)
+    QW_FUNC_MEMBER(output_layout, add_auto, wlr_output_layout_output *, wlr_output *output)
+    QW_FUNC_MEMBER(output_layout, remove, void, wlr_output *output)
 
-    wlr_output_layout_output *get(QWOutput *reference) const;
-    QWOutput *outputAt(const QPointF &pos) const;
-    QWOutput *getCenterOutput() const;
-    QWOutput *adjacentOutput(wlr_direction_t wlr_direction, QWOutput *reference, const QPoint &pos) const;
-    QWOutput *farthestOutput(wlr_direction_t wlr_direction, QWOutput *reference, const QPoint &pos) const;
+    QW_FUNC_MEMBER(output_layout, output_coords, void, wlr_output *reference, double *lx, double *ly)
+    QW_FUNC_MEMBER(output_layout, contains_point, bool, wlr_output *reference, int lx, int ly)
+    QW_FUNC_MEMBER(output_layout, intersects, bool, wlr_output *reference, const wlr_box *target_lbox)
+    QW_FUNC_MEMBER(output_layout, closest_point, void, wlr_output *reference, double lx, double ly, double *dest_lx, double *dest_ly)
+    QW_FUNC_MEMBER(output_layout, get_box, void, wlr_output *reference, wlr_box *dest_box)
 
-    void add(QWOutput *output, const QPoint &pos);
-    void addAuto(QWOutput *output);
-    void move(QWOutput *output, const QPoint &pos);
-    void remove(QWOutput *output);
-
-    QPointF outputCoords(QWOutput *reference) const;
-    bool containsPoint(QWOutput *reference, const QPoint &pos) const;
-    bool intersects(QWOutput *reference, const QRect &targetBox) const;
-    QPointF closestPoint(QWOutput *reference, const QPointF &pos) const;
-    QRect getBox(QWOutput *reference) const;
-
-Q_SIGNALS:
-    // TODO: make to QWOutputLayoutOutput
-    void add(wlr_output_layout_output *output);
-    void change(wlr_output_layout_output *output);
-
-private:
-    QWOutputLayout(wlr_output_layout *handle, bool isOwner, QObject *parent);
+protected:
+    QW_FUNC_MEMBER(output_layout, destroy, void)
 };
 
 QW_END_NAMESPACE

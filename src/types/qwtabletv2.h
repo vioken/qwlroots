@@ -3,189 +3,98 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-typedef uint32_t zwp_tablet_pad_v2_button_state_t;
-
-struct wlr_tablet_tool;
-struct wlr_tablet_pad_v2_grab;
-struct wlr_tablet_v2_tablet_tool;
-struct wlr_tablet_manager_v2;
-struct wlr_tablet_v2_event_cursor;
-struct wlr_tablet_v2_tablet;
-struct wlr_tablet_tool_v2_grab;
-struct wlr_tablet_v2_tablet_pad;
-struct wlr_tablet_v2_event_feedback;
-
-QT_BEGIN_NAMESPACE
-
-class QPointF;
-
-QT_END_NAMESPACE
+extern "C" {
+#include <wlr/types/wlr_tablet_v2.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWInputDevice;
-class QWTabletTool;
-class QW_EXPORT QWTabletPadV2Grab
+class QW_CLASS_OBJECT(tablet_manager_v2)
 {
-public:
-    QWTabletPadV2Grab() = delete;
-    ~QWTabletPadV2Grab() = delete;
-    static QWTabletPadV2Grab *from(wlr_tablet_pad_v2_grab *handle);
-    wlr_tablet_pad_v2_grab *handle() const;
-};
-
-class QW_EXPORT QWTabletToolV2Grab
-{
-public:
-    QWTabletToolV2Grab() = delete;
-    ~QWTabletToolV2Grab() = delete;
-    static QWTabletToolV2Grab *from(wlr_tablet_tool_v2_grab *handle);
-    wlr_tablet_tool_v2_grab *handle() const;
-};
-
-class QWSurface;
-class QWTabletV2TabletPrivate;
-class QW_EXPORT QWTabletV2Tablet : public QWWrapObject
-{
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletV2Tablet)
 
-    friend class QWTabletManagerV2;
 public:
-    inline wlr_tablet_v2_tablet *handle() const {
-        return QWObject::handle<wlr_tablet_v2_tablet>();
-    }
-
-    static QWTabletV2Tablet *get(wlr_tablet_v2_tablet *handle);
-    static QWTabletV2Tablet *from(wlr_tablet_v2_tablet *handle);
-
-    bool canAcceptTablet(QWSurface *surface) const;
-
-private:
-    explicit QWTabletV2Tablet(wlr_tablet_v2_tablet *handle, bool isOwner, QWInputDevice *parent);
-    ~QWTabletV2Tablet() = default;
+    QW_FUNC_STATIC(tablet_v2, create, qw_tablet_manager_v2 *, wl_display *display)
 };
 
-class QWSurface;
-class QWTabletV2TabletToolPrivate;
-class QW_EXPORT QWTabletV2TabletTool : public QWWrapObject
+class QW_CLASS_OBJECT(tablet_v2_tablet)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletV2TabletTool)
 
-    friend class QWTabletManagerV2;
 public:
-    static QWTabletV2TabletTool *get(wlr_tablet_v2_tablet_tool *handle);
-    static QWTabletV2TabletTool *from(wlr_tablet_v2_tablet_tool *handle);
+    QW_FUNC_STATIC(tablet, create, qw_tablet_v2_tablet *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
 
-    inline wlr_tablet_v2_tablet_tool *handle() const {
-        return QWObject::handle<wlr_tablet_v2_tablet_tool>();
-    }
-
-    void sendProximityIn(QWTabletV2Tablet *tablet, QWSurface *surface);
-    void sendDown();
-    void sendUp();
-    void sendMotion(const QPointF &pos);
-    void sendPressure(double pressure);
-    void sendDistance(double distance);
-    void sendTilt(const QPointF &pos);
-    void sendRotation(double degrees);
-    void sendSlider(double position);
-    void sendWheel(double degrees, int32_t clicks);
-    void sendProximityOut();
-    void sendButton(uint32_t button, zwp_tablet_pad_v2_button_state_t state);
-    void notifyProximityIn(QWTabletV2Tablet *tablet, QWSurface *surface);
-    void notifyDown();
-    void notifyUp();
-    void notifyMotion(const QPointF &pos);
-    void notifyPressure(double pressure);
-    void notifyDistance(double distance);
-    void notifyTilt(const QPointF &pos);
-    void notifyRotation(double degrees);
-    void notifySlider(double position);
-    void notifyWheel(double degrees, int32_t clicks);
-    void notifyProximityOut();
-    void notifyButton(uint32_t button, zwp_tablet_pad_v2_button_state_t state);
-    void startGrab(QWTabletToolV2Grab *grab);
-    void endGrab();
-    void startImplicitGrab();
-    bool hasImplicitGrab() const;
-
-Q_SIGNALS:
-    void setCursor(wlr_tablet_v2_event_cursor *);
-
-private:
-    QWTabletV2TabletTool(wlr_tablet_v2_tablet_tool *handle, bool isOwner, QWTabletTool *parent);
-    ~QWTabletV2TabletTool() = default;
+    QW_FUNC_MEMBER(surface, accepts_tablet_v2, bool, wlr_surface *surface)
 };
 
-class QWTabletV2TabletPadPrivate;
-class QW_EXPORT QWTabletV2TabletPad : public QWWrapObject
+class QW_CLASS_OBJECT(tablet_v2_tablet_tool)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletV2TabletPad)
 
-    friend class QWTabletManagerV2;
+    QW_SIGNAL(set_cursor, wlr_tablet_v2_event_cursor*)
+
 public:
-    inline wlr_tablet_v2_tablet_pad *handle() const {
-        return QWObject::handle<wlr_tablet_v2_tablet_pad>();
-    }
+    QW_FUNC_STATIC(tablet_tool, create, qw_tablet_v2_tablet_tool *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_tablet_tool *wlr_tool)
 
-    static QWTabletV2TabletPad *get(wlr_tablet_v2_tablet_pad *handle);
-    static QWTabletV2TabletPad *from(wlr_tablet_v2_tablet_pad *handle);
-
-    uint32_t sendEnter(QWTabletV2Tablet *tablet, QWSurface *surface);
-    void sendButton(size_t button, uint32_t time, zwp_tablet_pad_v2_button_state_t state);
-    void sendStrip(uint32_t strip, double position, bool finger, uint32_t time);
-    void sendRing(uint32_t ring, double position, bool finger, uint32_t time);
-    uint32_t sendLeave(QWSurface *surface);
-    uint32_t sendMode(size_t group, uint32_t mode, uint32_t time);
-    uint32_t notifyEnter(QWTabletV2Tablet *tablet, QWSurface *surface);
-    void notifyButton(size_t button, uint32_t time, zwp_tablet_pad_v2_button_state_t state);
-    void notifyStrip(uint32_t strip, double position, bool finger, uint32_t time);
-    void notifyRing(uint32_t ring, double position, bool finger, uint32_t time);
-    uint32_t notifyLeave(QWSurface *surface);
-    uint32_t notifyMode(size_t group, uint32_t mode, uint32_t time);
-    void endGrab();
-    void startGrab(QWTabletPadV2Grab *grab);
-
-Q_SIGNALS:
-    void buttonFeedback(wlr_tablet_v2_event_feedback *);
-    void ringFeedback(wlr_tablet_v2_event_feedback *);
-    void stripFeedback(wlr_tablet_v2_event_feedback *);
-
-private:
-    QWTabletV2TabletPad(wlr_tablet_v2_tablet_pad *handle, bool isOwner, QWInputDevice *parent);
-    ~QWTabletV2TabletPad() = default;
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, proximity_in, void, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, down, void)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, motion, void, double x, double y)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, pressure, void, double pressure)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, distance, void, double distance)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, tilt, void, double x, double y)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, rotation, void, double degrees)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, slider, void, double position)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, wheel, void, double degrees, int32_t clicks)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, proximity_out, void)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_tool, button, void, uint32_t button, enum zwp_tablet_pad_v2_button_state state)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_proximity_in, void, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_down, void)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_motion, void, double x, double y)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_pressure, void, double pressure)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_distance, void, double distance)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_tilt, void, double x, double y)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_rotation, void, double degrees)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_slider, void, double position)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_wheel, void, double degrees, int32_t clicks)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_proximity_out, void)
+    QW_FUNC_MEMBER(tablet_v2_tablet_tool, notify_button, void, uint32_t button, enum zwp_tablet_pad_v2_button_state state)
+    QW_FUNC_MEMBER(tablet_tool_v2, start_grab, void, wlr_tablet_tool_v2_grab *grab)
+    QW_FUNC_MEMBER(tablet_tool_v2, end_grab, void)
+    QW_FUNC_MEMBER(tablet_tool_v2, start_implicit_grab, void)
+    QW_FUNC_MEMBER(tablet_tool_v2, has_implicit_grab, bool)
 };
 
-class QWDisplay;
-class QWSeat;
-class QWInputDevice;
-class QWTabletManagerV2Private;
-class QW_EXPORT QWTabletManagerV2 : public QWWrapObject
+class QW_CLASS_OBJECT(tablet_v2_tablet_pad)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWTabletManagerV2)
+
+    QW_SIGNAL(button_feedback, wlr_tablet_v2_event_feedback*)
+    QW_SIGNAL(strip_feedback, wlr_tablet_v2_event_feedback*)
+    QW_SIGNAL(ring_feedback, wlr_tablet_v2_event_feedback*)
+
 public:
-    inline wlr_tablet_manager_v2 *handle() const {
-        return QWObject::handle<wlr_tablet_manager_v2>();
-    }
+    QW_FUNC_STATIC(tablet_pad, create, qw_tablet_v2_tablet_pad *, wlr_tablet_manager_v2 *manager, wlr_seat *wlr_seat, wlr_input_device *wlr_device)
 
-    static QWTabletManagerV2 *get(wlr_tablet_manager_v2 *handle);
-    static QWTabletManagerV2 *from(wlr_tablet_manager_v2 *handle);
-    static QWTabletManagerV2 *create(QWDisplay *display);
-
-    QWTabletV2Tablet *createTablet(QWSeat *wlr_seat, QWInputDevice *wlr_device);
-    QWTabletV2TabletPad *createPad(QWSeat *wlr_seat, QWInputDevice *wlr_device);
-    QWTabletV2TabletTool *createTool(QWSeat *wlr_seat, wlr_tablet_tool *wlr_tool);
-
-private:
-    QWTabletManagerV2(wlr_tablet_manager_v2 *handle, bool isOwner);
-    ~QWTabletManagerV2() = default;
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, enter, uint32_t, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, button, void, size_t button, uint32_t time, enum zwp_tablet_pad_v2_button_state state)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, strip, void, uint32_t strip, double position, bool finger, uint32_t time)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, ring, void, uint32_t ring, double position, bool finger, uint32_t time)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, leave, uint32_t, wlr_surface *surface)
+    QW_FUNC_MEMBER(send_tablet_v2_tablet_pad, mode, uint32_t, size_t group, uint32_t mode, uint32_t time)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_enter, uint32_t, wlr_tablet_v2_tablet *tablet, wlr_surface *surface)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_button, void, size_t button, uint32_t time, enum zwp_tablet_pad_v2_button_state state)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_strip, void, uint32_t strip, double position, bool finger, uint32_t time)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_ring, void, uint32_t ring, double position, bool finger, uint32_t time)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_leave, uint32_t, wlr_surface *surface)
+    QW_FUNC_MEMBER(tablet_v2_tablet_pad, notify_mode, uint32_t, size_t group, uint32_t mode, uint32_t time)
+    QW_FUNC_MEMBER(tablet_v2, end_grab, void)
+    QW_FUNC_MEMBER(tablet_v2, start_grab, void, wlr_tablet_pad_v2_grab *grab)
 };
 
 QW_END_NAMESPACE

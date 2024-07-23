@@ -3,36 +3,23 @@
 
 #pragma once
 
-#include <qwglobal.h>
-#include <QObject>
+#include <qwobject.h>
 
-struct wlr_content_type_manager_v1;
-typedef uint32_t wp_content_type_v1_type_t;
+extern "C" {
+#include <wlr/types/wlr_content_type_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWSurface;
-class QWContentTypeManagerV1Private;
-class QW_EXPORT QWContentTypeManagerV1 : public QWWrapObject
+class QW_CLASS_OBJECT(content_type_manager_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWContentTypeManagerV1)
+
 public:
-    inline wlr_content_type_manager_v1 *handle() const {
-        return QWObject::handle<wlr_content_type_manager_v1>();
-    }
+    QW_FUNC_STATIC(content_type_manager_v1, create, qw_content_type_manager_v1 *, wl_display *display, uint32_t version)
 
-    static QWContentTypeManagerV1 *get(wlr_content_type_manager_v1 *handle);
-    static QWContentTypeManagerV1 *from(wlr_content_type_manager_v1 *handle);
-    static QWContentTypeManagerV1 *create(QWDisplay *display, uint32_t version);
-
-    wp_content_type_v1_type_t getSurfaceContentType(QWSurface *surface);
-
-private:
-    QWContentTypeManagerV1(wlr_content_type_manager_v1 *handle, bool isOwner);
-    ~QWContentTypeManagerV1() = default;
+    QW_FUNC_MEMBER(surface, get_content_type_v1, enum wp_content_type_v1_type, wlr_surface *surface)
 };
 
 QW_END_NAMESPACE
-

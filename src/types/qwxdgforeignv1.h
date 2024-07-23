@@ -1,52 +1,29 @@
 // Copyright (C) 2023 Dingyuan Zhang <zhangdingyuan@uniontech.com>.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#include "qwglobal.h"
+#include <qwobject.h>
+
 #include <qwxdgforeignregistry.h>
 
-struct wlr_xdg_foreign_v1;
-struct wlr_xdg_foreign_registry;
-struct wlr_xdg_exported_v1;
+extern "C" {
+#include <wlr/types/wlr_xdg_foreign_v1.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDisplay;
-class QWXdgForeignRegistry;
-class QWXdgForeignV1Private;
-class QW_EXPORT QWXdgForeignV1 : public QWWrapObject
+class QW_CLASS_OBJECT(xdg_foreign_v1)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgForeignV1)
+
 public:
-    static QWXdgForeignV1 *create(QWDisplay *display, QWXdgForeignRegistry *registry);
-    static QWXdgForeignV1 *from(wlr_xdg_foreign_v1 *handle);
-    static QWXdgForeignV1 *get(wlr_xdg_foreign_v1 *handle);
-
-    inline wlr_xdg_foreign_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_foreign_v1>();
-    }
-
-private:
-    explicit QWXdgForeignV1(wlr_xdg_foreign_v1 *handle, bool isOwner);
-    ~QWXdgForeignV1() override = default;
+    QW_FUNC_STATIC(xdg_foreign_v1, create, qw_xdg_foreign_v1 *, wl_display *display, wlr_xdg_foreign_registry *registry)
 };
 
-class QWXdgExportedV1Private;
-class QW_EXPORT QWXdgExportedV1 : public QWXdgForeignExported
+class qw_xdg_exported_v1 : public qw_xdg_foreign_exported
 {
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWXdgExportedV1)
-public:
-    static QWXdgExportedV1 *from(wlr_xdg_exported_v1 *handle);
-    static QWXdgExportedV1 *get(wlr_xdg_exported_v1 *handle);
-
-    inline wlr_xdg_exported_v1 *handle() const {
-        return QWObject::handle<wlr_xdg_exported_v1>();
-    }
-
-private:
-    explicit QWXdgExportedV1(wlr_xdg_exported_v1 *handle, bool isOwner);
-    ~QWXdgExportedV1() override = default;
+    using qw_xdg_foreign_exported::qw_xdg_foreign_exported;
 };
 
 QW_END_NAMESPACE

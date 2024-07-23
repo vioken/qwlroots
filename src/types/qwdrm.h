@@ -4,45 +4,28 @@
 #pragma once
 
 #include <qwglobal.h>
-#include <QObject>
-
-struct wlr_drm;
-struct wlr_drm_buffer;
-struct wl_resource;
+#include <qwobject.h>
+extern "C" {
+#include <wayland-server.h>
+#include <wlr/types/wlr_drm.h>
+}
 
 QW_BEGIN_NAMESPACE
 
-class QWDrmPrivate;
-class QWDisplay;
-class QWRenderer;
-class QW_EXPORT QWDrm : public QWWrapObject
+class QW_CLASS_OBJECT(drm)
 {
+    QW_OBJECT
     Q_OBJECT
-    QW_DECLARE_PRIVATE(QWDrm)
+
 public:
-    inline wlr_drm *handle() const {
-        return QWObject::handle<wlr_drm>();
-    }
-
-    static QWDrm *get(wlr_drm *handle);
-    static QWDrm *from(wlr_drm *handle);
-    static QWDrm *create(QWDisplay *display, QWRenderer *render);
-
-private:
-    QWDrm(wlr_drm *handle, bool isOwner);
-    ~QWDrm() = default;
+    QW_FUNC_STATIC(drm, create, qw_drm *, wl_display *display, wlr_renderer *renderer)
 };
 
 
-class QW_EXPORT QWDrmBuffer {
+class QW_CLASS_REINTERPRET_CAST(drm_buffer)
+{
 public:
-    QWDrmBuffer() = delete;
-    ~QWDrmBuffer() = delete;
-
-    wlr_drm_buffer *handle() const;
-
-    static QWDrmBuffer *from(wlr_drm_buffer *handle);
-    static QWDrmBuffer *from(wl_resource *resource);
+    QW_FUNC_STATIC(drm_buffer, try_from_resource, qw_drm_buffer *, wl_resource *resource)
 };
 
 QW_END_NAMESPACE
