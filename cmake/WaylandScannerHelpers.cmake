@@ -3,6 +3,8 @@ if(NOT DEFINED WAYLAND_PROTOCOLS_OUTPUTDIR)
     file(MAKE_DIRECTORY ${WAYLAND_PROTOCOLS_OUTPUTDIR})
     message(STATUS "Create wayland protocols outputdir: ${WAYLAND_PROTOCOLS_OUTPUTDIR}")
     include_directories(${WAYLAND_PROTOCOLS_OUTPUTDIR})
+else()
+    message(STATUS "Setting wayland protocols outputdir: ${WAYLAND_PROTOCOLS_OUTPUTDIR}")
 endif()
 
 function(ws_generate type protocols input_file output_name)

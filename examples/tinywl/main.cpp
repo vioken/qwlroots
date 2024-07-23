@@ -529,9 +529,9 @@ void TinywlServer::processCursorMotion(uint32_t time)
         if (maxSize.height() == 0)
             maxSize.setHeight(99999);
 
-        wlr_box current_geo_box;
-        qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->get_geometry(&current_geo_box);
-        auto currentGeoBox = qw_box(current_geo_box).toQRect();
+        qw_box current_geo_box;
+        qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->get_geometry(current_geo_box);
+        auto currentGeoBox = current_geo_box.toQRect();
 
         currentGeoBox.moveTopLeft((grabbedView->pos + currentGeoBox.topLeft()).toPoint());
         if (newGeoBox.width() < qMax(minimumSize, minSize.width()) || newGeoBox.width() > maxSize.width()) {
