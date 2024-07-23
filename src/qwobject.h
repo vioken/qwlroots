@@ -101,7 +101,7 @@ public:
     static QW_ALWAYS_INLINE DeriveType *create(Interface *i, Args&&... args)
         requires (std::is_base_of_v<qw_interface_basic, Interface>
                  && std::is_same_v<HandleType, std::remove_reference_t<decltype(*i->handle())>>) {
-        i->init(*i, *i, std::forward<Args>(args)...);
+        i->init(std::forward<Args>(args)...);
         return new DeriveType(i->handle(), true);
     }
 

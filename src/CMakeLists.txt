@@ -255,6 +255,11 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_NAME}
 )
 
+install(FILES
+    ${PROJECT_SOURCE_DIR}/cmake/WaylandScannerHelpers.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_NAME}
+)
+
 install(EXPORT ${CMAKE_NAME}Targets
     FILE ${CMAKE_NAME}Targets.cmake
     NAMESPACE ${CMAKE_NAME}::
