@@ -7,7 +7,6 @@ add_compile_options(-Wall -Wextra -Werror=unused-variable -Werror=unused-paramet
 find_package(Qt${QT_VERSION_MAJOR}
     COMPONENTS
     Core
-    Gui
     REQUIRED
 )
 
@@ -194,25 +193,26 @@ set_target_properties(${TARGET}
         EXPORT_NAME ${CMAKE_NAME}
 )
 
-set(QT_LIBRAIES
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Gui)
-
 target_link_libraries(${TARGET}
     PUBLIC
-    ${QT_LIBRAIES}
+    Qt${QT_VERSION_MAJOR}::Core
     PkgConfig::WLROOTS
     PkgConfig::WAYLAND_SERVER
     PkgConfig::PIXMAN
     PkgConfig::XKBCOMMON
 )
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-target_include_directories(${TARGET}
+target_precompile_headers(${TARGET}
     PRIVATE
-    ${Qt${QT_VERSION_MAJOR}Gui_PRIVATE_INCLUDE_DIRS}
+    ${HEADERS}
 )
+
+target_compile_definitions(${TARGET}
+    PRIVATE
+    QT_NO_SIGNALS_SLOTS_KEYWORDS
+)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 target_include_directories(${TARGET}
     PUBLIC
@@ -247,7 +247,7 @@ install(TARGETS ${TARGET}
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
 add_cmake_module(${CMAKE_NAME} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
 add_pkgconfig_module(${TARGET} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET}
-    "wlroots = ${WLROOTS_VERSION}, pixman-1, wayland-protocols, wlr-protocols, xkbcommon, Qt${QT_VERSION_MAJOR}Gui"
+    "wlroots = ${WLROOTS_VERSION}, pixman-1, wayland-protocols, wlr-protocols, xkbcommon, Qt${QT_VERSION_MAJOR}Core"
 )
 
 install(FILES

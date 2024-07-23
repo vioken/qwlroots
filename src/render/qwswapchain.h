@@ -6,7 +6,9 @@
 #include <qwglobal.h>
 
 extern "C" {
+#define slots slots_c
 #include <wlr/render/swapchain.h>
+#undef slots
 }
 
 QW_BEGIN_NAMESPACE

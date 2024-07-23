@@ -8,14 +8,7 @@ if(PROJECT_IS_TOP_LEVEL) # if build as a separated project
     set(CMAKE_CXX_STANDARD 20)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_AUTORCC ON)
-
     find_package(QWlroots REQUIRED)
-
-    if(PREFER_QT_5)
-        find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core)
-    else()
-        find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core)
-    endif()
 endif()
 
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
@@ -28,6 +21,6 @@ add_executable(${TARGET}
 
 target_link_libraries(${TARGET}
     PRIVATE
-    Qt${QT_VERSION_MAJOR}::Gui
     QWlroots::QWlroots
+    Qt${QT_VERSION_MAJOR}::Gui
 )
