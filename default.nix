@@ -6,10 +6,16 @@ let
     (builtins.substring 6 2 longDate)
   ]);
 
-  wlroots_master = pkgs.wlroots_0_17.overrideAttrs (
+  wlroots_0_18 = pkgs.wlroots_0_17.overrideAttrs (
     old: {
       version = "0.18.0";
-      src = wlroots_master_src;
+      src = pkgs.fetchFromGitLab {
+        domain = "gitlab.freedesktop.org";
+        owner = "wlroots";
+        repo = "wlroots";
+        rev = "0.18.0";
+        hash = "sha256-LiRnvu7qCbfSg+ONWVCtWwdzxxFZHfbgmy7zApCIW40=";
+      };
       patches = [];
       buildInputs = old.buildInputs ++ (with pkgs; [ 
         lcms
@@ -29,9 +35,9 @@ rec {
     wlroots = pkgs.wlroots_0_17;
   };
 
-  qwlroots-qt6-wlroots-master = qwlroots-qt6.override {
-    wlroots = wlroots_master;
-  };
+  #qwlroots-qt6-wlroots-master = qwlroots-qt6.override {
+  #  wlroots = wlroots_0_18;
+  #};
 
   qwlroots-qt6-dbg = qwlroots-qt6.override {
     stdenv = pkgs.stdenvAdapters.keepDebugInfo pkgs.stdenv;
