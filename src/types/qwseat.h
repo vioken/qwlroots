@@ -57,14 +57,21 @@ public:
     QW_FUNC_MEMBER(seat, pointer_end_grab, void)
     QW_FUNC_MEMBER(seat, pointer_enter, void, wlr_surface *surface, double sx, double sy)
     QW_FUNC_MEMBER(seat, pointer_has_grab, bool)
+#if WLR_VERSION_MINOR > 17
+    QW_FUNC_MEMBER(seat, pointer_notify_axis, void, uint32_t time_msec, enum wl_pointer_axis orientation, double value, int32_t value_discrete, enum wl_pointer_axis_source source, enum wl_pointer_axis_relative_direction relative_direction)
+    QW_FUNC_MEMBER(seat, pointer_send_axis, void, uint32_t time_msec, enum wl_pointer_axis orientation, double value, int32_t value_discrete, enum wl_pointer_axis_source source)
+    QW_FUNC_MEMBER(seat, pointer_notify_button, uint32_t, uint32_t time_msec, uint32_t button, enum wl_pointer_button_state state)
+    QW_FUNC_MEMBER(seat, pointer_send_button, uint32_t, uint32_t time_msec, uint32_t button, enum wl_pointer_button_state state)
+#else
     QW_FUNC_MEMBER(seat, pointer_notify_axis, void, uint32_t time_msec, enum wlr_axis_orientation orientation, double value, int32_t value_discrete, enum wlr_axis_source source)
+    QW_FUNC_MEMBER(seat, pointer_send_axis, void, uint32_t time_msec, enum wlr_axis_orientation orientation, double value, int32_t value_discrete, enum wlr_axis_source source)
     QW_FUNC_MEMBER(seat, pointer_notify_button, uint32_t, uint32_t time_msec, uint32_t button, enum wlr_button_state state)
+    QW_FUNC_MEMBER(seat, pointer_send_button, uint32_t, uint32_t time_msec, uint32_t button, enum wlr_button_state state)
+#endif
     QW_FUNC_MEMBER(seat, pointer_notify_clear_focus, void)
     QW_FUNC_MEMBER(seat, pointer_notify_enter, void, wlr_surface *surface, double sx, double sy)
     QW_FUNC_MEMBER(seat, pointer_notify_frame, void)
     QW_FUNC_MEMBER(seat, pointer_notify_motion, void, uint32_t time_msec, double sx, double sy)
-    QW_FUNC_MEMBER(seat, pointer_send_axis, void, uint32_t time_msec, enum wlr_axis_orientation orientation, double value, int32_t value_discrete, enum wlr_axis_source source)
-    QW_FUNC_MEMBER(seat, pointer_send_button, uint32_t, uint32_t time_msec, uint32_t button, enum wlr_button_state state)
     QW_FUNC_MEMBER(seat, pointer_send_frame, void)
     QW_FUNC_MEMBER(seat, pointer_send_motion, void, uint32_t time_msec, double sx, double sy)
     QW_FUNC_MEMBER(seat, pointer_start_grab, void, wlr_seat_pointer_grab *grab)

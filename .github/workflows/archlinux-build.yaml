@@ -25,7 +25,7 @@ jobs:
           pacman -Syu --noconfirm clang ninja
       - name: Configure CMake
         run: |
-          export PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig/
+          export PKG_CONFIG_PATH=/usr/lib/pkgconfig/:/usr/lib/wlroots0.17/pkgconfig/
           mkdir -p ${{github.workspace}}/build
           cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_CXX_COMPILER=clazy
       - name: Build

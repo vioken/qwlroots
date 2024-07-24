@@ -54,8 +54,7 @@ public:
     ~qw_object() {
         if (!m_handle)
             return;
-        Q_ASSERT(qw::map().contains((void*)m_handle));
-        qw::map().remove((void*)m_handle);
+        do_destroy();
 
         if (isHandleOwner) {
             constexpr bool has_destroy = requires(Derive t) {
@@ -149,13 +148,17 @@ public:
     }
 
 protected:
-    inline void on_destroy() {
+    inline void do_destroy() {
         Q_ASSERT(m_handle);
         Q_ASSERT(qw::map().contains((void*)m_handle));
 
-        Q_EMIT before_destroy();
         sc.invalidate();
         qw::map().remove((void*)m_handle);
+    }
+    inline void on_destroy() {
+        Q_EMIT before_destroy();
+
+        do_destroy();
         m_handle = nullptr;
         delete this;
     }

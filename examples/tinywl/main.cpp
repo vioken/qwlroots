@@ -123,7 +123,11 @@ private:
 TinywlServer::TinywlServer()
 {
     display = new qw_display();
+#if WLR_VERSION_MINOR > 17
+    backend = qw_backend::autocreate(display->get_event_loop(), nullptr);
+#else
     backend = qw_backend::autocreate(*display, nullptr);
+#endif
     if (!backend)
         qFatal("failed to create wlr_backend");
 
@@ -149,9 +153,9 @@ TinywlServer::TinywlServer()
     dataDeviceManager = qw_data_device_manager::create(*display);
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
-    outputLayout = qw_output_layout::create();
+    outputLayout = new qw_output_layout(display);
 #else
-    outputLayout = qw_output_layout::create(*display);
+    outputLayout = new qw_output_layout(*display);
 #endif
     connect(backend, &qw_backend::notify_new_output, this, &TinywlServer::onNewOutput);
 
@@ -159,8 +163,8 @@ TinywlServer::TinywlServer()
     scene_layout = qw_scene_output_layout::from(scene->attach_output_layout(*outputLayout));
     xdgShell = qw_xdg_shell::create(*display, 3);
 #if WLR_VERSION_MINOR > 17
-    connect(xdgShell, &QWXdgShell::newToplevel, this, &TinywlServer::onNewXdgToplevel);
-    connect(xdgShell, &QWXdgShell::newPopup, this, &TinywlServer::onNewXdgPopup);
+    connect(xdgShell, &qw_xdg_shell::notify_new_toplevel, this, &TinywlServer::onNewXdgToplevel);
+    connect(xdgShell, &qw_xdg_shell::notify_new_popup, this, &TinywlServer::onNewXdgPopup);
 #else
     connect(xdgShell, &qw_xdg_shell::notify_new_surface, this, &TinywlServer::onNewXdgSurface);
 #endif
@@ -241,17 +245,20 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 
 void TinywlServer::onNewXdgPopup(wlr_xdg_popup *popup)
 {
-    auto *s = qw_xdg_popup::from(popup);
     auto parent = qw_xdg_surface::try_from_wlr_surface(popup->parent);
     qw_scene_tree *parentTree = reinterpret_cast<qw_scene_tree*>(parent->handle()->data);
     popup->base->data = qw_scene::xdg_surface_create(*parentTree, popup->base);
 #if WLR_VERSION_MINOR >= 18
-    QMetaObject::Connection initialCommitConn = connect(s, &qw_xdg_surface::commit, this, [initialCommitConn, popup] {
-        if (popup->base->initial_commit) {
-            wlr_xdg_surface_schedule_configure(popup->base);
-            QObject::disconnect(initialCommitConn);
+    auto qwPopup = qw_xdg_popup::from(popup);
+    QMetaObject::Connection initialCommitConn = connect(qw_surface::from(popup->base->surface), &qw_surface::notify_commit,
+                                                        qwPopup, [qwPopup] {
+        if (qwPopup->handle()->base->initial_commit) {
+            qw_xdg_surface::from(qwPopup->handle()->base)->schedule_configure();
+            QObject::disconnect(qvariant_cast<QMetaObject::Connection>(qwPopup->property("__initialCommitConn")));
+            qwPopup->setProperty("__initialCommitConn", QVariant());
         }
     });
+    qwPopup->setProperty("__initialCommitConn", QVariant::fromValue(initialCommitConn));
 #endif
     return;
 }
@@ -279,12 +286,15 @@ void TinywlServer::onNewXdgToplevel(wlr_xdg_toplevel *toplevel)
         delete view;
     });
 #if WLR_VERSION_MINOR >= 18
-    QMetaObject::Connection initialCommitConn = connect(s, &qw_xdg_surface::commit, this, [initialCommitConn, toplevel] {
-        if (toplevel->base->initial_commit) {
-            wlr_xdg_toplevel_set_size(toplevel, 0, 0);
-            QObject::disconnect(initialCommitConn);
+    QMetaObject::Connection initialCommitConn = connect(qw_surface::from(toplevel->base->surface), &qw_surface::notify_commit,
+                                                        s, [s] {
+        if (s->handle()->base->initial_commit) {
+            s->set_size(0, 0);
+            QObject::disconnect(qvariant_cast<QMetaObject::Connection>(s->property("__initialCommitConn")));
+            s->setProperty("__initialCommitConn", QVariant());
         }
     });
+    s->setProperty("__initialCommitConn", QVariant::fromValue(initialCommitConn));
 #endif
 }
 
@@ -369,7 +379,11 @@ void TinywlServer::onCursorButton(wlr_pointer_button_event *event)
 void TinywlServer::onCursorAxis(wlr_pointer_axis_event *event)
 {
     seat->pointer_notify_axis(event->time_msec, event->orientation,
-                                 event->delta, event->delta_discrete, event->source);
+                                 event->delta, event->delta_discrete, event->source
+#if WLR_VERSION_MINOR > 17
+                              , event->relative_direction
+#endif
+                              );
 }
 
 void TinywlServer::onCursorFrame()
