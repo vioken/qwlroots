@@ -138,7 +138,7 @@ template<typename ...Args> \
 QW_ALWAYS_INLINE ret_type \
 wlr_func_suffix(Args &&... args) const requires std::is_invocable_v<void(*)(__VA_ARGS__), Args...> \
 { \
-    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), decltype(*this), Args...>, ""); \
+    static_assert(std::is_invocable_v<decltype(wlr_##wlr_type_suffix##_##wlr_func_suffix), decltype(*this), Args...>, "Arguments is not invocable"); \
     return wlr_##wlr_type_suffix##_##wlr_func_suffix(*this, std::forward<Args>(args)...); \
 }
 

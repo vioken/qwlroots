@@ -10,15 +10,21 @@ find_package(Qt${QT_VERSION_MAJOR}
     REQUIRED
 )
 
+find_package(PkgConfig REQUIRED)
+
 if (USE_WLROOTS_GIT)
+    set(wlr wlroots-0.19)
+    set(WLROOTS_MINIMUM_REQUIRED 0.19.0)
+else()
     set(wlr wlroots-0.18)
     set(WLROOTS_MINIMUM_REQUIRED 0.18.0)
-else()
-    set(wlr wlroots)
-    set(WLROOTS_MINIMUM_REQUIRED 0.17.0)
+    pkg_check_modules(WLROOTS ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
+    if (NOT WLROOTS_FOUND)
+        set(wlr wlroots)
+        set(WLROOTS_MINIMUM_REQUIRED 0.17.0)
+    endif()
 endif()
 
-find_package(PkgConfig REQUIRED)
 pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
 pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
@@ -144,6 +150,12 @@ ws_generate(
     staging/tearing-control/tearing-control-v1.xml
     tearing-control-v1-protocol
 )
+ws_generate(
+    server
+    wayland-protocols
+    stable/tablet/tablet-v2.xml
+    tablet-v2-protocol
+)
 
 list(APPEND HEADERS
     render/qwswapchain.h
@@ -247,7 +259,7 @@ install(TARGETS ${TARGET}
 include(${PROJECT_SOURCE_DIR}/cmake/Helpers.cmake)
 add_cmake_module(${CMAKE_NAME} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET})
 add_pkgconfig_module(${TARGET} ${TARGET} ${CMAKE_INSTALL_FULL_INCLUDEDIR}/${TARGET}
-    "wlroots = ${WLROOTS_VERSION}, pixman-1, wayland-protocols, wlr-protocols, xkbcommon, Qt${QT_VERSION_MAJOR}Core"
+    "${wlr} = ${WLROOTS_VERSION}, pixman-1, wayland-protocols, wlr-protocols, xkbcommon, Qt${QT_VERSION_MAJOR}Core"
 )
 
 install(FILES

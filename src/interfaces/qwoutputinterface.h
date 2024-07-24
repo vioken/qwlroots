@@ -26,7 +26,11 @@ public:
     QW_INTERFACE(commit)
     QW_INTERFACE(get_gamma_size)
     QW_INTERFACE(get_cursor_formats)
+#if WLR_VERSION_MINOR > 17
+    QW_INTERFACE(get_cursor_sizes)
+#else
     QW_INTERFACE(get_cursor_size)
+#endif
     QW_INTERFACE(get_primary_formats)
 };
 
