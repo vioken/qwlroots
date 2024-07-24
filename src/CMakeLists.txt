@@ -203,6 +203,8 @@ set_target_properties(${TARGET}
         SOVERSION ${PROJECT_VERSION_MAJOR}
         PUBLIC_HEADER "${HEADERS}"
         EXPORT_NAME ${CMAKE_NAME}
+        CXX_VISIBILITY_PRESET hidden
+        C_VISIBILITY_PRESET hidden
 )
 
 target_link_libraries(${TARGET}
