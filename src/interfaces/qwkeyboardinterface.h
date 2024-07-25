@@ -11,14 +11,6 @@ extern "C" {
 #include <wlr/interfaces/wlr_keyboard.h>
 }
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(keyboard)
-{
-    QW_INTERFACE_INIT(keyboard)
-
-public:
-    QW_INTERFACE(name)
-    QW_INTERFACE(led_update)
-};
+QW_CLASS_INTERFACE(keyboard)
 
 QW_END_NAMESPACE

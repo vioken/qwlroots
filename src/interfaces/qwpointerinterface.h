@@ -12,13 +12,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(pointer)
-{
-    QW_INTERFACE_INIT(pointer)
-
-public:
-    QW_INTERFACE(name)
-};
+QW_CLASS_INTERFACE(pointer)
 
 QW_END_NAMESPACE

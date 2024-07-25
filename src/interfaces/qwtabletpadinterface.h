@@ -12,13 +12,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(tablet_pad)
-{
-    QW_INTERFACE_INIT(tablet_pad)
-
-public:
-    QW_INTERFACE(name)
-};
+QW_CLASS_INTERFACE(tablet_pad)
 
 QW_END_NAMESPACE

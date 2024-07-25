@@ -22,15 +22,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(backend)
-{
-    QW_INTERFACE_INIT(backend)
-
-public:
-    QW_INTERFACE(start)
-    QW_INTERFACE(get_drm_fd)
-    QW_INTERFACE(get_buffer_caps)
-};
+QW_CLASS_INTERFACE(backend)
 
 QW_END_NAMESPACE

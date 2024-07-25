@@ -14,24 +14,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(output)
-{
-    QW_INTERFACE_INIT(output)
-
-public:
-    QW_INTERFACE(set_cursor)
-    QW_INTERFACE(move_cursor)
-    QW_INTERFACE(test)
-    QW_INTERFACE(commit)
-    QW_INTERFACE(get_gamma_size)
-    QW_INTERFACE(get_cursor_formats)
-#if WLR_VERSION_MINOR > 17
-    QW_INTERFACE(get_cursor_sizes)
-#else
-    QW_INTERFACE(get_cursor_size)
-#endif
-    QW_INTERFACE(get_primary_formats)
-};
+QW_CLASS_INTERFACE(output)
 
 QW_END_NAMESPACE

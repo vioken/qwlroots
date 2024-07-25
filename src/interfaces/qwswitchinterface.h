@@ -12,13 +12,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(switch)
-{
-    QW_INTERFACE_INIT(switch)
-
-public:
-    QW_INTERFACE(name)
-};
+QW_CLASS_INTERFACE(switch)
 
 QW_END_NAMESPACE

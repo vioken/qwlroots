@@ -52,10 +52,10 @@ protected:
         template <class Obj, typename Ret, typename ...Args>
         struct caller<Ret (Obj::*) (Args...)> {
             typedef Ret return_type;
-            // typedef Args... arguments;
 
-            static Ret call(HandleType *handle, Args &&... args) {
-                return (static_cast<_handle*>(handle)->interface->*ii)(std::forward<Args>(args)...);
+            static Ret call(HandleType *handle, Args ... args) {
+                auto interface = static_cast<Obj*>(static_cast<_handle*>(handle)->interface);
+                return (interface->*ii)(std::forward<Args>(args)...);
             }
         };
 
@@ -70,11 +70,6 @@ protected:
         }
     };
 
-    template <typename I, typename II>
-    void bind_interface(I i, II impl) {
-        qw_interface_binder<I, i, II, impl>::bind(this);
-    }
-
     static void destroy(Handle *handle) {
         auto self = get(handle);
         Q_ASSERT(self);
@@ -82,7 +77,7 @@ protected:
     }
 
     qw_interface()
-        : m_handleImpl(new Impl)
+        : m_handleImpl(new Impl { nullptr })
         , m_handle(reinterpret_cast<_handle*>(calloc(1, sizeof(_handle))))
     {
         static_cast<_handle*>(m_handle)->interface = this;
@@ -104,9 +99,6 @@ protected:
     Impl *m_handleImpl = nullptr;
 };
 
-#define QW_CLASS_INTERFACE(wlr_type_suffix) \
-qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl>
-
 #define QW_INTERFACE_INIT(wlr_type_suffix) \
 friend class qw_interface; \
 friend class qw_##wlr_type_suffix; \
@@ -120,29 +112,26 @@ QW_ALWAYS_INLINE void init(Args &&... args) { \
     wlr_##wlr_type_suffix##_##init(*this, *this, std::forward<Args>(args)...); \
 }
 
-#define QW_INTERFACE(name) \
-private: \
-template <typename I, typename II> \
+#define QW_CLASS_INTERFACE(wlr_type_suffix) \
+class qw_##wlr_type_suffix##_interface : public qw_interface<wlr_##wlr_type_suffix, wlr_##wlr_type_suffix##_impl> { \
+    QW_INTERFACE_INIT(wlr_type_suffix) \
+};
+
+#define QW_INTERFACE(name, ret_type, ...) \
+protected: \
+template <typename I> \
 struct qw_interface_##name { \
-    qw_interface_##name(qw_interface *self) { \
-        constexpr bool has_impl = requires(const II &i) { \
-            &i.name; \
+    template <typename II> \
+    qw_interface_##name(II *self) { \
+        constexpr static bool has_interface = requires(const I &i) { \
+            i.name; \
         }; \
-        constexpr bool has_interface = requires(const I &i) { \
-            &i.name; \
-        }; \
-        if constexpr (has_impl) { \
-            if constexpr (has_interface) { \
-                self->bind_interface(&I::name, &II::name); \
-            } else { \
-                static_assert(false, "Not found \"" QT_STRINGIFY(name) "\", Please check your wlroot's version."); \
-            } \
-        } else { \
-            self->impl()->name = nullptr; \
-        } \
+        static_assert(has_interface, "Not found \"" QT_STRINGIFY(name) "\", Please check your wlroot's version."); \
+        qw_interface_binder<decltype(&I::name), &I::name, decltype(&II::name), &II::name>::bind(self); \
     } \
 }; \
-qw_interface_##name<ImplType, Derive> _interface_##name = this;
+qw_interface_##name<ImplType> _interface_##name = this; \
+ret_type name(__VA_ARGS__)
 
 #define QW_INTERFACE_FUNC_STATIC(wlr_type_suffix, wlr_func_suffix, ret_type, ...) \
 template<typename ...Args> \
