@@ -12,16 +12,6 @@ extern "C" {
 
 QW_BEGIN_NAMESPACE
 
-template<typename Derive>
-class QW_CLASS_INTERFACE(buffer)
-{
-    QW_INTERFACE_INIT(buffer)
-
-public:
-    QW_INTERFACE(get_dmabuf)
-    QW_INTERFACE(get_shm)
-    QW_INTERFACE(begin_data_ptr_access)
-    QW_INTERFACE(end_data_ptr_access)
-};
+QW_CLASS_INTERFACE(buffer)
 
 QW_END_NAMESPACE
