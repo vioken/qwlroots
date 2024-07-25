@@ -14,7 +14,7 @@
 struct wl_event_loop;
 QW_BEGIN_NAMESPACE
 
-class qw_display : public qw_object<wl_display, qw_display>
+class QW_EXPORT qw_display : public qw_object<wl_display, qw_display>
 {
     Q_OBJECT
     using qw_object::qw_object;

@@ -3,9 +3,8 @@
 
 #include "qwobject.h"
 
-namespace qw {
-QHash<void*, QObject*> &map() {
-    static QHash<void*, QObject*> map;
-    return map;
-}
-}
+QW_BEGIN_NAMESPACE
+
+QHash<void*, QObject*> qw_object_basic::map;
+
+QW_END_NAMESPACE

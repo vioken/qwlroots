@@ -12,16 +12,17 @@
 
 QW_BEGIN_NAMESPACE
 
-namespace qw {
-QHash<void*, QObject*> &map();
-}
-
-class qw_object_basic : public QObject {
+class QW_EXPORT qw_object_basic : public QObject {
     Q_OBJECT
+
 public:
     qw_object_basic (QObject *parent): QObject(parent) { }
+
 Q_SIGNALS:
     void before_destroy();
+
+protected:
+    static QHash<void*, QObject*> map;
 };
 
 template<typename Handle, typename Derive>
@@ -39,8 +40,8 @@ public:
         static_assert(QtPrivate::HasQ_OBJECT_Macro<Derive>::Value,
                       "Please add Q_OBJECT macro to the derive class.");
 
-        Q_ASSERT(!qw::map().contains(h));
-        qw::map().insert((void*)(h), this);
+        Q_ASSERT(!map.contains(h));
+        map.insert((void*)(h), this);
 
         constexpr bool has_destroy_signal = requires(const Handle& h) {
             h.events.destroy;
@@ -71,7 +72,7 @@ public:
     }
 
     static QW_ALWAYS_INLINE Derive *get(Handle *handle) {
-        return static_cast<Derive*>(qw::map().value(handle));
+        return static_cast<Derive*>(map.value(handle));
     }
 
     static QW_ALWAYS_INLINE Derive *from(Handle *handle) {
@@ -150,10 +151,10 @@ public:
 protected:
     inline void do_destroy() {
         Q_ASSERT(m_handle);
-        Q_ASSERT(qw::map().contains((void*)m_handle));
+        Q_ASSERT(map.contains((void*)m_handle));
 
         sc.invalidate();
-        qw::map().remove((void*)m_handle);
+        map.remove((void*)m_handle);
     }
     inline void on_destroy() {
         Q_EMIT before_destroy();
@@ -173,7 +174,7 @@ private:
 };
 
 #define QW_CLASS_OBJECT(wlr_type_suffix) \
-qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
+QW_EXPORT qw_##wlr_type_suffix : public qw_object<wlr_##wlr_type_suffix, qw_##wlr_type_suffix>
 
 #define QW_OBJECT \
 protected: \

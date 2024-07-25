@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <qwdisplay.h>
 
-class testQWObject : public QObject
+class Q_DECL_HIDDEN testQWObject : public QObject
 {
     Q_OBJECT
 public:
