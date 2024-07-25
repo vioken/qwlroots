@@ -25,6 +25,11 @@
 #define QW_DECLARE_PUBLIC(Class) Q_DECLARE_PUBLIC(Class)
 #define QW_PRIVATE_SLOT(Func) Q_PRIVATE_SLOT(d_func(), Func)
 
+#if defined(QWLROOTS_LIBRARY)
+#  define QW_EXPORT Q_DECL_EXPORT
+#else
+#  define QW_EXPORT Q_DECL_IMPORT
+#endif
 
 /*
  *  We disallow some class's destructor, they are binding of a wlroots struct
