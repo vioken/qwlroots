@@ -28,7 +28,7 @@
 #include <qwlogging.h>
 #include <qwbox.h>
 
-class TinywlServer : public QObject
+class Q_DECL_HIDDEN TinywlServer : public QObject
 {
     Q_OBJECT
 public:

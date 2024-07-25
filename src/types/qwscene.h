@@ -99,7 +99,7 @@ qw_##name(wlr_##name *handle, bool is_own): qw_scene_node(&handle->node, is_own)
 private: \
 friend class qw_scene_node;
 
-class qw_scene_tree : public qw_scene_node
+class QW_EXPORT qw_scene_tree : public qw_scene_node
 {
     Q_OBJECT
     QW_SCENE_NODE(scene_tree)
@@ -111,7 +111,7 @@ public:
     QW_FUNC_STATIC(scene, drag_icon_create, qw_scene_tree *, wlr_scene_tree *parent, wlr_drag_icon *drag_icon)
 };
 
-class qw_scene : public qw_scene_tree
+class QW_EXPORT qw_scene : public qw_scene_tree
 {
     Q_OBJECT
     typedef wlr_scene HandleType;
@@ -158,7 +158,7 @@ public:
     QW_FUNC_MEMBER(scene_layer_surface_v1, configure, void, const wlr_box *full_area, wlr_box *usable_area)
 };
 
-class qw_scene_rect : public qw_scene_node
+class QW_EXPORT qw_scene_rect : public qw_scene_node
 {
     Q_OBJECT
     QW_SCENE_NODE(scene_rect)
@@ -170,7 +170,7 @@ public:
     QW_FUNC_MEMBER(scene_rect, set_color, void, const float color[4])
 };
 
-class qw_scene_buffer : public qw_scene_node
+class QW_EXPORT qw_scene_buffer : public qw_scene_node
 {
     Q_OBJECT
     QW_SCENE_NODE(scene_buffer)

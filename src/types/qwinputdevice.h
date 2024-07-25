@@ -61,7 +61,7 @@ using qw_input_device::qw_input_device; \
 private: \
 friend class qw_input_device;
 
-class qw_keyboard : public qw_input_device
+class QW_EXPORT qw_keyboard : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(keyboard)
@@ -77,7 +77,7 @@ public:
     QW_FUNC_MEMBER(keyboard, set_repeat_info, void, int32_t rate_hz, int32_t delay_ms)
 };
 
-class qw_pointer : public qw_input_device
+class QW_EXPORT qw_pointer : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(pointer)
@@ -97,7 +97,7 @@ class qw_pointer : public qw_input_device
     QW_SIGNAL(hold_end, wlr_pointer_hold_end_event*)
 };
 
-class qw_tablet : public qw_input_device
+class QW_EXPORT qw_tablet : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(tablet)
@@ -108,7 +108,7 @@ class qw_tablet : public qw_input_device
     QW_SIGNAL(button, wlr_tablet_tool_button_event*)
 };
 
-class qw_tablet_pad : public qw_input_device
+class QW_EXPORT qw_tablet_pad : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(tablet_pad)
@@ -119,7 +119,7 @@ class qw_tablet_pad : public qw_input_device
     QW_SIGNAL(attach_tablet, wlr_tablet_tool*)
 };
 
-class qw_switch : public qw_input_device
+class QW_EXPORT qw_switch : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(switch)
@@ -127,7 +127,7 @@ class qw_switch : public qw_input_device
     QW_SIGNAL(toggle, wlr_switch_toggle_event*)
 };
 
-class qw_touch : public qw_input_device
+class QW_EXPORT qw_touch : public qw_input_device
 {
     Q_OBJECT
     QW_INPUT_DEVICE(touch)

@@ -62,7 +62,7 @@ protected: \
     using qw_backend::qw_backend; \
     friend class qw_backend;
 
-class qw_multi_backend : public qw_backend
+class QW_EXPORT qw_multi_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(multi_backend)
@@ -76,7 +76,7 @@ public:
     QW_FUNC_STATIC(multi_backend, create, qw_multi_backend *, wl_display *display)
 };
 
-class qw_drm_backend : public qw_backend
+class QW_EXPORT qw_drm_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(drm_backend)
@@ -94,7 +94,7 @@ public:
     QW_FUNC_STATIC(drm, lease_terminate, void, wlr_drm_lease *lease)
 };
 
-class qw_wayland_backend : public qw_backend
+class QW_EXPORT qw_wayland_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(wayland_backend)
@@ -110,7 +110,7 @@ public:
 };
 
 #ifdef WLR_HAVE_X11_BACKEND
-class qw_x11_backend : public qw_backend
+class QW_EXPORT qw_x11_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(x11_backend)
@@ -123,7 +123,7 @@ public:
 };
 #endif
 
-class qw_libinput_backend : public qw_backend
+class QW_EXPORT qw_libinput_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(libinput_backend)
@@ -133,7 +133,7 @@ public:
     QW_FUNC_STATIC(libinput, get_device_handle, libinput_device *, wlr_input_device *dev)
 };
 
-class qw_headless_backend : public qw_backend
+class QW_EXPORT qw_headless_backend : public qw_backend
 {
     Q_OBJECT
     QW_BACKEND(headless_backend)

@@ -188,11 +188,14 @@ if (WLR_PROTOCOLS_FOUND)
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
 endif ()
 
+# Needs on ArchLinux
+add_compile_options(-fPIC)
+
 add_library(${TARGET}
     STATIC
     ${SOURCES}
     ${HEADERS}
-    qwglobal.cpp
+    qwobject.cpp
     qwbackend.cpp
 )
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
@@ -203,8 +206,6 @@ set_target_properties(${TARGET}
         SOVERSION ${PROJECT_VERSION_MAJOR}
         PUBLIC_HEADER "${HEADERS}"
         EXPORT_NAME ${CMAKE_NAME}
-        CXX_VISIBILITY_PRESET hidden
-        C_VISIBILITY_PRESET hidden
 )
 
 target_link_libraries(${TARGET}
@@ -224,6 +225,7 @@ target_precompile_headers(${TARGET}
 target_compile_definitions(${TARGET}
     PRIVATE
     QT_NO_SIGNALS_SLOTS_KEYWORDS
+    QWLROOTS_LIBRARY
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
