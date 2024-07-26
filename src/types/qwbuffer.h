@@ -19,6 +19,26 @@ class QW_CLASS_OBJECT(buffer)
     QW_SIGNAL(release)
 
 public:
+    struct droper {
+        static inline void cleanup(qw_buffer *pointer) { if (pointer) pointer->drop(); }
+        void operator()(qw_buffer *pointer) const { cleanup(pointer); }
+    };
+
+    struct unlocker {
+        static inline void cleanup(qw_buffer *pointer) { if (pointer) pointer->unlock(); }
+        void operator()(qw_buffer *pointer) const { cleanup(pointer); }
+    };
+
+    struct releaser {
+        static inline void cleanup(qw_buffer *pointer) {
+            if (pointer) {
+                pointer->unlock();
+                pointer->drop();
+            }
+        }
+        void operator()(qw_buffer *pointer) const { cleanup(pointer); }
+    };
+
     QW_FUNC_STATIC(buffer, try_from_resource, qw_buffer *, wl_resource *resource)
 
     QW_FUNC_MEMBER(buffer, drop, void)
