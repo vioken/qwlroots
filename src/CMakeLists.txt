@@ -188,9 +188,6 @@ if (WLR_PROTOCOLS_FOUND)
     list(APPEND SOURCES ${PROTOCOL_SOURCES})
 endif ()
 
-# Needs on ArchLinux
-add_compile_options(-fPIC)
-
 add_library(${TARGET}
     STATIC
     ${SOURCES}
@@ -206,6 +203,7 @@ set_target_properties(${TARGET}
         SOVERSION ${PROJECT_VERSION_MAJOR}
         PUBLIC_HEADER "${HEADERS}"
         EXPORT_NAME ${CMAKE_NAME}
+        POSITION_INDEPENDENT_CODE ON
 )
 
 target_link_libraries(${TARGET}
