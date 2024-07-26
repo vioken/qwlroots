@@ -200,10 +200,10 @@ add_library(QWlroots::QWlroots ALIAS ${TARGET})
 set_target_properties(${TARGET}
     PROPERTIES
         VERSION ${CMAKE_PROJECT_VERSION}
-        SOVERSION ${PROJECT_VERSION_MAJOR}
         PUBLIC_HEADER "${HEADERS}"
         EXPORT_NAME ${CMAKE_NAME}
         POSITION_INDEPENDENT_CODE ON
+        INTERPROCEDURAL_OPTIMIZATION ON
 )
 
 target_link_libraries(${TARGET}
