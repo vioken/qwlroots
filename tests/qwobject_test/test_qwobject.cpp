@@ -29,6 +29,9 @@ private:
 void testQWObject::initTestCase() {
     display = new qw_display();
     qabc = qw_abc::create(*display);
+    auto objects = qw_abc::get_objects();
+    QCOMPARE(objects.size(), 1);
+    QCOMPARE(objects.first(), qabc);
     connect(qabc, &qw_abc::notify_set_name, this, [this](const char *name){
         notified_name = name;
     });
@@ -55,6 +58,7 @@ void testQWObject::testsignal() {
 void testQWObject::cleanupTestCase() {
     delete display;
     QCOMPARE(qabc_destroyed, true);
+    QCOMPARE(qw_abc::get_objects().size(), 0);
 }
 
 QTEST_APPLESS_MAIN(testQWObject)

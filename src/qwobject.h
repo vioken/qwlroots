@@ -18,6 +18,18 @@ class QW_EXPORT qw_object_basic : public QObject {
 public:
     qw_object_basic (QObject *parent): QObject(parent) { }
 
+    template<typename T>
+    static inline QList<T*> get_objects() {
+        QList<T*> list;
+
+        for (const auto &i : std::as_const(map)) {
+            if (auto obj = qobject_cast<T*>(i))
+                list << obj;
+        }
+
+        return list;
+    }
+
 Q_SIGNALS:
     void before_destroy();
 
@@ -69,6 +81,10 @@ public:
                        static_cast<void*>(this));
             }
         }
+    }
+
+    static QW_ALWAYS_INLINE QList<Derive*> get_objects() {
+        return qw_object_basic::get_objects<Derive>();
     }
 
     static QW_ALWAYS_INLINE Derive *get(Handle *handle) {
