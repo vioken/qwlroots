@@ -35,7 +35,9 @@ public:
     inline static qw_input_device *create(HandleType *handle);
 
     QW_FUNC_MEMBER(input_device, is_wl, bool)
+#ifdef WLR_HAVE_X11_BACKEND
     QW_FUNC_MEMBER(input_device, is_x11, bool)
+#endif
     QW_FUNC_MEMBER(input_device, is_libinput, bool)
 };
 
