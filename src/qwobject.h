@@ -130,7 +130,8 @@ public:
     }
 
     QW_ALWAYS_INLINE Handle *handle() const {
-        Q_ASSERT(is_valid());
+        if (!is_valid())
+            return nullptr;
         return m_handle;
     }
 
