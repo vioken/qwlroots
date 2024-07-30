@@ -38,7 +38,9 @@ class QW_CLASS_OBJECT(output)
 public:
     QW_FUNC_MEMBER(output, is_drm, bool)
     QW_FUNC_MEMBER(output, is_wl, bool)
+#ifdef WLR_HAVE_X11_BACKEND
     QW_FUNC_MEMBER(output, is_x11, bool)
+#endif
     QW_FUNC_MEMBER(output, is_headless, bool)
 
 #if WLR_VERSION_MAJOR == 0 && WLR_VERSION_MINOR < 18
