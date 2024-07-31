@@ -22,7 +22,7 @@ class QW_CLASS_OBJECT(output_layer)
 public:
     QW_ALWAYS_INLINE static qw_output_layer *create(wlr_output *output) {
         auto layer = wlr_output_layer_create(output);
-        if (layer)
+        if (!layer)
             return nullptr;
         // the wlr_output_layer will following the wlr_output to destroy,
         // so ensure the qw_output_layer following the qw_output to destroy.
