@@ -4,7 +4,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nix-filter.url = "github:numtide/nix-filter";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     #wlroots-master = {
     #  url = "gitlab:wlroots/wlroots?host=gitlab.freedesktop.org&ref=master";
     #  flake = false;
@@ -23,7 +23,7 @@
             # wlroots_master_src = wlroots-master;
           };
 
-          devShells.default = pkgs.mkShell { 
+          devShells.default = pkgs.mkShell {
             packages = with pkgs; [
               wayland-utils
             ];
