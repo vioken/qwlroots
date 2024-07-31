@@ -4,6 +4,7 @@
 #pragma once
 
 #include <qwobject.h>
+#include <qwoutput.h>
 
 extern "C" {
 #include <wlr/types/wlr_output_layer.h>
@@ -19,7 +20,14 @@ class QW_CLASS_OBJECT(output_layer)
     QW_SIGNAL(feedback, wlr_output_layer_feedback_event*)
 
 public:
-    QW_FUNC_STATIC(output_layer, create, qw_output_layer *, wlr_output *output)
+    QW_ALWAYS_INLINE qw_output_layer *create(wlr_output *output) {
+        auto layer = wlr_output_layer_create(output);
+        if (layer)
+            return nullptr;
+        // the wlr_output_layer will following the wlr_output to destroy,
+        // so ensure the qw_output_layer following the qw_output to destroy.
+        return new qw_output_layer(layer, true, qw_output::from(output));
+    }
 
 protected:
     QW_FUNC_MEMBER(output_layer, destroy, void)
