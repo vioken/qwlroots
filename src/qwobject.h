@@ -92,6 +92,9 @@ public:
     }
 
     static QW_ALWAYS_INLINE Derive *from(Handle *handle) {
+        if (!handle)
+            return nullptr;
+
         if (auto o = get(handle))
             return o;
 
