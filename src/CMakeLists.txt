@@ -213,10 +213,12 @@ target_link_libraries(${TARGET}
     PkgConfig::XKBCOMMON
 )
 
-target_precompile_headers(${TARGET}
-    PRIVATE
-    ${HEADERS}
-)
+if (QWLROOTS_USE_PERCOMPILE_HEADERS)
+    target_precompile_headers(${TARGET}
+        PRIVATE
+        ${HEADERS}
+    )
+endif()
 
 target_compile_definitions(${TARGET}
     PRIVATE

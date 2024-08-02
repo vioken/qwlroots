@@ -14,6 +14,7 @@ set(CMAKE_AUTOUIC ON)
 
 option(PREFER_QT_5 "Prefer to use Qt 5 even if we have Qt 6" OFF)
 option(USE_WLROOTS_GIT "Use wlroots git version" OFF)
+option(QWLROOTS_USE_PERCOMPILE_HEADERS "Use precompile headers to build qwlroots" OFF)
 
 if(PREFER_QT_5)
     find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core)
