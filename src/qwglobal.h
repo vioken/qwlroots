@@ -158,13 +158,13 @@ wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS_
         auto *wlr_handle = wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
         if constexpr (std::string_view(#wlr_func_suffix).find("create") != std::string_view::npos) { \
             if constexpr (std::is_base_of_v<qw_basic, DeriveType>) { \
-                return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+                return DeriveType::from(wlr_handle); \
             } else { \
                 return wlr_handle ? new DeriveType(wlr_handle, true) : nullptr; \
             } \
         } \
         else if constexpr (std::string_view(#wlr_func_suffix).find("from") != std::string_view::npos || std::string_view(#wlr_func_suffix).find("get") != std::string_view::npos) { \
-            return wlr_handle ? DeriveType::from(wlr_handle) : nullptr; \
+            return DeriveType::from(wlr_handle); \
         } else { \
             static_assert(false, "return wlroots native type, but is not 'create' nor 'from' func!"); \
         } \
