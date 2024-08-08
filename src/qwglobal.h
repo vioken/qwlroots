@@ -46,6 +46,17 @@
     #define QW_DISALLOW_DESTRUCTOR(Class) ~Class() = delete;
 #endif
 
+
+/*
+ * This should be a bug in gcc <= 12, which ignores the `if constexpr` state
+ * and directly checks the static assertion.
+ */
+#if !defined(__clang__) && defined(__GNUC__) && __GNUC__ <= 12
+#define QW_NO_STRICT_STATIC_ASSERT(cond, message) Q_ASSERT_X(cond, "QW_NO_STRICT_STATIC_ASSERT", message);
+#else
+#define QW_NO_STRICT_STATIC_ASSERT(cond, message) static_assert(cond, message);
+#endif
+
 #ifdef QT_NO_DEBUG
 #define QW_ALWAYS_INLINE Q_ALWAYS_INLINE
 #else
@@ -96,7 +107,7 @@ public:
         if constexpr (qw::Destroyable<Derive>) {
             static_cast<Derive*>(p)->Derive::destroy();
         } else {
-            static_assert(false, "Can't destroy.");
+            QW_NO_STRICT_STATIC_ASSERT(false, "Can't destroy.")
         }
     }
 };
@@ -166,7 +177,7 @@ wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS_
         else if constexpr (std::string_view(#wlr_func_suffix).find("from") != std::string_view::npos || std::string_view(#wlr_func_suffix).find("get") != std::string_view::npos) { \
             return DeriveType::from(wlr_handle); \
         } else { \
-            static_assert(false, "return wlroots native type, but is not 'create' nor 'from' func!"); \
+            QW_NO_STRICT_STATIC_ASSERT(false, "return wlroots native type, but is not 'create' nor 'from' func!") \
         } \
     } else { \
         return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
