@@ -1,10 +1,4 @@
-qwlroots (0.2.0-alpha2) UNRELEASED; urgency=medium
-
-  * update version
-
- -- justforlxz <zhangdingyuan@uniontech.com>  Thu, 6 Aug 2024 14:44:00 +0800
-
-qwlroots (0.0.1) unstable; urgency=medium
+qwlroots (0.0.1) UNRELEASED; urgency=medium
 
   * Initial continuous release
 
