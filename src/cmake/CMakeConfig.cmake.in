@@ -9,7 +9,7 @@ pkg_check_modules(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
 pkg_check_modules(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
 pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
-pkg_search_module(WLR_PROTOCOLS wlr-protocols)
+pkg_search_module(WLR_PROTOCOLS @WLR_PROTOCOLS_REQUIRED@ wlr-protocols)
 
 include(${CMAKE_CURRENT_LIST_DIR}/WaylandScannerHelpers.cmake)
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
