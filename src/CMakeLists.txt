@@ -23,12 +23,11 @@ else ()
     set(WLROOTS_MINIMUM_REQUIRED 0.17.0)
 endif()
 
-pkg_search_module(WLROOTS REQUIRED IMPORTED_TARGET ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
-pkg_search_module(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
-pkg_search_module(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
-pkg_search_module(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
-pkg_search_module(WLR_PROTOCOLS wlr-protocols)
-pkg_search_module(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
+pkg_check_modules(WLROOTS REQUIRED IMPORTED_TARGET ${wlr}>=${WLROOTS_MINIMUM_REQUIRED})
+pkg_check_modules(WAYLAND_SERVER REQUIRED IMPORTED_TARGET wayland-server)
+pkg_check_modules(PIXMAN REQUIRED IMPORTED_TARGET pixman-1)
+pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
+pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 
 pkg_get_variable(WLR_HAVE_DRM_BACKEND ${wlr} have_drm_backend)
 pkg_get_variable(WLR_HAVE_X11_BACKEND ${wlr} have_x11_backend)
@@ -41,6 +40,24 @@ pkg_get_variable(WLR_HAVE_SESSION ${wlr} have_session)
 setup_package_version_variables(WLROOTS)
 include(CMakePackageConfigHelpers)
 configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in generate/qwconfig.h @ONLY)
+
+if ((NOT WLR_HAVE_XWAYLAND) AND (NOT DISABLE_XWAYLAND))
+    message(FATAL_ERROR "wlroots lacks support for xwayland, and `DISABLE_XWAYLAND` set to OFF!")
+endif()
+
+if (DISABLE_WLR_PROTOCOLS)
+    set(WLR_PROTOCOLS_CMAKE_CONFIG_INIT "") # for QWlrootsConfig.cmake.in
+else()
+    pkg_check_modules(WLR_PROTOCOLS wlr-protocols)
+    if (NOT WLR_PROTOCOLS_FOUND)
+        message(FATAL_ERROR "wlr-protocols not found, and `DISABLE_WLR_PROTOCOLS` set to OFF!")
+    endif()
+    set(WLR_PROTOCOLS_CMAKE_CONFIG_INIT [[
+pkg_check_modules(WLR_PROTOCOLS  wlr-protocols)
+ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
+ws_generate(server wlr-protocols unstable/wlr-output-power-management-unstable-v1.xml wlr-output-power-management-unstable-v1-protocol)
+    ]])
+endif()
 
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
@@ -58,6 +75,7 @@ set(HEADERS
     render/qwtexture.h
     render/qwallocator.h
     render/qwegl.h
+    render/qwswapchain.h
     types/qwbuffer.h
     types/qwcompositor.h
     types/qwexportdmabufv1.h
@@ -115,6 +133,9 @@ set(HEADERS
     types/qwsecuritycontextmanagerv1.h
     types/qwoutputlayer.h
     types/qwtearingcontrolv1.h
+    types/qwshm.h
+    types/qwcontenttypev1.h
+    types/qwcursorshapev1.h
     util/qwsignalconnector.h
     util/qwlogging.h
     util/qwbox.h
@@ -155,27 +176,16 @@ ws_generate(
     tablet-v2-protocol
 )
 
-list(APPEND HEADERS
-    render/qwswapchain.h
-    types/qwshm.h
-    types/qwcontenttypev1.h
-    types/qwcursorshapev1.h
-)
-if(WLR_HAVE_XWAYLAND)
+if (NOT DISABLE_XWAYLAND)
     list(APPEND HEADERS
         types/qwxwaylandshellv1.h
-    )
-endif()
-
-if (WLR_HAVE_XWAYLAND)
-    list(APPEND HEADERS
         types/qwxwayland.h
         types/qwxwaylandsurface.h
         types/qwxwaylandserver.h
     )
 endif()
 
-if (WLR_PROTOCOLS_FOUND)
+if (NOT DISABLE_WLR_PROTOCOLS)
     ws_generate(server wlr-protocols unstable/wlr-layer-shell-unstable-v1.xml wlr-layer-shell-unstable-v1-protocol)
     ws_generate(server wlr-protocols unstable/wlr-output-power-management-unstable-v1.xml wlr-output-power-management-unstable-v1-protocol)
     set(PROTOCOL_HEADERS
