@@ -12,8 +12,18 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+option(BUILD_FOR_TREELAND "Check whether all features required by treeland are enabled" ON)
 option(PREFER_QT_5 "Prefer to use Qt 5 even if we have Qt 6" OFF)
 option(USE_WLROOTS_GIT "Use wlroots git version" OFF)
+
+if (BUILD_FOR_TREELAND)
+    if (PREFER_QT_5)
+        message(FATAL_ERROR "To use treeland, must build with qt6!")
+    endif()
+    if (USE_WLROOTS_GIT)
+        message(FATAL_ERROR "wlroots git version is not supported by treeland!")
+    endif()
+endif()
 
 if(PREFER_QT_5)
     find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core)

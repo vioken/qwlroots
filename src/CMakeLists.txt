@@ -42,6 +42,18 @@ setup_package_version_variables(WLROOTS)
 include(CMakePackageConfigHelpers)
 configure_file(${PROJECT_SOURCE_DIR}/src/cmake/qwconfig.h.in generate/qwconfig.h @ONLY)
 
+if (BUILD_FOR_TREELAND)
+    if (NOT WLR_HAVE_XWAYLAND)
+        message(FATAL_ERROR "wlroots lacks support for xwayland, is necessary for treeland!")
+    endif()
+    if (NOT WLR_PROTOCOLS_FOUND)
+        message(FATAL_ERROR "wlr-protocols not found, is necessary for treeland!")
+    endif()
+    set(WLR_PROTOCOLS_REQUIRED "REQUIRED") # for QWlrootsConfig.cmake.in
+else()
+    set(WLR_PROTOCOLS_REQUIRED "")
+endif()
+
 message("wlroots version=${WLROOTS_VERSION}, major=${WLROOTS_VERSION_MAJOR}, minor=${WLROOTS_VERSION_MINOR}, patch=${WLROOTS_VERSION_PATCH}")
 
 ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-protocol)
