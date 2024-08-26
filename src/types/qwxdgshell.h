@@ -65,8 +65,6 @@ public:
     QW_FUNC_MEMBER(xdg_popup, get_position, void, double *popup_sx, double *popup_sy)
     QW_FUNC_MEMBER(xdg_popup, get_toplevel_coords, void, int popup_sx, int popup_sy, int *toplevel_sx, int *toplevel_sy)
     QW_FUNC_MEMBER(xdg_popup, unconstrain_from_box, void, const wlr_box *toplevel_space_box)
-
-protected:
     QW_FUNC_MEMBER(xdg_popup, destroy, void)
 };
 
