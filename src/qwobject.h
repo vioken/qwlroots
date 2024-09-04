@@ -88,7 +88,7 @@ public:
     }
 
     static QW_ALWAYS_INLINE Derive *get(Handle *handle) {
-        return static_cast<Derive*>(map.value(handle));
+        return qobject_cast<Derive*>(map.value(handle));
     }
 
     static QW_ALWAYS_INLINE Derive *from(Handle *handle) {
@@ -211,6 +211,5 @@ struct qw_signal_##name { \
     } \
 }; \
 qw_signal_##name _signal_##name = this; \
-
 
 QW_END_NAMESPACE
