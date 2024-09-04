@@ -6,7 +6,9 @@
 #include <qwobject.h>
 
 extern "C" {
+#define static
 #include <wlr/types/wlr_virtual_pointer_v1.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
