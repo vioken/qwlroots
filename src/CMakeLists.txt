@@ -202,6 +202,7 @@ add_library(${TARGET}
     ${HEADERS}
     qwobject.cpp
     qwbackend.cpp
+    types/qwinputdevice.cpp
 )
 add_library(QWlroots::QWlroots ALIAS ${TARGET})
 
