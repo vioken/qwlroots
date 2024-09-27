@@ -197,7 +197,6 @@ if (NOT DISABLE_WLR_PROTOCOLS)
 endif ()
 
 add_library(${TARGET}
-    STATIC
     ${SOURCES}
     ${HEADERS}
     qwobject.cpp
