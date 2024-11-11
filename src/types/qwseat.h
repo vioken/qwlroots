@@ -82,11 +82,19 @@ public:
     QW_FUNC_MEMBER(seat, touch_end_grab, void)
     QW_FUNC_MEMBER(seat, touch_get_point, wlr_touch_point *, int32_t touch_id)
     QW_FUNC_MEMBER(seat, touch_has_grab, bool)
+#if WLR_VERSION_MINOR > 17
+    QW_FUNC_MEMBER(seat, touch_notify_cancel, void, wlr_seat_client *client)
+#else
     QW_FUNC_MEMBER(seat, touch_notify_cancel, void, wlr_surface *surface)
+#endif
     QW_FUNC_MEMBER(seat, touch_notify_down, uint32_t, wlr_surface *surface, uint32_t time_msec, int32_t touch_id, double sx, double sy)
     QW_FUNC_MEMBER(seat, touch_notify_frame, void)
     QW_FUNC_MEMBER(seat, touch_notify_motion, void, uint32_t time_msec, int32_t touch_id, double sx, double sy)
+#if WLR_VERSION_MINOR > 17
+    QW_FUNC_MEMBER(seat, touch_notify_up, uint32_t, uint32_t time_msec, int32_t touch_id)
+#else
     QW_FUNC_MEMBER(seat, touch_notify_up, void, uint32_t time_msec, int32_t touch_id)
+#endif
     QW_FUNC_MEMBER(seat, touch_num_points, int)
     QW_FUNC_MEMBER(seat, touch_point_clear_focus, void, uint32_t time_msec, int32_t touch_id)
     QW_FUNC_MEMBER(seat, touch_point_focus, void, wlr_surface *surface, uint32_t time_msec, int32_t touch_id, double sx, double sy)

@@ -119,6 +119,7 @@ class QW_CLASS_BOX(output_state)
 public:
     QW_FUNC_MEMBER(output_state, set_enabled, void, bool enabled)
     QW_FUNC_MEMBER(output_state, set_mode, void, wlr_output_mode *mode)
+    QW_FUNC_MEMBER(output_state, set_custom_mode, void, int32_t width, int32_t height, int32_t refresh)
     QW_FUNC_MEMBER(output_state, set_scale, void, float scale)
     QW_FUNC_MEMBER(output_state, set_transform, void, enum wl_output_transform transform)
     QW_FUNC_MEMBER(output_state, set_adaptive_sync_enabled, void, bool enabled)
