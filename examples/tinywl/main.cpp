@@ -243,6 +243,10 @@ void TinywlServer::onNewXdgSurface(wlr_xdg_surface *surface)
 }
 #endif
 
+#if QT_VERSION_MAJOR < 6
+Q_DECLARE_METATYPE(QMetaObject::Connection)
+#endif
+
 void TinywlServer::onNewXdgPopup(wlr_xdg_popup *popup)
 {
     auto parent = qw_xdg_surface::try_from_wlr_surface(popup->parent);
