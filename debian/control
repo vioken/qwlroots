@@ -7,11 +7,11 @@ Build-Depends: debhelper-compat (= 13),
                qt6-base-private-dev,
                qt6-base-dev-tools,
                wayland-protocols,
-	       wlr-protocols,
-               libwlroots-dev (>=0.18.0),
+               wlr-protocols,
+               libwlroots-0.18-dev,
                libpixman-1-dev,
                libxcb-ewmh-dev,
-	       libdrm-dev
+               libdrm-dev
 Standards-Version: 4.6.0
 Section: libs
 Homepage: https://github.com/vioken/qwlroots.git
@@ -25,7 +25,7 @@ Architecture: any
 Multi-Arch: same
 Depends:
   ${misc:Depends},
-  libwlroots-dev
+  libwlroots-0.18-dev
 Replaces: libqwlroots1
 Description: Qt and QML bindings for wlroots
   qwlroots is a binding of wlroots, which provides a Qt style development interface.
