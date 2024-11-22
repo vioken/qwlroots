@@ -12,6 +12,7 @@ extern "C" {
 #include <wlr/types/wlr_layer_shell_v1.h>
 #undef namespace
 #undef static
+#include <wlr/types/wlr_xdg_shell.h>
 }
 
 QW_BEGIN_NAMESPACE
@@ -21,7 +22,7 @@ class QW_CLASS_OBJECT(layer_surface_v1)
     QW_OBJECT
     Q_OBJECT
 
-    QW_SIGNAL(new_popup, xdg_popup*)
+    QW_SIGNAL(new_popup, wlr_xdg_popup*)
 
 public:
     QW_FUNC_STATIC(layer_surface_v1, try_from_wlr_surface, qw_layer_surface_v1 *, wlr_surface *surface)
