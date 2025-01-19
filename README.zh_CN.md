@@ -1,19 +1,25 @@
+# qwlroots
+
 ## 选择语言
 
 [English](./README.md)
 
 ## 简介
 
-qwlroots 是一个 [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) 的绑定，提供 Qt 风格的开发接口。其设计目标是使用 Qt 简化调用 wlroots API 的方式，服务于希望在使用 Qt 编写的项目中调用 wlroots 的需求。在 qwlroots 中，每一个 wlroots struct 及其配套的函数被封装为一个 c++ class，同时，wayland 中的 wl_singal 被封装为 Qt 中的信号。
+qwlroots 是一个 [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) 的绑定，提供 Qt 风格的开发接口。其设计目标是简化在Qt项目中调用 wlroots API 的方式。在 qwlroots 中，每一个 wlroots struct 及其配套的函数被封装为一个 c++ class，同时，wayland 中的 wl_singal 被封装为 Qt 中的信号。
 
 ## 受支持的 wlroots 版本
 
-由于 wlroots 还处于开发中，至今未发布 1.0 版本，可能会随时进行比较大的改动。因此，qwlroots 的最新代码仅保证兼容 wlroots 的最新版本和下一个即将发布的版本（即目前还处于开发中的版本），对于历史版本一概不保证兼容。同时，同 wlroots，qwlroots 目前也不提供长期的接口兼容性保障。
+由于 wlroots 还处于开发中，至今未发布 1.0 版本，可能会随时进行比较大的改动。因此，原则上 qwlroots 的最新代码仅保证兼容 wlroots 的最新版本和下一个即将发布的版本（即目前还处于开发中的版本），对于历史版本一概不保证兼容。同 wlroots 一样，qwlroots 目前也不提供长期的接口兼容性保障。
+
+当前 qwlroots 兼容的wlroots版本是： 0.17.x, 0.18.0。
 
 ## 支持的环境
 
 * Arch Linux
 * Debian
+* deepin
+* openSUSE
 * NixOS
 
 > 其它环境未测试
@@ -22,28 +28,32 @@ qwlroots 是一个 [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots) 的
 
 步骤一：编译安装 [wlroots](https://gitlab.freedesktop.org/wlroots/wlroots#building)
 
-> 亦可在系统仓库中安装 wlroots （需注意版本）
-
+> 亦可使用系统包管理器安装 wlroots （需注意版本）
 
 步骤二：安装依赖
 
 Debian
-````
-# apt install pkg-config cmake qt6-base-private-dev qt6-base-dev-tools wayland-protocols libpixman-1-dev
+
+````shell
+apt install pkg-config cmake qt6-base-private-dev qt6-base-dev-tools wayland-protocols libpixman-1-dev
 ````
 
 Arch Linux
 
+````shell
+pacman -Syu --noconfirm qt6-base cmake pkgconfig pixman wayland-protocols ninja
 ````
-# pacman -Syu --noconfirm qt6-base cmake pkgconfig pixman wayland-protocols ninja
-````
+
+如果你打算使用 Arch Linux 仓库提供的 wlroots0.17，需要配置环境变量 `PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig/`，否则会报错 wlroots 无法找到。
 
 步骤三：运行以下命令
 
-```bash
+```shell
 cmake -B build
 cmake --build build
 ```
+
+此外我们使用 open build service 和 garnix 提供的自动化构建测试, 同时提供了 [openSUSE](https://build.opensuse.org/package/show/home:rewine:vioken/qwlroots), [deepin](https://build.deepin.com/package/show/vioken/qwlroots), [NixOS](https://garnix.io/docs/caching) 的软件包下载。
 
 ## 贡献指南
 
@@ -53,8 +63,7 @@ cmake --build build
 
 ### 编码风格
 
-* 在修改已有代码时，需遵守当前的代码风格
-* 新增代码：与 wlroots 密切相关的部分遵守 wlroots 的代码风格，如使用 QWSignalConnector 链接 wl_signal 时，相应的槽函数使用“下划线命名法”；其它部分（特别是公共 API）遵守 Qt 的代码风格（https://wiki.qt.io/Qt_Coding_Style 此链接仅为参考，实际请以Qt源码为准）
+* qwlroots 代码高度模板化，建议参考当前的代码风格
 * 代码风格没有绝对的对与错，请顾全大局，而勿拘于小结
 
 ### 代码质量
@@ -79,18 +88,24 @@ cmake --build build
 
 ### 封装新的 wlroots 类型时
 
-* 先确定此对象的生命周期管理机制，是需要创建方手动销毁，还是会跟随其它对象销毁。wlroots 中有些类型会跟随 wl_display 销毁
-* 对于会跟随其它对象自动化销毁的类型，在封装的 class 中需要将析构函数标记为 private
-* 对于提供了 destroy 事件的 wlroots 类型，在封装的 class 中需要连接此信号，在收到信号后将自己销毁
-* 对于无需手动销毁，或未提供对应的 wlr_xxx_create_xxx 函数的类型，封装的 class 中无需提供 public 构造函数，统一提供一个或多个 `from` 静态函数实现对象的创建
-* 对于提供了信号的 wlroots 类型，封装的 class 需要继承于 QObject（且往往需要同时继承 QWObject）
-* 封装的 class 为了方便维护二进制兼容性，一律使用 Qt 的 D-Pointer 模式，当需要成员变量时，需要继承 QWObject 实现 D-Pointer 模式
-* 封装的 class 至少要提供 `handle`、`from`两个成员函数，一般还可能需要提供`get`函数。
-  * handle：返回所对应的 wlroots 的结构体对象指针
-  * from：一个静态函数，根据传入的 wlroots 的结构体对象指针，返回一个 class 对象，除系统错误外，返回值一定不为`nullptr`
-  * get: 一个静态函数，根据传入的 wlroots 的结构体对象指针，返回一个 class 对象，如果找不到此结构体对应的 class 对象（一般在此之前明确创建过相关对象），则返回`nullptr`，使用此函数的返回值之前一定需要判断指针是否为空
-* 对于没有提供信号，且在封装的 class 中无需任何成员变量时，可直接将 wlroots 的结构体指针强转为对应的 class 指针使用。可参考 [QWTexture 的实现](https://github.com/vioken/qwlroots/blob/master/src/render/qwtexture.cpp#L28)
-* 对于 wlroots 中命名为`setxxxx`的信号，一般是用于通知`xxxx`被设置了，在 qwlroots 中封装时需将其改为`xxxxChanged`，以符合 Qt 信号的命名习惯
-* 对于 wlr_xxxx struct 中的成员变量，当前阶段不进行封装，因为 wlroots 的成员变量在开发过程中可能会有比较大的变化，如果将其封装为类的成员函数，将导致相应的 API 也需要跟随变化，等以后 wlroots 相对稳定后再进行封装。相应的，如果一个 wlr_xxxx struct 没有对应的函数，仅被当作数据结构访问其成员变量，因此此类 struct 也暂不封装
+在单元测试中提供了一个 [qw_abc 的示例](https://github.com/vioken/qwlroots/tree/master/tests/qwobject_test), 可以作为使用 qwlroots 的参考。
 
-> 以上部分内容可参考 [class 模板](https://github.com/vioken/qwlroots/blob/master/src/class_template.txt)。
+* 首先检查这种类型是否提供信号，有信号的类型使用 QW_CLASS_OBJECT 封装，无信号类型使用 QW_CLASS_REINTERPRET_CAST 封装
+  * wlr_abc, 使用 QW_CLASS_OBJECT(abc) 会声明基于 qw_object（QObject）的 qw_abc 类
+  * qw_abc 提供 handle() 函数访问 wlr_abc 类型，同时支持到 wlr_abc* 的隐式转换
+  * 提供 from 函数从 wlr_abc* 获取 qw_abc，如果没有对应 qw_abc 则会创建一个
+  * 提供 get 函数从 wlr_abc* 获取 qw_abc，如果没有对应 qw_abc 则返回 nullptr
+  * qw_abc 会自动连接 wlr_abc 的 destroy 信号（如果有），自动析构，并在销毁前发出 qt 信号 before_destroy
+  * 如果主动析构 qw_abc，只有是 handle 的 owner 才会销毁 wlr_abc 类型
+  * from 函数创建的 qw_abc 都不是 handle 的 owner，只有下文提到的 create 创建出的是 owner
+  * QW_CLASS_REINTERPRET_CAST 本质是对 handle 的强转，不分配额外内存
+* 对于有信号类型，需要添加 QW_OBJECT 和 Q_OBJECT 宏，使用 QW_SIGNAL 进行信号绑定
+  * QW_SIGNAL 第一个参数是名字，之后是信号参数
+  * 在 qw_abc 例子中 QW_SIGNAL(set_name, char*) 将 wlr_abc 的 events.set_name 信号转为  qw::notify_set_name
+  * destroy 是比较特殊的信号，在 qw_object 基类中已经处理，无需手动绑定
+* 对成员函数，使用 QW_FUNC_STATIC 和 QW_FUNC_MEMBER 进行绑定，它们通常应该是 public 的
+  * QW_FUNC_MEMBER 参数为函数名，返回值类型，和函数参数。其中函数参数第一个固定传入 handle, 不用填。
+  * 以 `QW_FUNC_MEMBER(abc, sum, int)` 为例，将 `int wlr_abc_sum(wlr_abc *)` 绑定到成员函数 `int qw_abc::sum()`
+  * QW_FUNC_STATIC 不同的地方是函数参数第一个传入的不是 handle，会为 qw_abc 添加静态成员函数。
+  * 需要使用 QW_FUNC_STATIC 的函数如果名字有 create/get ，返回值是 handle 类型，应该直接填 qw 类型，比如 `QW_FUNC_STATIC(abc, create, qw_abc*, wl_display*)`, 将 `wlr_abc *wlr_abc_create(wl_display *)` 封装为 `static qw_abc *qw_abc::create(wl_display *)` 返回值自动转换
+  * 对于提供 destroy 方法的类，一般情况标记为 protected，防止非 handle 的 owner 调用此函数销毁 wlr_abc 类型。该方法会在调用 delete（强转类型）或者析构函数（qw_object类型）时被自动调用。

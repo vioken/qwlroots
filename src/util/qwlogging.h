@@ -26,15 +26,15 @@ class qw_log
     {
         switch((int)verbosity) {
         case WLR_ERROR :
-            qCCritical(lcQWLog) << QString::vasprintf(fmt, args);
+            qCCritical(lcQWLog) << qPrintable(QString::vasprintf(fmt, args));
             break;
 
         case WLR_INFO :
-            qCInfo(lcQWLog) << QString::vasprintf(fmt, args);
+            qCInfo(lcQWLog) << qPrintable(QString::vasprintf(fmt, args));
             break;
 
         case WLR_DEBUG :
-            qCDebug(lcQWLog) << QString::vasprintf(fmt, args);
+            qCDebug(lcQWLog) << qPrintable(QString::vasprintf(fmt, args));
             break;
 
         default:

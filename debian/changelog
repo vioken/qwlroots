@@ -1,3 +1,27 @@
+qwlroots (0.5.2) unstable; urgency=medium
+
+  * bump version to 0.5.2
+
+ -- Groveer <guoyao@uniontech.com>  Tue, 26 Nov 2024 18:55:56 +0800
+
+qwlroots (0.5.1) unstable; urgency=medium
+
+  * bump version to 0.5.1
+
+ -- Groveer <guoyao@uniontech.com>  Fri, 22 Nov 2024 18:04:26 +0800
+
+qwlroots (0.5.0) unstable; urgency=medium
+
+  * bump version to 0.5.0
+
+ -- Groveer <guoyao@uniontech.com>  Thu, 21 Nov 2024 16:58:34 +0800
+
+qwlroots (0.4.1) UNRELEASED; urgency=medium
+
+  * bump version to 0.4.1
+
+ -- Groveer <guoyao@uniontech.com>  Mon, 11 Nov 2024 18:14:56 +0800
+
 qwlroots (0.0.1) UNRELEASED; urgency=medium
 
   * Initial continuous release

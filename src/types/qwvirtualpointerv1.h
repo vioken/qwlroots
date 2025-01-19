@@ -6,7 +6,9 @@
 #include <qwobject.h>
 
 extern "C" {
+#define static
 #include <wlr/types/wlr_virtual_pointer_v1.h>
+#undef static
 }
 
 QW_BEGIN_NAMESPACE
@@ -21,5 +23,9 @@ class QW_CLASS_OBJECT(virtual_pointer_manager_v1)
 public:
     QW_FUNC_STATIC(virtual_pointer_manager_v1, create, qw_virtual_pointer_manager_v1*, wl_display *display)
 };
+
+/** TODO: wlr_virtual_pointer_v1 not wrapped now, wrapping it should cause a complex inheritance hierarchy.
+  * Users should just care about wlr_virtual_pointer_v1.pointer as a wlr_pointer.
+  */
 
 QW_END_NAMESPACE

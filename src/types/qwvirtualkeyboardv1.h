@@ -22,14 +22,9 @@ public:
     QW_FUNC_STATIC(virtual_keyboard_manager_v1, create, qw_virtual_keyboard_manager_v1*, wl_display *display)
 };
 
-class QW_CLASS_OBJECT(virtual_keyboard_v1)
-{
-    QW_OBJECT
-    Q_OBJECT
-
-public:
-    QW_FUNC_STATIC(input_device, get_virtual_keyboard, qw_virtual_keyboard_v1 *, wlr_input_device *wlr_dev)
-};
+/** TODO: wlr_virtual_keyboard_v1 not wrapped now, wrapping it should cause a complex inheritance hierarchy.
+  * Users should just care about wlr_virtual_keyboard_v1.keyboard as a wlr_keyboard.
+  */
 
 QW_END_NAMESPACE
 

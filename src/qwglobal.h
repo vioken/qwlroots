@@ -48,13 +48,13 @@
 
 
 /*
- * This should be a bug in gcc <= 12, which ignores the `if constexpr` state
- * and directly checks the static assertion.
+ * static_assert(false) is not allowed before CWG2518/P2593R1
+ * https://wg21.link/P2593R1
  */
 #if !defined(__clang__) && defined(__GNUC__) && __GNUC__ <= 12
-#define QW_NO_STRICT_STATIC_ASSERT(cond, message) Q_ASSERT_X(cond, "QW_NO_STRICT_STATIC_ASSERT", message);
+#define QW_NO_STRICT_STATIC_ASSERT_FALSE(message) Q_ASSERT_X(false, "QW_NO_STRICT_STATIC_ASSERT", message);
 #else
-#define QW_NO_STRICT_STATIC_ASSERT(cond, message) static_assert(cond, message);
+#define QW_NO_STRICT_STATIC_ASSERT_FALSE(message) static_assert(false, message);
 #endif
 
 #ifdef QT_NO_DEBUG
@@ -107,7 +107,7 @@ public:
         if constexpr (qw::Destroyable<Derive>) {
             static_cast<Derive*>(p)->Derive::destroy();
         } else {
-            QW_NO_STRICT_STATIC_ASSERT(false, "Can't destroy.")
+            QW_NO_STRICT_STATIC_ASSERT_FALSE("Can't destroy.")
         }
     }
 };
@@ -177,7 +177,7 @@ wlr_func_suffix(Args &&... args) requires std::is_invocable_v<void(*)(__VA_ARGS_
         else if constexpr (std::string_view(#wlr_func_suffix).find("from") != std::string_view::npos || std::string_view(#wlr_func_suffix).find("get") != std::string_view::npos) { \
             return DeriveType::from(wlr_handle); \
         } else { \
-            QW_NO_STRICT_STATIC_ASSERT(false, "return wlroots native type, but is not 'create' nor 'from' func!") \
+            QW_NO_STRICT_STATIC_ASSERT_FALSE("return wlroots native type, but is not 'create' nor 'from' func!") \
         } \
     } else { \
         return wlr_##wlr_type_suffix##_##wlr_func_suffix(std::forward<Args>(args)...); \
