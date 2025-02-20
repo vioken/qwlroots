@@ -16,18 +16,10 @@ test_build:
               - x86_64
               - aarch64
 
-          - name: deepin_testing
-            paths:
-              - target_project: vioken
-                target_repository: deepin_23_testing
-            architectures:
-              - x86_64
-              - aarch64
-
           - name: debian
             paths:
               - target_project: vioken
-                target_repository: Debian_Sid_standard
+                target_repository: Debian_Sid
             architectures:
               - x86_64
   filters:
