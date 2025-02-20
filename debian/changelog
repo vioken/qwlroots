@@ -1,3 +1,10 @@
+qwlroots (0.5.3) unstable; urgency=medium
+
+  * Implement qw_idle_inhibitor_v1
+  * Do not explicitly build static lib
+
+ -- rewine <luhongxu@deepin.org>  Thu, 20 Feb 2025 17:40:48 +0800
+
 qwlroots (0.5.2) unstable; urgency=medium
 
   * bump version to 0.5.2

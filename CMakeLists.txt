@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(QWlroots
-    VERSION 0.0.1
+    VERSION 0.5.3
     LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
