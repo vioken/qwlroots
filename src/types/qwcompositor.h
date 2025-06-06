@@ -48,7 +48,11 @@ public:
     QW_FUNC_MEMBER(surface, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(surface, get_buffer_source_box, void, wlr_fbox *box)
     QW_FUNC_MEMBER(surface, get_effective_damage, void, pixman_region32_t *damage)
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(surface, get_extends, void, wlr_box *box)
+#else
+    QW_FUNC_MEMBER(surface, get_extents, void, wlr_box *box)
+#endif
     QW_FUNC_MEMBER(surface, get_root_surface, wlr_surface *)
     QW_FUNC_MEMBER(surface, get_texture, wlr_texture *)
     QW_FUNC_MEMBER(surface, has_buffer, bool)

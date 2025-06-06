@@ -54,8 +54,17 @@ public:
     QW_FUNC_MEMBER(xwayland_surface, set_maximized, void, bool maximized)
     QW_FUNC_MEMBER(xwayland_surface, set_fullscreen, void, bool fullscreen)
     QW_FUNC_MEMBER(xwayland_surface, ping, void)
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(xwayland, icccm_input_model, enum wlr_xwayland_icccm_input_model)
+#else
+    QW_FUNC_MEMBER(xwayland_surface, icccm_input_model, void)
+#endif
+
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(xwayland_or_surface, wants_focus, bool)
+#else
+    QW_FUNC_MEMBER(xwayland_surface_override_redirect, wants_focus, void)
+#endif
 };
 
 QW_END_NAMESPACE
