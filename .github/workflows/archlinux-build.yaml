@@ -21,7 +21,7 @@ jobs:
           pacman -Syu --noconfirm
       - name: Install dep
         run: |
-          pacman -Syu --noconfirm qt6-base cmake pkgconfig wlroots pixman wayland-protocols wlr-protocols clazy
+          pacman -Syu --noconfirm qt6-base cmake pkgconfig wlroots0.18 pixman wayland-protocols wlr-protocols clazy
           pacman -Syu --noconfirm clang ninja
       - name: Configure CMake
         run: |
