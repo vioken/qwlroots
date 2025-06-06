@@ -45,7 +45,10 @@ public:
 
     QW_FUNC_MEMBER(xdg_surface, surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
     QW_FUNC_MEMBER(xdg_surface, popup_surface_at, wlr_surface *, double sx, double sy, double *sub_x, double *sub_y)
+#if WLR_VERSION_MINOR < 19
+    // wlroots 0.19: wlr_xdg_surface_get_geometry() has been removed. Instead, use wlr_xdg_surface.geometry
     QW_FUNC_MEMBER(xdg_surface, get_geometry, void, wlr_box *box)
+#endif
     QW_FUNC_MEMBER(xdg_surface, for_each_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(xdg_surface, for_each_popup_surface, void, wlr_surface_iterator_func_t iterator, void *user_data)
     QW_FUNC_MEMBER(xdg_surface, schedule_configure, uint32_t)

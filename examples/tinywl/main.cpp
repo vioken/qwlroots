@@ -548,7 +548,11 @@ void TinywlServer::processCursorMotion(uint32_t time)
             maxSize.setHeight(99999);
 
         qw_box current_geo_box;
+#if WLR_VERSION_MINOR < 19
         qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->get_geometry(current_geo_box);
+#else
+        current_geo_box = qw_box(qw_xdg_surface::from(grabbedView->xdgToplevel->handle()->base)->handle()->geometry);
+#endif
         auto currentGeoBox = current_geo_box.toQRect();
 
         currentGeoBox.moveTopLeft((grabbedView->pos + currentGeoBox.topLeft()).toPoint());
@@ -619,7 +623,12 @@ void TinywlServer::beginInteractive(View *view, CursorState state, uint32_t edge
     cursorState = state;
     grabCursorPos = QPointF((*cursor)->x, (*cursor)->y);
     wlr_box grab_geo_box;
+#if WLR_VERSION_MINOR < 19
     qw_xdg_surface::from(view->xdgToplevel->handle()->base)->get_geometry(&grab_geo_box);
+#else
+    grab_geo_box = qw_xdg_surface::from(view->xdgToplevel->handle()->base)->handle()->geometry;
+#endif
+
     grabGeoBox.moveTopLeft(view->pos + QPoint(grab_geo_box.x, grab_geo_box.y));
     grabGeoBox.setWidth(grab_geo_box.width);
     grabGeoBox.setHeight(grab_geo_box.height);

@@ -127,7 +127,6 @@ set(HEADERS
     types/qwvirtualkeyboardv1.h
     types/qwvirtualpointerv1.h
     types/qwgammacontorlv1.h
-    types/qwfullscreenshellv1.h
     types/qwkeyboardshortcutsinhibitv1.h
     types/qwfractionalscalemanagerv1.h
     types/qwsecuritycontextmanagerv1.h
@@ -150,6 +149,10 @@ set(HEADERS
     interfaces/qwpointerinterface.h
     interfaces/qwtabletpadinterface.h
 )
+
+if (NOT USE_WLROOTS_GIT)
+    list(APPEND HEADERS types/qwfullscreenshellv1.h)
+endif()
 
 ws_generate(
     server
