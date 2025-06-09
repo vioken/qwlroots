@@ -51,7 +51,11 @@ public:
     QW_FUNC_MEMBER(xwayland_surface, close, void)
     QW_FUNC_MEMBER(xwayland_surface, set_withdrawn, void, bool withdrawn)
     QW_FUNC_MEMBER(xwayland_surface, set_minimized, void, bool minimized)
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(xwayland_surface, set_maximized, void, bool maximized)
+#else
+    QW_FUNC_MEMBER(xwayland_surface, set_maximized, void, bool maximized_horz, bool maximized_vert)
+#endif
     QW_FUNC_MEMBER(xwayland_surface, set_fullscreen, void, bool fullscreen)
     QW_FUNC_MEMBER(xwayland_surface, ping, void)
 #if WLR_VERSION_MINOR < 19

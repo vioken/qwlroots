@@ -24,13 +24,9 @@ qw_backend *qw_backend::create(wlr_backend *handle) {
     return new DeriveType(handle, false);
 }
 
-#if WLR_VERSION_MINOR > 17
+
 qw_backend *qw_backend::autocreate(wl_event_loop *event, wlr_session **session_ptr) {
     auto handle = wlr_backend_autocreate(event, session_ptr);
-#else
-qw_backend *qw_backend::autocreate(wl_display *display, wlr_session **session_ptr) {
-    auto handle = wlr_backend_autocreate(display, session_ptr);
-#endif
     if (!handle)
         return nullptr;
     if (wlr_backend_is_multi(handle))

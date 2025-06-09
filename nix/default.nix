@@ -62,7 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
 
   cmakeFlags = [
     "-DPREFER_QT_5=${if lib.versionAtLeast qtbase.version "6" then "OFF" else "ON"}"
-    "-DUSE_WLROOTS_17=${if lib.versionOlder wlroots.version "0.18.0" then "ON" else "OFF"}"
+    "-DUSE_WLROOTS_19=${if lib.versionAtLeast wlroots.version "0.19.0" then "ON" else "OFF"}"
   ];
 
   meta = {

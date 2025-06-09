@@ -9,6 +9,9 @@ extern "C" {
 #include <math.h>
 #define static
 #include <wlr/types/wlr_compositor.h>
+#if WLR_VERSION_MINOR >= 19
+#include <wlr/types/wlr_color_management_v1.h>
+#endif
 #undef static
 }
 
@@ -68,6 +71,9 @@ public:
     QW_FUNC_MEMBER(surface, set_role, bool, const wlr_surface_role *role, wl_resource *error_resource, uint32_t error_code)
     QW_FUNC_MEMBER(surface, map, void)
     QW_FUNC_MEMBER(surface, unmap, void)
+#if WLR_VERSION_MINOR >= 19
+    QW_FUNC_MEMBER(surface, get_image_description_v1_data, const wlr_image_description_v1_data *)
+#endif
 };
 
 QW_END_NAMESPACE

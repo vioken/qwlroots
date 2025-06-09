@@ -17,10 +17,6 @@ rec {
     wlroots = pkgs.wlroots_0_18;
   };
 
-  qwlroots-qt6-wlroots-17 = qwlroots-qt6.override {
-    wlroots = pkgs.wlroots_0_17;
-  };
-
   qwlroots-qt6-dbg = qwlroots-qt6.override {
     stdenv = pkgs.stdenvAdapters.keepDebugInfo pkgs.stdenv;
   };
