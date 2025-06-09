@@ -31,11 +31,8 @@ class QW_CLASS_OBJECT(backend)
 
 public:
     static DeriveType *create(wlr_backend *handle);
-#if WLR_VERSION_MINOR > 17
+
     static qw_backend *autocreate(wl_event_loop *event, wlr_session **session_ptr);
-#else
-    static qw_backend *autocreate(wl_display *display, wlr_session **session_ptr);
-#endif
 
     QW_FUNC_MEMBER(backend, is_multi, bool)
     QW_FUNC_MEMBER(backend, is_drm, bool)

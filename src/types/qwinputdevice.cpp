@@ -13,11 +13,7 @@ qw_input_device *qw_input_device::create(HandleType *handle) {
         return new qw_keyboard(handle, false);
     case WLR_INPUT_DEVICE_POINTER:
         return new qw_pointer(handle, false);
-#if WLR_VERSION_MINOR > 17
     case WLR_INPUT_DEVICE_TABLET:
-#else
-    case WLR_INPUT_DEVICE_TABLET_TOOL:
-#endif
         return new qw_tablet(handle, false);
     case WLR_INPUT_DEVICE_TABLET_PAD:
         return new qw_tablet_pad(handle, false);

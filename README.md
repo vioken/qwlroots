@@ -12,7 +12,7 @@ qwlroots is a binding of [wlroots](https://gitlab.freedesktop.org/wlroots/wlroot
 
 As wlroots is still under development and has not yet released its 1.0 version, significant changes may occur at any time. Therefore, the latest code of qwlroots is only guaranteed to be compatible with the latest version of wlroots and the next release version (i.e., the version currently in development); compatibility with historical versions is not guaranteed. Similarly, like wlroots, qwlroots currently does not provide long-term support for interface compatibility.
 
-Currently, qwlroots is compatible with the following versions of wlroots: 0.17.x, 0.18.x
+Currently, qwlroots is compatible with the following versions of wlroots: 0.18.x, 0.19.x
 
 ## Supported Environments
 
@@ -45,8 +45,6 @@ For Arch Linux
 ````shell
 pacman -Syu --noconfirm qt6-base cmake pkgconfig pixman wayland-protocols ninja
 ````
-
-If you intend to use wlroots 0.17 version provided by the Arch Linux repository, you must set the environment variable `PKG_CONFIG_PATH=/usr/lib/wlroots0.17/pkgconfig/`. Otherwise, you will encounter an error indicating that `wlroots0.17` cannot be found during compilation.
 
 Step 3: Run the Following Commands
 

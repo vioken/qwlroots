@@ -18,8 +18,15 @@ class QW_CLASS_REINTERPRET_CAST(swapchain)
 public:
     QW_FUNC_STATIC(swapchain, create, qw_swapchain *, wlr_allocator *alloc, int width, int height, const wlr_drm_format *format)
 
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(swapchain, acquire, wlr_buffer *, int *age)
+#else
+    QW_FUNC_MEMBER(swapchain, acquire, wlr_buffer *, void)
+#endif
+
+#if WLR_VERSION_MINOR < 19
     QW_FUNC_MEMBER(swapchain, set_buffer_submitted, void, wlr_buffer *buffer)
+#endif
 
 private:
     friend class qw_reinterpret_cast;

@@ -12,12 +12,9 @@ find_package(Qt${QT_VERSION_MAJOR}
 
 find_package(PkgConfig REQUIRED)
 
-if (USE_WLROOTS_GIT)
+if (USE_WLROOTS_19)
     set(wlr wlroots-0.19)
     set(WLROOTS_MINIMUM_REQUIRED 0.19.0)
-elseif (USE_WLROOTS_17)
-    set(wlr wlroots)
-    set(WLROOTS_MINIMUM_REQUIRED 0.17.0)
 else ()
     set(wlr wlroots-0.18)
     set(WLROOTS_MINIMUM_REQUIRED 0.18.0)
@@ -65,6 +62,13 @@ ws_generate(server wayland-protocols stable/xdg-shell/xdg-shell.xml xdg-shell-pr
 ws_generate(server wayland-protocols unstable/fullscreen-shell/fullscreen-shell-unstable-v1.xml fullscreen-shell-unstable-v1-protocol)
 ws_generate(server wayland-protocols unstable/tablet/tablet-unstable-v2.xml tablet-unstable-v2-protocol)
 ws_generate(server wayland-protocols unstable/pointer-constraints/pointer-constraints-unstable-v1.xml pointer-constraints-unstable-v1-protocol)
+ws_generate(server wayland-protocols staging/alpha-modifier/alpha-modifier-v1.xml alpha-modifier-v1-protocol)
+ws_generate(server wayland-protocols staging/ext-transient-seat/ext-transient-seat-v1.xml ext-transient-seat-v1-protocol)
+if (USE_WLROOTS_19)
+    ws_generate(server wayland-protocols staging/color-management/color-management-v1.xml color-management-v1-protocol)
+    ws_generate(server wayland-protocols staging/ext-image-copy-capture/ext-image-copy-capture-v1.xml ext-image-copy-capture-v1-protocol)
+    ws_generate(server wayland-protocols staging/ext-image-capture-source/ext-image-capture-source-v1.xml ext-image-capture-source-v1-protocol)
+endif()
 
 set(HEADERS
     qwglobal.h
@@ -76,6 +80,11 @@ set(HEADERS
     render/qwallocator.h
     render/qwegl.h
     render/qwswapchain.h
+    render/qwdmabuf.h
+    render/qwdrmformatset.h
+    render/qwcolor.h
+    render/qwdrmsyncobj.h
+    types/qwalphamodifierv1.h
     types/qwbuffer.h
     types/qwcompositor.h
     types/qwexportdmabufv1.h
@@ -135,6 +144,8 @@ set(HEADERS
     types/qwshm.h
     types/qwcontenttypev1.h
     types/qwcursorshapev1.h
+    types/qwlinuxdrmsyncobjv1.h
+    types/qwtransientseatv1.h
     util/qwsignalconnector.h
     util/qwlogging.h
     util/qwbox.h
@@ -150,8 +161,15 @@ set(HEADERS
     interfaces/qwtabletpadinterface.h
 )
 
-if (NOT USE_WLROOTS_GIT)
-    list(APPEND HEADERS types/qwfullscreenshellv1.h)
+if (USE_WLROOTS_19)  # 0.19
+    list(APPEND HEADERS 
+        types/qwcolormanagerv1.h
+        types/qwextimagecopycapturev1.h
+    )
+else()
+    list(APPEND HEADERS
+        types/qwfullscreenshellv1.h
+    )
 endif()
 
 ws_generate(

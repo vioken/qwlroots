@@ -21,11 +21,10 @@ jobs:
           pacman -Syu --noconfirm
       - name: Install dep
         run: |
-          pacman -Syu --noconfirm qt6-base cmake pkgconfig wlroots0.18 pixman wayland-protocols wlr-protocols clazy
+          pacman -Syu --noconfirm qt6-base cmake pkgconfig wlroots0.19 pixman wayland-protocols wlr-protocols clazy
           pacman -Syu --noconfirm clang ninja
       - name: Configure CMake
         run: |
-          # export PKG_CONFIG_PATH=/usr/lib/pkgconfig/:/usr/lib/wlroots0.17/pkgconfig/
           mkdir -p ${{github.workspace}}/build
           cmake -B ${{github.workspace}}/build -G Ninja -DCMAKE_CXX_COMPILER=clazy
       - name: Build
