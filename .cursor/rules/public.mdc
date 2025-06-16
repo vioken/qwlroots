@@ -1,0 +1,15 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+1. 你新建的文档类的文件放到 doc/ai 目录下
+2. 如果需要为qwlroots添加新的关于wlroots的类型或函数封装，请查看doc/ai/qwlroots-wrapping-patterns-best-practices-en.md文档，里面有说明
+3. 对于新增的类型，要在 tests/ 中添加一个Qt风格的单元测试，用于验证封装的正确性
+4. 新封装一个类型或函数后，请更新两个README文件里的关于封装覆盖率的数据
+5. 如果有新增代码文件，则要在代码中添加SPDX-License-Identifier风格的copyright说明，如：
+// Copyright (C) 2025 UnionTech Software Technology Co., Ltd.
+// SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+6. 如果改动中有新增非代码类文件（如文档、图片），则要将这个新增文件的授权协议记录到 .reuse/dep5 中
+7. 在尝试编译时，如果已经存在 build 目录，则直接使用 cmake --build build 编译，无需使用 cmake -B buuild
+8. 新增的代码中的注释请使用英文

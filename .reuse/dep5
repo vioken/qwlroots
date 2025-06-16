@@ -9,7 +9,7 @@ Copyright: None
 License: CC0-1.0
 
 # Project file
-Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in .gitignore .cursorindexingignore
+Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in .gitignore .cursorindexingignore .cursor/rules/*.mdc .gitmodules
 Copyright: None
 License: CC0-1.0
 
@@ -18,8 +18,8 @@ Files: */qwkeyboard.h */qwpointer.h */qwswitch.h */qwtablet.h */qwtabletpad.h */
 Copyright: None
 License: CC0-1.0
 
-# README
-Files: README.md README.zh_CN.md
+# README and documentation
+Files: README.md README.zh_CN.md doc/ai/*.md
 Copyright: JiDe Zhang
 License: CC-BY-4.0
 
