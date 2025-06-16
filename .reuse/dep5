@@ -9,7 +9,7 @@ Copyright: None
 License: CC0-1.0
 
 # Project file
-Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in .gitignore
+Files: *.cmake *CMakeLists.txt *.pc.in *cmake.in .gitignore .cursorindexingignore
 Copyright: None
 License: CC0-1.0
 
