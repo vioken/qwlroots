@@ -10,6 +10,7 @@ alwaysApply: true
 5. 如果有新增代码文件，则要在代码中添加SPDX-License-Identifier风格的copyright说明，如：
 // Copyright (C) 2025 UnionTech Software Technology Co., Ltd.
 // SPDX-License-Identifier: Apache-2.0 OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-6. 如果改动中有新增非代码类文件（如文档、图片），则要将这个新增文件的授权协议记录到 .reuse/dep5 中
+6. 如果改动中有新增非代码类文件（如文档、图片），则要将这个新增文件的授权协议记录到 .reuse/dep5 中。对于代码类文件，如 *.h *.cpp *.qml *.py 不需要这样做，因为代码类文件的copyright是写在代码文件开头的，不用写在 .reuse/dep5 里
 7. 在尝试编译时，如果已经存在 build 目录，则直接使用 cmake --build build 编译，无需使用 cmake -B build
 8. 新增的代码中的注释请使用英文
+9. 更新“最佳实践”文档时，要中英文两个版本的文档文件同步更新

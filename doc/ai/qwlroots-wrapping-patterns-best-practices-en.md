@@ -395,15 +395,98 @@ auto *existing = qw_surface::get(wlr_surface);  // May return nullptr
 
 ### 4. Function Binding Principles
 
+#### 4.1 Determining Function Ownership and Placement
+
+When wrapping wlroots functions, it's crucial to determine whether a function should be a static function or a member function, and which class it belongs to. Follow this systematic approach:
+
+**Function Name Analysis Pattern:**
+wlroots functions follow the pattern: `wlr_<type>_<function_name>`
+
+**Step 1: Parse the Function Name**
+- Split the function name at underscores after `wlr_`
+- Identify the type part and function name part
+- The type part should correspond to an existing wlroots type
+
+**Example Analysis:**
+```cpp
+// Function: wlr_surface_get_image_description_v1_data
+// Parsing: wlr_ + surface + _ + get_image_description_v1_data
+// Type: wlr_surface
+// Function name: get_image_description_v1_data
+
+// Why not wlr_surface_get?
+// Because wlr_surface_get is not a valid wlroots type
+// get_image_description_v1_data is a more reasonable function name
+```
+
+**Step 2: Verify Type Existence**
+- Check if `wlr_<type>` exists as a structure in wlroots headers
+- If the type exists, this confirms the parsing is correct
+
+**Step 3: Determine Static vs Member Function**
+- **Member Function**: First parameter type matches the parsed type
+  ```cpp
+  // wlr_surface_get_image_description_v1_data(struct wlr_surface *surface)
+  // First parameter is wlr_surface* → Member function of qw_surface
+  QW_FUNC_MEMBER(surface, get_image_description_v1_data, const wlr_image_description_v1_data *)
+  ```
+
+- **Static Function**: First parameter type doesn't match the parsed type
+  ```cpp
+  // wlr_compositor_create(wl_display *display, ...)
+  // First parameter is wl_display*, not wlr_compositor* → Static function
+  QW_FUNC_STATIC(compositor, create, qw_compositor *, wl_display *display, ...)
+  ```
+
+**Step 4: Handle Cross-File Functions**
+Functions may be defined in different header files than their target type. This is common in wlroots:
+
+```cpp
+// wlr_surface_get_image_description_v1_data is defined in wlr_color_management_v1.h
+// but operates on wlr_surface, so it belongs to qw_surface class
+
+// In qwcompositor.h:
+#if WLR_VERSION_MINOR >= 19
+#include <wlr/types/wlr_color_management_v1.h>
+#endif
+
+class QW_CLASS_OBJECT(surface) {
+    // ...
+#if WLR_VERSION_MINOR >= 19
+    QW_FUNC_MEMBER(surface, get_image_description_v1_data, const wlr_image_description_v1_data *)
+#endif
+};
+```
+
+**Common Patterns:**
+```cpp
+// Create functions - always static, return the type
+QW_FUNC_STATIC(compositor, create, qw_compositor *, ...)
+
+// From/Get functions - usually static, return the type
+QW_FUNC_STATIC(surface, from_resource, qw_surface *, wl_resource *resource)
+
+// Instance methods - member functions, first param matches type
+QW_FUNC_MEMBER(surface, has_buffer, bool)
+QW_FUNC_MEMBER(surface, send_frame_done, void, const timespec *when)
+
+// Utility functions - check first parameter to determine placement
+// If first param is wlr_surface* → member of qw_surface
+// If first param is something else → static function or belongs to other class
+```
+
+#### 4.2 Function Binding Syntax
+
 ```cpp
 // Static function binding
-QW_FUNC_STATIC(type, create, qw_type *, ...)    // Create function, returns qw type
-QW_FUNC_STATIC(type, from, qw_type *, ...)      // Conversion function, returns qw type
-QW_FUNC_STATIC(type, get, qw_type *, ...)       // Get function, returns qw type
-QW_FUNC_STATIC(type, utility, return_type, ...) // Utility function, returns original type
+QW_FUNC_STATIC(type, create, qw_type *, ...)       // Create function, same type returns qw_*
+QW_FUNC_STATIC(type, from, qw_type *, ...)         // Conversion function, same type returns qw_*
+QW_FUNC_STATIC(type, get, qw_type *, ...)          // Get function, same type returns qw_*
+QW_FUNC_STATIC(type, get_other, wlr_other *, ...) // Get other types, keep wlr_*
+QW_FUNC_STATIC(type, utility, return_type, ...)   // Utility function, by actual return type
 
 // Member function binding
-QW_FUNC_MEMBER(type, method, return_type, ...)  // Instance method
+QW_FUNC_MEMBER(type, method, return_type, ...)     // Instance method, return type by actual situation
 ```
 
 ### 5. Error Handling
@@ -474,6 +557,116 @@ private slots:
 - Handle object ownership correctly
 - For classes with destroy methods, make destructor protected
 - Use smart pointers to manage lifecycle
+
+## Common Wrapping Errors Based on PR #322
+
+Based on actual code review experience, here are common mistakes developers make when adding new wrappers:
+
+### 4. Incorrect Interface Type Wrapping
+
+**Problem**: Incorrectly attempting to wrap interface-related init functions.
+
+**Solution**:
+- init interfaces are for interface use, not wrapped in regular classes
+- Should wrap corresponding interface types, such as `qw_allocator_interface`
+- Interface-related wrapping usually needs separate handling
+
+### 5. Static Function Return Type Errors
+
+**Problem**: Static function return type uses `wlr_*` type instead of `qw_*` type when the return type matches the current wrapped class type.
+
+**❌ Incorrect Example**:
+```cpp
+// In qw_color_transform class
+QW_FUNC_STATIC(color_transform, create, wlr_color_transform *, ...)  // Error: should return qw_color_transform*
+
+// In qw_abc class
+QW_FUNC_STATIC(abc, create, wlr_abc *, ...)           // Error: should return qw_abc*
+QW_FUNC_STATIC(abc, get_xxx_data, wlr_xxx *, ...)    // Correct: other types remain unchanged
+```
+
+**✅ Correct Format**:
+```cpp
+// In qw_color_transform class
+QW_FUNC_STATIC(color_transform, create, qw_color_transform *, ...)   // Correct: same type returns qw_*
+
+// In qw_abc class
+QW_FUNC_STATIC(abc, create, qw_abc *, ...)            // Correct: same type returns qw_*
+QW_FUNC_STATIC(abc, get_xxx_data, wlr_xxx *, ...)     // Correct: other types keep wlr_*
+```
+
+**Solution**:
+- Only when the static function's return type matches the currently wrapped class type, change `wlr_*` to `qw_*`
+- If returning other types (like `wlr_xxx *`), keep the original `wlr_*` type
+- This ensures wrapping consistency: same type returns wrapped type, other types keep original type
+
+### 6. Redundant Destroy Signal Declaration
+
+**Problem**: Manually declaring destroy signal in `QW_CLASS_OBJECT` class.
+
+**❌ Incorrect Example**:
+```cpp
+class QW_CLASS_OBJECT(example)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+    QW_SIGNAL(destroy)  // Redundant: base class handles automatically
+};
+```
+
+**✅ Correct Format**:
+```cpp
+class QW_CLASS_OBJECT(example)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+    // destroy signal is handled automatically by base class, no explicit declaration needed
+    // Only declare specific business signals
+    QW_SIGNAL(custom_event, param_type)
+};
+```
+
+**Solution**:
+- destroy signal is specially handled in `QW_CLASS_OBJECT`, no manual declaration needed
+- Only declare specific business signals
+
+### 7. Type Mixing Wrapping Errors
+
+**Problem**: Mixing functions of different types in one class.
+
+**❌ Incorrect Example**:
+```cpp
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_manager_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_manager_v1, create, ...)
+    // Error: wrapping syncobj_v1 type functions in manager class
+    QW_FUNC_STATIC(linux_drm_syncobj_v1, get_surface_state, ...)
+};
+```
+
+**✅ Correct Design**:
+```cpp
+// Separate different types
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_manager_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_manager_v1, create, ...)
+};
+
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_v1, get_surface_state, ...)
+};
+```
+
+**Solution**:
+- Should not wrap `linux_drm_syncobj_v1` type functions in `qw_linux_drm_syncobj_manager_v1`
+- Each class should only wrap functions belonging to its own type
+- Functions of different types should be separated into corresponding classes
 
 ## Summary
 

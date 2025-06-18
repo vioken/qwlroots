@@ -395,15 +395,98 @@ auto *existing = qw_surface::get(wlr_surface);  // 可能返回 nullptr
 
 ### 4. 函数绑定原则
 
+#### 4.1 确定函数所有权和放置位置
+
+在封装 wlroots 函数时，确定函数应该是静态函数还是成员函数，以及它属于哪个类是至关重要的。遵循以下系统性方法：
+
+**函数命名分析模式：**
+wlroots 函数遵循模式：`wlr_<类型>_<函数名>`
+
+**步骤 1：解析函数名**
+- 在 `wlr_` 后按下划线分割函数名
+- 识别类型部分和函数名部分
+- 类型部分应该对应一个现有的 wlroots 类型
+
+**示例分析：**
+```cpp
+// 函数：wlr_surface_get_image_description_v1_data
+// 解析：wlr_ + surface + _ + get_image_description_v1_data
+// 类型：wlr_surface
+// 函数名：get_image_description_v1_data
+
+// 为什么不是 wlr_surface_get？
+// 因为 wlr_surface_get 不是一个有效的 wlroots 类型
+// get_image_description_v1_data 是一个更合理的函数名
+```
+
+**步骤 2：验证类型存在性**
+- 检查 `wlr_<类型>` 是否作为结构体存在于 wlroots 头文件中
+- 如果类型存在，这确认了解析是正确的
+
+**步骤 3：确定静态函数 vs 成员函数**
+- **成员函数**：第一个参数类型与解析出的类型匹配
+  ```cpp
+  // wlr_surface_get_image_description_v1_data(struct wlr_surface *surface)
+  // 第一个参数是 wlr_surface* → qw_surface 的成员函数
+  QW_FUNC_MEMBER(surface, get_image_description_v1_data, const wlr_image_description_v1_data *)
+  ```
+
+- **静态函数**：第一个参数类型与解析出的类型不匹配
+  ```cpp
+  // wlr_compositor_create(wl_display *display, ...)
+  // 第一个参数是 wl_display*，不是 wlr_compositor* → 静态函数
+  QW_FUNC_STATIC(compositor, create, qw_compositor *, wl_display *display, ...)
+  ```
+
+**步骤 4：处理跨文件函数**
+函数可能定义在与其目标类型不同的头文件中。这在 wlroots 中很常见：
+
+```cpp
+// wlr_surface_get_image_description_v1_data 定义在 wlr_color_management_v1.h 中
+// 但操作 wlr_surface，所以它属于 qw_surface 类
+
+// 在 qwcompositor.h 中：
+#if WLR_VERSION_MINOR >= 19
+#include <wlr/types/wlr_color_management_v1.h>
+#endif
+
+class QW_CLASS_OBJECT(surface) {
+    // ...
+#if WLR_VERSION_MINOR >= 19
+    QW_FUNC_MEMBER(surface, get_image_description_v1_data, const wlr_image_description_v1_data *)
+#endif
+};
+```
+
+**常见模式：**
+```cpp
+// 创建函数 - 总是静态的，返回该类型
+QW_FUNC_STATIC(compositor, create, qw_compositor *, ...)
+
+// From/Get 函数 - 通常是静态的，返回该类型
+QW_FUNC_STATIC(surface, from_resource, qw_surface *, wl_resource *resource)
+
+// 实例方法 - 成员函数，第一个参数匹配类型
+QW_FUNC_MEMBER(surface, has_buffer, bool)
+QW_FUNC_MEMBER(surface, send_frame_done, void, const timespec *when)
+
+// 工具函数 - 检查第一个参数确定放置位置
+// 如果第一个参数是 wlr_surface* → qw_surface 的成员
+// 如果第一个参数是其他类型 → 静态函数或属于其他类
+```
+
+#### 4.2 函数绑定语法
+
 ```cpp
 // 静态函数绑定
-QW_FUNC_STATIC(type, create, qw_type *, ...)    // 创建函数，返回 qw 类型
-QW_FUNC_STATIC(type, from, qw_type *, ...)      // 转换函数，返回 qw 类型
-QW_FUNC_STATIC(type, get, qw_type *, ...)       // 获取函数，返回 qw 类型
-QW_FUNC_STATIC(type, utility, return_type, ...) // 工具函数，返回原始类型
+QW_FUNC_STATIC(type, create, qw_type *, ...)       // 创建函数，返回同类型用 qw_*
+QW_FUNC_STATIC(type, from, qw_type *, ...)         // 转换函数，返回同类型用 qw_*
+QW_FUNC_STATIC(type, get, qw_type *, ...)          // 获取函数，返回同类型用 qw_*
+QW_FUNC_STATIC(type, get_other, wlr_other *, ...) // 获取其他类型，保持 wlr_*
+QW_FUNC_STATIC(type, utility, return_type, ...)   // 工具函数，按实际返回类型
 
 // 成员函数绑定
-QW_FUNC_MEMBER(type, method, return_type, ...)  // 实例方法
+QW_FUNC_MEMBER(type, method, return_type, ...)     // 实例方法，返回类型按实际情况
 ```
 
 ### 5. 错误处理
@@ -474,6 +557,116 @@ private slots:
 - 正确处理对象所有权
 - 对于有 destroy 方法的类，将析构函数设为 protected
 - 使用智能指针管理生命周期
+
+## 基于 PR #322 的常见封装错误
+
+基于实际代码审查经验，以下是开发者在添加新封装时容易犯的错误：
+
+### 4. interface 类型的错误封装
+
+**问题**：错误地尝试封装 interface 相关的 init 函数。
+
+**解决方案**：
+- init 接口是给 interface 用的，不在普通类中封装
+- 应该封装对应的 interface 类型，如 `qw_allocator_interface`
+- interface 相关的封装通常需要单独处理
+
+### 5. 静态函数返回类型错误
+
+**问题**：静态函数返回类型与当前封装类同类型时，仍使用 `wlr_*` 类型。
+
+**❌ 错误示例**：
+```cpp
+// 在 qw_color_transform 类中
+QW_FUNC_STATIC(color_transform, create, wlr_color_transform *, ...)  // 错误：应该返回 qw_color_transform*
+
+// 在 qw_abc 类中
+QW_FUNC_STATIC(abc, create, wlr_abc *, ...)           // 错误：应该返回 qw_abc*
+QW_FUNC_STATIC(abc, get_xxx_data, wlr_xxx *, ...)    // 正确：返回其他类型保持不变
+```
+
+**✅ 正确格式**：
+```cpp
+// 在 qw_color_transform 类中
+QW_FUNC_STATIC(color_transform, create, qw_color_transform *, ...)   // 正确：返回同类型用 qw_*
+
+// 在 qw_abc 类中
+QW_FUNC_STATIC(abc, create, qw_abc *, ...)            // 正确：返回同类型用 qw_*
+QW_FUNC_STATIC(abc, get_xxx_data, wlr_xxx *, ...)     // 正确：返回其他类型保持 wlr_*
+```
+
+**解决方案**：
+- 只有当静态函数的返回类型与当前封装的类是同类型时，才将 `wlr_*` 改为 `qw_*`
+- 如果返回的是其他类型（如 `wlr_xxx *`），则保持原始的 `wlr_*` 类型
+- 这确保了封装的一致性：同类型返回封装类型，其他类型保持原始类型
+
+### 6. 冗余的 destroy 信号声明
+
+**问题**：在 `QW_CLASS_OBJECT` 类中手动声明 destroy 信号。
+
+**❌ 错误示例**：
+```cpp
+class QW_CLASS_OBJECT(example)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+    QW_SIGNAL(destroy)  // 冗余：基类已自动处理
+};
+```
+
+**✅ 正确格式**：
+```cpp
+class QW_CLASS_OBJECT(example)
+{
+    QW_OBJECT
+    Q_OBJECT
+
+    // destroy 信号由基类自动处理，无需显式声明
+    // 只声明特定的业务信号
+    QW_SIGNAL(custom_event, param_type)
+};
+```
+
+**解决方案**：
+- destroy 信号是 `QW_CLASS_OBJECT` 里特殊处理的，无需手动声明
+- 只声明特定的业务信号即可
+
+### 7. 类型混合封装错误
+
+**问题**：在一个类中混合封装不同类型的函数。
+
+**❌ 错误示例**：
+```cpp
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_manager_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_manager_v1, create, ...)
+    // 错误：在 manager 类中封装 syncobj_v1 类型的函数
+    QW_FUNC_STATIC(linux_drm_syncobj_v1, get_surface_state, ...)
+};
+```
+
+**✅ 正确设计**：
+```cpp
+// 分离不同的类型
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_manager_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_manager_v1, create, ...)
+};
+
+class QW_CLASS_REINTERPRET_CAST(linux_drm_syncobj_v1)
+{
+public:
+    QW_FUNC_STATIC(linux_drm_syncobj_v1, get_surface_state, ...)
+};
+```
+
+**解决方案**：
+- 在 `qw_linux_drm_syncobj_manager_v1` 里不应该封装 `linux_drm_syncobj_v1` 类型的东西
+- 每个类只封装属于自己类型的函数
+- 不同类型的函数应该分离到对应的类中
 
 ## 总结
 
