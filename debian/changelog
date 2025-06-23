@@ -1,3 +1,16 @@
+qwlroots (0.5.4) unstable; urgency=medium
+
+  * feat: update wlroots and nixpkgs versions for qwlroots
+  * Improve the intelligence of cursor addition encapsulation
+  * Add wlroots 0.19 render types and protocol support
+  * fix: correct typo in build command description
+  * docs: add documentation for AI development
+  * chore: update gitignore for IDE environments
+  * ci: pin wlroots to 0.18 for Arch Linux GitHub Actions build
+  * Make the existing interface compatible with wlroots-0.19
+
+ -- rewine <luhongxu@deepin.org>  Mon, 23 Jun 2025 17:34:11 +0800
+
 qwlroots (0.5.3) unstable; urgency=medium
 
   * Implement qw_idle_inhibitor_v1
