@@ -18,7 +18,7 @@ QW_BEGIN_NAMESPACE
 class QW_CLASS_REINTERPRET_CAST(transient_seat_v1)
 {
 public:
-    QW_FUNC_MEMBER(transient_seat_v1, ready, void, qw_seat *wlr_seat)
+    QW_FUNC_MEMBER(transient_seat_v1, ready, void, wlr_seat *seat)
     QW_FUNC_MEMBER(transient_seat_v1, deny, void)
 };
 
