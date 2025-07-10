@@ -90,7 +90,7 @@ qwlroots provides Qt-style bindings for wlroots types. The following table shows
 
 | Category        | Wrapped      | Total Available | Coverage        |
 | --------------- | ------------ | --------------- | --------------- |
-| Types           | 66           | 74              | 89.2%           |
+| Types           | 67           | 74              | 90.5%           |
 | Util            | 3            | 6               | 50.0%           |
 | Render          | 5            | 14              | 35.7%           |
 | Interfaces      | 9            | 9               | 100.0%          |
@@ -102,8 +102,7 @@ The following wlroots types are not yet wrapped in qwlroots:
 
 **Types (20 remaining):**
 
-- alpha_modifier_v1, color_management_v1, ext_data_control_v1, ext_foreign_toplevel_list_v1
-- ext_image_capture_source_v1, ext_image_copy_capture_v1, foreign_toplevel_management_v1
+- alpha_modifier_v1, color_management_v1, ext_data_control_v1, ext_image_capture_source_v1, ext_image_copy_capture_v1, foreign_toplevel_management_v1
 - fractional_scale_v1, gamma_control_v1, linux_drm_syncobj_v1, output_swapchain_manager
 - presentation_time, security_context_v1, server_decoration, tablet_tool, transient_seat_v1
 - xdg_decoration_v1, xdg_dialog_v1, xdg_system_bell_v1, xdg_toplevel_icon_v1

@@ -165,6 +165,7 @@ if (USE_WLROOTS_19)  # 0.19
     list(APPEND HEADERS 
         types/qwcolormanagerv1.h
         types/qwextimagecopycapturev1.h
+        types/qwextforeigntoplevellistv1.h
     )
 else()
     list(APPEND HEADERS
